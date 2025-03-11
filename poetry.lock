@@ -227,14 +227,14 @@ protobuf = ">=3.19,<6"
 
 [[package]]
 name = "ansys-fluent-core"
-version = "0.29.0"
+version = "0.30.0"
 description = "PyFluent provides Pythonic access to Ansys Fluent."
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "ansys_fluent_core-0.29.0-py3-none-any.whl", hash = "sha256:7e32d0b36c79b1d593faddf5f12982b810edcac058f3f8309eb62388ea727a8f"},
-    {file = "ansys_fluent_core-0.29.0.tar.gz", hash = "sha256:64c55ffa84290fff563922e47ec28044c6b8fa1ccb6a86143623841837c595dc"},
+    {file = "ansys_fluent_core-0.30.0-py3-none-any.whl", hash = "sha256:a050e6b89353637e35f341d3258d34a04ed8bf78d0440f0693f79f6bcdc489ec"},
+    {file = "ansys_fluent_core-0.30.0.tar.gz", hash = "sha256:9255bad8ea3267e69f56c2f71c3176ff98756d1a82c6d54145a97c24f2971b57"},
 ]
 
 [package.dependencies]
@@ -245,7 +245,7 @@ ansys-units = ">=0.3.3,<0.5"
 docker = ">=7.1.0"
 grpcio = ">=1.30.0"
 grpcio-health-checking = ">=1.30.0"
-grpcio-status = ">=1.30.0"
+grpcio-status = ">=1.26.0"
 lxml = ">=4.9.2"
 nltk = ">=3.9.1"
 numpy = ">=1.14.0,<3.0.0"
@@ -254,7 +254,7 @@ pyansys-tools-report = ">=0.8.1"
 pyyaml = ">=6.0"
 
 [package.extras]
-docs = ["Sphinx (==7.4.7)", "ansys-sphinx-theme (==1.2.7)", "autodocsumm (==0.2.14)", "beautifulsoup4 (==4.13.1)", "jupyter_sphinx (==0.5.3)", "matplotlib (==3.10.0)", "numpydoc (==1.8.0)", "openpyxl (>=3.1.5)", "pdf2image (==1.17.0)", "plotly (>=5.22.0)", "pypandoc (==1.15)", "pytest-sphinx (==0.6.3)", "python-pptx (>=0.6.23)", "quarto-cli (==1.6.39)", "seaborn (>=0.13.2)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==2.3.0)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.18.0)", "sphinx-notfound-page (==1.1.0)", "sphinx-toggleprompt (==0.5.2)", "sphinxcontrib-websupport (==2.0.0)", "sphinxemoji (==0.3.1)", "tensorflow (>=2.17.0)"]
+docs = ["Sphinx (==8.1.3)", "ansys-sphinx-theme (==1.3.2)", "autodocsumm (==0.2.14)", "beautifulsoup4 (==4.13.3)", "jupyter_sphinx (==0.5.3)", "matplotlib (==3.10.1)", "numpydoc (==1.8.0)", "openpyxl (>=3.1.5)", "pdf2image (==1.17.0)", "plotly (>=5.22.0)", "pypandoc (==1.15)", "pytest-sphinx (==0.6.3)", "python-pptx (>=0.6.23)", "quarto-cli (==1.6.42)", "seaborn (>=0.13.2)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==3.0.1)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.19.0)", "sphinx-notfound-page (==1.1.0)", "sphinx-toggleprompt (==0.6.0)", "sphinxcontrib-websupport (==2.0.0)", "sphinxemoji (==0.3.1)", "tensorflow (>=2.17.0)"]
 reader = ["h5py (==3.12.1)"]
 tests = ["pytest (==8.3.4)", "pytest-cov (==6.0.0)", "pytest-mock (==3.14.0)", "pytest-xdist (==3.6.1)"]
 
@@ -4431,4 +4431,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "49282ec8d4407fd7da75b0c946b121fed25a462183c4efed6dc2816ad9f7d2d7"
+content-hash = "b78870d8a20fd68884faa4d4ea12bb6cd8e82aa071bb364212f7e3bf4824078f"
