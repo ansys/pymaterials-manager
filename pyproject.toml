@@ -28,7 +28,7 @@ python = ">=3.10,<3.13"
 numpy = "^2.0"
 
 [tool.poetry.group.doc.dependencies]
-ansys-sphinx-theme = ">=0.12,<1.4"
+ansys-sphinx-theme = ">=0.12,<1.5"
 numpydoc = "^1.6.0"
 Sphinx = ">=7.2,<9.0"
 sphinx-autoapi = "^3.0"
