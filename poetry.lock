@@ -227,14 +227,14 @@ protobuf = ">=3.19,<6"
 
 [[package]]
 name = "ansys-fluent-core"
-version = "0.30.2"
+version = "0.30.3"
 description = "PyFluent provides Pythonic access to Ansys Fluent."
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "ansys_fluent_core-0.30.2-py3-none-any.whl", hash = "sha256:941795d105b11d519e504497226423dd8e5ec8c8f045779f750c20f83796a839"},
-    {file = "ansys_fluent_core-0.30.2.tar.gz", hash = "sha256:62731b817fc364e3a2d5fa8161c630b93a6e3f1a4bcb2d6ecb836a7a2e029ba8"},
+    {file = "ansys_fluent_core-0.30.3-py3-none-any.whl", hash = "sha256:05e5ad418ba38171231a177c00b9873cd6c62f106a4041bcefea039cc5974832"},
+    {file = "ansys_fluent_core-0.30.3.tar.gz", hash = "sha256:6fea024da8b50f1919dfcfa6eaa52c5e95abb401c114326b00262e398ae720aa"},
 ]
 
 [package.dependencies]
