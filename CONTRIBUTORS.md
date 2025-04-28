@@ -6,7 +6,9 @@
 
 ## Individual Contributors
 
+* [andreas-hilti](https://github.com/andreas-hilti)
 * [Dan Williams](https://github.com/dnwillia-work)
+* [janvonrickenbach](https://github.com/janvonrickenbach)
 * [Jorge Martínez](https://github.com/jorgepiloto)
 * [Kathy Pippert](https://github.com/PipKat)
 * [Ludovic Steinbach](https://github.com/ludovicsteinbach)
@@ -15,5 +17,3 @@
 * [René Roos](https://github.com/roosre)
 * [Revathy Venugopal](https://github.com/Revathyvenugopal162)
 * [Roberto Pastor Muela](https://github.com/RobPasMue)
-* [andreas-hilti](https://github.com/andreas-hilti)
-* [janvonrickenbach](https://github.com/janvonrickenbach)
