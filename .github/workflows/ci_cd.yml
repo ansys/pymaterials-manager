@@ -132,7 +132,7 @@ jobs:
 
       - name: "Test with tox"
         # Only the tox environment specified in the tox.ini gh-actions is run
-        run: tox -e tests313 -- -m mapdl_integration
+        run: tox -e tests -- -m mapdl_integration
 
       - name: "Collect MAPDL logs on failure"
         if: always()
