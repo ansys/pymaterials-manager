@@ -62,7 +62,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-        python-version: ['3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
       fail-fast: false
 
     steps:
@@ -78,8 +78,7 @@ jobs:
           python -m pip install --upgrade pip poetry tox tox-gh-actions
 
       - name: Test with tox
-        # Only the tox environment specified in the tox.ini gh-actions is run
-        run: tox -e py310-coverage
+        run: tox -e tests
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v5
@@ -134,7 +133,7 @@ jobs:
 
       - name: "Test with tox"
         # Only the tox environment specified in the tox.ini gh-actions is run
-        run: tox -e py313-coverage -- -m mapdl_integration
+        run: tox -e tests3.13 -- -m mapdl_integration
 
       - name: "Collect MAPDL logs on failure"
         if: always()
