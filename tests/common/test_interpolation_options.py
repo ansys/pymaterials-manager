@@ -20,15 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common._base import _BaseModel
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common.constant import Constant
-from ansys.materials.manager._models._common.piecewise_linear import PiecewiseLinear
-from ansys.materials.manager._models._common.polynomial import Polynomial
-from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
-    AnisotropicElasticity,
-    ElasticityMode,
-)
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
+from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
+
+
+def test_interpolation_options():
+    options = InterpolationOptions(
+        algorithm_type="Linear Multivariate",
+        normalized=True,
+        cached=True,
+        quantized=True,
+        extrapolation_type="Projection to the Convex Hull",
+    )
+
+    assert options.algorithm_type == "Linear Multivariate"
+    assert options.normalized is True
+    assert options.cached is True
+    assert options.quantized is True
+    assert options.extrapolation_type is "Projection to the Convex Hull"

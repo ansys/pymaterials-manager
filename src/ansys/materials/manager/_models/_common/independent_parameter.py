@@ -20,15 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common._base import _BaseModel
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common.constant import Constant
-from ansys.materials.manager._models._common.piecewise_linear import PiecewiseLinear
-from ansys.materials.manager._models._common.polynomial import Polynomial
-from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
-    AnisotropicElasticity,
-    ElasticityMode,
-)
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
+
+from pydantic import BaseModel, Field
+
+
+class IndependentParameter(BaseModel):
+    """Class representing an independent parameter in a material model."""
+
+    name: str = Field(
+        default="", title="Name", description="The name of the independent parameter."
+    )
+    values: list[float] = Field(
+        default=[], title="Values", description="The values of the independent parameter."
+    )
+    default_value: float = Field(
+        default=0.0,
+        title="Default Value",
+        description="The default value of the independent parameter.",
+    )
+    units: str = Field(
+        default="", title="Units", description="The units of the independent parameter."
+    )
+    upper_limit: str | float | None = Field(
+        default=None, title="Upper Limit", description="Upper limit of the independent parameter."
+    )
+    lower_limit: str | float | None = Field(
+        default=None, title="Lower Limit", description="Lower limit of the independent parameter."
+    )

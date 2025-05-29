@@ -20,15 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common._base import _BaseModel
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common.constant import Constant
-from ansys.materials.manager._models._common.piecewise_linear import PiecewiseLinear
-from ansys.materials.manager._models._common.polynomial import Polynomial
-from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
-    AnisotropicElasticity,
-    ElasticityMode,
-)
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
+
+from pydantic import BaseModel, Field
+
+
+class InterpolationOptions(BaseModel):
+    """Class to hold interpolation options for material models."""
+
+    algorithm_type: str = Field(
+        default="", title="Algorithm Type", description="Type of interpolation algorithm to use."
+    )
+    normalized: bool = Field(
+        default=True, title="Normalized", description="Whether the input data is normalized."
+    )
+    cached: bool = Field(default=True, title="Cached", description="Whether to cache the results.")
+    quantized: bool | None = Field(
+        default=None, title="Quantized", description="Whether the data is quantized."
+    )
+    extrapolation_type: str | None = Field(
+        default=None, title="Extrapolation Type", description="Type of extrapolation to use."
+    )

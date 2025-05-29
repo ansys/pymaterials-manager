@@ -1,0 +1,111 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+from typing import Any, Literal
+
+from pydantic import Field
+
+from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager._models._common._exceptions import ModelValidationException
+from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
+from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager.material import Material
+
+
+class ElasticityIsotropic(MaterialModel):
+    """Represents an isotropic elasticity material model."""
+
+    name: Literal["isotropic_elasticity"] = Field(
+        default="isotropic_elasticity", repr=False, frozen=True
+    )
+    supported_packages: SupportedPackage = Field(
+        default=[SupportedPackage.MAPDL], repr=False, frozen=True
+    )
+    young_modulus: DependentParameter = Field(
+        default=DependentParameter(name="Young's modulus", values=[]),
+        title="Young's modulus",
+        description="The Young's modulus of the material.",
+    )
+    poisson_ratio: DependentParameter = Field(
+        default=DependentParameter(name="Poisson's ratio", values=[]),
+        title="Poisson's ratio",
+        description="The Poisson's ratio of the material.",
+    )
+
+    def _write_mapdl(self, mapdl: _MapdlCore, material: "Material") -> None:
+        if (
+            not self.independent_parameters
+            and len(self.young_modulus.values) == 0
+            and len(self.poisson_ratio.values) == 0
+        ):
+            mapdl.mp("EX", material.material_id, self.young_modulus.values[0])
+            mapdl.mp("PRXY", material.material_id, self.poisson_ratio.values[0])
+        ### add variable cases
+
+    def write_model(self, material: Material, pyansys_session: Any) -> None:
+        """
+        Write this model to the specified session.
+
+        Parameters
+        ----------
+        material : Material
+            The material to which this model belongs.
+        pyansys_session : Any
+            The session to write the model to.
+        """
+        is_ok, issues = self.validate_model()
+        if not is_ok:
+            raise ModelValidationException("\n".join(issues))
+
+        if isinstance(pyansys_session, _MapdlCore):
+            self._write_mapdl(pyansys_session, material)
+        else:
+            raise TypeError(
+                "This model is only supported by MAPDL. Ensure that you have the correct"
+                "type of the PyAnsys session."
+            )
+
+    def validate_model(self) -> tuple[bool, list[str]]:
+        """
+        Perform pre-flight validation of the model setup.
+
+        Returns
+        -------
+        Tuple
+            First element is Boolean. ``True`` if validation is successful. If ``False``,
+            the second element contains a list of strings with more information.
+        """
+        failures = []
+        is_ok = True
+
+        if self.name is None or self.name == "":
+            failures.append("Invalid property name")
+            is_ok = False
+        if len(self.young_modulus.values) < 1:
+            failures.append("Young's modulus value is not defined.")
+            is_ok = False
+        if len(self.poisson_ratio.values) < 1:
+            failures.append("Poisson's ratio value is not defined.")
+            is_ok = False
+        return is_ok, failures
