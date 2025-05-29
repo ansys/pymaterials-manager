@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
-from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
+from ansys.materials.manager._models import (
     ElasticityIsotropic,
 )
+from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 
 
 def test_elasticity_isotropic():
@@ -44,6 +44,7 @@ def test_elasticity_isotropic():
     assert isotropic_elasticity.young_modulus == youngs_modulus
     assert isotropic_elasticity.poisson_ratio == poissons_ratio
     assert isotropic_elasticity.independent_parameters == [temperature]
+    assert isotropic_elasticity.supported_packages == [SupportedPackage.MAPDL]
     assert isinstance(isotropic_elasticity, ElasticityIsotropic)
 
 
