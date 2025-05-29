@@ -34,16 +34,11 @@ from ansys.materials.manager.material import Material
 class ElasticityIsotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
-    youngs_modulus: DependentParameter
-    poisson_ratio: DependentParameter
-    applicable_packages: SupportedPackage.MAPDL
-    behavior: str = "Isotropic"
-
     def __init__(
         self,
         youngs_modulus: DependentParameter,
         poisson_ratio: DependentParameter,
-        independent_parameter: list[IndependentParameter] | None = None,
+        independent_parameters: list[IndependentParameter] | None = None,
         definition: str | None = None,
         localized_name: str | None = None,
         source: str | None = None,
@@ -58,7 +53,7 @@ class ElasticityIsotropic(MaterialModel):
             The Young's modulus of the material.
         poisson_ratio : DependentParameter
             The Poisson's ratio of the material.
-        independent_parameter : list[IndependentParameter]
+        independent_parameters : list[IndependentParameter]
             List of independent parameters for the model.
         definition : str | None
             Definition of the material model.
@@ -71,7 +66,7 @@ class ElasticityIsotropic(MaterialModel):
         """
         super().__init__(
             name="Elasticity Isotropic",
-            independent_parameters=independent_parameter,
+            independent_parameters=independent_parameters,
             definition=definition,
             localized_name=localized_name,
             source=source,
@@ -79,6 +74,8 @@ class ElasticityIsotropic(MaterialModel):
         )
         self.youngs_modulus = youngs_modulus
         self.poisson_ratio = poisson_ratio
+        self.applicable_packages = SupportedPackage.MAPDL
+        self.behavior = "Isotropic"
 
     def _write_mapdl(self, mapdl: "_MapdlCore", material: "Material") -> None:
         if (
@@ -129,10 +126,10 @@ class ElasticityIsotropic(MaterialModel):
         if self.name is None or self.name == "":
             failures.append("Invalid property name")
             is_ok = False
-        if self.youngs_modulus.values is None:
-            failures.append("Young's modulus value cannot be None")
+        if len(self.youngs_modulus.values) < 1 or self.youngs_modulus == None:
+            failures.append("Young's modulus value is not defined.")
             is_ok = False
-        if self.poisson_ratio.values is None:
-            failures.append("Poisson's ratio value cannot be None")
+        if len(self.poisson_ratio.values) < 1 or self.poisson_ratio == None:
+            failures.append("Poisson's ratio value is not defined.")
             is_ok = False
         return is_ok, failures

@@ -20,29 +20,51 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._material_models.elasticity_isotropic import (
+from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
 
 
 def test_elasticity_isotropic():
-    name = "Isotropic Elasticity Example"
-    youngs_modulus = 210e9
-    poissons_ratio = 0.3
-    shear_modulus = 80e9
-    bulk_modulus = 140e9
-
-    isotropic_elasticity = ElasticityIsotropic(
-        name=name,
-        youngs_modulus=youngs_modulus,
-        poissons_ratio=poissons_ratio,
-        shear_modulus=shear_modulus,
-        bulk_modulus=bulk_modulus,
+    youngs_modulus = DependentParameter(name="Young's modulus", values=[210e9])
+    poissons_ratio = DependentParameter(name="Poisson's ratio", values=[0.3])
+    temperature = IndependentParameter(
+        name="Temperature", values=300.0, default_value=293.15, units="K"
     )
 
-    assert isotropic_elasticity.name == name
+    isotropic_elasticity = ElasticityIsotropic(
+        youngs_modulus=youngs_modulus,
+        poisson_ratio=poissons_ratio,
+        independent_parameters=[temperature],
+        localized_name="Isotropic Elasticity",
+    )
+
     assert isotropic_elasticity.youngs_modulus == youngs_modulus
-    assert isotropic_elasticity.poissons_ratio == poissons_ratio
-    assert isotropic_elasticity.shear_modulus == shear_modulus
-    assert isotropic_elasticity.bulk_modulus == bulk_modulus
+    assert isotropic_elasticity.poisson_ratio == poissons_ratio
+    assert isotropic_elasticity.independent_parameters == [temperature]
     assert isinstance(isotropic_elasticity, ElasticityIsotropic)
+
+
+def test_elasticity_isotropic_invalid_parameters():
+    youngs_modulus = DependentParameter(name="Young's modulus", values=[210e9])
+    poissons_ratio = DependentParameter(name="Poisson's ratio", values=[])
+
+    isotropic_elasticity = ElasticityIsotropic(
+        youngs_modulus=youngs_modulus, poisson_ratio=poissons_ratio
+    )
+
+    is_ok, failures = isotropic_elasticity.validate_model()
+    assert not is_ok
+    assert failures[0] == "Poisson's ratio value is not defined."
+
+    youngs_modulus = DependentParameter(name="Young's modulus", values=[])
+    poissons_ratio = DependentParameter(name="Poisson's ratio", values=[0.3])
+    isotropic_elasticity = ElasticityIsotropic(
+        youngs_modulus=youngs_modulus, poisson_ratio=poissons_ratio
+    )
+
+    is_ok, failures = isotropic_elasticity.validate_model()
+    assert not is_ok
+    assert failures[0] == "Young's modulus value is not defined."
