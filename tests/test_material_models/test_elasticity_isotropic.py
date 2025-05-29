@@ -23,12 +23,26 @@
 from ansys.materials.manager._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
-from ansys.materials.manager._models._common._base import _BaseModel
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common.constant import Constant
-from ansys.materials.manager._models._common.piecewise_linear import PiecewiseLinear
-from ansys.materials.manager._models._common.polynomial import Polynomial
-from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
-    AnisotropicElasticity,
-    ElasticityMode,
-)
+
+
+def test_elasticity_isotropic():
+    name = "Isotropic Elasticity Example"
+    youngs_modulus = 210e9
+    poissons_ratio = 0.3
+    shear_modulus = 80e9
+    bulk_modulus = 140e9
+
+    isotropic_elasticity = ElasticityIsotropic(
+        name=name,
+        youngs_modulus=youngs_modulus,
+        poissons_ratio=poissons_ratio,
+        shear_modulus=shear_modulus,
+        bulk_modulus=bulk_modulus,
+    )
+
+    assert isotropic_elasticity.name == name
+    assert isotropic_elasticity.youngs_modulus == youngs_modulus
+    assert isotropic_elasticity.poissons_ratio == poissons_ratio
+    assert isotropic_elasticity.shear_modulus == shear_modulus
+    assert isotropic_elasticity.bulk_modulus == bulk_modulus
+    assert isinstance(isotropic_elasticity, ElasticityIsotropic)

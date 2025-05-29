@@ -30,7 +30,6 @@ class IndependentParameter:
         values: float,
         default_value: float,
         units: str,
-        resolution: str | None = None,
         upper_limit: str | float | None = None,
         lower_limit: str | float | None = None,
     ) -> None:
@@ -47,8 +46,6 @@ class IndependentParameter:
             The default value of the independent parameter.
         units: str
             The units of the independent parameter.
-        resolution: str | None
-
         upper_limit: str | float | None
             upper limit of the independent parameter.
         lower_limit: str | float | None
@@ -58,6 +55,5 @@ class IndependentParameter:
         self.values = values
         self.default_value = default_value
         self.units = units
-        self.resolution = resolution
         self.upper_limit = upper_limit
         self.lower_limit = lower_limit

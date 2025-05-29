@@ -20,15 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
-from ansys.materials.manager._models._common._base import _BaseModel
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common.constant import Constant
-from ansys.materials.manager._models._common.piecewise_linear import PiecewiseLinear
-from ansys.materials.manager._models._common.polynomial import Polynomial
-from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
-    AnisotropicElasticity,
-    ElasticityMode,
-)
+from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
+
+
+def test_dependent_parameter_creation():
+    name = "Young's Modulus"
+    values = [200e9, 210e9, 220e9]
+    dependent_param = DependentParameter(name=name, values=values)
+
+    assert dependent_param.name == name
+    assert dependent_param.values == values
+    assert isinstance(dependent_param, DependentParameter)

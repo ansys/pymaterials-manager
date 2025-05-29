@@ -20,15 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
-from ansys.materials.manager._models._common._base import _BaseModel
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common.constant import Constant
-from ansys.materials.manager._models._common.piecewise_linear import PiecewiseLinear
-from ansys.materials.manager._models._common.polynomial import Polynomial
-from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
-    AnisotropicElasticity,
-    ElasticityMode,
-)
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+
+
+def test_independent_parameter_creation():
+    name = "Temperature"
+    values = 300.0
+    default_value = 293.15
+    units = "K"
+    upper_limit = 1000.0
+    lower_limit = 0.0
+
+    independent_param = IndependentParameter(
+        name=name,
+        values=values,
+        default_value=default_value,
+        units=units,
+        upper_limit=upper_limit,
+        lower_limit=lower_limit,
+    )
+
+    assert independent_param.name == name
+    assert independent_param.values == values
+    assert independent_param.default_value == default_value
+    assert independent_param.units == units
+    assert independent_param.upper_limit == upper_limit
+    assert independent_param.lower_limit == lower_limit
+    assert isinstance(independent_param, IndependentParameter)

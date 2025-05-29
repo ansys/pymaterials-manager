@@ -37,6 +37,7 @@ class ElasticityIsotropic(MaterialModel):
     youngs_modulus: DependentParameter
     poisson_ratio: DependentParameter
     applicable_packages: SupportedPackage.MAPDL
+    behavior: str = "Isotropic"
 
     def __init__(
         self,
