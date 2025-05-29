@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 
 from ._base import _BaseModel
 
@@ -32,6 +33,7 @@ class MaterialModel(_BaseModel):
         self,
         name: str,
         independent_parameters: list[IndependentParameter] | None = None,
+        interpolation_options: InterpolationOptions | None = None,
         definition: str | None = None,
         localized_name: str | None = None,
         source: str | None = None,
@@ -51,6 +53,7 @@ class MaterialModel(_BaseModel):
         """
         self._name = name
         self.independent_parameters = independent_parameters
+        self.interpolation_options = interpolation_options
         self.definition = definition
         self.localized_name = localized_name
         self.source = source
