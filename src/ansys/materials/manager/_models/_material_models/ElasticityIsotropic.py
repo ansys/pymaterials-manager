@@ -1,26 +1,52 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 from typing import Any
+
+from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager._models._common._exceptions import ModelValidationException
+from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common._base import _MapdlCore
-from ansys.materials.manager._models._common._packages import SupportedPackage
+
 
 class ElasticityIsotropic(MaterialModel):
+    """Represents an isotropic elasticity material model."""
+
     youngs_modulus: DependentParameter
     poisson_ratio: DependentParameter
     applicable_packages: SupportedPackage.MAPDL
 
     def __init__(
-            self, 
-            youngs_modulus: DependentParameter, 
-            poisson_ratio: DependentParameter, 
-            independent_parameter: list[IndependentParameter] | None = None, 
-            definition: str | None = None, 
-            localized_name: str | None = None, 
-            source: str | None = None, 
-            type: str | None = None
+        self,
+        youngs_modulus: DependentParameter,
+        poisson_ratio: DependentParameter,
+        independent_parameter: list[IndependentParameter] | None = None,
+        definition: str | None = None,
+        localized_name: str | None = None,
+        source: str | None = None,
+        type: str | None = None,
     ) -> None:
         """
         Initialize an ElasticityIsotropic material model.
@@ -54,10 +80,14 @@ class ElasticityIsotropic(MaterialModel):
         self.poisson_ratio = poisson_ratio
 
     def _write_mapdl(self, mapdl: "_MapdlCore", material: "Material") -> None:
-        if not self.independent_parameters and len(self.youngs_modulus.values) == 0 and len(self.poisson_ratio.values) == 0:
+        if (
+            not self.independent_parameters
+            and len(self.youngs_modulus.values) == 0
+            and len(self.poisson_ratio.values) == 0
+        ):
             mapdl.mp("EX", material.material_id, self.youngs_modulus.values[0])
             mapdl.mp("PRXY", material.material_id, self.poisson_ratio.values[0])
-        ### add variable cases 
+        ### add variable cases
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """
@@ -78,10 +108,10 @@ class ElasticityIsotropic(MaterialModel):
             self._write_mapdl(pyansys_session, material)
         else:
             raise TypeError(
-                    "This model is only supported by MAPDL. Ensure that you have the correct"
-                    "type of the PyAnsys session."
-                )
-    
+                "This model is only supported by MAPDL. Ensure that you have the correct"
+                "type of the PyAnsys session."
+            )
+
     def validate_model(self) -> tuple[bool, list[str]]:
         """
         Perform pre-flight validation of the model setup.

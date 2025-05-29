@@ -20,27 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Provides the ``Material`` class."""
-
 from typing import List
 import uuid
 
 from ansys.materials.manager._models._common.material_model import MaterialModel
 
+
 class Material:
     """
     Provides a wrapper class for managing a material.
 
-    This class associates a material ID with one or more properties and nonlinear material models.
+    This class associates a material ID with one or more material models.
     """
+
     name: str
     models: List[MaterialModel]
     _id: str
     _guid: str
 
     def __init__(
-        self, material_name: str, material_id: str | None = None, models: list[MaterialModel] | None = None, guid: str | None = None
-    ):
+        self,
+        material_name: str,
+        material_id: str | None = None,
+        models: list[MaterialModel] | None = None,
+        guid: str | None = None,
+    ) -> None:
         """
         Create an instance of a material.
 
@@ -51,12 +55,11 @@ class Material:
         material_name : str
             Name of the material.
         material_id : str | None
-            ID to associate with this material. The default is ``None``.
+            ID to associate with this material.
         models : list[MaterialModel]
-            Dictionary of nonlinear material models. Models are specified with their
-            model codes (from the TB command) and the model object.
+            list of material models.
         uuid : str | None
-            Unique identifier for the material. 
+            Unique identifier for the material.
         """
         self.name = material_name
         self._id = material_id
