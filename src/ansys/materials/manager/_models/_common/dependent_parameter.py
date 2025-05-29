@@ -21,20 +21,13 @@
 # SOFTWARE.
 
 
-class DependentParameter:
+from pydantic import BaseModel, Field
+
+
+class DependentParameter(BaseModel):
     """A class representing a dependent parameter in a material model."""
 
-    def __init__(self, name: str, values: list[float]) -> None:
-        """
-        Create an instance of the ``DependentParameter`` class.
-
-        Parameters
-        ----------
-        name: str
-            The name of the dependent parameter.
-        values: list[float]
-            The values of the dependent parameter.
-        """
-        self.name = name
-        self.values = values
-        # self.mapping
+    name: str = Field(default="", title="Name", description="The name of the dependent parameter.")
+    values: list[float] = Field(
+        default=[], title="Values", description="The values of the dependent parameter."
+    )

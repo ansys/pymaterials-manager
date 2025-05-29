@@ -20,13 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any
+
+from typing import Any, Literal
+
+from pydantic import Field
 
 from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
@@ -34,56 +36,30 @@ from ansys.materials.manager.material import Material
 class ElasticityIsotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
-    def __init__(
-        self,
-        youngs_modulus: DependentParameter,
-        poisson_ratio: DependentParameter,
-        independent_parameters: list[IndependentParameter] | None = None,
-        definition: str | None = None,
-        localized_name: str | None = None,
-        source: str | None = None,
-        type: str | None = None,
-    ) -> None:
-        """
-        Initialize an ElasticityIsotropic material model.
+    name: Literal["isotropic_elasticity"] = Field(
+        default="isotropic_elasticity", repr=False, frozen=True
+    )
+    supported_packages: SupportedPackage = Field(
+        default=[SupportedPackage.MAPDL], repr=False, frozen=True
+    )
+    young_modulus: DependentParameter = Field(
+        default=DependentParameter(name="Young's modulus", values=[]),
+        title="Young's modulus",
+        description="The Young's modulus of the material.",
+    )
+    poisson_ratio: DependentParameter = Field(
+        default=DependentParameter(name="Poisson's ratio", values=[]),
+        title="Poisson's ratio",
+        description="The Poisson's ratio of the material.",
+    )
 
-        Parameters
-        ----------
-        youngs_modulus : DependentParameter
-            The Young's modulus of the material.
-        poisson_ratio : DependentParameter
-            The Poisson's ratio of the material.
-        independent_parameters : list[IndependentParameter]
-            List of independent parameters for the model.
-        definition : str | None
-            Definition of the material model.
-        localized_name : str | None
-            Localized name for the material model.
-        source : str | None
-            Source of the material model.
-        type : str | None
-            Type of the material model.
-        """
-        super().__init__(
-            name="Elasticity Isotropic",
-            independent_parameters=independent_parameters,
-            definition=definition,
-            localized_name=localized_name,
-            source=source,
-            type=type,
-        )
-        self.youngs_modulus = youngs_modulus
-        self.poisson_ratio = poisson_ratio
-        self.applicable_packages = SupportedPackage.MAPDL
-        self.behavior = "Isotropic"
-
-    def _write_mapdl(self, mapdl: "_MapdlCore", material: "Material") -> None:
+    def _write_mapdl(self, mapdl: _MapdlCore, material: "Material") -> None:
         if (
             not self.independent_parameters
-            and len(self.youngs_modulus.values) == 0
+            and len(self.young_modulus.values) == 0
             and len(self.poisson_ratio.values) == 0
         ):
-            mapdl.mp("EX", material.material_id, self.youngs_modulus.values[0])
+            mapdl.mp("EX", material.material_id, self.young_modulus.values[0])
             mapdl.mp("PRXY", material.material_id, self.poisson_ratio.values[0])
         ### add variable cases
 
@@ -126,10 +102,10 @@ class ElasticityIsotropic(MaterialModel):
         if self.name is None or self.name == "":
             failures.append("Invalid property name")
             is_ok = False
-        if len(self.youngs_modulus.values) < 1 or self.youngs_modulus == None:
+        if len(self.young_modulus.values) < 1:
             failures.append("Young's modulus value is not defined.")
             is_ok = False
-        if len(self.poisson_ratio.values) < 1 or self.poisson_ratio == None:
+        if len(self.poisson_ratio.values) < 1:
             failures.append("Poisson's ratio value is not defined.")
             is_ok = False
         return is_ok, failures

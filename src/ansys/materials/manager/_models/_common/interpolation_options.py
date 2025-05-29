@@ -21,35 +21,22 @@
 # SOFTWARE.
 
 
-class InterpolationOptions:
+from pydantic import BaseModel, Field
+
+
+class InterpolationOptions(BaseModel):
     """Class to hold interpolation options for material models."""
 
-    def __init__(
-        self,
-        algorithm_type: str,
-        normalized: bool = True,
-        cached: bool = True,
-        quantized: bool | None = None,
-        extrapolation_type: str | None = None,
-    ) -> None:
-        """
-        Initialize interpolation options.
-
-        Parameters
-        ----------
-        algorithm_type : str
-            Type of interpolation algorithm to use.
-        normalized : bool
-            Whether the input data is normalized.
-        cached : bool
-            Whether to cache the results.
-        quantized : bool
-            Whether the data is quantized.
-        extrapolation_type : str
-            Type of extrapolation to use.
-        """
-        self.algorithm_type = algorithm_type
-        self.normalized = normalized
-        self.quantized = quantized
-        self.cached = cached
-        self.extrapolation_type = extrapolation_type
+    algorithm_type: str = Field(
+        default="", title="Algorithm Type", description="Type of interpolation algorithm to use."
+    )
+    normalized: bool = Field(
+        default=True, title="Normalized", description="Whether the input data is normalized."
+    )
+    cached: bool = Field(default=True, title="Cached", description="Whether to cache the results.")
+    quantized: bool | None = Field(
+        default=None, title="Quantized", description="Whether the data is quantized."
+    )
+    extrapolation_type: str | None = Field(
+        default=None, title="Extrapolation Type", description="Type of extrapolation to use."
+    )

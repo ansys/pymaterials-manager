@@ -21,39 +21,29 @@
 # SOFTWARE.
 
 
-class IndependentParameter:
+from pydantic import BaseModel, Field
+
+
+class IndependentParameter(BaseModel):
     """Class representing an independent parameter in a material model."""
 
-    def __init__(
-        self,
-        name: str,
-        values: float,
-        default_value: float,
-        units: str,
-        upper_limit: str | float | None = None,
-        lower_limit: str | float | None = None,
-    ) -> None:
-        """
-        Create an instance of the ``IndependentParameter`` class.
-
-        Parameters
-        ----------
-        name: str
-            The name of the independent parameter.
-        values: list[float]
-            The value of the independent parameter.
-        default_value: float
-            The default value of the independent parameter.
-        units: str
-            The units of the independent parameter.
-        upper_limit: str | float | None
-            upper limit of the independent parameter.
-        lower_limit: str | float | None
-            lower limit of the independent parameter.
-        """
-        self.name = name
-        self.values = values
-        self.default_value = default_value
-        self.units = units
-        self.upper_limit = upper_limit
-        self.lower_limit = lower_limit
+    name: str = Field(
+        default="", title="Name", description="The name of the independent parameter."
+    )
+    values: list[float] = Field(
+        default=[], title="Values", description="The values of the independent parameter."
+    )
+    default_value: float = Field(
+        default=0.0,
+        title="Default Value",
+        description="The default value of the independent parameter.",
+    )
+    units: str = Field(
+        default="", title="Units", description="The units of the independent parameter."
+    )
+    upper_limit: str | float | None = Field(
+        default=None, title="Upper Limit", description="Upper limit of the independent parameter."
+    )
+    lower_limit: str | float | None = Field(
+        default=None, title="Lower Limit", description="Lower limit of the independent parameter."
+    )

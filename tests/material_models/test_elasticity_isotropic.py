@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
 from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
@@ -31,17 +32,16 @@ def test_elasticity_isotropic():
     youngs_modulus = DependentParameter(name="Young's modulus", values=[210e9])
     poissons_ratio = DependentParameter(name="Poisson's ratio", values=[0.3])
     temperature = IndependentParameter(
-        name="Temperature", values=300.0, default_value=293.15, units="K"
+        name="Temperature", values=[300.0], default_value=293.15, units="K"
     )
 
     isotropic_elasticity = ElasticityIsotropic(
-        youngs_modulus=youngs_modulus,
+        young_modulus=youngs_modulus,
         poisson_ratio=poissons_ratio,
         independent_parameters=[temperature],
-        localized_name="Isotropic Elasticity",
     )
 
-    assert isotropic_elasticity.youngs_modulus == youngs_modulus
+    assert isotropic_elasticity.young_modulus == youngs_modulus
     assert isotropic_elasticity.poisson_ratio == poissons_ratio
     assert isotropic_elasticity.independent_parameters == [temperature]
     assert isinstance(isotropic_elasticity, ElasticityIsotropic)
@@ -52,7 +52,7 @@ def test_elasticity_isotropic_invalid_parameters():
     poissons_ratio = DependentParameter(name="Poisson's ratio", values=[])
 
     isotropic_elasticity = ElasticityIsotropic(
-        youngs_modulus=youngs_modulus, poisson_ratio=poissons_ratio
+        young_modulus=youngs_modulus, poisson_ratio=poissons_ratio
     )
 
     is_ok, failures = isotropic_elasticity.validate_model()
@@ -68,3 +68,10 @@ def test_elasticity_isotropic_invalid_parameters():
     is_ok, failures = isotropic_elasticity.validate_model()
     assert not is_ok
     assert failures[0] == "Young's modulus value is not defined."
+
+
+youngs_modulus = DependentParameter(name="Young's modulus", values=[210e9])
+poissons_ratio = DependentParameter(name="Poisson's ratio", values=[0.3])
+temperature = IndependentParameter(
+    name="Temperature", values=[300.0], default_value=293.15, units="K"
+)

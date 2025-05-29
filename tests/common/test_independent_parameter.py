@@ -25,7 +25,7 @@ from ansys.materials.manager._models._common.independent_parameter import Indepe
 
 def test_independent_parameter_creation():
     name = "Temperature"
-    values = 300.0
+    values = [300.0]
     default_value = 293.15
     units = "K"
     upper_limit = 1000.0

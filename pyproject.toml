@@ -44,6 +44,7 @@ ansys-fluent-core = ">=0.28"
 twine = ">=4.0.2"
 pytest-cov = ">=4"
 pre-commit = ">=3.2.2"
+pydantic = ">=2.7.0"
 
 [tool.black]
 line-length = 100

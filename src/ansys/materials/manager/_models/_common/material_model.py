@@ -20,46 +20,65 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import abc
+
+from pydantic import BaseModel, Field
+from pyparsing import Any
+
+from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
+from ansys.materials.manager.material import Material
 
-from ._base import _BaseModel
 
-
-class MaterialModel(_BaseModel):
+class MaterialModel(BaseModel, abc.ABC):
     """A base class for representing a material models."""
 
-    def __init__(
-        self,
-        name: str,
-        independent_parameters: list[IndependentParameter] | None = None,
-        interpolation_options: InterpolationOptions | None = None,
-        definition: str | None = None,
-        localized_name: str | None = None,
-        source: str | None = None,
-        type: str | None = None,
-    ) -> None:
+    name: str = Field(default="", title="Name", description="The name of the material model.")
+    supported_packages: list[SupportedPackage] | None = Field(
+        default=None,
+        title="Supported Packages",
+        description="The supported packages for this material model. Currently, only PyMAPDL and PyFluent are supported.",  # noqa: E501
+    )
+    independent_parameters: list[IndependentParameter] | None = Field(
+        default=None,
+        title="Independent Parameters",
+        description="List of independent parameters for the model.",
+    )
+    interpolation_options: InterpolationOptions | None = Field(
+        default=None,
+        title="Interpolation Options",
+        description="Options for interpolation of the material model data.",
+    )
+
+    @abc.abstractmethod
+    def write_model(self, material: Material, pyansys_session: Any) -> None:
         """
-        Initialize a MaterialModel instance.
+        Write the model to the given PyAnsys session.
+
+        This method should make some effort to validate the model state before writing.
 
         Parameters
         ----------
-        name : str
-            The name of the material model.
-        independent_parameters : list[IndependentParameter]
-            List of independent parameters for the model.
-        dependent_parameters : list[DependentParameter]
-            List of dependent parameters for the model.
+        material: Material
+            Material object to associate this model with.
+        pyansys_session: Any
+            Supported PyAnsys product session. Only PyMAPDL and PyFluent are
+            supported currently.
         """
-        self._name = name
-        self.independent_parameters = independent_parameters
-        self.interpolation_options = interpolation_options
-        self.definition = definition
-        self.localized_name = localized_name
-        self.source = source
-        self.type = type
+        ...
 
-    @property
-    def name(self) -> str:
-        """Name of the quantity modeled by the constant."""
-        return self._name
+    @abc.abstractmethod
+    def validate_model(self) -> tuple[bool, list[str]]:
+        """
+        Perform pre-flight validation of the model setup.
+
+        This method should not perform any calls to the MAPDL process.
+
+        Returns
+        -------
+        Tuple
+            First element is Boolean. ``True`` if validation is successful. If ``False``,
+            the second element contains a list of strings with more information.
+        """
+        ...
