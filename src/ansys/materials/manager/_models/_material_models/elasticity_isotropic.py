@@ -42,7 +42,7 @@ class ElasticityIsotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    young_modulus: DependentParameter = Field(
+    youngs_modulus: DependentParameter = Field(
         default=DependentParameter(name="Young's modulus", values=[]),
         title="Young's modulus",
         description="The Young's modulus of the material.",
