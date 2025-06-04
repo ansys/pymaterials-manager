@@ -85,6 +85,13 @@ class Material:
         """Currently assigned material models."""
         return self._models
 
+    @models.setter
+    def models(self, value: list[MaterialModel]) -> None:
+        """Set the material models."""
+        if not isinstance(value, list):
+            raise TypeError("models must be a list of MaterialModel instances.")
+        self._models = value
+
     def get_model_by_name(self, model_name: str) -> List[MaterialModel]:
         """Get the material model or models with a given model name."""
         return [model for model in self.models if model.name.lower() == model_name.lower()]

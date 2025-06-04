@@ -33,7 +33,7 @@ class IndependentParameter(BaseModel):
     values: list[float] = Field(
         default=[], title="Values", description="The values of the independent parameter."
     )
-    default_value: float = Field(
+    default_value: float | str = Field(
         default=0.0,
         title="Default Value",
         description="The default value of the independent parameter.",

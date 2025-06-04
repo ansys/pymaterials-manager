@@ -39,6 +39,7 @@ class ElasticityIsotropic(MaterialModel):
     name: Literal["isotropic_elasticity"] = Field(
         default="isotropic_elasticity", repr=False, frozen=True
     )
+    behaviour: Literal["Isotropic"] = Field(default="isotropic", repr=False, frozen=True)
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )

@@ -51,6 +51,20 @@ class MaterialModel(BaseModel, abc.ABC):
         description="Options for interpolation of the material model data.",
     )
 
+    @classmethod
+    def load(cls, value: dict | None) -> "MaterialModel" | None:
+        """
+        Load a material model from a dictionary.
+
+        Parameters
+        ----------
+        value: dict | None
+            Dictionary containing the material model data. If `None`, returns `None`.
+        """
+        if value is None:
+            return None
+        return cls(**value)
+
     @abc.abstractmethod
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """
