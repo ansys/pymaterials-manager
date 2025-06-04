@@ -33,7 +33,7 @@ class InterpolationOptions(BaseModel):
     normalized: bool = Field(
         default=True, title="Normalized", description="Whether the input data is normalized."
     )
-    cached: bool = Field(default=True, title="Cached", description="Whether to cache the results.")
+    cached: bool = Field(default=True, title="Cached", description="Whether to cache the interpolation results.")
     quantized: bool | None = Field(
         default=None, title="Quantized", description="Whether the data is quantized."
     )
