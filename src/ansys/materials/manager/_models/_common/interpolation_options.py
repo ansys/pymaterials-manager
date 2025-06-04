@@ -31,7 +31,7 @@ class InterpolationOptions(BaseModel):
         default="", title="Algorithm Type", description="Type of interpolation algorithm to use."
     )
     normalized: bool = Field(
-        default=True, title="Normalized", description="Whether the input data is normalized."
+        default=True, title="Normalized", description="True if the independent parameters are normalized before doing the interpolation."
     )
     cached: bool = Field(default=True, title="Cached", description="Whether to cache the interpolation results.")
     quantized: bool | None = Field(
