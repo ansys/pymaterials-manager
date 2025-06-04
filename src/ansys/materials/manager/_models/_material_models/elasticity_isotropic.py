@@ -47,7 +47,7 @@ class ElasticityIsotropic(MaterialModel):
         title="Young's modulus",
         description="The Young's modulus of the material.",
     )
-    poisson_ratio: DependentParameter = Field(
+    poissons_ratio: DependentParameter = Field(
         default=DependentParameter(name="Poisson's ratio", values=[]),
         title="Poisson's ratio",
         description="The Poisson's ratio of the material.",
