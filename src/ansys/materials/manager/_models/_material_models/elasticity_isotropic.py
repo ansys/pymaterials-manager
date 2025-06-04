@@ -56,11 +56,11 @@ class ElasticityIsotropic(MaterialModel):
     def _write_mapdl(self, mapdl: _MapdlCore, material: "Material") -> None:
         if (
             not self.independent_parameters
-            and len(self.young_modulus.values) == 0
-            and len(self.poisson_ratio.values) == 0
+            and len(self.youngs_modulus.values) == 1
+            and len(self.poissons_ratio.values) == 1
         ):
-            mapdl.mp("EX", material.material_id, self.young_modulus.values[0])
-            mapdl.mp("PRXY", material.material_id, self.poisson_ratio.values[0])
+            mapdl.mp("EX", material.material_id, self.youngs_modulus.values[0])
+            mapdl.mp("PRXY", material.material_id, self.poissons_ratio.values[0])
         ### add variable cases
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
@@ -102,10 +102,10 @@ class ElasticityIsotropic(MaterialModel):
         if self.name is None or self.name == "":
             failures.append("Invalid property name")
             is_ok = False
-        if len(self.young_modulus.values) < 1:
+        if len(self.youngs_modulus.values) < 1:
             failures.append("Young's modulus value is not defined.")
             is_ok = False
-        if len(self.poisson_ratio.values) < 1:
+        if len(self.poissons_ratio.values) < 1:
             failures.append("Poisson's ratio value is not defined.")
             is_ok = False
         return is_ok, failures
