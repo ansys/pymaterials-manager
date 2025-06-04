@@ -40,7 +40,7 @@ class Material:
 
     def __init__(
         self,
-        material_name: str,
+        name: str,
         material_id: str | None = None,
         models: list[MaterialModel] | None = None,
         guid: str | None = None,
@@ -52,16 +52,16 @@ class Material:
 
         Parameters
         ----------
-        material_name : str
+        name : str
             Name of the material.
         material_id : str | None
             ID to associate with this material.
-        models : list[MaterialModel]
+        models : list[MaterialModel] | None
             list of material models.
         uuid : str | None
             Unique identifier for the material.
         """
-        self.name = material_name
+        self.name = name
         self._id = material_id
         if uuid is not None:
             self._guid = guid
@@ -81,7 +81,7 @@ class Material:
         self._guid = value
 
     @property
-    def models(self) -> list[MaterialModel]:
+    def models(self) -> list[MaterialModel] | None:
         """Currently assigned material models."""
         return self._models
 

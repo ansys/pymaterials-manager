@@ -28,12 +28,10 @@ def test_interpolation_options():
         algorithm_type="Linear Multivariate",
         normalized=True,
         cached=True,
-        quantized=True,
         extrapolation_type="Projection to the Convex Hull",
     )
 
     assert options.algorithm_type == "Linear Multivariate"
     assert options.normalized is True
     assert options.cached is True
-    assert options.quantized is True
     assert options.extrapolation_type is "Projection to the Convex Hull"

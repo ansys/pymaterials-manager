@@ -38,8 +38,8 @@ class IndependentParameter(BaseModel):
         title="Default Value",
         description="The default value of the independent parameter.",
     )
-    units: str = Field(
-        default="", title="Units", description="The units of the independent parameter."
+    unit: str = Field(
+        default="", title="Unit", description="The unit of the independent parameter."
     )
     upper_limit: str | float | None = Field(
         default=None, title="Upper Limit", description="Upper limit of the independent parameter."

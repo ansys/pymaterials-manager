@@ -34,9 +34,6 @@ class InterpolationOptions(BaseModel):
         default=True, title="Normalized", description="Whether the input data is normalized."
     )
     cached: bool = Field(default=True, title="Cached", description="Whether to cache the results.")
-    quantized: bool | None = Field(
-        default=None, title="Quantized", description="Whether the data is quantized."
-    )
     extrapolation_type: str | None = Field(
         default=None, title="Extrapolation Type", description="Type of extrapolation to use."
     )
