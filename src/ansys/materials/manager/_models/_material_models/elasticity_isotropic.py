@@ -42,12 +42,12 @@ class ElasticityIsotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    young_modulus: DependentParameter = Field(
+    youngs_modulus: DependentParameter = Field(
         default=DependentParameter(name="Young's modulus", values=[]),
         title="Young's modulus",
         description="The Young's modulus of the material.",
     )
-    poisson_ratio: DependentParameter = Field(
+    poissons_ratio: DependentParameter = Field(
         default=DependentParameter(name="Poisson's ratio", values=[]),
         title="Poisson's ratio",
         description="The Poisson's ratio of the material.",

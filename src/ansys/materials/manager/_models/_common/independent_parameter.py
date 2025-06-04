@@ -42,7 +42,9 @@ class IndependentParameter(BaseModel):
         default="", title="Unit", description="The unit of the independent parameter."
     )
     upper_limit: str | float | None = Field(
-        default=None, title="Upper Limit", description="Upper limit of the independent parameter."
+        default=None,
+        title="Upper Limit",
+        description="Upper limit of the independent parameter, used for normalization.",
     )
     lower_limit: str | float | None = Field(
         default=None, title="Lower Limit", description="Lower limit of the independent parameter."

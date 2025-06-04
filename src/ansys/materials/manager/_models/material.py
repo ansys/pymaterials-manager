@@ -42,7 +42,7 @@ class Material:
         self,
         name: str,
         material_id: str | None = None,
-        models: list[MaterialModel] | None = None,
+        models: Sequence[MaterialModel] | None = None,
         guid: str | None = None,
     ) -> None:
         """
