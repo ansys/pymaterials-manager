@@ -52,7 +52,7 @@ class MaterialModel(BaseModel, abc.ABC):
     )
 
     @classmethod
-    def load(cls, value: dict | None) -> "MaterialModel" | None:
+    def load(cls, value: dict | None):
         """
         Load a material model from a dictionary.
 

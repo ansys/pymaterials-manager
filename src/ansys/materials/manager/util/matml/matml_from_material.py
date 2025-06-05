@@ -23,10 +23,15 @@
 """Provides the ``MatmlWriter`` class."""
 
 import os
+import re
 from typing import BinaryIO, Dict, Optional, Sequence, Union
 import xml.etree.ElementTree as ET
 
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
+from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
+from ansys.materials.manager.util.matml.property_to_model_field import PROPERTY_TO_MODEL_FIELD
 
 from .matml_parser import (
     BULKDATA_KEY,
@@ -36,7 +41,6 @@ from .matml_parser import (
     UNITLESS_KEY,
     WBTRANSFER_KEY,
 )
-from .matml_property_map import MATML_PROPERTY_MAP
 
 _PATH_TYPE = Union[str, os.PathLike]
 
@@ -65,7 +69,10 @@ class MatmlWriter:
         self._metadata_property_sets = {}
         self._metadata_parameters = {}
 
-    def _add_parameters(self, property_element: ET.Element, material: Material, parameters: Dict):
+    def _add_dependent_parameters(
+        self, property_element: ET.Element, material: MaterialModel, parameters: Dict
+    ):
+        model_dump = material.model_dump()
         # add the parameters of a property set to the tree
         for mat_key, matml_key in parameters.items():
             if matml_key in self._metadata_parameters.keys():
@@ -79,31 +86,99 @@ class MatmlWriter:
                 property_element, "ParameterValue", {"format": "float", "parameter": para_key}
             )
             data_element = ET.SubElement(param_element, "Data")
-            data_element.text = str(material.get_model_by_name(mat_key)[0].value)
+            values = str(model_dump[mat_key]["values"]).strip("[]")
+            data_element.text = values
             qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
-            qualifier_element.text = "Dependent"
+            qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
 
-    def _add_property_set(
-        self,
-        bulkdata_element: ET.Element,
-        material: Material,
-        property_set_name: str,
-        parameter_map: Dict,
-        behavior: str,
+    def _add_interpolation_options(
+        self, property_element, interpolation_options: InterpolationOptions
     ):
-        """Add the property set to the XML tree."""
-        # check if at least one parameter is specified (case-insensitive)
-        # and build a map from material to Matml properties
-        available_mat_properties = [model.name.lower() for model in material.models]
-        property_set_parameters = {item: item for item in parameter_map["properties"]}
-        for key, mapped_properties in parameter_map["mappings"].items():
-            property_set_parameters.update({item: key for item in mapped_properties})
+        if "Options Variable" in self._metadata_parameters.keys():
+            parameter_id = self._metadata_parameters["Options Variable"]
+        else:
+            index = len(self._metadata_parameters) + 1
+            parameter_id = f"pa{index}"
+            self._metadata_parameters["Options Variable"] = parameter_id
+        param_element = ET.SubElement(
+            property_element, "ParameterValue", {"format": "float", "parameter": parameter_id}
+        )
+        data_element = ET.SubElement(param_element, "Data")
+        data_element.text = "Interpolation Options"
+        if interpolation_options.algorithm_type:
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "AlgorithmType"})
+            qualifier_element.text = interpolation_options.algorithm_type
+        if interpolation_options.cached:
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Cached"})
+            qualifier_element.text = str(interpolation_options.cached)
+        if interpolation_options.normalized:
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Normalized"})
+            qualifier_element.text = str(interpolation_options.normalized)
+        if interpolation_options.extrapolation_type:
+            qualifier_element = ET.SubElement(
+                param_element, "Qualifier", {"name": "ExtrapolationType"}
+            )
+            qualifier_element.text = str(interpolation_options.extrapolation_type)
 
-        # build final map with property name in MaterialManager to Matml
+    def _add_independent_parameters(
+        self, property_element: ET.Element, independent_parameters: list[IndependentParameter]
+    ):
+        for independent_parameter in independent_parameters:
+            if independent_parameter.name in self._metadata_parameters.keys():
+                parameter_id = self._metadata_parameters[independent_parameter.name]
+            else:
+                index = len(self._metadata_parameters) + 1
+                parameter_id = f"pa{index}"
+                self._metadata_parameters[independent_parameter.name] = parameter_id
+
+            param_element = ET.SubElement(
+                property_element, "ParameterValue", {"format": "float", "parameter": parameter_id}
+            )
+            data_element = ET.SubElement(param_element, "Data")
+            values = str(independent_parameter.values).strip("[]")
+            data_element.text = values
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
+            qualifier_element.text = ",".join(["Independent"] * len(values.split(",")))
+            qualifier_element = ET.SubElement(
+                param_element, "Qualifier", {"name": "Field Variable"}
+            )
+            qualifier_element.text = independent_parameter.name
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Default Data"})
+            qualifier_element.text = (
+                str(independent_parameter.default_value)
+                if independent_parameter.default_value is not None
+                else "-nan(ind)"
+            )
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Field Units"})
+            qualifier_element.text = (
+                independent_parameter.units if independent_parameter.units is not None else ""
+            )
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Upper Limit"})
+            qualifier_element.text = (
+                independent_parameter.upper_limit
+                if independent_parameter.upper_limit is not None
+                else "-nan(ind)"
+            )
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Lower Limit"})
+            qualifier_element.text = (
+                independent_parameter.lower_limit
+                if independent_parameter.lower_limit is not None
+                else "-nan(ind)"
+            )
+
+    def _add_material_model(
+        self,
+        bulkdata_element,
+        material_model: MaterialModel,
+        property_set_name: str,
+        behavior: str | None,
+        definition: str | None,
+    ):
+        model_attributes = list(material_model.model_fields.keys())
         parameters = {
-            param: key
-            for param, key in property_set_parameters.items()
-            if param.lower() in available_mat_properties
+            model_attribute: PROPERTY_TO_MODEL_FIELD[model_attribute]
+            for model_attribute in model_attributes
+            if model_attribute in PROPERTY_TO_MODEL_FIELD.keys()
         }
 
         if len(parameters) > 0:
@@ -125,13 +200,20 @@ class MatmlWriter:
                     property_data_element, "Qualifier", {"name": "Behavior"}
                 )
                 behavior_element.text = behavior
-
-            if property_set_name == "Coefficient of Thermal Expansion":
-                qualifier_element = ET.SubElement(
+            if definition:
+                definition_element = ET.SubElement(
                     property_data_element, "Qualifier", {"name": "Definition"}
                 )
-                qualifier_element.text = "Secant"
-            self._add_parameters(property_data_element, material, parameters)
+                definition_element.text = definition
+            if material_model.interpolation_options:
+                self._add_interpolation_options(
+                    property_data_element, material_model.interpolation_options
+                )
+            self._add_dependent_parameters(property_data_element, material_model, parameters)
+            if len(material_model.independent_parameters) > 0:
+                self._add_independent_parameters(
+                    property_data_element, material_model.independent_parameters
+                )
 
     def _add_materials(self, materials_element: ET.Element):
         """Add the material data to the XML tree."""
@@ -141,20 +223,34 @@ class MatmlWriter:
             name_element = ET.SubElement(bulkdata_element, "Name")
             name_element.text = material.name
 
-            for property_set_name, parameters in MATML_PROPERTY_MAP.items():
-                # property sets are exported as orthotropic if it can have an isotropic or
-                # orthotropic representation,
-                if len(property_set_name.split("::")) in [2, 3]:
-                    behavior = property_set_name.split("::")[1]
+            for material_model in material.models:
+                model_name = material_model.__class__.__name__
+                split_name = re.findall(r"[A-Z][a-z]*", model_name)
+                if len(split_name) > 0:
+                    property_set_name = split_name[0]
                 else:
-                    behavior = ""
-                if behavior != "Isotropic":
-                    self._add_property_set(
+                    property_set_name = None
+                if len(split_name) > 1:
+                    behavior = split_name[1]
+                else:
+                    behavior = None
+                if len(split_name) > 2:
+                    definition = split_name[2]
+                else:
+                    definition = None
+
+                if property_set_name:
+
+                    self._add_material_model(
                         bulkdata_element,
-                        material,
-                        property_set_name.split("::")[0],
-                        parameters,
+                        material_model,
+                        property_set_name,
                         behavior,
+                        definition,
+                    )
+                else:
+                    print(
+                        f"Warning: Material model {material_model} does not match expected format."
                     )
 
     def _add_metadata(self, metadata_element: ET.Element):
@@ -180,7 +276,7 @@ class MatmlWriter:
             name_element = ET.SubElement(mat_element, "Name")
             name_element.text = mat.name
             transfer_element = ET.SubElement(mat_element, "DataTransferID")
-            transfer_element.text = mat.uuid
+            transfer_element.text = mat.guid
 
     def _to_etree(self) -> ET.ElementTree:
         root = ET.Element(ROOT_ELEMENT)
