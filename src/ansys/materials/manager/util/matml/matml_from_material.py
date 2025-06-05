@@ -70,9 +70,8 @@ class MatmlWriter:
         self._metadata_parameters = {}
 
     def _add_dependent_parameters(
-        self, property_element: ET.Element, material: MaterialModel, parameters: Dict
+        self, property_element: ET.Element, models: Dict, parameters: Dict
     ):
-        model_dump = material.model_dump()
         # add the parameters of a property set to the tree
         for mat_key, matml_key in parameters.items():
             if matml_key in self._metadata_parameters.keys():
@@ -86,7 +85,7 @@ class MatmlWriter:
                 property_element, "ParameterValue", {"format": "float", "parameter": para_key}
             )
             data_element = ET.SubElement(param_element, "Data")
-            values = str(model_dump[mat_key]["values"]).strip("[]")
+            values = str(models[mat_key]["values"]).strip("[]")
             data_element.text = values
             qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
             qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
@@ -175,13 +174,13 @@ class MatmlWriter:
         definition: str | None,
     ):
         model_attributes = list(material_model.model_fields.keys())
-        parameters = {
+        dependent_parameters = {
             model_attribute: PROPERTY_TO_MODEL_FIELD[model_attribute]
             for model_attribute in model_attributes
             if model_attribute in PROPERTY_TO_MODEL_FIELD.keys()
         }
 
-        if len(parameters) > 0:
+        if len(dependent_parameters) > 0:
             # get property id from metadata or add it if it does not exist yet
             if property_set_name in self._metadata_property_sets.keys():
                 property_id = self._metadata_property_sets[property_set_name]
@@ -209,7 +208,9 @@ class MatmlWriter:
                 self._add_interpolation_options(
                     property_data_element, material_model.interpolation_options
                 )
-            self._add_dependent_parameters(property_data_element, material_model, parameters)
+            self._add_dependent_parameters(
+                property_data_element, material_model.model_dump(), dependent_parameters
+            )
             if len(material_model.independent_parameters) > 0:
                 self._add_independent_parameters(
                     property_data_element, material_model.independent_parameters
