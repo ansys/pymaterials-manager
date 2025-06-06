@@ -23,10 +23,12 @@
 from typing import Literal
 
 from pydantic import Field
+from pyparsing import Any
 
 from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
 from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager.material import Material
 
 
 class ElasticityOrthotropic(MaterialModel):
@@ -35,41 +37,41 @@ class ElasticityOrthotropic(MaterialModel):
     name: Literal["orthotropic_elasticity"] = Field(
         default="orthotropic_elasticity", repr=False, frozen=True
     )
-    behaviour: Literal["orthotropic"] = Field(default="orthotropic", repr=False, frozen=True)
+    behavior: Literal["orthotropic"] = Field(default="orthotropic", repr=False, frozen=True)
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    young_modulus_x: DependentParameter = Field(
+    youngs_modulus_x: DependentParameter = Field(
         default=DependentParameter(name="Young's modulus x", values=[]),
         title="Young's modulus x",
         description="The Young's modulus of the material in the x direction.",
     )
 
-    young_modulus_y: DependentParameter = Field(
+    youngs_modulus_y: DependentParameter = Field(
         default=DependentParameter(name="Young's modulus y", values=[]),
         title="Young's modulus y",
         description="The Young's modulus of the material in the y direction.",
     )
 
-    young_modulus_z: DependentParameter = Field(
+    youngs_modulus_z: DependentParameter = Field(
         default=DependentParameter(name="Young's modulus z", values=[]),
         title="Young's modulus z",
         description="The Young's modulus of the material in the z direction.",
     )
 
-    poisson_ratio_yz: DependentParameter = Field(
+    poissons_ratio_yz: DependentParameter = Field(
         default=DependentParameter(name="Poisson's ratio yz", values=[]),
         title="Poisson's ratio yz",
         description="The Poisson's ratio yz of the material.",
     )
 
-    poisson_ratio_xz: DependentParameter = Field(
+    poissons_ratio_xz: DependentParameter = Field(
         default=DependentParameter(name="Poisson's ratio xz", values=[]),
         title="Poisson's ratio xz",
         description="The Poisson's ratio xz of the material.",
     )
 
-    poisson_ratio_xy: DependentParameter = Field(
+    poissons_ratio_xy: DependentParameter = Field(
         default=DependentParameter(name="Poisson's ratio xy", values=[]),
         title="Poisson's ratio xy",
         description="The Poisson's ratio xy of the material.",
@@ -92,3 +94,11 @@ class ElasticityOrthotropic(MaterialModel):
         title="Shear modulus xy",
         description="The shear modulus xy of the material.",
     )
+
+    def write_model(self, material: Material, pyansys_session: Any) -> None:
+        """Write this model to the specified session."""
+        pass
+
+    def validate_model(self) -> tuple[bool, list[str]]:
+        """Validate the orthotropic elasticity model."""
+        pass

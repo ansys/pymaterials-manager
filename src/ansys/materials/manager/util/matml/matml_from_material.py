@@ -77,7 +77,7 @@ class MatmlWriter:
             if matml_key in self._metadata_parameters.keys():
                 para_key = self._metadata_parameters[matml_key]
             else:
-                index = len(self._metadata_parameters) + 1
+                index = len(self._metadata_parameters)
                 para_key = f"pa{index}"
                 self._metadata_parameters[matml_key] = para_key
 
@@ -171,21 +171,33 @@ class MatmlWriter:
         material_model: MaterialModel,
         property_set_name: str,
         behavior: str | None,
-        definition: str | None,
     ):
         model_attributes = list(material_model.model_fields.keys())
+        standard_attributes = list(MaterialModel.model_fields.keys())
         dependent_parameters = {
             model_attribute: PROPERTY_TO_MODEL_FIELD[model_attribute]
             for model_attribute in model_attributes
             if model_attribute in PROPERTY_TO_MODEL_FIELD.keys()
         }
+        model_qualifiers = [
+            model_attribute
+            for model_attribute in model_attributes
+            if not model_attribute in dependent_parameters.keys()
+            and not model_attribute in standard_attributes
+        ]
+        # for model_qualifier in model_qualifiers:
+
+        if "definition" in model_attributes:
+            definition = material_model.definition
+        else:
+            definition = None
 
         if len(dependent_parameters) > 0:
             # get property id from metadata or add it if it does not exist yet
             if property_set_name in self._metadata_property_sets.keys():
                 property_id = self._metadata_property_sets[property_set_name]
             else:
-                index = len(self._metadata_property_sets) + 1
+                index = len(self._metadata_property_sets)
                 property_id = f"pr{index}"
                 self._metadata_property_sets[property_set_name] = property_id
 
@@ -227,18 +239,17 @@ class MatmlWriter:
             for material_model in material.models:
                 model_name = material_model.__class__.__name__
                 split_name = re.findall(r"[A-Z][a-z]*", model_name)
-                if len(split_name) > 0:
-                    property_set_name = split_name[0]
+                property_set_name = None
+                behavior = None
+                definition = None
+                if split_name[0] == "Elasticity":
+                    if len(split_name) > 0:
+                        property_set_name = split_name[0]
+                    if len(split_name) > 1:
+                        behavior = split_name[1]
+
                 else:
-                    property_set_name = None
-                if len(split_name) > 1:
-                    behavior = split_name[1]
-                else:
-                    behavior = None
-                if len(split_name) > 2:
-                    definition = split_name[2]
-                else:
-                    definition = None
+                    property_set_name = " ".join(split_name)
 
                 if property_set_name:
 
@@ -247,7 +258,6 @@ class MatmlWriter:
                         material_model,
                         property_set_name,
                         behavior,
-                        definition,
                     )
                 else:
                     print(

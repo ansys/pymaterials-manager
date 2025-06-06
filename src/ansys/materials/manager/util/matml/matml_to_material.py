@@ -22,7 +22,6 @@
 
 """Provides a function to convert MatML entries into Material objects."""
 
-import difflib
 from pydoc import locate
 from typing import Dict, Sequence
 
@@ -30,6 +29,7 @@ from ansys.materials.manager._models._common.dependent_parameter import Dependen
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.matml.property_to_model_field import PROPERTY_TO_MODEL_FIELD
 
 
 def convert_matml_materials(
@@ -57,23 +57,20 @@ def convert_matml_materials(
         models = []
         # loop over the defined property sets
         for propset_name, property_set in material_data.items():
-            cls_name = "ansys.materials.manager._models." + propset_name
+            cls_name = "ansys.materials.manager._models." + propset_name.replace(" ", "")
             property_map = []
-            if "Behavior" in property_set.qualifiers.keys():
-                propset_name += "::" + property_set.qualifiers["Behavior"]
-                cls_name += property_set.qualifiers["Behavior"]
-
-            if "Definition" in property_set.qualifiers.keys() and propset_name.startswith(
-                "Coefficient of Thermal Expansion"
-            ):
-                cls_name += property_set.qualifiers["Definition"]
-                propset_name += "::" + property_set.qualifiers["Definition"]
-
+            arguments = {}
+            for qualifier in property_set.qualifiers.keys():
+                if qualifier == "Behavior":
+                    cls_name += property_set.qualifiers[qualifier]
+                    propset_name += "::" + property_set.qualifiers[qualifier]
+                else:
+                    arguments[qualifier.replace(" ", "_").lower()] = property_set.qualifiers[
+                        qualifier
+                    ]
             cls = locate(cls_name)
             if cls:
                 property_map += list(cls.model_fields.keys())
-                available_keys = property_set.parameters.keys()
-                arguments = {}
                 independent_parameters = []
                 for name in property_map:
                     if name == "independent_parameters":
@@ -87,22 +84,21 @@ def convert_matml_materials(
                                         if isinstance(param_value.data, Sequence)
                                         else [param_value.data]
                                     ),
-                                    default_value=param_value.qualifiers.get("Default Data", None),
-                                    units=param_value.qualifiers.get("Field Units", None),
+                                    default_value=param_value.qualifiers.get("Default Data", ""),
+                                    units=param_value.qualifiers.get("Field Units", ""),
                                     upper_limit=param_value.qualifiers.get("Upper Limit", None),
                                     lower_limit=param_value.qualifiers.get("Lower Limit", None),
                                 )
                                 independent_parameters.append(independent_param)
-                    cleaned_query = name.replace("_", " ")
-                    match = difflib.get_close_matches(
-                        cleaned_query, available_keys, n=1, cutoff=0.6
-                    )
-                    if match:
-                        param = property_set.parameters[match[0]]
+
+                    if name in PROPERTY_TO_MODEL_FIELD.keys():
+                        param = property_set.parameters[PROPERTY_TO_MODEL_FIELD[name]]
                         data = param.data
                         if not isinstance(data, Sequence):
                             data = [data]
-                        arguments[name] = DependentParameter(name=match[0], values=data)
+                        arguments[name] = DependentParameter(
+                            name=PROPERTY_TO_MODEL_FIELD[name], values=data
+                        )
                 arguments["independent_parameters"] = independent_parameters
                 if "Options Variable" in property_set.parameters.keys():
                     variable_options = property_set.parameters["Options Variable"].qualifiers

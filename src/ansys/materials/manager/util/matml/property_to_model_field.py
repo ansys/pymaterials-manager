@@ -21,6 +21,22 @@
 # SOFTWARE.
 
 PROPERTY_TO_MODEL_FIELD = {
-    "young_modulus": "Young's modulus",
-    "poisson_ratio": "Poisson's ratio",
+    "youngs_modulus": "Young's modulus",
+    "poissons_ratio": "Poisson's ratio",
+    "youngs_modulus_x": "Young's Modulus X direction",
+    "youngs_modulus_y": "Young's Modulus Y direction",
+    "youngs_modulus_z": "Young's Modulus Z direction",
+    "poissons_ratio_xy": "Poisson's Ratio XY",
+    "poissons_ratio_xz": "Poisson's Ratio XZ",
+    "poissons_ratio_yz": "Poisson's Ratio YZ",
+    "shear_modulus_xy": "Shear Modulus XY",
+    "shear_modulus_xz": "Shear Modulus XZ",
+    "shear_modulus_yz": "Shear Modulus YZ",
+    "yield_stress_ratio_x": "Yield stress ratio in X direction",
+    "yield_stress_ratio_y": "Yield stress ratio in Y direction",
+    "yield_stress_ratio_z": "Yield stress ratio in Z direction",
+    "yield_stress_ratio_xy": "Yield stress ratio in XY direction",
+    "yield_stress_ratio_xz": "Yield stress ratio in XZ direction",
+    "yield_stress_ratio_yz": "Yield stress ratio in YZ direction",
+    "stress": "Stress",
 }

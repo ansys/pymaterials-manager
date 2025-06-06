@@ -36,13 +36,13 @@ def test_elasticity_isotropic():
     )
 
     isotropic_elasticity = ElasticityIsotropic(
-        young_modulus=youngs_modulus,
-        poisson_ratio=poissons_ratio,
+        youngs_modulus=youngs_modulus,
+        poissons_ratio=poissons_ratio,
         independent_parameters=[temperature],
     )
 
-    assert isotropic_elasticity.young_modulus == youngs_modulus
-    assert isotropic_elasticity.poisson_ratio == poissons_ratio
+    assert isotropic_elasticity.youngs_modulus == youngs_modulus
+    assert isotropic_elasticity.poissons_ratio == poissons_ratio
     assert isotropic_elasticity.independent_parameters == [temperature]
     assert isotropic_elasticity.supported_packages == [SupportedPackage.MAPDL]
     assert isinstance(isotropic_elasticity, ElasticityIsotropic)
@@ -53,7 +53,7 @@ def test_elasticity_isotropic_invalid_parameters():
     poissons_ratio = DependentParameter(name="Poisson's ratio", values=[])
 
     isotropic_elasticity = ElasticityIsotropic(
-        young_modulus=youngs_modulus, poisson_ratio=poissons_ratio
+        youngs_modulus=youngs_modulus, poissons_ratio=poissons_ratio
     )
 
     is_ok, failures = isotropic_elasticity.validate_model()
@@ -63,7 +63,7 @@ def test_elasticity_isotropic_invalid_parameters():
     youngs_modulus = DependentParameter(name="Young's modulus", values=[])
     poissons_ratio = DependentParameter(name="Poisson's ratio", values=[0.3])
     isotropic_elasticity = ElasticityIsotropic(
-        youngs_modulus=youngs_modulus, poisson_ratio=poissons_ratio
+        youngs_modulus=youngs_modulus, poissons_ratio=poissons_ratio
     )
 
     is_ok, failures = isotropic_elasticity.validate_model()

@@ -32,3 +32,12 @@ from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
+from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
+    ElasticityOrthotropic,
+)
+from ansys.materials.manager._models._material_models.hill_yield_criterion import (
+    HillYieldCriterion,
+)
+from ansys.materials.manager._models._material_models.isotropic_hardening import (
+    IsotropicHardening,
+)

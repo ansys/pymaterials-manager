@@ -39,16 +39,16 @@ class ElasticityIsotropic(MaterialModel):
     name: Literal["isotropic_elasticity"] = Field(
         default="isotropic_elasticity", repr=False, frozen=True
     )
-    behaviour: Literal["Isotropic"] = Field(default="isotropic", repr=False, frozen=True)
+    behavior: Literal["Isotropic"] = Field(default="isotropic", repr=False, frozen=True)
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    young_modulus: DependentParameter = Field(
+    youngs_modulus: DependentParameter = Field(
         default=DependentParameter(name="Young's modulus", values=[]),
         title="Young's modulus",
         description="The Young's modulus of the material.",
     )
-    poisson_ratio: DependentParameter = Field(
+    poissons_ratio: DependentParameter = Field(
         default=DependentParameter(name="Poisson's ratio", values=[]),
         title="Poisson's ratio",
         description="The Poisson's ratio of the material.",
@@ -57,11 +57,11 @@ class ElasticityIsotropic(MaterialModel):
     def _write_mapdl(self, mapdl: _MapdlCore, material: "Material") -> None:
         if (
             not self.independent_parameters
-            and len(self.young_modulus.values) == 0
-            and len(self.poisson_ratio.values) == 0
+            and len(self.youngs_modulus.values) == 0
+            and len(self.poissons_ratio.values) == 0
         ):
-            mapdl.mp("EX", material.material_id, self.young_modulus.values[0])
-            mapdl.mp("PRXY", material.material_id, self.poisson_ratio.values[0])
+            mapdl.mp("EX", material.material_id, self.youngs_modulus.values[0])
+            mapdl.mp("PRXY", material.material_id, self.poissons_ratio.values[0])
         ### add variable cases
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
@@ -103,10 +103,10 @@ class ElasticityIsotropic(MaterialModel):
         if self.name is None or self.name == "":
             failures.append("Invalid property name")
             is_ok = False
-        if len(self.young_modulus.values) < 1:
+        if len(self.youngs_modulus.values) < 1:
             failures.append("Young's modulus value is not defined.")
             is_ok = False
-        if len(self.poisson_ratio.values) < 1:
+        if len(self.poissons_ratio.values) < 1:
             failures.append("Poisson's ratio value is not defined.")
             is_ok = False
         return is_ok, failures
