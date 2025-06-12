@@ -41,12 +41,6 @@ class IsotropicHardening(MaterialModel):
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
 
-    definition: str = Field(
-        default="",
-        title="Definition",
-        description="The definition of the isotropic hardening model. This can be a string representation of the model or a reference to a specific definition type.",  # noqa: E501
-    )
-
     stress: DependentParameter = Field(
         default=DependentParameter(name="Stress", values=[]),
         title="Stress",

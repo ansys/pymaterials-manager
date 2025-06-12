@@ -28,6 +28,7 @@ from pyparsing import Any
 from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
 
@@ -49,6 +50,11 @@ class MaterialModel(BaseModel, abc.ABC):
         default=None,
         title="Interpolation Options",
         description="Options for interpolation of the material model data.",
+    )
+    model_qualifiers: list[ModelQualifier] = Field(
+        value=[],
+        title="Model Qualifier",
+        description="List of qualifiers for the model. This is used to determine the type of model and its applicability.",  # noqa: E501
     )
 
     @classmethod

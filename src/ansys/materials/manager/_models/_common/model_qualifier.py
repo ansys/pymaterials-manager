@@ -20,30 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 from pydantic import BaseModel, Field
 
 
-class IndependentParameter(BaseModel):
-    """Class representing an independent parameter in a material model."""
+class ModelQualifier(BaseModel):
+    """Class representing a model qualifier in a material model."""
 
-    name: str = Field(
-        default="", title="Name", description="The name of the independent parameter."
-    )
-    values: list[float] = Field(
-        default=[], title="Values", description="The values of the independent parameter."
-    )
-    default_value: float | str | None = Field(
-        default=None,
-        title="Default Value",
-        description="The default value of the independent parameter.",
-    )
-    units: str | None = Field(
-        default="", title="Units", description="The units of the independent parameter."
-    )
-    upper_limit: str | float | None = Field(
-        default=None, title="Upper Limit", description="Upper limit of the independent parameter."
-    )
-    lower_limit: str | float | None = Field(
-        default=None, title="Lower Limit", description="Lower limit of the independent parameter."
-    )
+    name: str = Field(default="", title="Name", description="The name of the model qualifier.")
+    value: str = Field(default="", title="Value", description="The value of the model qualifier.")

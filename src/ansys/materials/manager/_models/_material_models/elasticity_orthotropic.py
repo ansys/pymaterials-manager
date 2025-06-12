@@ -28,6 +28,7 @@ from pyparsing import Any
 from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
 from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
 
@@ -37,7 +38,7 @@ class ElasticityOrthotropic(MaterialModel):
     name: Literal["orthotropic_elasticity"] = Field(
         default="orthotropic_elasticity", repr=False, frozen=True
     )
-    behavior: Literal["orthotropic"] = Field(default="orthotropic", repr=False, frozen=True)
+
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
@@ -93,6 +94,11 @@ class ElasticityOrthotropic(MaterialModel):
         default=DependentParameter(name="Poisson's ratio xy", values=[]),
         title="Shear modulus xy",
         description="The shear modulus xy of the material.",
+    )
+    model_qualifiers: list[ModelQualifier] = Field(
+        default=[ModelQualifier(name="Behavior", value="Orthotropic")],
+        title="Model Qualifiers",
+        description="Model qualifiers for the orthotropic elasticity model.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
