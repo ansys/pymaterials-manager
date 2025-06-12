@@ -25,7 +25,6 @@
 from pydoc import locate
 from typing import Dict, Sequence
 
-from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
@@ -64,8 +63,8 @@ def convert_matml_materials(
             qualifiers = []
             for qualifier in property_set.qualifiers.keys():
                 if qualifier == "Behavior":
-                    cls_name += property_set.qualifiers[qualifier]
-                    propset_name += "::" + property_set.qualifiers[qualifier]
+                    cls_name += property_set.qualifiers[qualifier].replace(" ", "")
+                    propset_name += "::" + property_set.qualifiers[qualifier].replace(" ", "")
                 qualifiers.append(
                     ModelQualifier(name=qualifier, value=property_set.qualifiers[qualifier])
                 )
@@ -93,13 +92,13 @@ def convert_matml_materials(
                                 independent_parameters.append(independent_param)
 
                     if name in PROPERTY_TO_MODEL_FIELD.keys():
-                        param = property_set.parameters[PROPERTY_TO_MODEL_FIELD[name]]
-                        data = param.data
-                        if not isinstance(data, Sequence):
-                            data = [data]
-                        arguments[name] = DependentParameter(
-                            name=PROPERTY_TO_MODEL_FIELD[name], values=data
-                        )
+                        param_name = PROPERTY_TO_MODEL_FIELD[name]
+                        if param_name in property_set.parameters.keys():
+                            param = property_set.parameters[param_name]
+                            data = param.data
+                            if not isinstance(data, Sequence):
+                                data = [data]
+                            arguments[name] = data
 
                     if name == "model_qualifiers":
                         arguments["model_qualifiers"] = qualifiers

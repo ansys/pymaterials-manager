@@ -26,5 +26,9 @@ from pydantic import BaseModel, Field
 class ModelQualifier(BaseModel):
     """Class representing a model qualifier in a material model."""
 
-    name: str = Field(default="", title="Name", description="The name of the model qualifier.")
-    value: str = Field(default="", title="Value", description="The value of the model qualifier.")
+    name: str = Field(
+        default="", title="Name", description="The name of the model qualifier.", frozen=True
+    )
+    value: str = Field(
+        default="", title="Value", description="The value of the model qualifier.", frozen=True
+    )

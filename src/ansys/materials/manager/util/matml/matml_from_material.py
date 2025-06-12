@@ -23,7 +23,6 @@
 """Provides the ``MatmlWriter`` class."""
 
 import os
-import re
 from typing import BinaryIO, Dict, Optional, Sequence, Union
 import xml.etree.ElementTree as ET
 
@@ -74,21 +73,25 @@ class MatmlWriter:
     ):
         # add the parameters of a property set to the tree
         for mat_key, matml_key in parameters.items():
-            if matml_key in self._metadata_parameters.keys():
-                para_key = self._metadata_parameters[matml_key]
-            else:
-                index = len(self._metadata_parameters)
-                para_key = f"pa{index}"
-                self._metadata_parameters[matml_key] = para_key
+            if models[mat_key]:
+                if matml_key in self._metadata_parameters.keys():
+                    para_key = self._metadata_parameters[matml_key]
+                else:
+                    index = len(self._metadata_parameters)
+                    para_key = f"pa{index}"
+                    self._metadata_parameters[matml_key] = para_key
 
-            param_element = ET.SubElement(
-                property_element, "ParameterValue", {"format": "float", "parameter": para_key}
-            )
-            data_element = ET.SubElement(param_element, "Data")
-            values = str(models[mat_key]["values"]).strip("[]")
-            data_element.text = values
-            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
-            qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
+                param_element = ET.SubElement(
+                    property_element, "ParameterValue", {"format": "float", "parameter": para_key}
+                )
+
+                data_element = ET.SubElement(param_element, "Data")
+                values = str(models[mat_key]).strip("[]")
+                data_element.text = values
+                qualifier_element = ET.SubElement(
+                    param_element, "Qualifier", {"name": "Variable Type"}
+                )
+                qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
 
     def _add_interpolation_options(
         self, property_element, interpolation_options: InterpolationOptions
@@ -218,24 +221,12 @@ class MatmlWriter:
             name_element = ET.SubElement(bulkdata_element, "Name")
             name_element.text = material.name
             for material_model in material.models:
-                model_name = material_model.__class__.__name__
-                split_name = re.findall(r"[A-Z][a-z]*", model_name)
-                property_set_name = None
-                if split_name[0] == "Elasticity":
-                    if len(split_name) > 0:
-                        property_set_name = split_name[0]
-                else:
-                    property_set_name = " ".join(split_name)
-                if property_set_name:
-                    self._add_material_model(
-                        bulkdata_element,
-                        material_model,
-                        property_set_name,
-                    )
-                else:
-                    print(
-                        f"Warning: Material model {material_model} does not match expected format."
-                    )
+                model_name = material_model.name.replace("_", " ").title()
+                self._add_material_model(
+                    bulkdata_element,
+                    material_model,
+                    model_name,
+                )
 
     def _add_metadata(self, metadata_element: ET.Element):
         # add the metadata to the XML tree

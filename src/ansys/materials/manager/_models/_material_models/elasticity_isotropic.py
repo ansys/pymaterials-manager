@@ -28,7 +28,6 @@ from pydantic import Field
 from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
 from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
@@ -37,19 +36,17 @@ from ansys.materials.manager.material import Material
 class ElasticityIsotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
-    name: Literal["isotropic_elasticity"] = Field(
-        default="isotropic_elasticity", repr=False, frozen=True
-    )
+    name: Literal["elasticity"] = Field(default="elasticity", repr=False, frozen=True)
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    youngs_modulus: DependentParameter = Field(
-        default=DependentParameter(name="Young's modulus", values=[], units={}),
+    youngs_modulus: list[float] = Field(
+        default=[],
         title="Young's modulus",
         description="The Young's modulus of the material.",
     )
-    poissons_ratio: DependentParameter = Field(
-        default=DependentParameter(name="Poisson's ratio", values=[], units={}),
+    poissons_ratio: list[float] = Field(
+        default=[],
         title="Poisson's ratio",
         description="The Poisson's ratio of the material.",
     )

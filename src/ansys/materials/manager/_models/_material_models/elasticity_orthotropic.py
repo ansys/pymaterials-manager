@@ -26,7 +26,6 @@ from pydantic import Field
 from pyparsing import Any
 
 from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
-from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
@@ -35,63 +34,61 @@ from ansys.materials.manager.material import Material
 class ElasticityOrthotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
-    name: Literal["orthotropic_elasticity"] = Field(
-        default="orthotropic_elasticity", repr=False, frozen=True
-    )
+    name: Literal["elasticity"] = Field(default="elasticity", repr=False, frozen=True)
 
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    youngs_modulus_x: DependentParameter = Field(
-        default=DependentParameter(name="Young's modulus x", values=[]),
+    youngs_modulus_x: list[float] = Field(
+        default=[],
         title="Young's modulus x",
         description="The Young's modulus of the material in the x direction.",
     )
 
-    youngs_modulus_y: DependentParameter = Field(
-        default=DependentParameter(name="Young's modulus y", values=[]),
+    youngs_modulus_y: list[float] = Field(
+        default=[],
         title="Young's modulus y",
         description="The Young's modulus of the material in the y direction.",
     )
 
-    youngs_modulus_z: DependentParameter = Field(
-        default=DependentParameter(name="Young's modulus z", values=[]),
+    youngs_modulus_z: list[float] = Field(
+        default=[],
         title="Young's modulus z",
         description="The Young's modulus of the material in the z direction.",
     )
 
-    poissons_ratio_yz: DependentParameter = Field(
-        default=DependentParameter(name="Poisson's ratio yz", values=[]),
+    poissons_ratio_yz: list[float] = Field(
+        default=[],
         title="Poisson's ratio yz",
         description="The Poisson's ratio yz of the material.",
     )
 
-    poissons_ratio_xz: DependentParameter = Field(
-        default=DependentParameter(name="Poisson's ratio xz", values=[]),
+    poissons_ratio_xz: list[float] = Field(
+        default=[],
         title="Poisson's ratio xz",
         description="The Poisson's ratio xz of the material.",
     )
 
-    poissons_ratio_xy: DependentParameter = Field(
-        default=DependentParameter(name="Poisson's ratio xy", values=[]),
+    poissons_ratio_xy: list[float] = Field(
+        default=[],
         title="Poisson's ratio xy",
         description="The Poisson's ratio xy of the material.",
     )
 
-    shear_modulus_yz: DependentParameter = Field(
-        default=DependentParameter(name="Poisson's ratio yz", values=[]),
+    shear_modulus_yz: list[float] = Field(
+        default=[],
         title="Shear modulus yz",
         description="The shear modulus yz of the material.",
     )
 
-    shear_modulus_xz: DependentParameter = Field(
-        default=DependentParameter(name="Poisson's ratio xz", values=[]),
+    shear_modulus_xz: list[float] = Field(
+        default=[],
         title="Shear modulus xz",
         description="The shear modulus xz of the material.",
     )
 
-    shear_modulus_xy: DependentParameter = Field(
-        default=DependentParameter(name="Poisson's ratio xy", values=[]),
+    shear_modulus_xy: list[float] = Field(
+        default=[],
         title="Shear modulus xy",
         description="The shear modulus xy of the material.",
     )

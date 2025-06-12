@@ -39,4 +39,8 @@ PROPERTY_TO_MODEL_FIELD = {
     "yield_stress_ratio_xz": "Yield stress ratio in XZ direction",
     "yield_stress_ratio_yz": "Yield stress ratio in YZ direction",
     "stress": "Stress",
+    "initial_yield_stress": "Initial Yield Stress",
+    "linear_coefficient": "Linear Coefficient",
+    "exponential_coefficient": "Exponential Coefficient",
+    "exponential_satuation_parameter": "Exponential Saturation Parameter",
 }

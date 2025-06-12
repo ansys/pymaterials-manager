@@ -24,13 +24,12 @@ from ansys.materials.manager._models import (
     ElasticityIsotropic,
 )
 from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 
 
 def test_elasticity_isotropic():
-    youngs_modulus = DependentParameter(name="Young's modulus", values=[210e9])
-    poissons_ratio = DependentParameter(name="Poisson's ratio", values=[0.3])
+    youngs_modulus = [210e9]
+    poissons_ratio = [0.3]
     temperature = IndependentParameter(
         name="Temperature", values=[300.0], default_value=293.15, units="K"
     )
@@ -49,8 +48,8 @@ def test_elasticity_isotropic():
 
 
 def test_elasticity_isotropic_invalid_parameters():
-    youngs_modulus = DependentParameter(name="Young's modulus", values=[210e9])
-    poissons_ratio = DependentParameter(name="Poisson's ratio", values=[])
+    youngs_modulus = [210e9]
+    poissons_ratio = []
 
     isotropic_elasticity = ElasticityIsotropic(
         youngs_modulus=youngs_modulus, poissons_ratio=poissons_ratio
@@ -60,8 +59,8 @@ def test_elasticity_isotropic_invalid_parameters():
     assert not is_ok
     assert failures[0] == "Poisson's ratio value is not defined."
 
-    youngs_modulus = DependentParameter(name="Young's modulus", values=[])
-    poissons_ratio = DependentParameter(name="Poisson's ratio", values=[0.3])
+    youngs_modulus = []
+    poissons_ratio = [0.3]
     isotropic_elasticity = ElasticityIsotropic(
         youngs_modulus=youngs_modulus, poissons_ratio=poissons_ratio
     )

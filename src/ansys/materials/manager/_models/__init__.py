@@ -41,3 +41,6 @@ from ansys.materials.manager._models._material_models.hill_yield_criterion impor
 from ansys.materials.manager._models._material_models.isotropic_hardening import (
     IsotropicHardening,
 )
+from ansys.materials.manager._models._material_models.isotropic_hardening_voce_law import (
+    IsotropicHardeningVoceLaw,
+)

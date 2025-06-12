@@ -26,10 +26,11 @@ from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
 
 
-class IsotropicHardening(MaterialModel):
+class IsotropicHardeningVoceLaw(MaterialModel):
     """Represents an isotropic hardening material model."""
 
     name: Literal["isotropic_hardening"] = Field(
@@ -40,10 +41,36 @@ class IsotropicHardening(MaterialModel):
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
 
-    stress: list[float] = Field(
+    initial_yield_stress: list[float] = Field(
         default=[],
-        title="Stress",
-        description="Stress values for the material.",
+        title="Initial Yield Stress",
+        description="Initial yield stress values for the material.",
+    )
+
+    linear_coefficient: list[float] = Field(
+        default=[],
+        title="Linear Coefficient",
+        description="Linear coefficient values for the material.",
+    )
+
+    exponential_coefficient: list[float] = Field(
+        default=[],
+        title="Exponential Coefficient",
+        description="Exponential coefficient values for the material.",
+    )
+
+    exponential_saturation_parameter: list[float] = Field(
+        default=[],
+        title="Exponential Saturation Parameter",
+        description="Exponential saturation parameter values for the material.",
+    )
+    model_qualifiers: list[ModelQualifier] = Field(
+        default=[
+            ModelQualifier(name="Behavior", value="Voce Law"),
+            ModelQualifier(name="Definition", value="Nonlinear"),
+        ],
+        title="Model Qualifiers",
+        description="Model qualifiers for the isotropic elasticity model.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
