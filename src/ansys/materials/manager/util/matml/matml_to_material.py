@@ -95,11 +95,10 @@ def convert_matml_materials(
                     if name in PROPERTY_TO_MODEL_FIELD.keys():
                         param = property_set.parameters[PROPERTY_TO_MODEL_FIELD[name]]
                         data = param.data
-                        units = param.units
                         if not isinstance(data, Sequence):
                             data = [data]
                         arguments[name] = DependentParameter(
-                            name=PROPERTY_TO_MODEL_FIELD[name], values=data, units=units
+                            name=PROPERTY_TO_MODEL_FIELD[name], values=data
                         )
 
                     if name == "model_qualifiers":
