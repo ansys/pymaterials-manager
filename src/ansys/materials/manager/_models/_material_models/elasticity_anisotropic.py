@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 from typing import Any, Literal
 
 from pydantic import Field
@@ -27,56 +28,44 @@ from pydantic import Field
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.material import Material
 
 
-class IsotropicHardeningVoceLaw(MaterialModel):
-    """Represents an isotropic hardening material model."""
+class ElasticityAnisotropic(MaterialModel):
+    """Represents an isotropic elasticity material model."""
 
-    name: Literal["Isotropic Hardening"] = Field(
-        default="Isotropic Hardening", repr=False, frozen=True
-    )
-
+    name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-
-    initial_yield_stress: list[float] = Field(
-        default=[],
-        title="Initial Yield Stress",
-        description="Initial yield stress values for the material.",
+    column_1: list[float] = Field(
+        default=[], title="D[*,1]", description="The first column of the elasticity matrix."
     )
-
-    linear_coefficient: list[float] = Field(
-        default=[],
-        title="Linear Coefficient",
-        description="Linear coefficient values for the material.",
+    column_2: list[float] = Field(
+        default=[], title="D[*,2]", description="The second column of the elasticity matrix."
     )
-
-    exponential_coefficient: list[float] = Field(
-        default=[],
-        title="Exponential Coefficient",
-        description="Exponential coefficient values for the material.",
+    column_3: list[float] = Field(
+        default=[], title="D[*,3]", description="The third column of the elasticity matrix."
     )
-
-    exponential_saturation_parameter: list[float] = Field(
-        default=[],
-        title="Exponential Saturation Parameter",
-        description="Exponential saturation parameter values for the material.",
+    column_4: list[float] = Field(
+        default=[], title="D[*,4]", description="The fourth column of the elasticity matrix."
+    )
+    column_5: list[float] = Field(
+        default=[], title="D[*,5]", description="The fifth column of the elasticity matrix."
+    )
+    column_6: list[float] = Field(
+        default=[], title="D[*,6]", description="The sixth column of the elasticity matrix."
     )
     model_qualifiers: list[ModelQualifier] = Field(
-        default=[
-            ModelQualifier(name="Behavior", value="Voce Law"),
-            ModelQualifier(name="Definition", value="Nonlinear"),
-        ],
+        default=[ModelQualifier(name="Behavior", value="Anisotropic")],
         title="Model Qualifiers",
-        description="Model qualifiers for the isotropic elasticity model.",
+        description="Model qualifiers for the anisotropic elasticity model.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
-        """Write the isotropic hardening model to the specified session."""
+        """Write the anisotropic elasticity model to the pyansys session."""
         pass
 
     def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the isotropic hardening model."""
+        """Validate the anisotropic elasticity model."""
         pass

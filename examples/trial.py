@@ -20,7 +20,9 @@ def _add_library(materials_database: dict[str, Material], material_dic: dict[str
 
 
 material_database = {}
-parsed_data = MatmlReader.parse_from_file(str(Path.cwd() / "examples" / "data" / "Template1.xml"))
+parsed_data = MatmlReader.parse_from_file(
+    str(Path.cwd() / "examples" / "data" / "MatML_unittest_density.xml")
+)
 materials = convert_matml_materials(
     {k: v["material"] for k, v in parsed_data.items()},
     {k: v["transfer_id"] for k, v in parsed_data.items()},

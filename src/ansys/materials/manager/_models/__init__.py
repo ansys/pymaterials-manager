@@ -29,6 +29,16 @@ from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
     AnisotropicElasticity,
     ElasticityMode,
 )
+from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (
+    CoefficientofThermalExpansionIsotropic,
+)
+from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (
+    CoefficientofThermalExpansionOrthotropic,
+)
+from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+    ElasticityAnisotropic,
+)
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
@@ -43,4 +53,16 @@ from ansys.materials.manager._models._material_models.isotropic_hardening import
 )
 from ansys.materials.manager._models._material_models.isotropic_hardening_voce_law import (
     IsotropicHardeningVoceLaw,
+)
+from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
+    ThermalConductivityIsotropic,
+)
+from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
+    ThermalConductivityOrthotropic,
+)
+from ansys.materials.manager._models._material_models.zero_thermal_strain_reference_temperature_isotropic import (
+    ZeroThermalStrainReferenceTemperatureIsotropic,
+)
+from ansys.materials.manager._models._material_models.zero_thermal_strain_reference_temperature_orthotropic import (
+    ZeroThermalStrainReferenceTemperatureOrthotropic,
 )

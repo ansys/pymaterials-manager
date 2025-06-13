@@ -36,7 +36,7 @@ from ansys.materials.manager.material import Material
 class ElasticityIsotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
-    name: Literal["elasticity"] = Field(default="elasticity", repr=False, frozen=True)
+    name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
@@ -59,11 +59,11 @@ class ElasticityIsotropic(MaterialModel):
     def _write_mapdl(self, mapdl: _MapdlCore, material: "Material") -> None:
         if (
             not self.independent_parameters
-            and len(self.youngs_modulus.values) == 0
-            and len(self.poissons_ratio.values) == 0
+            and len(self.youngs_modulus) == 1
+            and len(self.poissons_ratio) == 1
         ):
-            mapdl.mp("EX", material.material_id, self.youngs_modulus.values[0])
-            mapdl.mp("PRXY", material.material_id, self.poissons_ratio.values[0])
+            mapdl.mp("EX", material.material_id, self.youngs_modulus[0])
+            mapdl.mp("PRXY", material.material_id, self.poissons_ratio[0])
         ### add variable cases
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
@@ -103,12 +103,17 @@ class ElasticityIsotropic(MaterialModel):
         is_ok = True
 
         if self.name is None or self.name == "":
-            failures.append("Invalid property name")
+            failures.append("Invalid materisl model name")
             is_ok = False
-        if len(self.youngs_modulus.values) < 1:
+        if len(self.youngs_modulus) < 1:
             failures.append("Young's modulus value is not defined.")
             is_ok = False
-        if len(self.poissons_ratio.values) < 1:
+        if len(self.poissons_ratio) < 1:
             failures.append("Poisson's ratio value is not defined.")
+            is_ok = False
+        if len(self.youngs_modulus) != len(self.poissons_ratio):
+            failures.append(
+                "The number of Young's modulus values must match the number of Poisson's ratio values."  # noqa: E501
+            )
             is_ok = False
         return is_ok, failures

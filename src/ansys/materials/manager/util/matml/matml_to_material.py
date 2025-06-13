@@ -57,7 +57,9 @@ def convert_matml_materials(
         models = []
         # loop over the defined property sets
         for propset_name, property_set in material_data.items():
-            cls_name = "ansys.materials.manager._models." + propset_name.replace(" ", "")
+            cls_name = "ansys.materials.manager._models." + propset_name.replace(" ", "").replace(
+                "-", ""
+            )
             property_map = []
             arguments = {}
             qualifiers = []

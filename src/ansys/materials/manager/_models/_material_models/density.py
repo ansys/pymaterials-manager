@@ -26,52 +26,26 @@ from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager.material import Material
 
 
-class HillYieldCriterion(MaterialModel):
-    """Represents a Hill yield criterion material model."""
+class Density(MaterialModel):
+    """Represents an isotropic density material model."""
 
-    name: Literal["Hill Yield Criterion"] = Field(
-        default="Hill Yield Criterion", repr=False, frozen=True
-    )
+    name: Literal["Density"] = Field(default="Density", repr=False, frozen=True)
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    separated_hill_potentials_for_plasticity_and_creep: str = Field(
-        default="No",
-        title="Separated Hill Potentials for Plasticity and Creep",
-        description="Indicates whether the Hill potentials for plasticity and creep are separated. If set to 'yes', the model uses separate Hill potentials for plasticity and creep; if 'no', it uses a single Hill potential for both.",  # noqa: E501
-    )
-    yield_stress_ratio_x: list[float] = Field(
+    density: list[float] = Field(
         default=[],
-        title="Yield stress ratio in X direction",
-        description="The yield stress ratio in the x direction.",
+        title="Density",
+        description="The density of the material.",
     )
-    yield_stress_ratio_y: list[float] = Field(
+    model_qualifiers: list[ModelQualifier] = Field(
         default=[],
-        title="Yield stress ratio in Y direction",
-        description="The yield stress ratio in the y direction.",
-    )
-    yield_stress_ratio_z: list[float] = Field(
-        default=[],
-        title="Yield stress ratio in Z direction",
-        description="The yield stress ratio in the z direction.",
-    )
-    yield_stress_ratio_xy: list[float] = Field(
-        default=[],
-        title="Yield stress ratio in XY direction",
-        description="The yield stress ratio in the xy direction.",
-    )
-    yield_stress_ratio_xz: list[float] = Field(
-        default=[],
-        title="Yield stress ratio in XZ direction",
-        description="The yield stress ratio in the xz direction.",
-    )
-    yield_stress_ratio_yz: list[float] = Field(
-        default=[],
-        title="Yield stress ratio in YZ direction",
-        description="The yield stress ratio in the yz direction.",
+        title="Model Qualifiers",
+        description="Model qualifiers for the isotropic density model.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

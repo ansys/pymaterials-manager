@@ -20,82 +20,45 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import Field
-from pyparsing import Any
 
-from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
+from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
 
-class ElasticityOrthotropic(MaterialModel):
-    """Represents an isotropic elasticity material model."""
+class CoefficientofThermalExpansionOrthotropic(MaterialModel):
+    """Represents an orthotropic coefficient of thermal expansion material model."""
 
-    name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
-
+    name: Literal["Coefficient of Thermal Expansion"] = Field(
+        default="Coefficient of Thermal Expansion", repr=False, frozen=True
+    )
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    youngs_modulus_x: list[float] = Field(
+    coefficient_of_thermal_expansion_x: list[float] = Field(
         default=[],
-        title="Young's modulus x",
-        description="The Young's modulus of the material in the x direction.",
+        title="Coefficient of Thermal Expansion X direction",
+        description="The coefficient of thermal expansion in X direction  for the material.",
+    )
+    coefficient_of_thermal_expansion_y: list[float] = Field(
+        default=[],
+        title="Coefficient of Thermal Expansion Y direction",
+        description="The coefficient of thermal expansion in Y direction for the material.",
+    )
+    coefficient_of_thermal_expansion_z: list[float] = Field(
+        default=[],
+        title="Coefficient of Thermal Expansion Z direction",
+        description="The coefficient of thermal expansion in Z direction for the material.",
     )
 
-    youngs_modulus_y: list[float] = Field(
-        default=[],
-        title="Young's modulus y",
-        description="The Young's modulus of the material in the y direction.",
-    )
-
-    youngs_modulus_z: list[float] = Field(
-        default=[],
-        title="Young's modulus z",
-        description="The Young's modulus of the material in the z direction.",
-    )
-
-    poissons_ratio_yz: list[float] = Field(
-        default=[],
-        title="Poisson's ratio yz",
-        description="The Poisson's ratio yz of the material.",
-    )
-
-    poissons_ratio_xz: list[float] = Field(
-        default=[],
-        title="Poisson's ratio xz",
-        description="The Poisson's ratio xz of the material.",
-    )
-
-    poissons_ratio_xy: list[float] = Field(
-        default=[],
-        title="Poisson's ratio xy",
-        description="The Poisson's ratio xy of the material.",
-    )
-
-    shear_modulus_yz: list[float] = Field(
-        default=[],
-        title="Shear modulus yz",
-        description="The shear modulus yz of the material.",
-    )
-
-    shear_modulus_xz: list[float] = Field(
-        default=[],
-        title="Shear modulus xz",
-        description="The shear modulus xz of the material.",
-    )
-
-    shear_modulus_xy: list[float] = Field(
-        default=[],
-        title="Shear modulus xy",
-        description="The shear modulus xy of the material.",
-    )
     model_qualifiers: list[ModelQualifier] = Field(
         default=[ModelQualifier(name="Behavior", value="Orthotropic")],
         title="Model Qualifiers",
-        description="Model qualifiers for the orthotropic elasticity model.",
+        description="Model qualifiers for the orthotropic coefficient of thermal expansion model.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
@@ -103,5 +66,10 @@ class ElasticityOrthotropic(MaterialModel):
         pass
 
     def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the orthotropic elasticity model."""
+        """Validate the model."""
+        # as we have distinction between the secant and instantaneous coefficient
+        # of thermal expansion
+        # we need to validate that the model qualifiers are set correctly
+        # i.e. [ModelQualifier(name="Definition", value="Secant")] or
+        # [ModelQualifier(name="Definition", value="Instantaneous")] is present
         pass

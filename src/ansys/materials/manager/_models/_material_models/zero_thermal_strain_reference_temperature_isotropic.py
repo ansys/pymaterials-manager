@@ -27,56 +27,39 @@ from pydantic import Field
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.material import Material
 
 
-class IsotropicHardeningVoceLaw(MaterialModel):
-    """Represents an isotropic hardening material model."""
+class ZeroThermalStrainReferenceTemperatureIsotropic(MaterialModel):
+    """Represents a zero thermal strain reference temperature material model for isotropic materials."""  # noqa: E501
 
-    name: Literal["Isotropic Hardening"] = Field(
-        default="Isotropic Hardening", repr=False, frozen=True
+    name: Literal["Zero-Thermal-Strain Reference Temperature"] = Field(
+        default="Zero-Thermal-Strain Reference Temperature", repr=False, frozen=True
     )
-
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-
-    initial_yield_stress: list[float] = Field(
+    zero_thermal_strain_reference_temperature: list[float] = Field(
         default=[],
-        title="Initial Yield Stress",
-        description="Initial yield stress values for the material.",
+        title="Zero Thermal Strain Reference Temperature",
+        description="The reference temperature for zero thermal strain.",
     )
-
-    linear_coefficient: list[float] = Field(
-        default=[],
-        title="Linear Coefficient",
-        description="Linear coefficient values for the material.",
-    )
-
-    exponential_coefficient: list[float] = Field(
-        default=[],
-        title="Exponential Coefficient",
-        description="Exponential coefficient values for the material.",
-    )
-
-    exponential_saturation_parameter: list[float] = Field(
-        default=[],
-        title="Exponential Saturation Parameter",
-        description="Exponential saturation parameter values for the material.",
+    material_property: Literal["Coefficient of Thermal Expansion"] = Field(
+        default="Coefficient of Thermal Expansion",
+        title="Material Property",
+        description="The material property for zero thermal strain reference temperature.",
+        frozen=True,
     )
     model_qualifiers: list[ModelQualifier] = Field(
-        default=[
-            ModelQualifier(name="Behavior", value="Voce Law"),
-            ModelQualifier(name="Definition", value="Nonlinear"),
-        ],
+        default=[ModelQualifier(name="Definition", value="Isotropic")],
         title="Model Qualifiers",
-        description="Model qualifiers for the isotropic elasticity model.",
+        description="Model qualifiers for the zero thermal strain reference temperature model.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
-        """Write the isotropic hardening model to the specified session."""
+        """Write this model to the specified session."""
         pass
 
     def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the isotropic hardening model."""
+        """Validate the model."""
         pass

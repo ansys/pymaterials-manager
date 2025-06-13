@@ -25,6 +25,7 @@
 from dataclasses import dataclass
 import os
 from typing import Any, Dict, List, Optional, Union
+import uuid
 import warnings
 import xml.etree.ElementTree as ET
 
@@ -126,7 +127,10 @@ class MatmlReader:
             if item.find(UNITLESS_KEY) is not None:
                 unit = item.find(UNITLESS_KEY).tag
             elif item.find("Units") is not None:
-                unit = item.find("Units").attrib["name"]
+                if "name" in item.find("Units").attrib:
+                    unit = item.find("Units").attrib["name"]
+                else:
+                    unit = ""
             else:
                 raise RuntimeError(f"unhandled case {id}")
 
@@ -202,9 +206,12 @@ class MatmlReader:
 
                 if not mat_name in materials.keys():
                     raise RuntimeError(f"Transfer ID could not be set for material {mat_name}")
-
+                if not transfer_id_element:
+                    transfer_ids[mat_name] = str(uuid.uuid4())
                 transfer_ids[mat_name] = transfer_id_element.text
-
+        else:
+            for material in materials.keys():
+                transfer_ids[material] = str(uuid.uuid4())
         return transfer_ids
 
     @staticmethod

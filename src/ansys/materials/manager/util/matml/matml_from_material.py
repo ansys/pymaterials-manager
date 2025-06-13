@@ -221,7 +221,7 @@ class MatmlWriter:
             name_element = ET.SubElement(bulkdata_element, "Name")
             name_element.text = material.name
             for material_model in material.models:
-                model_name = material_model.name.replace("_", " ").title()
+                model_name = material_model.name
                 self._add_material_model(
                     bulkdata_element,
                     material_model,

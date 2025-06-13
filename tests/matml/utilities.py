@@ -20,36 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
-
-from pydantic import Field
-
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.matml.matml_parser import MatmlReader
+from ansys.materials.manager.util.matml.matml_to_material import convert_matml_materials
 
 
-class IsotropicHardening(MaterialModel):
-    """Represents an isotropic hardening material model."""
-
-    name: Literal["Isotropic Hardening"] = Field(
-        default="Isotropic Hardening", repr=False, frozen=True
+def read_matml_file(file_path):
+    parsed_data = MatmlReader.parse_from_file(str(file_path))
+    materials = convert_matml_materials(
+        {k: v["material"] for k, v in parsed_data.items()},
+        {k: v["transfer_id"] for k, v in parsed_data.items()},
+        0,
     )
-
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
-
-    stress: list[float] = Field(
-        default=[],
-        title="Stress",
-        description="Stress values for the material.",
-    )
-
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
-        """Write the isotropic hardening model to the specified session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the isotropic hardening model."""
-        pass
+    return {material.name: material for material in materials}
