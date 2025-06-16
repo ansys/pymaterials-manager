@@ -45,6 +45,12 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
+from ansys.materials.manager._models._material_models.fabric_fiber_angle import (
+    FabricFiberAngle,
+)
+from ansys.materials.manager._models._material_models.fiber_angle import (
+    FiberAngle,
+)
 from ansys.materials.manager._models._material_models.hill_yield_criterion import (
     HillYieldCriterion,
 )
@@ -54,11 +60,38 @@ from ansys.materials.manager._models._material_models.isotropic_hardening import
 from ansys.materials.manager._models._material_models.isotropic_hardening_voce_law import (
     IsotropicHardeningVoceLaw,
 )
+from ansys.materials.manager._models._material_models.kinematic_hardening import (
+    KinematicHardening,
+)
+from ansys.materials.manager._models._material_models.ply_type import (
+    PlyType,
+)
+from ansys.materials.manager._models._material_models.puck_constants import (
+    PuckConstants,
+)
+from ansys.materials.manager._models._material_models.puck_constants_additional import (
+    AdditionalPuckConstants,
+)
+from ansys.materials.manager._models._material_models.strain_hardening import (
+    StrainHardening,
+)
+from ansys.materials.manager._models._material_models.strain_limits_isotropic import (
+    StrainLimitsIsotropic,
+)
+from ansys.materials.manager._models._material_models.strain_limits_orthotropic import (
+    StrainLimitsOrthotropic,
+)
+from ansys.materials.manager._models._material_models.stress_limits_orthotropic import (
+    StressLimitsOrthotropic,
+)
 from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
 from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
     ThermalConductivityOrthotropic,
+)
+from ansys.materials.manager._models._material_models.usermat import (
+    ModelCoefficients,
 )
 from ansys.materials.manager._models._material_models.zero_thermal_strain_reference_temperature_isotropic import (
     ZeroThermalStrainReferenceTemperatureIsotropic,

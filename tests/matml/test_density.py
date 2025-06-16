@@ -22,7 +22,7 @@
 
 import os
 
-from tests.matml.utilities import read_matml_file
+from utilities import read_matml_file
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_density.xml")

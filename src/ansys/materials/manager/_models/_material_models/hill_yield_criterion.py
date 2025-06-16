@@ -26,6 +26,7 @@ from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
 
 
@@ -38,40 +39,102 @@ class HillYieldCriterion(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    separated_hill_potentials_for_plasticity_and_creep: str = Field(
-        default="No",
-        title="Separated Hill Potentials for Plasticity and Creep",
-        description="Indicates whether the Hill potentials for plasticity and creep are separated. If set to 'yes', the model uses separate Hill potentials for plasticity and creep; if 'no', it uses a single Hill potential for both.",  # noqa: E501
+    model_qualifiers: list[ModelQualifier] = Field(
+        default=[
+            ModelQualifier(name="Separated Hill Potentials for Plasticity and Creep", value="No")
+        ],
+        title="Model Qualifiers",
+        description="Model qualifiers for the Hill yield criterion model.",
     )
-    yield_stress_ratio_x: list[float] = Field(
-        default=[],
+    yield_stress_ratio_x: list[float] | None = Field(
+        default=None,
         title="Yield stress ratio in X direction",
         description="The yield stress ratio in the x direction.",
     )
-    yield_stress_ratio_y: list[float] = Field(
-        default=[],
+    yield_stress_ratio_y: list[float] | None = Field(
+        default=None,
         title="Yield stress ratio in Y direction",
         description="The yield stress ratio in the y direction.",
     )
-    yield_stress_ratio_z: list[float] = Field(
-        default=[],
+    yield_stress_ratio_z: list[float] | None = Field(
+        default=None,
         title="Yield stress ratio in Z direction",
         description="The yield stress ratio in the z direction.",
     )
-    yield_stress_ratio_xy: list[float] = Field(
-        default=[],
+    yield_stress_ratio_xy: list[float] | None = Field(
+        default=None,
         title="Yield stress ratio in XY direction",
         description="The yield stress ratio in the xy direction.",
     )
-    yield_stress_ratio_xz: list[float] = Field(
-        default=[],
+    yield_stress_ratio_xz: list[float] | None = Field(
+        default=None,
         title="Yield stress ratio in XZ direction",
         description="The yield stress ratio in the xz direction.",
     )
-    yield_stress_ratio_yz: list[float] = Field(
-        default=[],
+    yield_stress_ratio_yz: list[float] | None = Field(
+        default=None,
         title="Yield stress ratio in YZ direction",
         description="The yield stress ratio in the yz direction.",
+    )
+    yield_stress_ratio_x_for_plasticity: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in X direction for plasticity",
+        description="The yield stress ratio in the x direction for plasticity.",
+    )
+    yield_stress_ratio_y_for_plasticity: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in Y direction for plasticity",
+        description="The yield stress ratio in the y direction for plasticity.",
+    )
+    yield_stress_ratio_z_for_plasticity: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in Z direction for plasticity",
+        description="The yield stress ratio in the z direction for plasticity.",
+    )
+    yield_stress_ratio_xy_for_plasticity: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in XY direction for plasticity",
+        description="The yield stress ratio in the xy direction for plasticity.",
+    )
+    yield_stress_ratio_xz_for_plasticity: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in XZ direction for plasticity",
+        description="The yield stress ratio in the xz direction for plasticity.",
+    )
+    yield_stress_ratio_yz_for_plasticity: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in YZ direction for plasticity",
+        description="The yield stress ratio in the yz direction for plasticity.",
+    )
+    yield_stress_ratio_x_for_creep: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in X direction for creep",
+        description="The yield stress ratio in the x direction for creep.",
+    )
+    yield_stress_ratio_y_for_creep: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in Y direction for creep",
+        description="The yield stress ratio in the y direction for creep.",
+    )
+    yield_stress_ratio_z_for_creep: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in Z direction for creep",
+        description="The yield stress ratio in the z direction for creep.",
+    )
+    yield_stress_ratio_xy_for_creep: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in XY direction for creep",
+        description="The yield stress ratio in the xy direction for creep.",
+    )
+    yield_stress_ratio_xz_for_creep: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in XZ direction for creep",
+        description="The yield stress ratio in the xz direction for creep.",
+    )
+    yield_stress_ratio_yz_for_creep: list[float] | None = Field(
+        default=None,
+        title="Yield stress ratio in YZ direction for creep",
+        description="The yield stress ratio in the yz direction for creep.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

@@ -28,6 +28,7 @@ from typing import Dict, Sequence
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.property_to_model_field import PROPERTY_TO_MODEL_FIELD
 
@@ -92,8 +93,10 @@ def convert_matml_materials(
                                     lower_limit=param_value.qualifiers.get("Lower Limit", None),
                                 )
                                 independent_parameters.append(independent_param)
-
-                    if name in PROPERTY_TO_MODEL_FIELD.keys():
+                    if (
+                        name in PROPERTY_TO_MODEL_FIELD.keys()
+                        and cls.__class__.__name__ != "ModelCoefficients"
+                    ):
                         param_name = PROPERTY_TO_MODEL_FIELD[name]
                         if param_name in property_set.parameters.keys():
                             param = property_set.parameters[param_name]
@@ -116,6 +119,23 @@ def convert_matml_materials(
                         extrapolation_type=variable_options.get("ExtrapolationType", "None"),
                     )
                     arguments["interpolation_options"] = interpolation_options
+                if cls_name.split(".")[-1] == "ModelCoefficients":
+                    user_parameters = []
+                    for key_param, value_param in property_set.parameters.items():
+                        if value_param.qualifiers.get("UserMat Constant", None):
+                            if not isinstance(value_param.data, Sequence):
+                                data = [value_param.data]
+                            else:
+                                data = value_param.data
+                            user_param = UserParameter(
+                                name=key_param,
+                                values=data,
+                                display=value_param.qualifiers.get("Display", True),
+                                user_mat_constant=value_param.qualifiers["UserMat Constant"],
+                            )
+                            user_parameters.append(user_param)
+                    arguments["user_parameters"] = user_parameters
+
                 obj = cls.load(arguments)
                 models.append(obj)
             else:
