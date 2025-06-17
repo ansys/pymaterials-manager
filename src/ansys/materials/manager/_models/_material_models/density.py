@@ -26,7 +26,6 @@ from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
 
@@ -41,11 +40,6 @@ class Density(MaterialModel):
         default=[],
         title="Density",
         description="The density of the material.",
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[],
-        title="Model Qualifiers",
-        description="Model qualifiers for the isotropic density model.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

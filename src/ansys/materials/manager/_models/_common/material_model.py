@@ -57,7 +57,7 @@ class MaterialModel(BaseModel, abc.ABC):
         description="The material property for the material model.",
     )
     model_qualifiers: list[ModelQualifier] = Field(
-        value=[],
+        default=[],
         title="Model Qualifier",
         description="List of qualifiers for the model. This is used to determine the type of model and its applicability.",  # noqa: E501
     )

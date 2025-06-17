@@ -36,7 +36,7 @@ class FabricFiberAngle(MaterialModel):
         default="Fabric Fiber Angle", repr=False, frozen=True
     )
     supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
+        default=[SupportedPackage.MATML], repr=False, frozen=True
     )
 
     fabric_fiber_angle: list[float] = Field(
