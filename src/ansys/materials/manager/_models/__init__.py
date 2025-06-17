@@ -81,6 +81,9 @@ from ansys.materials.manager._models._material_models.puck_constants_additional 
 from ansys.materials.manager._models._material_models.specific_heat import (
     SpecificHeat,
 )
+from ansys.materials.manager._models._material_models.speed_of_sound import (
+    SpeedofSound,
+)
 from ansys.materials.manager._models._material_models.strain_hardening import (
     StrainHardening,
 )

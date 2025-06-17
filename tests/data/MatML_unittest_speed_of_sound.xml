@@ -6,7 +6,7 @@
     <MatML_Doc>
       <Material>
         <BulkDetails>
-          <Name>material_with_constant_speed_of_sound</Name>
+          <Name>material with speed of sound</Name>
           <PropertyData property="pr0">
             <Data format="string">-</Data>
             <ParameterValue parameter="pa0" format="float">
@@ -47,7 +47,7 @@
       </Material>
       <Material>
         <BulkDetails>
-          <Name>material_with_variable_speed_of_sound</Name>
+          <Name>material with variable speed of sound</Name>
           <PropertyData property="pr0">
             <Data format="string">-</Data>
             <ParameterValue parameter="pa0" format="float">
