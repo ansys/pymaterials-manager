@@ -30,8 +30,8 @@ XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_puck_for_wo
 
 material_dic = read_matml_file(XML_FILE_PATH)
 assert "material with puck for woven" in material_dic.keys()
-assert len(material_dic["material with puck for woven"].models) == 3
-fiber_angle = material_dic["material with puck for woven"].models[0]
+assert len(material_dic["material with puck for woven"].models) == 4
+fiber_angle = material_dic["material with puck for woven"].models[1]
 assert fiber_angle.name == "Fiber Angle"
 assert fiber_angle.independent_parameters[0].name == "Fiber Angle"
 assert fiber_angle.independent_parameters[0].values == [90.0]
@@ -43,7 +43,7 @@ assert (
     == "minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional"
 )
 
-puck_constants = material_dic["material with puck for woven"].models[1]
+puck_constants = material_dic["material with puck for woven"].models[2]
 assert puck_constants.name == "Puck Constants"
 assert puck_constants.independent_parameters == []
 assert puck_constants.model_qualifiers[0].name == "Data Set"
@@ -61,7 +61,7 @@ assert puck_constants.tensile_inclination_xz == [0.0]
 assert puck_constants.tensile_inclination_yz == [0.0]
 assert puck_constants.material_property == "Woven Specification for Puck"
 
-puck_additional_constants = material_dic["material with puck for woven"].models[2]
+puck_additional_constants = material_dic["material with puck for woven"].models[3]
 assert puck_additional_constants.name == "Additional Puck Constants"
 assert puck_additional_constants.independent_parameters == []
 assert puck_constants.model_qualifiers[0].name == "Data Set"

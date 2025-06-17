@@ -31,8 +31,8 @@ XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_strain_limi
 def test_read_constant_strain_limit_isotropic():
     material_dic = read_matml_file(XML_FILE_PATH)
     assert "isotropic material with strain limit" in material_dic.keys()
-    assert len(material_dic["isotropic material with strain limit"].models) == 1
-    orthotropic_strain_limits = material_dic["isotropic material with strain limit"].models[0]
+    assert len(material_dic["isotropic material with strain limit"].models) == 2
+    orthotropic_strain_limits = material_dic["isotropic material with strain limit"].models[1]
     assert orthotropic_strain_limits.name == "Strain Limits"
     assert orthotropic_strain_limits.model_qualifiers[0].name == "Behavior"
     assert orthotropic_strain_limits.model_qualifiers[0].value == "Isotropic"
@@ -44,10 +44,10 @@ def test_read_constant_strain_limit_isotropic():
 def test_read_variable_strain_limit_isotropic():
     material_dic = read_matml_file(XML_FILE_PATH)
     assert "isotropic material with variable strain limit" in material_dic.keys()
-    assert len(material_dic["isotropic material with variable strain limit"].models) == 1
+    assert len(material_dic["isotropic material with variable strain limit"].models) == 2
     orthotropic_strain_limits = material_dic[
         "isotropic material with variable strain limit"
-    ].models[0]
+    ].models[1]
     assert orthotropic_strain_limits.name == "Strain Limits"
     assert orthotropic_strain_limits.model_qualifiers[0].name == "Behavior"
     assert orthotropic_strain_limits.model_qualifiers[0].value == "Isotropic"
@@ -59,8 +59,8 @@ def test_read_variable_strain_limit_isotropic():
 def test_read_constant_strain_limit_orthotropic():
     material_dic = read_matml_file(XML_FILE_PATH)
     assert "orthotropic material with strain limit" in material_dic.keys()
-    assert len(material_dic["orthotropic material with strain limit"].models) == 1
-    orthotropic_strain_limits = material_dic["orthotropic material with strain limit"].models[0]
+    assert len(material_dic["orthotropic material with strain limit"].models) == 2
+    orthotropic_strain_limits = material_dic["orthotropic material with strain limit"].models[1]
     assert orthotropic_strain_limits.name == "Strain Limits"
     assert orthotropic_strain_limits.model_qualifiers[0].name == "Behavior"
     assert orthotropic_strain_limits.model_qualifiers[0].value == "Orthotropic"
@@ -89,10 +89,10 @@ def test_read_constant_strain_limit_orthotropic():
 def test_read_variable_strain_limit_orthotropic():
     material_dic = read_matml_file(XML_FILE_PATH)
     assert "orthotropic material with variable strain limit" in material_dic.keys()
-    assert len(material_dic["orthotropic material with variable strain limit"].models) == 1
+    assert len(material_dic["orthotropic material with variable strain limit"].models) == 2
     orthotropic_strain_limits = material_dic[
         "orthotropic material with variable strain limit"
-    ].models[0]
+    ].models[1]
     assert orthotropic_strain_limits.name == "Strain Limits"
     assert orthotropic_strain_limits.model_qualifiers[0].name == "Behavior"
     assert orthotropic_strain_limits.model_qualifiers[0].value == "Orthotropic"

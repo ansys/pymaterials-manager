@@ -35,6 +35,9 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
 from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (
     CoefficientofThermalExpansionOrthotropic,
 )
+from ansys.materials.manager._models._material_models.color import (
+    Color,
+)
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,

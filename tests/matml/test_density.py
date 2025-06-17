@@ -46,26 +46,26 @@ def test_read_material_with_constant_density():
     material_dic = read_matml_file(XML_FILE_PATH)
     assert "material with density" in material_dic.keys()
     constant_density_material = material_dic["material with density"]
-    assert len(constant_density_material.models) == 1
-    assert constant_density_material.models[0].name == "Density"
-    assert constant_density_material.models[0].density == [1.34]
-    assert len(constant_density_material.models[0].independent_parameters) == 1
-    assert constant_density_material.models[0].independent_parameters[0].name == "Temperature"
-    assert constant_density_material.models[0].independent_parameters[0].values == [
-        7.88860905221012e-31
-    ]
+    assert len(constant_density_material.models) == 2
+    density = constant_density_material.models[1]
+    assert density.name == "Density"
+    assert density.density == [1.34]
+    assert len(density.independent_parameters) == 1
+    assert density.independent_parameters[0].name == "Temperature"
+    assert density.independent_parameters[0].values == [7.88860905221012e-31]
 
 
 def test_read_model_with_variable_density():
     material_dic = read_matml_file(XML_FILE_PATH)
     assert "material with variable density" in material_dic.keys()
     variable_density_material = material_dic["material with variable density"]
-    assert len(variable_density_material.models) == 1
-    assert variable_density_material.models[0].name == "Density"
-    assert variable_density_material.models[0].density == [12.0, 32.0, 38.0]
-    assert len(variable_density_material.models[0].independent_parameters) == 1
-    assert variable_density_material.models[0].independent_parameters[0].name == "Temperature"
-    assert variable_density_material.models[0].independent_parameters[0].values == [
+    assert len(variable_density_material.models) == 2
+    density = variable_density_material.models[1]
+    assert density.name == "Density"
+    assert density.density == [12.0, 32.0, 38.0]
+    assert len(density.independent_parameters) == 1
+    assert density.independent_parameters[0].name == "Temperature"
+    assert density.independent_parameters[0].values == [
         20.0,
         21.0,
         23.0,

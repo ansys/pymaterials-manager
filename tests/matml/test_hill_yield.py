@@ -32,8 +32,8 @@ CREEP_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_hill_
 def test_read_constant_hill_yield_no_creep():
     material_dic = read_matml_file(NO_CREEP_XML_FILE_PATH)
     assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 2
-    hill_yield = material_dic["SFRP"].models[1]
+    assert len(material_dic["SFRP"].models) == 3
+    hill_yield = material_dic["SFRP"].models[2]
     assert hill_yield.name == "Hill Yield Criterion"
     assert (
         hill_yield.model_qualifiers[0].name == "Separated Hill Potentials for Plasticity and Creep"
@@ -72,8 +72,8 @@ def test_read_constant_hill_yield_no_creep():
 def test_read_variable_temp_hill_yield_no_creep():
     material_dic = read_matml_file(NO_CREEP_XML_FILE_PATH)
     assert "SFRP Temp Dependent" in material_dic.keys()
-    assert len(material_dic["SFRP Temp Dependent"].models) == 2
-    hill_yield = material_dic["SFRP Temp Dependent"].models[1]
+    assert len(material_dic["SFRP Temp Dependent"].models) == 3
+    hill_yield = material_dic["SFRP Temp Dependent"].models[2]
     assert hill_yield.name == "Hill Yield Criterion"
     assert (
         hill_yield.model_qualifiers[0].name == "Separated Hill Potentials for Plasticity and Creep"
@@ -113,7 +113,7 @@ def test_read_variable_temp_hill_yield_no_creep():
 def test_read_variable_hill_yield_no_creep():
     material_dic = read_matml_file(NO_CREEP_XML_FILE_PATH)
     assert "Variable Short Fiber" in material_dic.keys()
-    assert len(material_dic["Variable Short Fiber"].models) == 1
+    assert len(material_dic["Variable Short Fiber"].models) == 2
     hill_yield = material_dic["Variable Short Fiber"].models[0]
     assert hill_yield.name == "Hill Yield Criterion"
     assert (
@@ -206,8 +206,8 @@ def test_read_variable_hill_yield_no_creep():
 def test_read_constant_hill_yield_creep():
     material_dic = read_matml_file(CREEP_XML_FILE_PATH)
     assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 4
-    hill_yield = material_dic["SFRP"].models[1]
+    assert len(material_dic["SFRP"].models) == 5
+    hill_yield = material_dic["SFRP"].models[2]
     assert hill_yield.name == "Hill Yield Criterion"
     assert (
         hill_yield.model_qualifiers[0].name == "Separated Hill Potentials for Plasticity and Creep"
@@ -238,8 +238,8 @@ def test_read_constant_hill_yield_creep():
 def test_read_constant_kinematic_hardening_creep():
     material_dic = read_matml_file(CREEP_XML_FILE_PATH)
     assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 4
-    kinematic_hardening = material_dic["SFRP"].models[2]
+    assert len(material_dic["SFRP"].models) == 5
+    kinematic_hardening = material_dic["SFRP"].models[3]
     assert kinematic_hardening.name == "Kinematic Hardening"
     assert kinematic_hardening.model_qualifiers[0].name == "Definition"
     assert kinematic_hardening.model_qualifiers[0].value == "Chaboche"
@@ -265,8 +265,8 @@ def test_read_constant_kinematic_hardening_creep():
 def test_read_constant_strain_hardening_creep():
     material_dic = read_matml_file(CREEP_XML_FILE_PATH)
     assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 4
-    strain_hardening = material_dic["SFRP"].models[3]
+    assert len(material_dic["SFRP"].models) == 5
+    strain_hardening = material_dic["SFRP"].models[4]
     assert strain_hardening.name == "Strain Hardening"
     assert (
         strain_hardening.model_qualifiers[0].name

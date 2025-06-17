@@ -33,7 +33,7 @@ def test_read_constant_fabric_fiber_angle_0_deg():
     assert "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0" in material_dic.keys()
     assert (
         len(material_dic["Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0"].models)
-        == 4
+        == 5
     )
     fabric_fiber_angle = material_dic[
         "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0"
@@ -57,7 +57,7 @@ def test_read_constant_fabric_fiber_angle_35_deg():
         len(
             material_dic["Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=35"].models
         )
-        == 4
+        == 5
     )
     fabric_fiber_angle = material_dic[
         "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=35"
@@ -81,7 +81,7 @@ def test_read_constant_fabric_fiber_angle_45_deg():
         len(
             material_dic["Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=45"].models
         )
-        == 4
+        == 5
     )
     fabric_fiber_angle = material_dic[
         "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=45"
@@ -101,7 +101,7 @@ def test_read_variable_fabric_fiber_angle():
     assert "Variable Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%" in material_dic.keys()
     assert (
         len(material_dic["Variable Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%"].models)
-        == 4
+        == 5
     )
     fabric_fiber_angle = material_dic[
         "Variable Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%"
@@ -136,7 +136,7 @@ def test_read_ply_type():
     assert "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0" in material_dic.keys()
     assert (
         len(material_dic["Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0"].models)
-        == 4
+        == 5
     )
     ply_type = material_dic[
         "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0"
