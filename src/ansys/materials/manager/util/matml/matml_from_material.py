@@ -142,10 +142,10 @@ class MatmlWriter:
             qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
             qualifier_element.text = ",".join(["Independent"] * len(values.split(",")))
             if independent_parameter.field_variable:
-                qualifier_element.text = independent_parameter.field_variable
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Field Variable"}
                 )
+                qualifier_element.text = independent_parameter.field_variable
             if independent_parameter.default_value:
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Default Data"}
@@ -209,7 +209,7 @@ class MatmlWriter:
             self._add_dependent_parameters(
                 property_data_element, material_model.model_dump(), dependent_parameters
             )
-            if len(material_model.independent_parameters) > 0:
+            if material_model.independent_parameters:
                 self._add_independent_parameters(
                     property_data_element, material_model.independent_parameters
                 )
