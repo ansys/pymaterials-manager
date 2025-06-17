@@ -31,6 +31,6 @@ materials = convert_matml_materials(
 material_dic = {material.name: material for material in materials}
 material_database = _add_library(material_database, material_dic)
 print(material_database)
-export_data = Path.cwd() / "examples" / "data" / "test_export.xml"
+export_data = Path.cwd() / "test_export.xml"
 writer = MatmlWriter(material_database.values())
 writer.export(str(export_data), indent=True)

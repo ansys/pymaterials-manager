@@ -82,7 +82,7 @@ class MatmlWriter:
                     self._metadata_parameters[matml_key] = para_key
 
                 param_element = ET.SubElement(
-                    property_element, "ParameterValue", {"format": "float", "parameter": para_key}
+                    property_element, "ParameterValue", {"parameter": para_key, "format": "float"}
                 )
 
                 data_element = ET.SubElement(param_element, "Data")
@@ -103,7 +103,7 @@ class MatmlWriter:
             parameter_id = f"pa{index}"
             self._metadata_parameters["Options Variable"] = parameter_id
         param_element = ET.SubElement(
-            property_element, "ParameterValue", {"format": "float", "parameter": parameter_id}
+            property_element, "ParameterValue", {"parameter": parameter_id, "format": "string"}
         )
         data_element = ET.SubElement(param_element, "Data")
         data_element.text = "Interpolation Options"
@@ -134,17 +134,18 @@ class MatmlWriter:
                 self._metadata_parameters[independent_parameter.name] = parameter_id
 
             param_element = ET.SubElement(
-                property_element, "ParameterValue", {"format": "float", "parameter": parameter_id}
+                property_element, "ParameterValue", {"parameter": parameter_id, "format": "float"}
             )
             data_element = ET.SubElement(param_element, "Data")
             values = str(independent_parameter.values).strip("[]")
             data_element.text = values
             qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
             qualifier_element.text = ",".join(["Independent"] * len(values.split(",")))
-            qualifier_element = ET.SubElement(
-                param_element, "Qualifier", {"name": "Field Variable"}
-            )
-            qualifier_element.text = independent_parameter.name
+            if independent_parameter.field_variable:
+                qualifier_element.text = independent_parameter.field_variable
+                qualifier_element = ET.SubElement(
+                    param_element, "Qualifier", {"name": "Field Variable"}
+                )
             if independent_parameter.default_value:
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Default Data"}

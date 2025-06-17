@@ -60,7 +60,7 @@ def convert_matml_materials(
         for propset_name, property_set in material_data.items():
             cls_name = "ansys.materials.manager._models." + propset_name.replace(" ", "").replace(
                 "-", ""
-            )
+            ).replasece("/", "")
             property_map = []
             arguments = {}
             qualifiers = []
@@ -88,6 +88,9 @@ def convert_matml_materials(
                                         else [param_value.data]
                                     ),
                                     default_value=param_value.qualifiers.get("Default Data", ""),
+                                    field_variable=param_value.qualifiers.get(
+                                        "Field Variable", None
+                                    ),
                                     units=param_value.qualifiers.get("Field Units", ""),
                                     upper_limit=param_value.qualifiers.get("Upper Limit", None),
                                     lower_limit=param_value.qualifiers.get("Lower Limit", None),
@@ -101,8 +104,11 @@ def convert_matml_materials(
                         if param_name in property_set.parameters.keys():
                             param = property_set.parameters[param_name]
                             data = param.data
-                            if not isinstance(data, Sequence):
-                                data = [data]
+                            if name not in ["red", "green", "blue"]:
+                                if not isinstance(data, Sequence):
+                                    data = [data]
+                            else:
+                                data = int(data)
                             arguments[name] = data
 
                     if name == "model_qualifiers":
@@ -141,9 +147,7 @@ def convert_matml_materials(
             else:
                 print(f"Could not find a material model for: {cls_name.split(".")[-1]}")
 
-        mapdl_material = Material(
-            material_name=mat_id, material_id=global_material_index, models=models
-        )
+        mapdl_material = Material(name=mat_id, material_id=global_material_index, models=models)
 
         if mat_id in transfer_ids.keys():
             mapdl_material.guid = transfer_ids[mat_id]

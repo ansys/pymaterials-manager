@@ -35,6 +35,9 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
 from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (
     CoefficientofThermalExpansionOrthotropic,
 )
+from ansys.materials.manager._models._material_models.color import (
+    Color,
+)
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
@@ -63,6 +66,9 @@ from ansys.materials.manager._models._material_models.isotropic_hardening_voce_l
 from ansys.materials.manager._models._material_models.kinematic_hardening import (
     KinematicHardening,
 )
+from ansys.materials.manager._models._material_models.larc03_04_constants import (
+    LaRc0304Constants,
+)
 from ansys.materials.manager._models._material_models.ply_type import (
     PlyType,
 )
@@ -89,6 +95,9 @@ from ansys.materials.manager._models._material_models.thermal_conductivity_isotr
 )
 from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
     ThermalConductivityOrthotropic,
+)
+from ansys.materials.manager._models._material_models.tsai_wu_constants import (
+    TsaiWuConstants,
 )
 from ansys.materials.manager._models._material_models.usermat import (
     ModelCoefficients,

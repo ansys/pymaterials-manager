@@ -40,7 +40,7 @@ class Material:
 
     def __init__(
         self,
-        material_name: str,
+        name: str,
         material_id: str | None = None,
         models: list[MaterialModel] | None = None,
         guid: str | None = None,
@@ -61,7 +61,7 @@ class Material:
         uuid : str | None
             Unique identifier for the material.
         """
-        self.name = material_name
+        self.name = name
         self._id = material_id
         if uuid is not None:
             self._guid = guid

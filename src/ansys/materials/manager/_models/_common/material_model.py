@@ -51,6 +51,11 @@ class MaterialModel(BaseModel, abc.ABC):
         title="Interpolation Options",
         description="Options for interpolation of the material model data.",
     )
+    material_property: str | None = Field(
+        default=None,
+        title="Material Property",
+        description="The material property for the material model.",
+    )
     model_qualifiers: list[ModelQualifier] = Field(
         value=[],
         title="Model Qualifier",

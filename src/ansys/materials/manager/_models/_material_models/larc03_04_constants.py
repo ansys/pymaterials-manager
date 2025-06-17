@@ -29,38 +29,40 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
 
-class PuckConstants(MaterialModel):
-    """Represents a Puck constants material model for composite materials."""
+class LaRc0304Constants(MaterialModel):
+    """Represents a LaRc03/04 constants material model."""
 
-    name: Literal["Puck Constants"] = Field(default="Puck Constants", repr=False, frozen=True)
+    name: Literal["LaRc03/04 Constants"] = Field(
+        default="LaRc03/04 Constants", repr=False, frozen=True
+    )
     supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
+        default=[SupportedPackage.MATML], repr=False, frozen=True
     )
-    compressive_inclination_xz: list[float] = Field(
+    fracture_toughness_ratio: list[float] = Field(
         default=[],
-        title="Compressive Inclination XZ",
-        description="The compressive inclination in the XZ plane for the Puck constants model.",
+        title="Fracture Toughness Ratio",
+        description="The ratio of fracture toughness.",
     )
-    compressive_inclination_yz: list[float] = Field(
+    longitudinal_friction_coefficient: list[float] = Field(
         default=[],
-        title="Compressive Inclination YZ",
-        description="The compressive inclination in the YZ plane for the Puck constants model.",
+        title="Logitudinal Friction Coefficient",
+        description="The coefficient of friction in the longitudinal direction.",
     )
-    tensile_inclination_xz: list[float] = Field(
+    transverse_friction_coefficient: list[float] = Field(
         default=[],
-        title="Tensile Inclination XZ",
-        description="The tensile inclination in the XZ plane for the Puck constants model.",
+        title="Transverse Friction Coefficient",
+        description="The coefficient of friction in the transverse direction.",
     )
-    tensile_inclination_yz: list[float] = Field(
+    fracture_angle_under_compression: list[float] = Field(
         default=[],
-        title="Tensile Inclination YZ",
-        description="The tensile inclination in the YZ plane for the Puck constants model.",
+        title="Fracture Angle Under Compression",
+        description="The angle of fracture under compression.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
-        """Write this model to the specified session."""
+        """Write the anisotropic elasticity model to the pyansys session."""
         pass
 
     def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
+        """Validate the anisotropic elasticity model."""
         pass

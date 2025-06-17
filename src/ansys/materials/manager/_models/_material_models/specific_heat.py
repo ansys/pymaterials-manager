@@ -29,38 +29,24 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
 
-class PuckConstants(MaterialModel):
-    """Represents a Puck constants material model for composite materials."""
+class SpecificHeat(MaterialModel):
+    """Represents a specific heat material model."""
 
-    name: Literal["Puck Constants"] = Field(default="Puck Constants", repr=False, frozen=True)
+    name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
     supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
+        default=[SupportedPackage.MATML], repr=False, frozen=True
     )
-    compressive_inclination_xz: list[float] = Field(
+
+    specific_heat: list[float] = Field(
         default=[],
-        title="Compressive Inclination XZ",
-        description="The compressive inclination in the XZ plane for the Puck constants model.",
-    )
-    compressive_inclination_yz: list[float] = Field(
-        default=[],
-        title="Compressive Inclination YZ",
-        description="The compressive inclination in the YZ plane for the Puck constants model.",
-    )
-    tensile_inclination_xz: list[float] = Field(
-        default=[],
-        title="Tensile Inclination XZ",
-        description="The tensile inclination in the XZ plane for the Puck constants model.",
-    )
-    tensile_inclination_yz: list[float] = Field(
-        default=[],
-        title="Tensile Inclination YZ",
-        description="The tensile inclination in the YZ plane for the Puck constants model.",
+        title="Specific Heat",
+        description="The specific heat of the material.",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
-        """Write this model to the specified session."""
+        """Write the anisotropic elasticity model to the pyansys session."""
         pass
 
     def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
+        """Validate the anisotropic elasticity model."""
         pass

@@ -50,11 +50,6 @@ class ModelCoefficients(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the usermat constants model.",
     )
-    material_property: str = Field(
-        default="",
-        title="Material Property",
-        description="The material property for the usermat constants model.",
-    )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write this model to the specified session."""

@@ -53,11 +53,6 @@ class AdditionalPuckConstants(MaterialModel):
         title="Degradation Parameter M",
         description="The degradation parameter M for the additional Puck constants model.",
     )
-    material_property: str = Field(
-        default="",
-        title="Material Property",
-        description="The material property for the Puck constants model.",
-    )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
