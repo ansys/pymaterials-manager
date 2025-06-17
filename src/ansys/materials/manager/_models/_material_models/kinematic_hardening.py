@@ -43,6 +43,7 @@ class KinematicHardening(MaterialModel):
         default=[
             ModelQualifier(name="Definition", value="Chaboche"),
             ModelQualifier(name="Number of Kinematic Models", value="1"),
+            ModelQualifier(name="source", value="ANSYS"),
         ],
         title="Model Qualifiers",
         description="Model qualifiers for the kinematic hardening model.",
