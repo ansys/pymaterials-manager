@@ -108,6 +108,9 @@ from ansys.materials.manager._models._material_models.tsai_wu_constants import (
 from ansys.materials.manager._models._material_models.usermat import (
     ModelCoefficients,
 )
+from ansys.materials.manager._models._material_models.viscosity import (
+    Viscosity,
+)
 from ansys.materials.manager._models._material_models.zero_thermal_strain_reference_temperature_isotropic import (
     ZeroThermalStrainReferenceTemperatureIsotropic,
 )
