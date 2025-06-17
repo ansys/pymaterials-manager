@@ -83,6 +83,7 @@
           </PropertyData>
           <PropertyData property="pr3">
             <Data format="string">-</Data>
+            <Qualifier name="Behavior">Orthotropic</Qualifier>
             <Qualifier name="Data Set">1</Qualifier>
             <Qualifier name="Data Set Information">minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional</Qualifier>
             <ParameterValue parameter="pa14" format="float">
@@ -228,6 +229,7 @@
           </PropertyData>
           <PropertyData property="pr3">
             <Data format="string">-</Data>
+            <Qualifier name="Behavior">Orthotropic</Qualifier>
             <Qualifier name="Data Set">2</Qualifier>
             <Qualifier name="Data Set Information">minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional</Qualifier>
             <ParameterValue parameter="pa14" format="float">
