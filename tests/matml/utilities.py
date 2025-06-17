@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import xml.dom.minidom
+import xml.etree.ElementTree as ET
+
 from ansys.materials.manager.util.matml.matml_parser import MatmlReader
 from ansys.materials.manager.util.matml.matml_to_material import convert_matml_materials
 
@@ -32,3 +35,15 @@ def read_matml_file(file_path):
         0,
     )
     return {material.name: material for material in materials}
+
+
+def get_material_and_metadata_from_xml(tree):
+    material = tree._root.find("Materials").find("MatML_Doc").find("Material")
+    metadata = tree._root.find("Materials").find("MatML_Doc").find("Metadata")
+    material_string = ET.tostring(material, encoding="utf-8").decode("utf-8")
+    material_string = xml.dom.minidom.parseString(material_string)
+    material_string = material_string.toprettyxml(indent="  ").strip()
+    metadata_string = ET.tostring(metadata, encoding="utf-8").decode("utf-8")
+    metadata_string = xml.dom.minidom.parseString(metadata_string)
+    metadata_string = metadata_string.toprettyxml(indent="  ").strip()
+    return material_string, metadata_string
