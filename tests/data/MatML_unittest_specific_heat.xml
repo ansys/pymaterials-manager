@@ -6,7 +6,7 @@
     <MatML_Doc>
       <Material>
         <BulkDetails>
-          <Name>material_with_variable_specific_heat_volume</Name>
+          <Name>material with variable specific heat volume</Name>
           <PropertyData property="pr0">
             <Data format="string">-</Data>
             <ParameterValue parameter="pa0" format="float">
@@ -48,7 +48,7 @@
       </Material>
       <Material>
         <BulkDetails>
-          <Name>material_with_variable_specific_heat_pressure</Name>
+          <Name>material with variable specific heat pressure</Name>
           <PropertyData property="pr0">
             <Data format="string">-</Data>
             <ParameterValue parameter="pa0" format="float">
@@ -97,7 +97,7 @@
       </Material>
       <Material>
         <BulkDetails>
-          <Name>material_with_constant_specific_heat_volume</Name>
+          <Name>material with specific heat volume</Name>
           <PropertyData property="pr0">
             <Data format="string">-</Data>
             <ParameterValue parameter="pa0" format="float">
@@ -139,7 +139,7 @@
       </Material>
       <Material>
         <BulkDetails>
-          <Name>material_with_constant_specific_heat_pressure</Name>
+          <Name>material with specific heat pressure</Name>
           <PropertyData property="pr0">
             <Data format="string">-</Data>
             <ParameterValue parameter="pa0" format="float">
