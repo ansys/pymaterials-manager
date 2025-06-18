@@ -22,10 +22,112 @@
 
 import os
 
-from utilities import read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_matml_file
+
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
+    ThermalConductivityIsotropic,
+)
+from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
+    ThermalConductivityOrthotropic,
+)
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_thermal_conductivity.xml")
+
+THERMAL_CONDUCTIVITY_ISOTROPIC = """<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Isotropic Convection Test Material</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Behavior">Isotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>10.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Field Units">C</Qualifier>
+        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
+        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>"""
+
+THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA = """<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Thermal Conductivity</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Thermal Conductivity</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>"""
+
+THERMAL_CONDUCTIVITY_ORTHOTROPIC = """<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Orthotropic Convection Test Material</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Behavior">Orthotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>10.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>15.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>20.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>"""
+
+THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA = """<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Thermal Conductivity</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Thermal Conductivity X direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Thermal Conductivity Y direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Thermal Conductivity Z direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Unitless/>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>"""
 
 
 def test_read_thermal_conductivity_isotropic_material():
@@ -60,3 +162,61 @@ def test_read_thermal_conductivity_orthotropic_material():
     assert orthotropic_conductivity.thermal_conductivity_z == [20.0]
     assert orthotropic_conductivity.independent_parameters[0].name == "Temperature"
     assert orthotropic_conductivity.independent_parameters[0].values == [7.88860905221012e-31]
+
+
+def test_write_thermal_conductivity_isotropic():
+    materials = [
+        Material(
+            name="Isotropic Convection Test Material",
+            models=[
+                ThermalConductivityIsotropic(
+                    thermal_conductivity=[10.0],
+                    independent_parameters=[
+                        IndependentParameter(
+                            name="Temperature",
+                            field_variable="Temperature",
+                            values=[7.88860905221012e-31],
+                            units="C",
+                            default_value="22",
+                            upper_limit="Program Controlled",
+                            lower_limit="Program Controlled",
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ]
+
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+    assert material_string == THERMAL_CONDUCTIVITY_ISOTROPIC
+    assert metadata_string == THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA
+
+
+def test_write_thermal_conductivity_orthotropic():
+    materials = [
+        Material(
+            name="Orthotropic Convection Test Material",
+            models=[
+                ThermalConductivityOrthotropic(
+                    thermal_conductivity_x=[10.0],
+                    thermal_conductivity_y=[15.0],
+                    thermal_conductivity_z=[20.0],
+                    independent_parameters=[
+                        IndependentParameter(
+                            name="Temperature",
+                            field_variable="Temperature",
+                            values=[7.88860905221012e-31],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ]
+
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+    assert material_string == THERMAL_CONDUCTIVITY_ORTHOTROPIC
+    assert metadata_string == THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA
