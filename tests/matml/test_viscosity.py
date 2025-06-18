@@ -22,10 +22,71 @@
 
 import os
 
-from utilities import read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_matml_file
+
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._material_models.viscosity import Viscosity
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_viscosity.xml")
+
+VISCOSITY = """<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>material with viscosity</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="BETA">Mechanical.ModalAcoustics</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>22.0, 50.0, 70.0</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>"""
+
+VISCOSITY_VARIABLE = """<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>material with variable viscosity</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="BETA">Mechanical.ModalAcoustics</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>2.0, 3.0, 4.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>22.0, 50.0, 70.0</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>"""
+
+VISCOSITY_METADATA = """<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Viscosity</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Viscosity</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>"""
 
 
 def test_read_constant_viscosity():
@@ -68,3 +129,55 @@ def test_read_variable_viscosity():
     assert viscosity.independent_parameters[0].upper_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].lower_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].default_value == "22"
+
+
+def test_write_constant_viscosity():
+    materials = [
+        Material(
+            name="material with viscosity",
+            models=[
+                Viscosity(
+                    viscosity=[1.0],
+                    independent_parameters=[
+                        IndependentParameter(
+                            name="Temperature",
+                            field_variable="Temperature",
+                            values=[22.0, 50.0, 70.0],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ]
+
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+    assert material_string == VISCOSITY
+    assert metadata_string == VISCOSITY_METADATA
+
+
+def test_write_variable_viscosity():
+    materials = [
+        Material(
+            name="material with variable viscosity",
+            models=[
+                Viscosity(
+                    viscosity=[2.0, 3.0, 4.0],
+                    independent_parameters=[
+                        IndependentParameter(
+                            name="Temperature",
+                            field_variable="Temperature",
+                            values=[22.0, 50.0, 70.0],
+                        ),
+                    ],
+                ),
+            ],
+        )
+    ]
+
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+    assert material_string == VISCOSITY_VARIABLE
+    assert metadata_string == VISCOSITY_METADATA
