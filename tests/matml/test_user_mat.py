@@ -28,5 +28,43 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_usermat.xml")
 
 
-material_dic = read_matml_file(XML_FILE_PATH)
-print(material_dic)
+def test_read_usermat():
+    material_dic = read_matml_file(XML_FILE_PATH)
+    material_name = "usermat"
+    assert material_name in material_dic.keys()
+    assert len(material_dic[material_name].models) == 4
+    usermat = material_dic[material_name].models[3]
+    assert usermat.name == "Model Coefficients"
+    assert usermat.model_qualifiers[0].name == "UserMat"
+    assert usermat.model_qualifiers[0].value == "USER"
+    assert usermat.model_qualifiers[1].name == "Custom Qualifier"
+    assert usermat.model_qualifiers[1].value == "Custom Qualifier Value"
+    assert usermat.material_property == "UserDefinedPropertySet"
+    assert usermat.independent_parameters[0].name == "Temperature"
+    assert usermat.independent_parameters[0].values == [7.88860905221012e-31]
+    assert usermat.user_parameters[0].name == "y"
+    assert usermat.user_parameters[0].values == [0.0]
+    assert usermat.user_parameters[0].user_mat_constant == 1
+    assert usermat.user_parameters[0].display == True
+
+
+def test_variable_user_mat():
+    material_dic = read_matml_file(XML_FILE_PATH)
+    material_name = "variable usermat"
+    assert material_name in material_dic.keys()
+    assert len(material_dic[material_name].models) == 4
+    usermat = material_dic[material_name].models[3]
+    assert usermat.name == "Model Coefficients"
+    assert usermat.model_qualifiers[0].name == "UserMat"
+    assert usermat.model_qualifiers[0].value == "USER"
+    assert usermat.material_property == "CustomPset"
+    assert usermat.independent_parameters[0].name == "Temperature"
+    assert usermat.independent_parameters[0].values == [10.0, 20.0]
+    assert usermat.user_parameters[0].name == "alpha"
+    assert usermat.user_parameters[0].values == [0.1, 0.4]
+    assert usermat.user_parameters[0].user_mat_constant == 1
+    assert usermat.user_parameters[0].display == True
+    assert usermat.user_parameters[1].name == "beta"
+    assert usermat.user_parameters[1].values == [0.2, 0.8]
+    assert usermat.user_parameters[1].user_mat_constant == 2
+    assert usermat.user_parameters[1].display == True
