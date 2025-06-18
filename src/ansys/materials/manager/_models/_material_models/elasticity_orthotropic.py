@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Literal
+from typing import Dict, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pyparsing import Any
 
 from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
@@ -97,6 +97,23 @@ class ElasticityOrthotropic(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the orthotropic elasticity model.",
     )
+
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        if "model_qualifiers" in values:
+            found_behavior = False
+            for model_qualifier in values["model_qualifiers"]:
+                if model_qualifier.name == "Behavior" and model_qualifier.value != "Orthotropic":
+                    raise ValueError(
+                        "Behavior must be 'Orthotropic' for ElasticityOrthotropic model."
+                    )
+                if model_qualifier.name == "Behavior":
+                    found_behavior = True
+            if not found_behavior:
+                model_qualifiers = values.get("model_qualifiers", [])
+                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Orthotropic")]
+                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write this model to the specified session."""

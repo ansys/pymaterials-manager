@@ -23,7 +23,8 @@
 
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
+from pyparsing import Dict
 
 from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
@@ -55,6 +56,21 @@ class ElasticityIsotropic(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the isotropic elasticity model.",
     )
+
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        if "model_qualifiers" in values:
+            found_behavior = False
+            for model_qualifier in values["model_qualifiers"]:
+                if model_qualifier.name == "Behavior" and model_qualifier.value != "Isotropic":
+                    raise ValueError("Behavior must be 'Isotropic' for ElasticityIsotropic model.")
+                if model_qualifier.name == "Behavior":
+                    found_behavior = True
+            if not found_behavior:
+                model_qualifiers = values.get("model_qualifiers", [])
+                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Isotropic")]
+                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        return values
 
     def _write_mapdl(self, mapdl: _MapdlCore, material: "Material") -> None:
         if (
