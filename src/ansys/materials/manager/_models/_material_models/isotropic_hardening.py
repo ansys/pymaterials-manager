@@ -26,6 +26,7 @@ from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
 
 
@@ -44,6 +45,10 @@ class IsotropicHardening(MaterialModel):
         default=[],
         title="Stress",
         description="Stress values for the material.",
+    )
+    model_qualifiers: list[ModelQualifier] = Field(
+        default=[ModelQualifier(name="Definition", value="Multilinear")],
+        frozen=True,
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
