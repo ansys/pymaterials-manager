@@ -22,10 +22,116 @@
 
 import os
 
-from utilities import read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_matml_file
+
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common.user_parameter import UserParameter
+from ansys.materials.manager._models._material_models.usermat import ModelCoefficients
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_usermat.xml")
+
+USERMAT = """<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>isotropic material with strain limit</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="UserMat">USER</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>0.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+        <Qualifier name="Display">True</Qualifier>
+        <Qualifier name="UserMat Constant">1</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>UserDefinedPropertySet</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>"""
+
+USERMAT_VARIABLE = """<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>variable usermat</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="UserMat">USER</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>0.1, 0.4</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent</Qualifier>
+        <Qualifier name="Display">True</Qualifier>
+        <Qualifier name="UserMat Constant">1</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>0.2, 0.8</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent</Qualifier>
+        <Qualifier name="Display">True</Qualifier>
+        <Qualifier name="UserMat Constant">2</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>CustomPset</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>10.0, 20.0</Data>
+        <Qualifier name="Variable Type">Independent,Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>"""
+
+USERMAT_METADATA = """<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Model Coefficients</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>y</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Material Property</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>"""
+
+USERMAT_VARIABLE_METADATA = """<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Model Coefficients</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>alpha</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>beta</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Material Property</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Unitless/>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>"""
 
 
 def test_read_usermat():
@@ -68,3 +174,69 @@ def test_variable_user_mat():
     assert usermat.user_parameters[1].values == [0.2, 0.8]
     assert usermat.user_parameters[1].user_mat_constant == 2
     assert usermat.user_parameters[1].display == True
+
+
+def test_write_constant_usermat():
+    materials = [
+        Material(
+            name="isotropic material with strain limit",
+            models=[
+                ModelCoefficients(
+                    user_parameters=[
+                        UserParameter(
+                            name="y",
+                            values=[0.0],
+                            user_mat_constant=1,
+                            display=True,
+                        )
+                    ],
+                    independent_parameters=[
+                        IndependentParameter(name="Temperature", values=[7.88860905221012e-31])
+                    ],
+                    material_property="UserDefinedPropertySet",
+                ),
+            ],
+        )
+    ]
+
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+    assert material_string == USERMAT
+    assert metadata_string == USERMAT_METADATA
+
+
+def test_write_variable_usermat():
+    materials = [
+        Material(
+            name="variable usermat",
+            models=[
+                ModelCoefficients(
+                    user_parameters=[
+                        UserParameter(
+                            name="alpha",
+                            values=[0.1, 0.4],
+                            user_mat_constant=1,
+                            display=True,
+                        ),
+                        UserParameter(
+                            name="beta",
+                            values=[0.2, 0.8],
+                            user_mat_constant=2,
+                            display=True,
+                        ),
+                    ],
+                    independent_parameters=[
+                        IndependentParameter(name="Temperature", values=[10.0, 20.0])
+                    ],
+                    material_property="CustomPset",
+                ),
+            ],
+        )
+    ]
+
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+    assert material_string == USERMAT_VARIABLE
+    assert metadata_string == USERMAT_VARIABLE_METADATA

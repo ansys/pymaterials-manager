@@ -29,6 +29,7 @@ import xml.etree.ElementTree as ET
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager.material import Material
 from ansys.materials.manager.util.matml.property_to_model_field import PROPERTY_TO_MODEL_FIELD
 
@@ -167,6 +168,32 @@ class MatmlWriter:
                 )
                 qualifier_element.text = independent_parameter.lower_limit
 
+    def _add_usermat_parameters(
+        self, property_element: ET.Element, user_parameters: Sequence[UserParameter]
+    ):
+        for user_parameter in user_parameters:
+            if user_parameter.name in self._metadata_parameters.keys():
+                para_key = self._metadata_parameters[user_parameter.name]
+            else:
+                index = len(self._metadata_parameters)
+                para_key = f"pa{index}"
+                self._metadata_parameters[user_parameter.name] = para_key
+            param_element = ET.SubElement(
+                property_element, "ParameterValue", {"parameter": para_key, "format": "float"}
+            )
+            data_element = ET.SubElement(param_element, "Data")
+            values = str(user_parameter.values).strip("[]")
+            data_element.text = values
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
+            qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
+
+            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Display"})
+            qualifier_element.text = str(user_parameter.display)
+            qualifier_element = ET.SubElement(
+                param_element, "Qualifier", {"name": "UserMat Constant"}
+            )
+            qualifier_element.text = str(user_parameter.user_mat_constant)
+
     def _add_material_model(
         self,
         bulkdata_element,
@@ -206,6 +233,8 @@ class MatmlWriter:
                 self._add_interpolation_options(
                     property_data_element, material_model.interpolation_options
                 )
+            if property_set_name == "Model Coefficients":
+                self._add_usermat_parameters(property_data_element, material_model.user_parameters)
             self._add_dependent_parameters(
                 property_data_element, material_model.model_dump(), dependent_parameters
             )
