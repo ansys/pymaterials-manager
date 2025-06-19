@@ -31,11 +31,12 @@ class InterpolationOptions(BaseModel):
         default="", title="Algorithm Type", description="Type of interpolation algorithm to use."
     )
     normalized: bool = Field(
-        default=True, title="Normalized", description="Whether the input data is normalized."
+        default=True,
+        title="Normalized",
+        description="True if the independent parameters are normalized before doing the interpolation.",  # noqa: E501
     )
-    cached: bool = Field(default=True, title="Cached", description="Whether to cache the results.")
-    quantized: bool | None = Field(
-        default=None, title="Quantized", description="Whether the data is quantized."
+    cached: bool = Field(
+        default=True, title="Cached", description="Whether to cache the interpolation results."
     )
     extrapolation_type: str | None = Field(
         default=None, title="Extrapolation Type", description="Type of extrapolation to use."

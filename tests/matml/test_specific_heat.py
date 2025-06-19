@@ -50,7 +50,7 @@ SPECIFIC_HEAT_VOLUME = """<?xml version="1.0" ?>
         <Data>22.0</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -76,7 +76,7 @@ SPECIFIC_HEAT_VOLUME_VARIABLE = """<?xml version="1.0" ?>
         <Data>22.0, 40.0, 60.0</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -102,7 +102,7 @@ SPECIFIC_HEAT_PRESSURE = """<?xml version="1.0" ?>
         <Data>22.0</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -128,7 +128,7 @@ SPECIFIC_HEAT_PRESSURE_VARIABLE = """<?xml version="1.0" ?>
         <Data>22.0, 40.0, 60.0</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -169,10 +169,10 @@ def test_read_constant_specific_heat_volume():
     assert specific_heat.model_qualifiers[2].value == "Cᵥ"
     assert specific_heat.independent_parameters[0].name == "Temperature"
     assert specific_heat.independent_parameters[0].values == [22.0]
-    assert specific_heat.independent_parameters[0].units == "C"
+    assert specific_heat.independent_parameters[0].unit == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
-    assert specific_heat.independent_parameters[0].default_value == "22"
+    assert specific_heat.independent_parameters[0].default_value == 22.0
     assert specific_heat.specific_heat == [2.0]
 
 
@@ -191,10 +191,10 @@ def test_read_variable_specific_heat_volume():
     assert specific_heat.model_qualifiers[2].value == "Cᵥ"
     assert specific_heat.independent_parameters[0].name == "Temperature"
     assert specific_heat.independent_parameters[0].values == [22.0, 40.0, 60.0]
-    assert specific_heat.independent_parameters[0].units == "C"
+    assert specific_heat.independent_parameters[0].unit == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
-    assert specific_heat.independent_parameters[0].default_value == "22"
+    assert specific_heat.independent_parameters[0].default_value == 22.0
     assert specific_heat.specific_heat == [10.0, 20.0, 30.0]
 
 
@@ -213,10 +213,10 @@ def test_read_constant_specific_heat_pressure():
     assert specific_heat.model_qualifiers[2].value == "Cᵨ"
     assert specific_heat.independent_parameters[0].name == "Temperature"
     assert specific_heat.independent_parameters[0].values == [22.0]
-    assert specific_heat.independent_parameters[0].units == "C"
+    assert specific_heat.independent_parameters[0].unit == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
-    assert specific_heat.independent_parameters[0].default_value == "22"
+    assert specific_heat.independent_parameters[0].default_value == 22.0
     assert specific_heat.specific_heat == [1.0]
     assert specific_heat.interpolation_options.algorithm_type == "Linear Multivariate"
     assert specific_heat.interpolation_options.cached is True
@@ -241,10 +241,10 @@ def test_read_variable_specific_heat_pressure():
     assert specific_heat.model_qualifiers[2].value == "Cᵨ"
     assert specific_heat.independent_parameters[0].name == "Temperature"
     assert specific_heat.independent_parameters[0].values == [22.0, 50.0, 75.0]
-    assert specific_heat.independent_parameters[0].units == "C"
+    assert specific_heat.independent_parameters[0].unit == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
-    assert specific_heat.independent_parameters[0].default_value == "22"
+    assert specific_heat.independent_parameters[0].default_value == 22.0
     assert specific_heat.specific_heat == [1.0, 2.0, 3.0]
     assert specific_heat.interpolation_options.algorithm_type == "Linear Multivariate"
     assert specific_heat.interpolation_options.cached is True
@@ -271,8 +271,8 @@ def test_write_constant_specific_heat_volume():
                             name="Temperature",
                             field_variable="Temperature",
                             values=[22.0],
-                            units="C",
-                            default_value="22",
+                            unit="C",
+                            default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -306,8 +306,8 @@ def test_write_variable_specific_heat_volume():
                             name="Temperature",
                             field_variable="Temperature",
                             values=[22.0, 40.0, 60.0],
-                            units="C",
-                            default_value="22",
+                            unit="C",
+                            default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -341,8 +341,8 @@ def test_write_constant_specific_heat_pressure():
                             name="Temperature",
                             field_variable="Temperature",
                             values=[22.0],
-                            units="C",
-                            default_value="22",
+                            unit="C",
+                            default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -376,8 +376,8 @@ def test_write_variable_specific_heat_pressure():
                             name="Temperature",
                             field_variable="Temperature",
                             values=[22.0, 40.0, 60.0],
-                            units="C",
-                            default_value="22",
+                            unit="C",
+                            default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),

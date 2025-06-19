@@ -66,7 +66,7 @@ ISOTROPIC_ELASTIC = """<?xml version="1.0" ?>
         <Data>7.88860905221012e-31</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
         <Qualifier name="Field Variable">Temperarture</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">1.18329135783152E-30</Qualifier>
         <Qualifier name="Lower Limit">3.94430452610506E-31</Qualifier>
@@ -100,7 +100,7 @@ ISOTROPIC_ELASTICITY_VARIABLE = """<?xml version="1.0" ?>
         <Data>12.0, 21.0</Data>
         <Qualifier name="Variable Type">Independent,Independent</Qualifier>
         <Qualifier name="Field Variable">Temperarture</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">1.18329135783152E-30</Qualifier>
         <Qualifier name="Lower Limit">3.94430452610506E-31</Qualifier>
@@ -162,7 +162,7 @@ ORTHOTROPIC_ELASTICITY = """<?xml version="1.0" ?>
         <Data>7.88860905221012e-31</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
         <Qualifier name="Field Variable">Temperarture</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">1.18329135783152E-30</Qualifier>
         <Qualifier name="Lower Limit">3.94430452610506E-31</Qualifier>
@@ -224,7 +224,7 @@ ORTHOTROPIC_ELASTICITY_VARIABLE = """<?xml version="1.0" ?>
         <Data>21.0, 22.0</Data>
         <Qualifier name="Variable Type">Independent,Independent</Qualifier>
         <Qualifier name="Field Variable">Temperarture</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">1.18329135783152E-30</Qualifier>
         <Qualifier name="Lower Limit">3.94430452610506E-31</Qualifier>
@@ -395,10 +395,10 @@ def test_read_constant_elastic_isotropic_material():
     assert isotropic_elasticity.interpolation_options.normalized == True
     assert isotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert isotropic_elasticity.independent_parameters[0].values == [7.88860905221012e-31]
-    assert isotropic_elasticity.independent_parameters[0].units == "C"
-    assert isotropic_elasticity.independent_parameters[0].upper_limit == "1.18329135783152E-30"
-    assert isotropic_elasticity.independent_parameters[0].lower_limit == "3.94430452610506E-31"
-    assert isotropic_elasticity.independent_parameters[0].default_value == "22"
+    assert isotropic_elasticity.independent_parameters[0].unit == "C"
+    assert isotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
+    assert isotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
+    assert isotropic_elasticity.independent_parameters[0].default_value == 22.0
     assert isotropic_elasticity.youngs_modulus == [1000000.0]
     assert isotropic_elasticity.poissons_ratio == [0.3]
 
@@ -427,10 +427,10 @@ def test_read_constant_elastic_orthotropic_material():
     assert orthotropic_elasticity.shear_modulus_xz == [3000000.0]
     assert orthotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert orthotropic_elasticity.independent_parameters[0].values == [7.88860905221012e-31]
-    assert orthotropic_elasticity.independent_parameters[0].units == "C"
-    assert orthotropic_elasticity.independent_parameters[0].upper_limit == "1.18329135783152E-30"
-    assert orthotropic_elasticity.independent_parameters[0].lower_limit == "3.94430452610506E-31"
-    assert orthotropic_elasticity.independent_parameters[0].default_value == "22"
+    assert orthotropic_elasticity.independent_parameters[0].unit == "C"
+    assert orthotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
+    assert orthotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
+    assert orthotropic_elasticity.independent_parameters[0].default_value == 22.0
 
 
 def test_read_constant_elastic_anisotropic_material():
@@ -508,10 +508,10 @@ def test_read_variable_elastic_isotropic_material():
     assert isotropic_elasticity.interpolation_options.normalized == True
     assert isotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert isotropic_elasticity.independent_parameters[0].values == [12, 21]
-    assert isotropic_elasticity.independent_parameters[0].units == "C"
-    assert isotropic_elasticity.independent_parameters[0].upper_limit == "1.18329135783152E-30"
-    assert isotropic_elasticity.independent_parameters[0].lower_limit == "3.94430452610506E-31"
-    assert isotropic_elasticity.independent_parameters[0].default_value == "22"
+    assert isotropic_elasticity.independent_parameters[0].unit == "C"
+    assert isotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
+    assert isotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
+    assert isotropic_elasticity.independent_parameters[0].default_value == 22.0
     assert isotropic_elasticity.youngs_modulus == [2000000, 1000000]
     assert isotropic_elasticity.poissons_ratio == [0.35, 0.3]
 
@@ -540,10 +540,10 @@ def test_read_variable_elastic_orthotropic_material():
     assert orthotropic_elasticity.shear_modulus_xz == [3000000.0, 3100000]
     assert orthotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert orthotropic_elasticity.independent_parameters[0].values == [21, 22]
-    assert orthotropic_elasticity.independent_parameters[0].units == "C"
-    assert orthotropic_elasticity.independent_parameters[0].upper_limit == "1.18329135783152E-30"
-    assert orthotropic_elasticity.independent_parameters[0].lower_limit == "3.94430452610506E-31"
-    assert orthotropic_elasticity.independent_parameters[0].default_value == "22"
+    assert orthotropic_elasticity.independent_parameters[0].unit == "C"
+    assert orthotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
+    assert orthotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
+    assert orthotropic_elasticity.independent_parameters[0].default_value == 22.0
 
 
 def test_write_constant_elastic_isotropic_material():
@@ -558,11 +558,11 @@ def test_write_constant_elastic_isotropic_material():
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperarture",
-                            default_value="22",
-                            upper_limit="1.18329135783152E-30",
-                            lower_limit="3.94430452610506E-31",
+                            default_value=22.0,
+                            upper_limit=1.18329135783152e-30,
+                            lower_limit=3.94430452610506e-31,
                             values=[7.88860905221012e-31],
-                            units="C",
+                            unit="C",
                         )
                     ],
                     interpolation_options=InterpolationOptions(
@@ -578,6 +578,7 @@ def test_write_constant_elastic_isotropic_material():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+    print(material_string)
     assert material_string == ISOTROPIC_ELASTIC
     assert metadata_string == ISOTROPIC_ELASTICITY_METADATA
 
@@ -601,11 +602,11 @@ def test_write_constant_elastic_orthotropic_material():
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperarture",
-                            default_value="22",
-                            upper_limit="1.18329135783152E-30",
-                            lower_limit="3.94430452610506E-31",
+                            default_value=22.0,
+                            upper_limit=1.18329135783152e-30,
+                            lower_limit=3.94430452610506e-31,
                             values=[7.88860905221012e-31],
-                            units="C",
+                            unit="C",
                         )
                     ],
                     interpolation_options=InterpolationOptions(
@@ -689,11 +690,11 @@ def test_write_variable_elastic_isotropic_material():
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperarture",
-                            default_value="22",
-                            upper_limit="1.18329135783152E-30",
-                            lower_limit="3.94430452610506E-31",
+                            default_value=22.0,
+                            upper_limit=1.18329135783152e-30,
+                            lower_limit=3.94430452610506e-31,
                             values=[12.0, 21.0],
-                            units="C",
+                            unit="C",
                         )
                     ],
                     interpolation_options=InterpolationOptions(
@@ -732,11 +733,11 @@ def test_write_variable_elastic_orthotropic_material():
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperarture",
-                            default_value="22",
-                            upper_limit="1.18329135783152E-30",
-                            lower_limit="3.94430452610506E-31",
+                            default_value=22.0,
+                            upper_limit=1.18329135783152e-30,
+                            lower_limit=3.94430452610506e-31,
                             values=[21.0, 22.0],
-                            units="C",
+                            unit="C",
                         )
                     ],
                     interpolation_options=InterpolationOptions(

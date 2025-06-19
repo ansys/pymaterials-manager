@@ -69,7 +69,7 @@ FABRIC_FIBER_ANGLE_VARIABLE = """<?xml version="1.0" ?>
         <Data>-0.349065850398866, -0.261799387799149, -0.174532925199433, -0.0872664625997165, 0.0, 0.0872664625997165, 0.174532925199433, 0.261799387799149, 0.349065850398866</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent</Qualifier>
         <Qualifier name="Field Variable">Shear Angle</Qualifier>
-        <Qualifier name="Default Data">0</Qualifier>
+        <Qualifier name="Default Data">0.0</Qualifier>
         <Qualifier name="Field Units">radian</Qualifier>
         <Qualifier name="Upper Limit">0.349065850398866</Qualifier>
         <Qualifier name="Lower Limit">-0.3490658503988659</Qualifier>
@@ -216,10 +216,10 @@ def test_read_variable_fabric_fiber_angle():
         0.261799387799149,
         0.349065850398866,
     ]
-    assert fabric_fiber_angle.independent_parameters[0].units == "radian"
-    assert fabric_fiber_angle.independent_parameters[0].upper_limit == "0.349065850398866"
-    assert fabric_fiber_angle.independent_parameters[0].lower_limit == "-0.3490658503988659"
-    assert fabric_fiber_angle.independent_parameters[0].default_value == "0"
+    assert fabric_fiber_angle.independent_parameters[0].unit == "radian"
+    assert fabric_fiber_angle.independent_parameters[0].upper_limit == 0.349065850398866
+    assert fabric_fiber_angle.independent_parameters[0].lower_limit == -0.3490658503988659
+    assert fabric_fiber_angle.independent_parameters[0].default_value == 0.0
 
 
 def test_read_ply_type():
@@ -267,9 +267,9 @@ def test_write_variable_fabric_fiber_angle():
                         IndependentParameter(
                             name="Shear Angle",
                             field_variable="Shear Angle",
-                            default_value="0",
-                            upper_limit="0.349065850398866",
-                            lower_limit="-0.3490658503988659",
+                            default_value=0.0,
+                            upper_limit=0.349065850398866,
+                            lower_limit=-0.3490658503988659,
                             values=[
                                 -0.349065850398866,
                                 -0.261799387799149,
@@ -281,7 +281,7 @@ def test_write_variable_fabric_fiber_angle():
                                 0.261799387799149,
                                 0.349065850398866,
                             ],
-                            units="radian",
+                            unit="radian",
                         )
                     ],
                     interpolation_options=InterpolationOptions(

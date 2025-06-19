@@ -30,6 +30,7 @@ from ansys.materials.manager._models._common.interpolation_options import Interp
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.common import convert_to_float_or_keep
 from ansys.materials.manager.util.matml.property_to_model_field import PROPERTY_TO_MODEL_FIELD
 
 
@@ -87,13 +88,19 @@ def convert_matml_materials(
                                         if isinstance(param_value.data, Sequence)
                                         else [param_value.data]
                                     ),
-                                    default_value=param_value.qualifiers.get("Default Data", ""),
+                                    default_value=convert_to_float_or_keep(
+                                        param_value.qualifiers.get("Default Data", "")
+                                    ),
                                     field_variable=param_value.qualifiers.get(
                                         "Field Variable", None
                                     ),
-                                    units=param_value.qualifiers.get("Field Units", ""),
-                                    upper_limit=param_value.qualifiers.get("Upper Limit", None),
-                                    lower_limit=param_value.qualifiers.get("Lower Limit", None),
+                                    unit=param_value.qualifiers.get("Field Units", ""),
+                                    upper_limit=convert_to_float_or_keep(
+                                        param_value.qualifiers.get("Upper Limit", None)
+                                    ),
+                                    lower_limit=convert_to_float_or_keep(
+                                        param_value.qualifiers.get("Lower Limit", None)
+                                    ),
                                 )
                                 independent_parameters.append(independent_param)
                     if (

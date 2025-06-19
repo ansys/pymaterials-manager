@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 
+from typing import Union
+
 from pydantic import BaseModel, Field
 
 
@@ -38,17 +40,17 @@ class IndependentParameter(BaseModel):
         title="Field Variable",
         description="The field variable associated with the independent parameter.",
     )
-    default_value: float | str | None = Field(
+    default_value: Union[str | float | None] = Field(
         default=None,
         title="Default Value",
         description="The default value of the independent parameter.",
     )
-    units: str | None = Field(
-        default="", title="Units", description="The units of the independent parameter."
+    unit: str | None = Field(
+        default="", title="Unit", description="The unit of the independent parameter."
     )
-    upper_limit: str | float | None = Field(
+    upper_limit: Union[str | float | None] = Field(
         default=None, title="Upper Limit", description="Upper limit of the independent parameter."
     )
-    lower_limit: str | float | None = Field(
+    lower_limit: Union[str | float | None] = Field(
         default=None, title="Lower Limit", description="Lower limit of the independent parameter."
     )

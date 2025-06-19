@@ -52,7 +52,7 @@ THERMAL_CONDUCTIVITY_ISOTROPIC = """<?xml version="1.0" ?>
         <Data>7.88860905221012e-31</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -143,10 +143,10 @@ def test_read_thermal_conductivity_isotropic_material():
     assert isotropic_conductivity.thermal_conductivity == [10.0]
     assert isotropic_conductivity.independent_parameters[0].name == "Temperature"
     assert isotropic_conductivity.independent_parameters[0].values == [7.88860905221012e-31]
-    assert isotropic_conductivity.independent_parameters[0].units == "C"
+    assert isotropic_conductivity.independent_parameters[0].unit == "C"
     assert isotropic_conductivity.independent_parameters[0].upper_limit == "Program Controlled"
     assert isotropic_conductivity.independent_parameters[0].lower_limit == "Program Controlled"
-    assert isotropic_conductivity.independent_parameters[0].default_value == "22"
+    assert isotropic_conductivity.independent_parameters[0].default_value == 22.0
 
 
 def test_read_thermal_conductivity_orthotropic_material():
@@ -176,8 +176,8 @@ def test_write_thermal_conductivity_isotropic():
                             name="Temperature",
                             field_variable="Temperature",
                             values=[7.88860905221012e-31],
-                            units="C",
-                            default_value="22",
+                            unit="C",
+                            default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),

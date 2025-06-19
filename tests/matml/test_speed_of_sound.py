@@ -47,7 +47,7 @@ SPEED_OF_SOUND = """<?xml version="1.0" ?>
         <Data>7.88860905221012e-31</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -71,7 +71,7 @@ SPEED_OF_SOUND_VARIABLE = """<?xml version="1.0" ?>
         <Data>22.0, 40.0, 60.0</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -111,10 +111,10 @@ def test_read_constant_speed_of_sound():
     assert speed_of_sound.independent_parameters[0].name == "Temperature"
     assert speed_of_sound.independent_parameters[0].field_variable == "Temperature"
     assert speed_of_sound.independent_parameters[0].values == [7.88860905221012e-31]
-    assert speed_of_sound.independent_parameters[0].units == "C"
+    assert speed_of_sound.independent_parameters[0].unit == "C"
     assert speed_of_sound.independent_parameters[0].upper_limit == "Program Controlled"
     assert speed_of_sound.independent_parameters[0].lower_limit == "Program Controlled"
-    assert speed_of_sound.independent_parameters[0].default_value == "22"
+    assert speed_of_sound.independent_parameters[0].default_value == 22.0
     assert speed_of_sound.speed_of_sound == [100.0]
 
 
@@ -132,10 +132,10 @@ def test_read_variable_speed_of_sound():
     assert speed_of_sound.independent_parameters[0].name == "Temperature"
     assert speed_of_sound.independent_parameters[0].field_variable == "Temperature"
     assert speed_of_sound.independent_parameters[0].values == [22.0, 40.0, 60.0]
-    assert speed_of_sound.independent_parameters[0].units == "C"
+    assert speed_of_sound.independent_parameters[0].unit == "C"
     assert speed_of_sound.independent_parameters[0].upper_limit == "Program Controlled"
     assert speed_of_sound.independent_parameters[0].lower_limit == "Program Controlled"
-    assert speed_of_sound.independent_parameters[0].default_value == "22"
+    assert speed_of_sound.independent_parameters[0].default_value == 22.0
     assert speed_of_sound.speed_of_sound == [200.0, 300.0, 350.0]
 
 
@@ -151,8 +151,8 @@ def test_write_constant_speed_of_sound():
                             name="Temperature",
                             field_variable="Temperature",
                             values=[7.88860905221012e-31],
-                            units="C",
-                            default_value="22",
+                            unit="C",
+                            default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -181,8 +181,8 @@ def test_write_variable_speed_of_sound():
                             name="Temperature",
                             field_variable="Temperature",
                             values=[22.0, 40.0, 60.0],
-                            units="C",
-                            default_value="22",
+                            unit="C",
+                            default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),

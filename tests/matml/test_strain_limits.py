@@ -84,7 +84,7 @@ STRAIN_LIMITS_ORTHOTROPIC = """<?xml version="1.0" ?>
         <Data>7.88860905221012e-31</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -177,7 +177,7 @@ STRAIN_LIMITS_VARIABLE_ORTHOTROPIC = """<?xml version="1.0" ?>
       <ParameterValue parameter="pa9" format="float">
         <Data>13.0, 21.0, 23.0</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Default Data">22</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
         <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
@@ -303,10 +303,10 @@ def test_read_constant_strain_limit_orthotropic():
     assert orthotropic_strain_limits.shear_yz == [232.0]
     assert orthotropic_strain_limits.independent_parameters[0].name == "Temperature"
     assert orthotropic_strain_limits.independent_parameters[0].values == [7.88860905221012e-31]
-    assert orthotropic_strain_limits.independent_parameters[0].units == "C"
+    assert orthotropic_strain_limits.independent_parameters[0].unit == "C"
     assert orthotropic_strain_limits.independent_parameters[0].upper_limit == "Program Controlled"
     assert orthotropic_strain_limits.independent_parameters[0].lower_limit == "Program Controlled"
-    assert orthotropic_strain_limits.independent_parameters[0].default_value == "22"
+    assert orthotropic_strain_limits.independent_parameters[0].default_value == 22.0
 
 
 def test_read_variable_strain_limit_orthotropic():
@@ -335,10 +335,10 @@ def test_read_variable_strain_limit_orthotropic():
     assert orthotropic_strain_limits.shear_yz == [255.0, 232.0, 244.0]
     assert orthotropic_strain_limits.independent_parameters[0].name == "Temperature"
     assert orthotropic_strain_limits.independent_parameters[0].values == [13.0, 21.0, 23.0]
-    assert orthotropic_strain_limits.independent_parameters[0].units == "C"
+    assert orthotropic_strain_limits.independent_parameters[0].unit == "C"
     assert orthotropic_strain_limits.independent_parameters[0].upper_limit == "Program Controlled"
     assert orthotropic_strain_limits.independent_parameters[0].lower_limit == "Program Controlled"
-    assert orthotropic_strain_limits.independent_parameters[0].default_value == "22"
+    assert orthotropic_strain_limits.independent_parameters[0].default_value == 22.0
 
 
 def test_write_constant_strain_limits_orthotropic():
@@ -361,10 +361,10 @@ def test_write_constant_strain_limits_orthotropic():
                             name="Temperature",
                             field_variable="Temperature",
                             values=[7.88860905221012e-31],
-                            units="C",
+                            unit="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
-                            default_value="22",
+                            default_value=22.0,
                         )
                     ],
                 ),
@@ -440,10 +440,10 @@ def test_write_variable_strain_limits_orthotropic():
                         IndependentParameter(
                             name="Temperature",
                             values=[13.0, 21.0, 23.0],
-                            units="C",
+                            unit="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
-                            default_value="22",
+                            default_value=22.0,
                         )
                     ],
                 ),

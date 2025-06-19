@@ -31,7 +31,7 @@ def test_elasticity_isotropic():
     youngs_modulus = [210e9]
     poissons_ratio = [0.3]
     temperature = IndependentParameter(
-        name="Temperature", values=[300.0], default_value=293.15, units="K"
+        name="Temperature", values=[300.0], default_value=293.15, unit="K"
     )
 
     isotropic_elasticity = ElasticityIsotropic(

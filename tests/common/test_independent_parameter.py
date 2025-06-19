@@ -27,7 +27,7 @@ def test_independent_parameter_creation():
     name = "Temperature"
     values = [300.0]
     default_value = 293.15
-    units = "K"
+    unit = "K"
     upper_limit = 1000.0
     lower_limit = 0.0
 
@@ -35,7 +35,7 @@ def test_independent_parameter_creation():
         name=name,
         values=values,
         default_value=default_value,
-        units=units,
+        unit=unit,
         upper_limit=upper_limit,
         lower_limit=lower_limit,
     )
@@ -43,7 +43,7 @@ def test_independent_parameter_creation():
     assert independent_param.name == name
     assert independent_param.values == values
     assert independent_param.default_value == default_value
-    assert independent_param.units == units
+    assert independent_param.unit == unit
     assert independent_param.upper_limit == upper_limit
     assert independent_param.lower_limit == lower_limit
     assert isinstance(independent_param, IndependentParameter)

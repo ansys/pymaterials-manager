@@ -147,26 +147,38 @@ class MatmlWriter:
                     param_element, "Qualifier", {"name": "Field Variable"}
                 )
                 qualifier_element.text = independent_parameter.field_variable
-            if independent_parameter.default_value:
+            if independent_parameter.default_value is not None:
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Default Data"}
                 )
-                qualifier_element.text = str(independent_parameter.default_value)
-            if independent_parameter.units:
+                qualifier_element.text = (
+                    str(independent_parameter.default_value).replace("e", "E")
+                    if type(independent_parameter.default_value) == float
+                    else independent_parameter.default_value
+                )
+            if independent_parameter.unit:
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Field Units"}
                 )
-                qualifier_element.text = independent_parameter.units
-            if independent_parameter.upper_limit:
+                qualifier_element.text = independent_parameter.unit
+            if independent_parameter.upper_limit is not None:
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Upper Limit"}
                 )
-                qualifier_element.text = independent_parameter.upper_limit
-            if independent_parameter.lower_limit:
+                qualifier_element.text = (
+                    str(independent_parameter.upper_limit).replace("e", "E")
+                    if type(independent_parameter.upper_limit) == float
+                    else independent_parameter.upper_limit
+                )
+            if independent_parameter.lower_limit is not None:
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Lower Limit"}
                 )
-                qualifier_element.text = independent_parameter.lower_limit
+                qualifier_element.text = (
+                    str(independent_parameter.lower_limit).replace("e", "E")
+                    if type(independent_parameter.lower_limit) == float
+                    else independent_parameter.lower_limit
+                )
 
     def _add_usermat_parameters(
         self, property_element: ET.Element, user_parameters: Sequence[UserParameter]

@@ -104,10 +104,10 @@ def test_read_constant_viscosity():
     assert viscosity.independent_parameters[0].name == "Temperature"
     assert viscosity.independent_parameters[0].field_variable == "Temperature"
     assert viscosity.independent_parameters[0].values == [7.88860905221012e-31]
-    assert viscosity.independent_parameters[0].units == "C"
+    assert viscosity.independent_parameters[0].unit == "C"
     assert viscosity.independent_parameters[0].upper_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].lower_limit == "Program Controlled"
-    assert viscosity.independent_parameters[0].default_value == "22"
+    assert viscosity.independent_parameters[0].default_value == 22.0
 
 
 def test_read_variable_viscosity():
@@ -125,10 +125,10 @@ def test_read_variable_viscosity():
     assert viscosity.independent_parameters[0].name == "Temperature"
     assert viscosity.independent_parameters[0].field_variable == "Temperature"
     assert viscosity.independent_parameters[0].values == [22.0, 50.0, 70.0]
-    assert viscosity.independent_parameters[0].units == "C"
+    assert viscosity.independent_parameters[0].unit == "C"
     assert viscosity.independent_parameters[0].upper_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].lower_limit == "Program Controlled"
-    assert viscosity.independent_parameters[0].default_value == "22"
+    assert viscosity.independent_parameters[0].default_value == 22.0
 
 
 def test_write_constant_viscosity():
