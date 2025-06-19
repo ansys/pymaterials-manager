@@ -72,8 +72,6 @@ class MaterialModel(BaseModel, abc.ABC):
         value: dict | None
             Dictionary containing the material model data. If `None`, returns `None`.
         """
-        if value is None:
-            return None
         return cls(**value)
 
     @abc.abstractmethod

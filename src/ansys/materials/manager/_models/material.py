@@ -42,7 +42,7 @@ class Material:
         self,
         name: str,
         material_id: str | None = None,
-        models: list[MaterialModel] | None = None,
+        models: list[MaterialModel] = [],
         guid: str | None = None,
     ) -> None:
         """
@@ -68,8 +68,7 @@ class Material:
         else:
             self._guid = str(uuid.uuid4())  # Generate a new UUID if not provided
         self.models = []
-        if models is not None:
-            self.models.extend(models)
+        self.models.extend(models)
 
     @property
     def guid(self) -> str:
@@ -88,7 +87,7 @@ class Material:
     @models.setter
     def models(self, value: list[MaterialModel]) -> None:
         """Set the material models."""
-        if not isinstance(value, list):
+        if not isinstance(value, list[MaterialModel]):
             raise TypeError("models must be a list of MaterialModel instances.")
         self._models = value
 
