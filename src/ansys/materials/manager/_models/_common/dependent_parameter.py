@@ -20,33 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
-
-from pydantic import Field
-
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager.material import Material
+from pydantic import BaseModel, Field
 
 
-class Density(MaterialModel):
-    """Represents an isotropic density material model."""
+class DependentParameter(BaseModel):
+    """A dependent parameter model."""
 
-    name: Literal["Density"] = Field(default="Density", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
+    values: list[float] = Field(
+        default=[],
+        title="Values",
+        description="The values of the dependent parameter.",
     )
-    density: DependentParameter = Field(
-        default=DependentParameter(),
-        title="Density",
-        description="The density of the material.",
+    unit: str = Field(
+        default="unitless",
+        title="Unit",
+        description="The unit of the dependent parameter.",
     )
-
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
-        """Write this model to the specified session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        pass

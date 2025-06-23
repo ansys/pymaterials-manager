@@ -25,13 +25,14 @@
 from pydoc import locate
 from typing import Dict, Sequence
 
+from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.common import convert_to_float_or_keep
-from ansys.materials.manager.util.matml.property_to_model_field import PROPERTY_TO_MODEL_FIELD
+from ansys.materials.manager.util.matml.utils import NOT_DEPENDENT_PARAMETER_FIELDS
 
 
 def convert_matml_materials(
@@ -75,6 +76,9 @@ def convert_matml_materials(
             cls = locate(cls_name)
             if cls:
                 property_map += list(cls.model_fields.keys())
+                titles = {
+                    name: field.title for name, field in cls.__fields__.items() if field.title
+                }
                 independent_parameters = []
                 for name in property_map:
                     if name == "independent_parameters":
@@ -104,10 +108,10 @@ def convert_matml_materials(
                                 )
                                 independent_parameters.append(independent_param)
                     if (
-                        name in PROPERTY_TO_MODEL_FIELD.keys()
+                        name not in NOT_DEPENDENT_PARAMETER_FIELDS
                         and cls.__class__.__name__ != "ModelCoefficients"
                     ):
-                        param_name = PROPERTY_TO_MODEL_FIELD[name]
+                        param_name = titles[name]
                         if param_name in property_set.parameters.keys():
                             param = property_set.parameters[param_name]
                             data = param.data
@@ -116,7 +120,10 @@ def convert_matml_materials(
                                     data = [data]
                             else:
                                 data = int(data)
-                            arguments[name] = data
+                            if name in ["red", "green", "blue", "material_property"]:
+                                arguments[name] = data
+                            else:
+                                arguments[name] = DependentParameter(values=data, unit=param.unit)
 
                     if name == "model_qualifiers":
                         arguments["model_qualifiers"] = qualifiers

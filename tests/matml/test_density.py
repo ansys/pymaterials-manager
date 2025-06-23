@@ -24,6 +24,7 @@ import os
 
 from utilities import get_material_and_metadata_from_xml, read_matml_file
 
+from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models.material import Material
@@ -105,7 +106,7 @@ def test_read_material_with_constant_density():
     assert len(constant_density_material.models) == 2
     density = constant_density_material.models[1]
     assert density.name == "Density"
-    assert density.density == [1.34]
+    assert density.density.values == [1.34]
     assert len(density.independent_parameters) == 1
     assert density.independent_parameters[0].name == "Temperature"
     assert density.independent_parameters[0].values == [7.88860905221012e-31]
@@ -118,7 +119,7 @@ def test_read_model_with_variable_density():
     assert len(variable_density_material.models) == 2
     density = variable_density_material.models[1]
     assert density.name == "Density"
-    assert density.density == [12.0, 32.0, 38.0]
+    assert density.density.values == [12.0, 32.0, 38.0]
     assert len(density.independent_parameters) == 1
     assert density.independent_parameters[0].name == "Temperature"
     assert density.independent_parameters[0].values == [
@@ -134,7 +135,7 @@ def test_write_material_with_constant_density():
             name="material with density",
             models=[
                 Density(
-                    density=[1.34],
+                    density=DependentParameter(values=[1.34]),
                     independent_parameters=[
                         IndependentParameter(name="Temperature", values=[7.88860905221012e-31])
                     ],
@@ -156,7 +157,7 @@ def test_write_model_with_variable_density():
             name="material variable with density",
             models=[
                 Density(
-                    density=[12.0, 32.0, 38.0],
+                    density=DependentParameter(values=[12.0, 32.0, 38.0]),
                     independent_parameters=[
                         IndependentParameter(name="Temperature", values=[20.0, 21.0, 23.0])
                     ],

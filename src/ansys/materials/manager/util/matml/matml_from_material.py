@@ -31,7 +31,7 @@ from ansys.materials.manager._models._common.interpolation_options import Interp
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager.material import Material
-from ansys.materials.manager.util.matml.property_to_model_field import PROPERTY_TO_MODEL_FIELD
+from ansys.materials.manager.util.matml.utils import NOT_DEPENDENT_PARAMETER_FIELDS
 
 from .matml_parser import (
     BULKDATA_KEY,
@@ -87,7 +87,12 @@ class MatmlWriter:
                 )
 
                 data_element = ET.SubElement(param_element, "Data")
-                values = str(models[mat_key]).strip("[]")
+                if isinstance(models[mat_key], dict):
+                    if "values" in models[mat_key].keys():
+                        # if the model has a values key, use that
+                        values = str(models[mat_key]["values"]).strip("[]")
+                else:
+                    values = str(models[mat_key]).strip("[]")
                 data_element.text = values
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Variable Type"}
@@ -212,11 +217,10 @@ class MatmlWriter:
         material_model: MaterialModel,
         property_set_name: str,
     ):
-        model_attributes = list(material_model.model_fields.keys())
         dependent_parameters = {
-            model_attribute: PROPERTY_TO_MODEL_FIELD[model_attribute]
-            for model_attribute in model_attributes
-            if model_attribute in PROPERTY_TO_MODEL_FIELD.keys()
+            name: field.title
+            for name, field in material_model.model_fields.items()
+            if field.title and name not in NOT_DEPENDENT_PARAMETER_FIELDS
         }
 
         # for model_qualifier in model_qualifiers:

@@ -43,12 +43,12 @@ class ElasticityIsotropic(MaterialModel):
     )
     youngs_modulus: list[float] = Field(
         default=[],
-        title="Young's modulus",
+        title="Young's Modulus",
         description="The Young's modulus of the material.",
     )
     poissons_ratio: list[float] = Field(
         default=[],
-        title="Poisson's ratio",
+        title="Poisson's Ratio",
         description="The Poisson's ratio of the material.",
     )
     model_qualifiers: list[ModelQualifier] = Field(

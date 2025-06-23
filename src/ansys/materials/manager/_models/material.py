@@ -87,7 +87,7 @@ class Material:
     @models.setter
     def models(self, value: list[MaterialModel]) -> None:
         """Set the material models."""
-        if not isinstance(value, list[MaterialModel]):
+        if not isinstance(value, list):
             raise TypeError("models must be a list of MaterialModel instances.")
         self._models = value
 
