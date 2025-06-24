@@ -20,7 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import re
 import xml.etree.ElementTree as ET
+
+from ansys.materials.manager._models._common.units import get_unit_by_symbol
 
 NOT_DEPENDENT_PARAMETER_FIELDS = [
     "name",
@@ -31,8 +34,41 @@ NOT_DEPENDENT_PARAMETER_FIELDS = [
 ]
 
 
+def parse_unit_string(unit_str: str) -> list[tuple[str, int]]:
+    """Parse a unit string into a list of tuples."""
+    if unit_str.strip().lower() == "unitless":
+        return [("Unitless", 1)]
+
+    pattern = r"([a-zA-Z]+)(?:\^?(-?\d+))?"
+    units = unit_str.split("*")
+    result = []
+
+    for unit in units:
+        match = re.fullmatch(pattern, unit.strip())
+        if match:
+            name = match.group(1)
+            power = int(match.group(2)) if match.group(2) else 1
+            result.append((name, power))
+        else:
+            raise ValueError(f"Invalid unit format: {unit}")
+
+    return result
+
+
 def xml_to_unit(param: ET.Element) -> tuple[str, dict[str, str]]:
-    """Convert XML element to a unit string."""
+    """
+    Convert XML element to a unit string.
+
+    Parameters
+    ----------
+    param : ET.Element
+        The XML element containing the unit information.
+
+    Returns
+    -------
+    tuple[str, dict[str, str]]
+        A tuple containing the unit ID and a dictionary with unit details.
+    """
     id = param.attrib.get("id", "")
     entry = {"Name": param.findtext("Name", ""), "UnitsName": "", "Units": ""}
     units = param.find("Units")
@@ -43,35 +79,42 @@ def xml_to_unit(param: ET.Element) -> tuple[str, dict[str, str]]:
             name = unit.findtext("Name", "")
             power = unit.attrib.get("power")
             if power:
-                unit_parts.append(f"{name}{power}")
+                unit_parts.append(f"{name}^{power}")
             else:
                 unit_parts.append(name)
         entry["Units"] = "*".join(unit_parts)
     elif param.find("Unitless") is not None:
         entry["Units"] = "Unitless"
-
+    complete_unit = entry["Units"]
+    entry["Units"] = get_unit_by_symbol(complete_unit)
     return id, entry
 
 
-def unit_to_xml(params, tag_name):
-    """Convert a list of parameters to XML string. tag_name: ParameterDetails or PropertyDetails."""
-    root = ET.Element("root")
-    for param in params:
-        pd = ET.SubElement(root, tag_name, id=param["id"])
-        ET.SubElement(pd, "Name").text = param["name"]
+def units_to_xml(unit: str) -> ET.Element:
+    """
+    Convert a unit string to an XML element.
 
-        if param["unit"] == "unitless":
-            ET.SubElement(pd, "Unitless")
-        else:
-            units = ET.SubElement(pd, "Units")
-            if param["unit_name"]:
-                units.set("name", param["unit_name"])
-            for part in param["unit"].split("*"):
-                name = "".join(filter(str.isalpha, part))
-                power = "".join(filter(lambda x: x == "-" or x.isdigit(), part[len(name) :]))
-                unit_elem = ET.SubElement(units, "Unit")
-                if power:
-                    unit_elem.set("power", power)
-                ET.SubElement(unit_elem, "Name").text = name
+    Parameters
+    ----------
+    unit : str
+        The unit string to convert, e.g., "kg*m-3" or "Pa".
 
-    return ET.tostring(root, encoding="unicode")
+    Returns
+    -------
+    ET.Element
+        An XML element representing the units.
+    """
+    unit_list = parse_unit_string(unit)
+
+    if unit_list and unit_list[0][0].lower() == "unitless":
+        return "<Unitless />"
+
+    units = ET.Element("Units")
+
+    for unit_name, power in unit_list:
+        attribs = {"power": str(power)} if power != 1 else {}
+        unit_elem = ET.SubElement(units, "Unit", attrib=attribs)
+        name_elem = ET.SubElement(unit_elem, "Name")
+        name_elem.text = unit_name
+
+    return units

@@ -20,7 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from typing import Union
+
 from pydantic import BaseModel, Field
+
+from ansys.materials.manager._models._common.units import MeasuredUnit, Units
 
 
 class DependentParameter(BaseModel):
@@ -31,8 +35,8 @@ class DependentParameter(BaseModel):
         title="Values",
         description="The values of the dependent parameter.",
     )
-    unit: str = Field(
-        default="unitless",
+    unit: Union[MeasuredUnit | Units | str | None] = Field(
+        default=None,
         title="Unit",
         description="The unit of the dependent parameter.",
     )

@@ -29,9 +29,10 @@ import xml.etree.ElementTree as ET
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common.units import MeasuredUnit, Units
 from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager.material import Material
-from ansys.materials.manager.util.matml.utils import NOT_DEPENDENT_PARAMETER_FIELDS
+from ansys.materials.manager.util.matml.utils import NOT_DEPENDENT_PARAMETER_FIELDS, units_to_xml
 
 from .matml_parser import (
     BULKDATA_KEY,
@@ -62,12 +63,16 @@ class MatmlWriter:
     _materials: Sequence[Material]
     _metadata_property_sets: Dict
     _metadata_parameters: Dict
+    _metadata_parameters_units: Dict
+    _metadata_property_sets_units: Dict
 
     def __init__(self, materials: Sequence[Material]):
         """Construct a Matml writer."""
         self._materials = materials
         self._metadata_property_sets = {}
         self._metadata_parameters = {}
+        self._metadata_parameters_units = {}
+        self._metadata_property_sets_units = {}
 
     def _add_dependent_parameters(
         self, property_element: ET.Element, models: Dict, parameters: Dict
@@ -82,6 +87,16 @@ class MatmlWriter:
                     para_key = f"pa{index}"
                     self._metadata_parameters[matml_key] = para_key
 
+                    if models[mat_key]["unit"]:
+                        if models[mat_key]["unit"].get("unit"):
+                            unit_value = models[mat_key]["unit"]["unit"].value
+                        elif isinstance(models[mat_key]["unit"], Units):
+                            unit_value = models[mat_key]["unit"].value
+                        else:
+                            unit_value = models[mat_key]["unit"]
+                        self._metadata_parameters_units[matml_key] = unit_value
+                    else:
+                        self._metadata_parameters_units[matml_key] = "Unitless"
                 param_element = ET.SubElement(
                     property_element, "ParameterValue", {"parameter": para_key, "format": "float"}
                 )
@@ -138,6 +153,16 @@ class MatmlWriter:
                 index = len(self._metadata_parameters)
                 parameter_id = f"pa{index}"
                 self._metadata_parameters[independent_parameter.name] = parameter_id
+                if independent_parameter.unit:
+                    if isinstance(independent_parameter.unit, Units):
+                        unit_value = independent_parameter.unit.value
+                    elif isinstance(independent_parameter.unit, MeasuredUnit):
+                        unit_value = independent_parameter.unit.unit.value
+                    else:
+                        unit_value = independent_parameter.unit
+                    self._metadata_parameters_units[independent_parameter.name] = unit_value
+                else:
+                    self._metadata_parameters_units[independent_parameter.name] = "Unitless"
 
             param_element = ET.SubElement(
                 property_element, "ParameterValue", {"parameter": parameter_id, "format": "float"}
@@ -222,8 +247,6 @@ class MatmlWriter:
             for name, field in material_model.model_fields.items()
             if field.title and name not in NOT_DEPENDENT_PARAMETER_FIELDS
         }
-
-        # for model_qualifier in model_qualifiers:
         if len(dependent_parameters) > 0:
             # get property id from metadata or add it if it does not exist yet
             if property_set_name in self._metadata_property_sets.keys():
@@ -284,7 +307,11 @@ class MatmlWriter:
 
         for key, value in self._metadata_parameters.items():
             prop_element = ET.SubElement(metadata_element, "ParameterDetails", {"id": value})
-            ET.SubElement(prop_element, UNITLESS_KEY)
+            units = self._metadata_parameters_units.get(key, None)
+            if units:
+                prop_element.append(units_to_xml(units))
+            else:
+                ET.SubElement(prop_element, UNITLESS_KEY)
             name_element = ET.SubElement(prop_element, "Name")
             name_element.text = key
 
