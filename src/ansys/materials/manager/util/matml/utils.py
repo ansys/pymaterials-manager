@@ -23,16 +23,6 @@
 import re
 import xml.etree.ElementTree as ET
 
-from ansys.materials.manager._models._common.units import get_unit_by_symbol
-
-NOT_DEPENDENT_PARAMETER_FIELDS = [
-    "name",
-    "independent_parameters",
-    "interpolation_options",
-    "model_qualifiers",
-    "supported_packages",
-]
-
 
 def parse_unit_string(unit_str: str) -> list[tuple[str, int]]:
     """Parse a unit string into a list of tuples."""
@@ -40,7 +30,7 @@ def parse_unit_string(unit_str: str) -> list[tuple[str, int]]:
         return [("Unitless", 1)]
 
     pattern = r"([a-zA-Z]+)(?:\^?(-?\d+))?"
-    units = unit_str.split("*")
+    units = unit_str.split(" ")
     result = []
 
     for unit in units:
@@ -82,11 +72,9 @@ def xml_to_unit(param: ET.Element) -> tuple[str, dict[str, str]]:
                 unit_parts.append(f"{name}^{power}")
             else:
                 unit_parts.append(name)
-        entry["Units"] = "*".join(unit_parts)
+        entry["Units"] = " ".join(unit_parts)
     elif param.find("Unitless") is not None:
         entry["Units"] = "Unitless"
-    complete_unit = entry["Units"]
-    entry["Units"] = get_unit_by_symbol(complete_unit)
     return id, entry
 
 
@@ -107,7 +95,7 @@ def units_to_xml(unit: str) -> ET.Element:
     unit_list = parse_unit_string(unit)
 
     if unit_list and unit_list[0][0].lower() == "unitless":
-        return "<Unitless />"
+        return ET.Element("Unitless")
 
     units = ET.Element("Units")
 

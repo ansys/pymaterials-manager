@@ -29,10 +29,9 @@ import xml.etree.ElementTree as ET
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.units import MeasuredUnit, Units
 from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager.material import Material
-from ansys.materials.manager.util.matml.utils import NOT_DEPENDENT_PARAMETER_FIELDS, units_to_xml
+from ansys.materials.manager.util.matml.utils import units_to_xml
 
 from .matml_parser import (
     BULKDATA_KEY,
@@ -86,15 +85,9 @@ class MatmlWriter:
                     index = len(self._metadata_parameters)
                     para_key = f"pa{index}"
                     self._metadata_parameters[matml_key] = para_key
-
-                    if models[mat_key]["unit"]:
-                        if models[mat_key]["unit"].get("unit"):
-                            unit_value = models[mat_key]["unit"]["unit"].value
-                        elif isinstance(models[mat_key]["unit"], Units):
-                            unit_value = models[mat_key]["unit"].value
-                        else:
-                            unit_value = models[mat_key]["unit"]
-                        self._metadata_parameters_units[matml_key] = unit_value
+                    unit = models[mat_key].get("units", None)
+                    if unit:
+                        self._metadata_parameters_units[matml_key] = unit
                     else:
                         self._metadata_parameters_units[matml_key] = "Unitless"
                 param_element = ET.SubElement(
@@ -103,9 +96,9 @@ class MatmlWriter:
 
                 data_element = ET.SubElement(param_element, "Data")
                 if isinstance(models[mat_key], dict):
-                    if "values" in models[mat_key].keys():
+                    if "value" in models[mat_key].keys():
                         # if the model has a values key, use that
-                        values = str(models[mat_key]["values"]).strip("[]")
+                        values = str(models[mat_key]["value"]).strip("[]")
                 else:
                     values = str(models[mat_key]).strip("[]")
                 data_element.text = values
@@ -153,16 +146,7 @@ class MatmlWriter:
                 index = len(self._metadata_parameters)
                 parameter_id = f"pa{index}"
                 self._metadata_parameters[independent_parameter.name] = parameter_id
-                if independent_parameter.unit:
-                    if isinstance(independent_parameter.unit, Units):
-                        unit_value = independent_parameter.unit.value
-                    elif isinstance(independent_parameter.unit, MeasuredUnit):
-                        unit_value = independent_parameter.unit.unit.value
-                    else:
-                        unit_value = independent_parameter.unit
-                    self._metadata_parameters_units[independent_parameter.name] = unit_value
-                else:
-                    self._metadata_parameters_units[independent_parameter.name] = "Unitless"
+                self._metadata_parameters_units[independent_parameter.name] = "Unitless"
 
             param_element = ET.SubElement(
                 property_element, "ParameterValue", {"parameter": parameter_id, "format": "float"}
@@ -186,11 +170,11 @@ class MatmlWriter:
                     if type(independent_parameter.default_value) == float
                     else independent_parameter.default_value
                 )
-            if independent_parameter.unit:
+            if independent_parameter.field_units:
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Field Units"}
                 )
-                qualifier_element.text = independent_parameter.unit
+                qualifier_element.text = independent_parameter.field_units
             if independent_parameter.upper_limit is not None:
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Upper Limit"}
@@ -243,9 +227,9 @@ class MatmlWriter:
         property_set_name: str,
     ):
         dependent_parameters = {
-            name: field.title
+            name: field.matml_name
             for name, field in material_model.model_fields.items()
-            if field.title and name not in NOT_DEPENDENT_PARAMETER_FIELDS
+            if hasattr(field, "matml_name")
         }
         if len(dependent_parameters) > 0:
             # get property id from metadata or add it if it does not exist yet

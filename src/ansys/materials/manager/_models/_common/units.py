@@ -416,3 +416,40 @@ def are_units_compatible(unit1: Units, unit2: Units) -> bool:
         except:
             raise ValueError(f"Units '{unit1}' or '{unit2}' are is not recognized.")
     raise ValueError(f"Units '{unit1}' and '{unit2}' are not compatible.")
+
+
+# class UnitConverter:
+#     _convertes = {}
+
+#     @classmethod
+#     def register(cls, from_unit, to_unit, bidirectional=False):
+#         def decorator(func):
+#             cls._converters[(from_unit, to_unit)] = func
+#             if bidirectional:
+#                 def reverse_func(value):
+#                     return func(value, reverse=True) if '
+# reverse' in func.__code__.co_varnames else 1 / func(value)
+#                 cls._converters[(to_unit, from_unit)] = reverse_func
+#             return func
+#         return decorator
+
+#     @classmethod
+#     def convert(cls, value, from_unit, to_unit):
+#         if from_unit == to_unit:
+#             return value
+#         key = (from_unit, to_unit)
+#         if key not in cls._converters:
+#             raise ValueError(f"No conversion from {from_unit} to {to_unit}")
+#         return cls._converters[key](value)
+
+# @UnitConverter.register(LengthUnits.METERS, LengthUnits.CENTIMETERS, bidirectional=True)
+# def meters_to_centimeters(value):
+#     return value * 100
+
+# @UnitConverter.register(TemperatureUnits.CELSIUS, TemperatureUnits.FAHRENHEIT, bidirectional=True)
+# def celsius_to_fahrenheit(value, reverse=False):
+#     return (value * 9/5 + 32) if not reverse else (value - 32) * 5/9
+
+# @UnitConverter.register(PressureUnits.PASCALS, PressureUnits.PSI, bidirectional=True)
+# def pascals_to_psi(value):
+#     return value * 0.0001450377

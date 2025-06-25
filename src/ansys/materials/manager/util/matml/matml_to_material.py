@@ -25,14 +25,13 @@
 from pydoc import locate
 from typing import Dict, Sequence
 
-from ansys.materials.manager._models._common.dependent_parameter import DependentParameter
+from ansys.materials.manager._models._common.common import QuantityWrapper
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.common import convert_to_float_or_keep
-from ansys.materials.manager.util.matml.utils import NOT_DEPENDENT_PARAMETER_FIELDS
 
 
 def convert_matml_materials(
@@ -77,7 +76,9 @@ def convert_matml_materials(
             if cls:
                 property_map += list(cls.model_fields.keys())
                 titles = {
-                    name: field.title for name, field in cls.__fields__.items() if field.title
+                    name: field_info.matml_name
+                    for name, field_info in cls.__fields__.items()
+                    if hasattr(field_info, "matml_name")  # noqa: E501
                 }
                 independent_parameters = []
                 for name in property_map:
@@ -93,12 +94,12 @@ def convert_matml_materials(
                                         else [param_value.data]
                                     ),
                                     default_value=convert_to_float_or_keep(
-                                        param_value.qualifiers.get("Default Data", "")
+                                        param_value.qualifiers.get("Default Data", None)
                                     ),
                                     field_variable=param_value.qualifiers.get(
                                         "Field Variable", None
                                     ),
-                                    unit=param_value.qualifiers.get("Field Units", ""),
+                                    field_units=param_value.qualifiers.get("Field Units", None),
                                     upper_limit=convert_to_float_or_keep(
                                         param_value.qualifiers.get("Upper Limit", None)
                                     ),
@@ -107,10 +108,7 @@ def convert_matml_materials(
                                     ),
                                 )
                                 independent_parameters.append(independent_param)
-                    if (
-                        name not in NOT_DEPENDENT_PARAMETER_FIELDS
-                        and cls.__class__.__name__ != "ModelCoefficients"
-                    ):
+                    if name in titles.keys() and cls.__class__.__name__ != "ModelCoefficients":
                         param_name = titles[name]
                         if param_name in property_set.parameters.keys():
                             param = property_set.parameters[param_name]
@@ -120,10 +118,10 @@ def convert_matml_materials(
                                     data = [data]
                             else:
                                 data = int(data)
-                            if name in ["red", "green", "blue", "material_property"]:
+                            if param.unit == "Unitless":
                                 arguments[name] = data
                             else:
-                                arguments[name] = DependentParameter(values=data, unit=param.unit)
+                                arguments[name] = QuantityWrapper(value=data, units=param.unit)
 
                     if name == "model_qualifiers":
                         arguments["model_qualifiers"] = qualifiers

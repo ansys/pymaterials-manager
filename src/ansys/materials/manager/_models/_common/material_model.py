@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field
 from pyparsing import Any
 
 from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
+from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
@@ -51,10 +52,10 @@ class MaterialModel(BaseModel, abc.ABC):
         title="Interpolation Options",
         description="Options for interpolation of the material model data.",
     )
-    material_property: str | None = Field(
+    material_property: str | None = ParameterField(
         default=None,
-        title="Material Property",
         description="The material property for the material model.",
+        matml_name="Material Property",
     )
     model_qualifiers: list[ModelQualifier] = Field(
         default=[],

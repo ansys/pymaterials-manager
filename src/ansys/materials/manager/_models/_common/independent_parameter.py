@@ -25,8 +25,6 @@ from typing import Union
 
 from pydantic import BaseModel, Field
 
-from ansys.materials.manager._models._common.units import MeasuredUnit, Units
-
 
 class IndependentParameter(BaseModel):
     """Class representing an independent parameter in a material model."""
@@ -47,7 +45,7 @@ class IndependentParameter(BaseModel):
         title="Default Value",
         description="The default value of the independent parameter.",
     )
-    unit: str | Units | MeasuredUnit | None = Field(
+    unit: str | None = Field(
         default="", title="Unit", description="The unit of the independent parameter."
     )
     upper_limit: Union[str | float | None] = Field(
@@ -55,4 +53,9 @@ class IndependentParameter(BaseModel):
     )
     lower_limit: Union[str | float | None] = Field(
         default=None, title="Lower Limit", description="Lower limit of the independent parameter."
+    )
+    field_units: str | None = Field(
+        default=None,
+        title="Field Units",
+        description="The field units of the independent parameter.",
     )
