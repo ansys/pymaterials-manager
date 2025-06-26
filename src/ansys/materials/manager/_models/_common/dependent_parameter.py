@@ -20,33 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from typing import Union
+
+from pydantic import BaseModel, Field
+
+from ansys.materials.manager._models._common.units import MeasuredUnit, Units
 
 
-def test_independent_parameter_creation():
-    name = "Temperature"
-    field_variable = "Temperature"
-    values = [300.0]
-    default_value = 293.15
-    field_units = "K"
-    upper_limit = 1000.0
-    lower_limit = 0.0
+class DependentParameter(BaseModel):
+    """A dependent parameter model."""
 
-    independent_param = IndependentParameter(
-        name=name,
-        field_variable=field_variable,
-        values=values,
-        default_value=default_value,
-        field_units=field_units,
-        upper_limit=upper_limit,
-        lower_limit=lower_limit,
+    values: list[float] = Field(
+        default=[],
+        title="Values",
+        description="The values of the dependent parameter.",
     )
-
-    assert independent_param.name == name
-    assert independent_param.field_variable == field_variable
-    assert independent_param.values == values
-    assert independent_param.default_value == default_value
-    assert independent_param.field_units == field_units
-    assert independent_param.upper_limit == upper_limit
-    assert independent_param.lower_limit == lower_limit
-    assert isinstance(independent_param, IndependentParameter)
+    unit: Union[MeasuredUnit | Units | str | None] = Field(
+        default=None,
+        title="Unit",
+        description="The unit of the dependent parameter.",
+    )

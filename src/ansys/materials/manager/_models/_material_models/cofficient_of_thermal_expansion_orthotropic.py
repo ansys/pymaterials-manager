@@ -25,6 +25,11 @@ from typing import Any, Dict, Literal
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
@@ -39,20 +44,20 @@ class CoefficientofThermalExpansionOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    coefficient_of_thermal_expansion_x: list[float] = Field(
+    coefficient_of_thermal_expansion_x: list[float] = ParameterField(
         default=[],
-        title="Coefficient of Thermal Expansion X direction",
         description="The coefficient of thermal expansion in X direction  for the material.",
+        matml_name="Coefficient of Thermal Expansion X direction",
     )
     coefficient_of_thermal_expansion_y: list[float] = Field(
         default=[],
-        title="Coefficient of Thermal Expansion Y direction",
         description="The coefficient of thermal expansion in Y direction for the material.",
+        matml_name="Coefficient of Thermal Expansion Y direction",
     )
     coefficient_of_thermal_expansion_z: list[float] = Field(
         default=[],
-        title="Coefficient of Thermal Expansion Z direction",
         description="The coefficient of thermal expansion in Z direction for the material.",
+        matml_name="Coefficient of Thermal Expansion Z direction",
     )
 
     model_qualifiers: list[ModelQualifier] = Field(
@@ -63,26 +68,13 @@ class CoefficientofThermalExpansionOrthotropic(MaterialModel):
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        if "model_qualifiers" in values:
-            found_behavior = False
-            found_definition = False
-            for model_qualifier in values["model_qualifiers"]:
-                if model_qualifier.name == "Behavior" and model_qualifier.value != "Orthotropic":
-                    raise ValueError(
-                        "Behavior must be 'Orthotropic' for CoefficientofThermalExpansionOrthotropic model."  # noqa: E501
-                    )
-                if model_qualifier.name == "Behavior":
-                    found_behavior = True
-                if model_qualifier.name == "Definition":
-                    found_definition = True
-            if not found_definition:
-                model_qualifiers = values.get("model_qualifiers", [])
-                definition_qualifier = [ModelQualifier(name="Definition", value="Instantaneous")]
-                values["model_qualifiers"] = definition_qualifier + model_qualifiers
-            if not found_behavior:
-                model_qualifiers = values.get("model_qualifiers", [])
-                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Orthotropic")]
-                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        expected_qualifiers = {
+            "Behavior": ["Orthotropic", QualifierType.STRICT],
+            "Definition": ["Instantaneous", QualifierType.FREE, ["Instantaneous", "Secant"]],
+        }
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
         return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

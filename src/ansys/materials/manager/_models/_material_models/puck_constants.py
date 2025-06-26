@@ -25,6 +25,7 @@ from typing import Any, Literal
 from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
@@ -36,25 +37,25 @@ class PuckConstants(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    compressive_inclination_xz: list[float] = Field(
+    compressive_inclination_xz: list[float] = ParameterField(
         default=[],
-        title="Compressive Inclination XZ",
         description="The compressive inclination in the XZ plane for the Puck constants model.",
+        matml_name="Compressive Inclination XZ",
     )
-    compressive_inclination_yz: list[float] = Field(
+    compressive_inclination_yz: list[float] = ParameterField(
         default=[],
-        title="Compressive Inclination YZ",
         description="The compressive inclination in the YZ plane for the Puck constants model.",
+        matml_name="Compressive Inclination YZ",
     )
-    tensile_inclination_xz: list[float] = Field(
+    tensile_inclination_xz: list[float] = ParameterField(
         default=[],
-        title="Tensile Inclination XZ",
         description="The tensile inclination in the XZ plane for the Puck constants model.",
+        matml_name="Tensile Inclination XZ",
     )
-    tensile_inclination_yz: list[float] = Field(
+    tensile_inclination_yz: list[float] = ParameterField(
         default=[],
-        title="Tensile Inclination YZ",
         description="The tensile inclination in the YZ plane for the Puck constants model.",
+        matml_name="Tensile Inclination YZ",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

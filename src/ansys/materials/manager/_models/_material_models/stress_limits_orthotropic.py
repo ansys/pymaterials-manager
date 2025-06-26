@@ -25,6 +25,11 @@ from typing import Any, Dict, Literal
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
@@ -37,72 +42,63 @@ class StressLimitsOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    model_qualifiers: list[ModelQualifier] = Field(
+    model_qualifiers: list[ModelQualifier] = ParameterField(
         default=[ModelQualifier(name="Behavior", value="Orthotropic")],
         title="Model Qualifiers",
         description="Model qualifiers for the stress limits orthotropic model.",
     )
-    tensile_x_direction: list[float] = Field(
+    tensile_x_direction: list[float] = ParameterField(
         default=[],
-        title="Tensile X direction",
         description="The tensile stress limits in the X direction for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Tensile X direction",
     )
-    tensile_y_direction: list[float] = Field(
+    tensile_y_direction: list[float] = ParameterField(
         default=[],
-        title="Tensile Y direction",
         description="The tensile stress limits in the Y direction for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Tensile Y direction",
     )
-    tensile_z_direction: list[float] = Field(
+    tensile_z_direction: list[float] = ParameterField(
         default=[],
-        title="Tensile Z direction",
         description="The tensile stress limits in the Z direction for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Tensile Z direction",
     )
-    compressive_x_direction: list[float] = Field(
+    compressive_x_direction: list[float] = ParameterField(
         default=[],
-        title="Compressive X direction",
         description="The compressive stress limits in the X direction for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Compressive X direction",
     )
-    compressive_y_direction: list[float] = Field(
+    compressive_y_direction: list[float] = ParameterField(
         default=[],
-        title="Compressive Y direction",
         description="The compressive stress limits in the Y direction for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Compressive Y direction",
     )
-    compressive_z_direction: list[float] = Field(
+    compressive_z_direction: list[float] = ParameterField(
         default=[],
-        title="Compressive Z direction",
         description="The compressive stress limits in the Z direction for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Compressive Z direction",
     )
-    shear_xy: list[float] = Field(
+    shear_xy: list[float] = ParameterField(
         default=[],
-        title="Shear XY",
         description="The shear stress limits in the XY plane for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Shear XY",
     )
-    shear_xz: list[float] = Field(
+    shear_xz: list[float] = ParameterField(
         default=[],
-        title="Shear XZ",
         description="The shear stress limits in the XZ plane for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Shear XZ",
     )
-    shear_yz: list[float] = Field(
+    shear_yz: list[float] = ParameterField(
         default=[],
-        title="Shear YZ",
         description="The shear stress limits in the YZ plane for the stress limits orthotropic model.",  # noqa: E501
+        matml_name="Shear YZ",
     )
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        if "model_qualifiers" in values:
-            found_behavior = False
-            for model_qualifier in values["model_qualifiers"]:
-                if model_qualifier.name == "Behavior" and model_qualifier.value != "Orthotropic":
-                    raise ValueError(
-                        "Behavior must be 'Orthotropic' for stressLimitsOrthotropic model."
-                    )
-                if model_qualifier.name == "Behavior":
-                    found_behavior = True
-            if not found_behavior:
-                model_qualifiers = values.get("model_qualifiers", [])
-                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Orthotropic")]
-                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        expected_qualifiers = {"Behavior": ["Orthotropic", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
         return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

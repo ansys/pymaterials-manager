@@ -44,7 +44,7 @@ VISCOSITY = """<?xml version="1.0" ?>
         <Qualifier name="Variable Type">Dependent</Qualifier>
       </ParameterValue>
       <ParameterValue parameter="pa1" format="float">
-        <Data>22.0, 50.0, 70.0</Data>
+        <Data>22.0</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
         <Qualifier name="Field Variable">Temperature</Qualifier>
       </ParameterValue>
@@ -142,7 +142,7 @@ def test_write_constant_viscosity():
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[22.0, 50.0, 70.0],
+                            values=[22.0],
                         ),
                     ],
                 ),

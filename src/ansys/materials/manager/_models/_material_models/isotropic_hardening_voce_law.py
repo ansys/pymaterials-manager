@@ -20,11 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ast import Dict
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
@@ -41,28 +47,28 @@ class IsotropicHardeningVoceLaw(MaterialModel):
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
 
-    initial_yield_stress: list[float] = Field(
+    initial_yield_stress: list[float] = ParameterField(
         default=[],
-        title="Initial Yield Stress",
         description="Initial yield stress values for the material.",
+        matml_name="Initial Yield Stress",
     )
 
-    linear_coefficient: list[float] = Field(
+    linear_coefficient: list[float] = ParameterField(
         default=[],
-        title="Linear Coefficient",
         description="Linear coefficient values for the material.",
+        matml_name="Linear Coefficient",
     )
 
-    exponential_coefficient: list[float] = Field(
+    exponential_coefficient: list[float] = ParameterField(
         default=[],
-        title="Exponential Coefficient",
         description="Exponential coefficient values for the material.",
+        matml_name="Exponential Coefficient",
     )
 
-    exponential_saturation_parameter: list[float] = Field(
+    exponential_saturation_parameter: list[float] = ParameterField(
         default=[],
-        title="Exponential Saturation Parameter",
         description="Exponential saturation parameter values for the material.",
+        matml_name="Exponential Saturation Parameter",
     )
     model_qualifiers: list[ModelQualifier] = Field(
         default=[
@@ -72,6 +78,17 @@ class IsotropicHardeningVoceLaw(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the isotropic elasticity model.",
     )
+
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        expected_qualifiers = {
+            "Behavior": ["Voce Law", QualifierType.STRICT],
+            "Definition": ["Multilinear", QualifierType.STRICT],
+        }
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
+        return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write the isotropic hardening model to the specified session."""

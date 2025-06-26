@@ -25,6 +25,7 @@ from typing import Any, Literal
 from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
@@ -36,20 +37,20 @@ class TsaiWuConstants(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MATML], repr=False, frozen=True
     )
-    coupling_coefficient_xy: list[float] = Field(
+    coupling_coefficient_xy: list[float] = ParameterField(
         default=[-1],
-        title="Coupling Coefficient XY",
         description="The coupling coefficient in the XY plane.",
+        matml_name="Coupling Coefficient XY",
     )
-    coupling_coefficient_xz: list[float] = Field(
+    coupling_coefficient_xz: list[float] = ParameterField(
         default=[-1],
-        title="Coupling Coefficient XZ",
         description="The coupling coefficient in the XZ plane.",
+        matml_name="Coupling Coefficient XZ",
     )
-    coupling_coefficient_yz: list[float] = Field(
+    coupling_coefficient_yz: list[float] = ParameterField(
         default=[-1],
-        title="Coupling Coefficient YZ",
         description="The coupling coefficient in the YZ plane.",
+        matml_name="Coupling Coefficient YZ",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

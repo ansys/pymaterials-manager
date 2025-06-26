@@ -26,6 +26,11 @@ from pydantic import Field, model_validator
 from pyparsing import Dict
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
@@ -40,15 +45,15 @@ class ZeroThermalStrainReferenceTemperatureOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    zero_thermal_strain_reference_temperature: list[float] = Field(
+    zero_thermal_strain_reference_temperature: list[float] = ParameterField(
         default=[],
-        title="Zero Thermal Strain Reference Temperature",
         description="The reference temperature for zero thermal strain.",
+        matml_name="Zero-Thermal-Strain Reference Temperature",
     )
-    material_property: Literal["Coefficient of Thermal Expansion"] = Field(
+    material_property: Literal["Coefficient of Thermal Expansion"] = ParameterField(
         default="Coefficient of Thermal Expansion",
-        title="Material Property",
         description="The material property for zero thermal strain reference temperature.",
+        matml_name="Material Property",
         frozen=True,
     )
     model_qualifiers: list[ModelQualifier] = Field(
@@ -59,19 +64,10 @@ class ZeroThermalStrainReferenceTemperatureOrthotropic(MaterialModel):
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        if "model_qualifiers" in values:
-            found_behavior = False
-            for model_qualifier in values["model_qualifiers"]:
-                if model_qualifier.name == "Behavior" and model_qualifier.value != "Orthotropic":
-                    raise ValueError(
-                        "Behavior must be 'Orthotropic' for ZeroThermalStrainReferenceTemperatureOrthotropic model."  # noqa: E501
-                    )
-                if model_qualifier.name == "Behavior":
-                    found_behavior = True
-            if not found_behavior:
-                model_qualifiers = values.get("model_qualifiers", [])
-                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Orthotropic")]
-                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        expected_qualifiers = {"Behavior": ["Orthotropic", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
         return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

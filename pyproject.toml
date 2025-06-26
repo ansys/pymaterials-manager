@@ -45,6 +45,7 @@ twine = ">=4.0.2"
 pytest-cov = ">=4"
 pre-commit = ">=3.2.2"
 pydantic = ">=2.7.0"
+ansys-units = "=0.7.dev0"
 
 [tool.black]
 line-length = 100

@@ -20,11 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ast import Dict
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
@@ -41,15 +47,23 @@ class IsotropicHardening(MaterialModel):
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
 
-    stress: list[float] = Field(
+    stress: list[float] = ParameterField(
         default=[],
-        title="Stress",
         description="Stress values for the material.",
+        matml_name="Stress",
     )
     model_qualifiers: list[ModelQualifier] = Field(
         default=[ModelQualifier(name="Definition", value="Multilinear")],
         frozen=True,
     )
+
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        expected_qualifiers = {"Definition": ["Multilinear", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
+        return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write the isotropic hardening model to the specified session."""
