@@ -26,6 +26,11 @@ from typing import Any, Dict, Literal
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
@@ -38,23 +43,23 @@ class ElasticityAnisotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    column_1: list[float] = Field(
-        default=[], title="D[*,1]", description="The first column of the elasticity matrix."
+    column_1: list[float] = ParameterField(
+        default=[], description="The first column of the elasticity matrix.", matml_name="D[*,1]"
     )
-    column_2: list[float] = Field(
-        default=[], title="D[*,2]", description="The second column of the elasticity matrix."
+    column_2: list[float] = ParameterField(
+        default=[], description="The second column of the elasticity matrix.", matml_name="D[*,2]"
     )
-    column_3: list[float] = Field(
-        default=[], title="D[*,3]", description="The third column of the elasticity matrix."
+    column_3: list[float] = ParameterField(
+        default=[], description="The third column of the elasticity matrix.", matml_name="D[*,3]"
     )
-    column_4: list[float] = Field(
-        default=[], title="D[*,4]", description="The fourth column of the elasticity matrix."
+    column_4: list[float] = ParameterField(
+        default=[], description="The fourth column of the elasticity matrix.", matml_name="D[*,4]"
     )
-    column_5: list[float] = Field(
-        default=[], title="D[*,5]", description="The fifth column of the elasticity matrix."
+    column_5: list[float] = ParameterField(
+        default=[], description="The fifth column of the elasticity matrix.", matml_name="D[*,5]"
     )
-    column_6: list[float] = Field(
-        default=[], title="D[*,6]", description="The sixth column of the elasticity matrix."
+    column_6: list[float] = ParameterField(
+        default=[], description="The sixth column of the elasticity matrix.", matml_name="D[*,6]"
     )
     model_qualifiers: list[ModelQualifier] = Field(
         default=[ModelQualifier(name="Behavior", value="Anisotropic")],
@@ -64,19 +69,10 @@ class ElasticityAnisotropic(MaterialModel):
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        if "model_qualifiers" in values:
-            found_behavior = False
-            for model_qualifier in values["model_qualifiers"]:
-                if model_qualifier.name == "Behavior" and model_qualifier.value != "Anisotropic":
-                    raise ValueError(
-                        "Behavior must be 'Anisotropic' for ElasticityAnisotropic model."
-                    )
-                if model_qualifier.name == "Behavior":
-                    found_behavior = True
-            if not found_behavior:
-                model_qualifiers = values.get("model_qualifiers", [])
-                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Anisotropic")]
-                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        expected_qualifiers = {"Behavior": ["Anisotropic", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
         return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

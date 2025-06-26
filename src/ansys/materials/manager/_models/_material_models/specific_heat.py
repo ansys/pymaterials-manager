@@ -25,6 +25,7 @@ from typing import Any, Literal
 from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
@@ -37,10 +38,10 @@ class SpecificHeat(MaterialModel):
         default=[SupportedPackage.MATML], repr=False, frozen=True
     )
 
-    specific_heat: list[float] = Field(
+    specific_heat: list[float] = ParameterField(
         default=[],
-        title="Specific Heat",
         description="The specific heat of the material.",
+        matml_name="Specific Heat",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

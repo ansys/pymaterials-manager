@@ -20,11 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Any, Dict, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
@@ -46,96 +51,110 @@ class HillYieldCriterion(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the Hill yield criterion model.",
     )
-    yield_stress_ratio_x: list[float] | None = Field(
+    yield_stress_ratio_x: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in X direction",
         description="The yield stress ratio in the x direction.",
+        matml_name="Yield stress ratio in X direction",
     )
-    yield_stress_ratio_y: list[float] | None = Field(
+    yield_stress_ratio_y: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in Y direction",
         description="The yield stress ratio in the y direction.",
+        matml_name="Yield stress ratio in Y direction",
     )
-    yield_stress_ratio_z: list[float] | None = Field(
+    yield_stress_ratio_z: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in Z direction",
         description="The yield stress ratio in the z direction.",
+        matml_name="Yield stress ratio in Z direction",
     )
-    yield_stress_ratio_xy: list[float] | None = Field(
+    yield_stress_ratio_xy: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in XY direction",
         description="The yield stress ratio in the xy direction.",
+        matml_name="Yield stress ratio in XY direction",
     )
-    yield_stress_ratio_xz: list[float] | None = Field(
+    yield_stress_ratio_xz: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in XZ direction",
         description="The yield stress ratio in the xz direction.",
+        matml_name="Yield stress ratio in XZ direction",
     )
-    yield_stress_ratio_yz: list[float] | None = Field(
+    yield_stress_ratio_yz: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in YZ direction",
         description="The yield stress ratio in the yz direction.",
+        matml_name="Yield stress ratio in YZ direction",
     )
-    yield_stress_ratio_x_for_plasticity: list[float] | None = Field(
+    yield_stress_ratio_x_for_plasticity: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in X direction for plasticity",
         description="The yield stress ratio in the x direction for plasticity.",
+        matml_name="Yield stress ratio in X direction for plasticity",
     )
-    yield_stress_ratio_y_for_plasticity: list[float] | None = Field(
+    yield_stress_ratio_y_for_plasticity: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in Y direction for plasticity",
         description="The yield stress ratio in the y direction for plasticity.",
+        matml_name="Yield stress ratio in Y direction for plasticity",
     )
-    yield_stress_ratio_z_for_plasticity: list[float] | None = Field(
+    yield_stress_ratio_z_for_plasticity: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in Z direction for plasticity",
         description="The yield stress ratio in the z direction for plasticity.",
+        matml_name="Yield stress ratio in Z direction for plasticity",
     )
-    yield_stress_ratio_xy_for_plasticity: list[float] | None = Field(
+    yield_stress_ratio_xy_for_plasticity: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in XY direction for plasticity",
         description="The yield stress ratio in the xy direction for plasticity.",
+        matml_name="Yield stress ratio in XY direction for plasticity",
     )
-    yield_stress_ratio_xz_for_plasticity: list[float] | None = Field(
+    yield_stress_ratio_xz_for_plasticity: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in XZ direction for plasticity",
         description="The yield stress ratio in the xz direction for plasticity.",
+        matml_name="Yield stress ratio in XZ direction for plasticity",
     )
-    yield_stress_ratio_yz_for_plasticity: list[float] | None = Field(
+    yield_stress_ratio_yz_for_plasticity: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in YZ direction for plasticity",
         description="The yield stress ratio in the yz direction for plasticity.",
+        matml_name="Yield stress ratio in YZ direction for plasticity",
     )
-    yield_stress_ratio_x_for_creep: list[float] | None = Field(
+    yield_stress_ratio_x_for_creep: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in X direction for creep",
         description="The yield stress ratio in the x direction for creep.",
+        matml_name="Yield stress ratio in X direction for creep",
     )
-    yield_stress_ratio_y_for_creep: list[float] | None = Field(
+    yield_stress_ratio_y_for_creep: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in Y direction for creep",
         description="The yield stress ratio in the y direction for creep.",
+        matml_name="Yield stress ratio in Y direction for creep",
     )
-    yield_stress_ratio_z_for_creep: list[float] | None = Field(
+    yield_stress_ratio_z_for_creep: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in Z direction for creep",
         description="The yield stress ratio in the z direction for creep.",
+        matml_name="Yield stress ratio in Z direction for creep",
     )
-    yield_stress_ratio_xy_for_creep: list[float] | None = Field(
+    yield_stress_ratio_xy_for_creep: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in XY direction for creep",
         description="The yield stress ratio in the xy direction for creep.",
+        matml_name="Yield stress ratio in XY direction for creep",
     )
-    yield_stress_ratio_xz_for_creep: list[float] | None = Field(
+    yield_stress_ratio_xz_for_creep: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in XZ direction for creep",
         description="The yield stress ratio in the xz direction for creep.",
+        matml_name="Yield stress ratio in XZ direction for creep",
     )
-    yield_stress_ratio_yz_for_creep: list[float] | None = Field(
+    yield_stress_ratio_yz_for_creep: list[float] | None = ParameterField(
         default=None,
-        title="Yield stress ratio in YZ direction for creep",
         description="The yield stress ratio in the yz direction for creep.",
+        matml_name="Yield stress ratio in YZ direction for creep",
     )
+
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        expected_qualifiers = {
+            "Separated Hill Potentials for Plasticity and Creep": [
+                "No",
+                QualifierType.FREE,
+                ["Yes", "No"],
+            ]
+        }
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
+        return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write this model to the specified session."""

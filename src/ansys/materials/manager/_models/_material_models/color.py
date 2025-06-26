@@ -48,10 +48,9 @@ class Color(MaterialModel):
     )
     material_property: str = ParameterField(
         default="Appearance",
-        title="Material Property",
         description="The material property associated with this model.",
-        frozen=True,
         matml_name="Material Property",
+        frozen=True,
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

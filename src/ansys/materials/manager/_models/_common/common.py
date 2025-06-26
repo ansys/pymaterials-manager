@@ -20,9 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from enum import Enum
+
 from ansys.units import Quantity
 from pydantic.fields import FieldInfo
 from pydantic_core import core_schema
+
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+
+
+class QualifierType(str, Enum):
+    """Enum for qualifier types in material models."""
+
+    STRICT = "strict"
+    FREE = "free"
 
 
 class ParameterFieldInfo(FieldInfo):
@@ -39,6 +50,52 @@ class ParameterFieldInfo(FieldInfo):
 def ParameterField(*, matml_name=None, **kwargs):
     """Create a ParameterField with a specific matml_name."""
     return ParameterFieldInfo(matml_name=matml_name, **kwargs)
+
+
+def validate_and_initialize_model_qualifiers(
+    values: dict, expected_values: dict
+) -> list[ModelQualifier]:
+    """Validate and initialize model qualifiers based on expected values."""
+    if "model_qualifiers" in values:
+        inputed_qualifiers = values["model_qualifiers"]
+    else:
+        inputed_qualifiers = []
+    if len(inputed_qualifiers) == 0:
+        for key, value in expected_values.items():
+            inputed_qualifiers.append(ModelQualifier(name=key, value=value[0]))
+        return inputed_qualifiers
+    found_values = []
+    for inputed_qualifier in inputed_qualifiers:
+        if inputed_qualifier.name in expected_values.keys():
+            if expected_values[inputed_qualifier.name][1] == QualifierType.STRICT:
+                if not inputed_qualifier.value == expected_values[inputed_qualifier.name][0]:
+                    raise ValueError(
+                        f"{inputed_qualifier.name} must be {expected_values[inputed_qualifier.name]}, "  # noqa: E501
+                        f"but got {inputed_qualifier.value}."
+                    )
+            elif expected_values[inputed_qualifier.name][1] == QualifierType.FREE:
+                if inputed_qualifier.value not in expected_values[inputed_qualifier.name][2]:
+                    raise ValueError(
+                        f"{inputed_qualifier.name} must be one of {expected_values[inputed_qualifier.name][2]}, "  # noqa: E501
+                        f"but got {inputed_qualifier.value}."
+                    )
+            else:
+                raise ValueError(
+                    f"Unknown qualifier type: {expected_values[inputed_qualifier.name][1]}"
+                )
+            found_values.append(True)
+        else:
+            found_values.append(False)
+    missing_qualifiers = []
+    if not all(found_values):
+        false_indices = [i for i, val in enumerate(found_values) if not val]
+        expected_names = list(expected_values.keys())
+        false_names = [expected_names[index] for index in false_indices if not found_values[index]]
+        for false_name in false_names:
+            missing_qualifiers.append(
+                ModelQualifier(name=false_name, value=expected_values[false_name][0])
+            )
+    return missing_qualifiers + inputed_qualifiers
 
 
 class QuantityWrapper(Quantity):

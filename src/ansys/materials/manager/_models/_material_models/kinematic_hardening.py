@@ -20,11 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ast import Dict
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
@@ -48,61 +54,73 @@ class KinematicHardening(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the kinematic hardening model.",
     )
-    yield_stress: list[float] = Field(
+    yield_stress: list[float] = ParameterField(
         default=[],
-        title="Yield Stress",
         description="The yield stress values for the kinematic hardening model.",
+        matml_name="Yield Stress",
     )
-    material_constant_gamma_1: list[float] = Field(
+    material_constant_gamma_1: list[float] = ParameterField(
         default=[],
-        title="Material Constant γ1",
         description="The first material constant γ1 for the kinematic hardening model.",
+        matml_name="Material Constant γ1",
     )
-    material_constant_c_1: list[float] = Field(
+    material_constant_c_1: list[float] = ParameterField(
         default=[],
-        title="Material Constant C1",
         description="The first material constant C1 for the kinematic hardening model.",
+        matml_name="Material Constant C1",
     )
-    material_constant_gamma_2: list[float] | None = Field(
+    material_constant_gamma_2: list[float] | None = ParameterField(
         default=None,
-        title="Material Constant γ2",
         description="The second material constant γ2 for the kinematic hardening model.",
+        matml_name="Material Constant γ2",
     )
-    material_constant_c_2: list[float] | None = Field(
+    material_constant_c_2: list[float] | None = ParameterField(
         default=None,
-        title="Material Constant C2",
         description="The second material constant C2 for the kinematic hardening model.",
+        matml_name="Material Constant C2",
     )
-    material_constant_gamma_3: list[float] | None = Field(
+    material_constant_gamma_3: list[float] | None = ParameterField(
         default=None,
-        title="Material Constant γ3",
         description="The third material constant γ3 for the kinematic hardening model.",
+        matml_name="Material Constant γ3",
     )
-    material_constant_c_3: list[float] | None = Field(
+    material_constant_c_3: list[float] | None = ParameterField(
         default=None,
-        title="Material Constant C3",
         description="The third material constant C3 for the kinematic hardening model.",
+        matml_name="Material Constant C3",
     )
-    material_constant_gamma_4: list[float] | None = Field(
+    material_constant_gamma_4: list[float] | None = ParameterField(
         default=None,
-        title="Material Constant γ4",
         description="The fourth material constant γ4 for the kinematic hardening model.",
+        matml_name="Material Constant γ4",
     )
-    material_constant_c_4: list[float] | None = Field(
+    material_constant_c_4: list[float] | None = ParameterField(
         default=None,
-        title="Material Constant C4",
         description="The fourth material constant C4 for the kinematic hardening model.",
+        matml_name="Material Constant C4",
     )
-    material_constant_gamma_5: list[float] | None = Field(
+    material_constant_gamma_5: list[float] | None = ParameterField(
         default=None,
-        title="Material Constant γ5",
         description="The fifth material constant γ5 for the kinematic hardening model.",
+        matml_name="Material Constant γ5",
     )
-    material_constant_c_5: list[float] | None = Field(
+    material_constant_c_5: list[float] | None = ParameterField(
         default=None,
-        title="Material Constant C5",
         description="The fifth material constant C5 for the kinematic hardening model.",
+        matml_name="Material Constant C5",
     )
+
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        expected_qualifiers = {
+            "Definition": ["Chaboche", QualifierType.STRICT],
+            "Number of Kinematic Models": ["1", QualifierType.FREE, ["1", "2", "3", "4", "5"]],
+            "source": ["ANSYS", QualifierType.STRICT],
+        }
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
+        return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write this model to the specified session."""

@@ -20,11 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ast import Dict
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._common.user_parameter import UserParameter
@@ -50,6 +55,14 @@ class ModelCoefficients(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the usermat constants model.",
     )
+
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        expected_qualifiers = {"UserMat": ["USER", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
+        return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
