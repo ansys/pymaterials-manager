@@ -33,6 +33,7 @@ from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager.material import Material
 from ansys.materials.manager.util.matml.utils import units_to_xml
 
+from ansys.units import Quantity
 from .matml_parser import (
     BULKDATA_KEY,
     MATERIALS_ELEMENT_KEY,
@@ -98,9 +99,9 @@ class MatmlWriter:
                 if isinstance(models[mat_key], dict):
                     if "value" in models[mat_key].keys():
                         # if the model has a values key, use that
-                        values = str(models[mat_key]["value"]).strip("[]")
+                        values = ", ".join(f"{v}" for v in models[mat_key]["value"])
                 else:
-                    values = str(models[mat_key]).strip("[]")
+                    values = ", ".join(f"{v}" for v in models[mat_key])
                 data_element.text = values
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Variable Type"}
@@ -146,13 +147,19 @@ class MatmlWriter:
                 index = len(self._metadata_parameters)
                 parameter_id = f"pa{index}"
                 self._metadata_parameters[independent_parameter.name] = parameter_id
-                self._metadata_parameters_units[independent_parameter.name] = "Unitless"
+                unit = independent_parameter.values.unit
+                if unit == "":
+                    unit = "Unitless"
+                self._metadata_parameters_units[independent_parameter.name] = unit
 
             param_element = ET.SubElement(
                 property_element, "ParameterValue", {"parameter": parameter_id, "format": "float"}
             )
             data_element = ET.SubElement(param_element, "Data")
-            values = str(independent_parameter.values).strip("[]")
+            values = independent_parameter.values
+            if isinstance(values, Quantity):
+                values = values.value
+            values = ", ".join(f"{v}" for v in values)
             data_element.text = values
             qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
             qualifier_element.text = ",".join(["Independent"] * len(values.split(",")))

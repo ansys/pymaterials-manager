@@ -25,7 +25,8 @@
 from pydoc import locate
 from typing import Dict, Sequence
 
-from ansys.materials.manager._models._common.common import QuantityWrapper
+from ansys.units import Quantity
+
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
@@ -86,13 +87,16 @@ def convert_matml_materials(
                         for param_value in property_set.parameters.values():
                             ind_param = param_value.qualifiers.get("Variable Type")
                             if ind_param and ind_param.split(",")[0] == "Independent":
+                                units = param_value.unit
+                                if units == "Unitless":
+                                    units = ""
+                                data = param_value.data
+                                if not isinstance(data, Sequence):
+                                    data = [data]
+                                quantity = Quantity(value=data, units=units)
                                 independent_param = IndependentParameter(
                                     name=param_value.name,
-                                    values=(
-                                        param_value.data
-                                        if isinstance(param_value.data, Sequence)
-                                        else [param_value.data]
-                                    ),
+                                    values=Quantity(value=data, units=units),
                                     default_value=convert_to_float_or_keep(
                                         param_value.qualifiers.get("Default Data", None)
                                     ),
@@ -113,15 +117,17 @@ def convert_matml_materials(
                         if param_name in property_set.parameters.keys():
                             param = property_set.parameters[param_name]
                             data = param.data
-                            if name not in ["red", "green", "blue"]:
+                            if name not in ["red", "green", "blue", "material_property"]:
                                 if not isinstance(data, Sequence):
                                     data = [data]
+                                units = param.unit
+                                if units == "Unitless":
+                                    units = ""
+                                arguments[name] = Quantity(value=data, units=units)
                             else:
-                                data = int(data)
-                            if param.unit == "Unitless":
+                                if isinstance(data, float):
+                                    data = int(data)
                                 arguments[name] = data
-                            else:
-                                arguments[name] = QuantityWrapper(value=data, units=param.unit)
 
                     if name == "model_qualifiers":
                         arguments["model_qualifiers"] = qualifiers
