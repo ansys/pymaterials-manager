@@ -37,7 +37,7 @@ from ansys.materials.manager._models._common.common import (
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
-
+from ansys.units import Quantity
 
 class ElasticityIsotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
@@ -46,13 +46,13 @@ class ElasticityIsotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    youngs_modulus: list[float] = ParameterField(
-        default=[],
+    youngs_modulus: Quantity | None = ParameterField(
+        default=None,
         description="The Young's modulus of the material.",
         matml_name="Young's Modulus",
     )
-    poissons_ratio: list[float] = ParameterField(
-        default=[],
+    poissons_ratio: Quantity | None = ParameterField(
+        default=None,
         description="The Poisson's ratio of the material.",
         matml_name="Poisson's Ratio",
     )

@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Elasticity</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Options Variable</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Young's Modulus</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Poisson's Ratio</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

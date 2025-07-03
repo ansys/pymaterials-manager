@@ -34,7 +34,7 @@ from ansys.materials.manager._models._common.common import (
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
-
+from ansys.units import Quantity
 
 class ElasticityAnisotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
@@ -43,23 +43,23 @@ class ElasticityAnisotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    column_1: list[float] = ParameterField(
-        default=[], description="The first column of the elasticity matrix.", matml_name="D[*,1]"
+    column_1: Quantity | None = ParameterField(
+        default=None, description="The first column of the elasticity matrix.", matml_name="D[*,1]"
     )
-    column_2: list[float] = ParameterField(
-        default=[], description="The second column of the elasticity matrix.", matml_name="D[*,2]"
+    column_2: Quantity | None = ParameterField(
+        default=None, description="The second column of the elasticity matrix.", matml_name="D[*,2]"
     )
-    column_3: list[float] = ParameterField(
-        default=[], description="The third column of the elasticity matrix.", matml_name="D[*,3]"
+    column_3: Quantity | None = ParameterField(
+        default=None, description="The third column of the elasticity matrix.", matml_name="D[*,3]"
     )
-    column_4: list[float] = ParameterField(
-        default=[], description="The fourth column of the elasticity matrix.", matml_name="D[*,4]"
+    column_4: Quantity | None = ParameterField(
+        default=None, description="The fourth column of the elasticity matrix.", matml_name="D[*,4]"
     )
-    column_5: list[float] = ParameterField(
-        default=[], description="The fifth column of the elasticity matrix.", matml_name="D[*,5]"
+    column_5: Quantity | None = ParameterField(
+        default=None, description="The fifth column of the elasticity matrix.", matml_name="D[*,5]"
     )
-    column_6: list[float] = ParameterField(
-        default=[], description="The sixth column of the elasticity matrix.", matml_name="D[*,6]"
+    column_6: Quantity | None = ParameterField(
+        default=None, description="The sixth column of the elasticity matrix.", matml_name="D[*,6]"
     )
     model_qualifiers: list[ModelQualifier] = Field(
         default=[ModelQualifier(name="Behavior", value="Anisotropic")],

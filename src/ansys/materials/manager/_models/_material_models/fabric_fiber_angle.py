@@ -29,6 +29,7 @@ from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class FabricFiberAngle(MaterialModel):
     """Represents a fabric fiber angle material model."""
@@ -40,8 +41,8 @@ class FabricFiberAngle(MaterialModel):
         default=[SupportedPackage.MATML], repr=False, frozen=True
     )
 
-    fabric_fiber_angle: list[float] = ParameterField(
-        default=[],
+    fabric_fiber_angle: Quantity | None = ParameterField(
+        default=None,
         description="The fabric fiber angle values for the fabric fiber angle model.",
         matml_name="Fabric Fiber Angle",
     )

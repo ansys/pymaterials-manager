@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Density</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Units>
+      <Unit>
+        <Name>kg</Name>
+      </Unit>
+      <Unit power="-3">
+        <Name>m</Name>
+      </Unit>
+    </Units>
+    <Name>Density</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

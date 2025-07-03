@@ -864,3 +864,17 @@ def test_write_strain_hardening():
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     assert material_string == STRAIN_HARDENING
     assert metadata_string == STRAIN_HARDENING_METADATA
+
+# writer = MatmlWriter(materials)
+# tree = writer._to_etree()
+# material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+# writer.export("trial.xml", indent=True)
+
+# path = r"D:\AnsysDev\pymaterials-manager\tests\data"
+# with open(path + "\\ply_type.txt", "w") as text_file:
+#     text_file.write(material_string)
+# with open(path + "\\ply_type_metadata.txt", "w") as text_file:
+#     text_file.write(metadata_string)
+
+# # material_dic = read_matml_file(XML_FILE_PATH)
+# # print("read")

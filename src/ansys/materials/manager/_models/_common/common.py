@@ -33,6 +33,7 @@ class QualifierType(str, Enum):
     """Enum for qualifier types in material models."""
 
     STRICT = "strict"
+    RANGE = "range"
     FREE = "free"
 
 
@@ -64,35 +65,36 @@ def validate_and_initialize_model_qualifiers(
         for key, value in expected_values.items():
             inputed_qualifiers.append(ModelQualifier(name=key, value=value[0]))
         return inputed_qualifiers
-    found_values = []
-    for inputed_qualifier in inputed_qualifiers:
-        if inputed_qualifier.name in expected_values.keys():
-            if expected_values[inputed_qualifier.name][1] == QualifierType.STRICT:
-                if not inputed_qualifier.value == expected_values[inputed_qualifier.name][0]:
+    
+    qualifier_dict = {}
+    for qualifier in values["model_qualifiers"]:
+        qualifier_dict[qualifier.name] = qualifier.value
+
+    missing_qualifiers = []
+
+    for key, value in expected_values.items():
+        if key in qualifier_dict.keys():
+            if value[1] == QualifierType.STRICT:
+                if not qualifier_dict[key] == value[0]:
                     raise ValueError(
-                        f"{inputed_qualifier.name} must be {expected_values[inputed_qualifier.name]}, "  # noqa: E501
-                        f"but got {inputed_qualifier.value}."
+                        f"{key} must be {value[0]}, "  # noqa: E501
+                        f"but got {qualifier_dict[key]}."
                     )
-            elif expected_values[inputed_qualifier.name][1] == QualifierType.FREE:
-                if inputed_qualifier.value not in expected_values[inputed_qualifier.name][2]:
+            elif value[1] == QualifierType.RANGE:
+                if not qualifier_dict[key] not in value[2]:
                     raise ValueError(
-                        f"{inputed_qualifier.name} must be one of {expected_values[inputed_qualifier.name][2]}, "  # noqa: E501
-                        f"but got {inputed_qualifier.value}."
+                        f"{key} must be one of {value[2]}, "  # noqa: E501
+                        f"but got {qualifier_dict[key]}."
                     )
+            elif value[1] == QualifierType.FREE:
+                pass
             else:
                 raise ValueError(
-                    f"Unknown qualifier type: {expected_values[inputed_qualifier.name][1]}"
+                    f"Unknown qualifier type: {value[1]}"
                 )
-            found_values.append(True)
         else:
-            found_values.append(False)
-    missing_qualifiers = []
-    if not all(found_values):
-        false_indices = [i for i, val in enumerate(found_values) if not val]
-        expected_names = list(expected_values.keys())
-        false_names = [expected_names[index] for index in false_indices if not found_values[index]]
-        for false_name in false_names:
             missing_qualifiers.append(
-                ModelQualifier(name=false_name, value=expected_values[false_name][0])
+                ModelQualifier(name=key, value=value)
             )
+            
     return missing_qualifiers + inputed_qualifiers

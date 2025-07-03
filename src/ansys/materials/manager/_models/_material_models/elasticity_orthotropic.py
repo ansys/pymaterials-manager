@@ -35,6 +35,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class ElasticityOrthotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
@@ -44,56 +45,56 @@ class ElasticityOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    youngs_modulus_x: list[float] = ParameterField(
-        default=[],
+    youngs_modulus_x: Quantity | None = ParameterField(
+        default=None,
         description="The Young's modulus of the material in the x direction.",
         matml_name="Young's Modulus X direction",
     )
 
-    youngs_modulus_y: list[float] = ParameterField(
-        default=[],
+    youngs_modulus_y: Quantity | None = ParameterField(
+        default=None,
         description="The Young's modulus of the material in the y direction.",
         matml_name="Young's Modulus Y direction",
     )
 
-    youngs_modulus_z: list[float] = ParameterField(
-        default=[],
+    youngs_modulus_z: Quantity | None = ParameterField(
+        default=None,
         description="The Young's modulus of the material in the z direction.",
         matml_name="Young's Modulus Z direction",
     )
 
-    poissons_ratio_yz: list[float] = ParameterField(
-        default=[],
+    poissons_ratio_yz: Quantity | None = ParameterField(
+        default=None,
         description="The Poisson's ratio yz of the material.",
         matml_name="Poisson's Ratio YZ",
     )
 
-    poissons_ratio_xz: list[float] = ParameterField(
-        default=[],
+    poissons_ratio_xz: Quantity | None = ParameterField(
+        default=None,
         description="The Poisson's ratio xz of the material.",
         matml_name="Poisson's Ratio XZ",
     )
 
-    poissons_ratio_xy: list[float] = ParameterField(
-        default=[],
+    poissons_ratio_xy: Quantity | None = ParameterField(
+        default=None,
         description="The Poisson's ratio xy of the material.",
         matml_name="Poisson's Ratio XY",
     )
 
-    shear_modulus_yz: list[float] = ParameterField(
-        default=[],
+    shear_modulus_yz: Quantity | None = ParameterField(
+        default=None,
         description="The shear modulus yz of the material.",
         matml_name="Shear Modulus YZ",
     )
 
-    shear_modulus_xz: list[float] = ParameterField(
-        default=[],
+    shear_modulus_xz: Quantity | None = ParameterField(
+        default=None,
         description="The shear modulus xz of the material.",
         matml_name="Shear Modulus XZ",
     )
 
-    shear_modulus_xy: list[float] = ParameterField(
-        default=[],
+    shear_modulus_xy: Quantity | None = ParameterField(
+        default=None,
         description="The shear modulus xy of the material.",
         matml_name="Shear Modulus XY",
     )
@@ -105,7 +106,7 @@ class ElasticityOrthotropic(MaterialModel):
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        expected_qualifiers = {"Behavior": ["Orhtotropic", QualifierType.STRICT]}
+        expected_qualifiers = {"Behavior": ["Orthotropic", QualifierType.STRICT]}
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
             values, expected_qualifiers
         )
