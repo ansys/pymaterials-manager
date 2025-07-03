@@ -35,6 +35,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
 
+from ansys.units import Quantity
 
 class IsotropicHardening(MaterialModel):
     """Represents an isotropic hardening material model."""
@@ -47,8 +48,8 @@ class IsotropicHardening(MaterialModel):
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
 
-    stress: list[float] = ParameterField(
-        default=[],
+    stress: Quantity | None = ParameterField(
+        default=None,
         description="Stress values for the material.",
         matml_name="Stress",
     )
