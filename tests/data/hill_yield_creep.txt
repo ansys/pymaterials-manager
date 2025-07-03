@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>SFRP</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Separated Hill Potentials for Plasticity and Creep">Yes</Qualifier>
+      <ParameterValue parameter="pa0" format="string">
+        <Data>Interpolation Options</Data>
+        <Qualifier name="AlgorithmType">Linear Multivariate</Qualifier>
+        <Qualifier name="Cached">True</Qualifier>
+        <Qualifier name="Normalized">True</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa4" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa5" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa6" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa7" format="float">
+        <Data>2.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa8" format="float">
+        <Data>2.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa9" format="float">
+        <Data>2.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa10" format="float">
+        <Data>2.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa11" format="float">
+        <Data>2.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa12" format="float">
+        <Data>2.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa13" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
+        <Qualifier name="Field Units">C</Qualifier>
+        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
+        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

@@ -81,7 +81,7 @@ def validate_and_initialize_model_qualifiers(
                         f"but got {qualifier_dict[key]}."
                     )
             elif value[1] == QualifierType.RANGE:
-                if not qualifier_dict[key] not in value[2]:
+                if not qualifier_dict[key] in value[2]:
                     raise ValueError(
                         f"{key} must be one of {value[2]}, "  # noqa: E501
                         f"but got {qualifier_dict[key]}."

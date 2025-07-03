@@ -35,6 +35,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
 
+from ansys.units import Quantity
 
 class IsotropicHardeningVoceLaw(MaterialModel):
     """Represents an isotropic hardening material model."""
@@ -47,26 +48,26 @@ class IsotropicHardeningVoceLaw(MaterialModel):
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
 
-    initial_yield_stress: list[float] = ParameterField(
-        default=[],
+    initial_yield_stress: Quantity | None = ParameterField(
+        default=None,
         description="Initial yield stress values for the material.",
         matml_name="Initial Yield Stress",
     )
 
-    linear_coefficient: list[float] = ParameterField(
-        default=[],
+    linear_coefficient: Quantity | None = ParameterField(
+        default=None,
         description="Linear coefficient values for the material.",
         matml_name="Linear Coefficient",
     )
 
-    exponential_coefficient: list[float] = ParameterField(
-        default=[],
+    exponential_coefficient: Quantity | None = ParameterField(
+        default=None,
         description="Exponential coefficient values for the material.",
         matml_name="Exponential Coefficient",
     )
 
-    exponential_saturation_parameter: list[float] = ParameterField(
-        default=[],
+    exponential_saturation_parameter: Quantity | None = ParameterField(
+        default=None,
         description="Exponential saturation parameter values for the material.",
         matml_name="Exponential Saturation Parameter",
     )
@@ -83,7 +84,7 @@ class IsotropicHardeningVoceLaw(MaterialModel):
     def _initialize_qualifiers(cls, values) -> Dict:
         expected_qualifiers = {
             "Behavior": ["Voce Law", QualifierType.STRICT],
-            "Definition": ["Multilinear", QualifierType.STRICT],
+            "Definition": ["Nonlinear", QualifierType.STRICT],
         }
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
             values, expected_qualifiers
