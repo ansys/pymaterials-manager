@@ -86,11 +86,10 @@ class MatmlWriter:
                     index = len(self._metadata_parameters)
                     para_key = f"pa{index}"
                     self._metadata_parameters[matml_key] = para_key
-                    unit = models[mat_key].get("units", None)
-                    if unit:
-                        self._metadata_parameters_units[matml_key] = unit
-                    else:
-                        self._metadata_parameters_units[matml_key] = "Unitless"
+                    unit = "Unitless"
+                    if not isinstance(models[mat_key], (str | float | int)):
+                        unit = models[mat_key].get("units", "Unitless")
+                    self._metadata_parameters_units[matml_key] = unit
                 param_element = ET.SubElement(
                     property_element, "ParameterValue", {"parameter": para_key, "format": "float"}
                 )
@@ -101,7 +100,10 @@ class MatmlWriter:
                         # if the model has a values key, use that
                         values = ", ".join(f"{v}" for v in models[mat_key]["value"])
                 else:
-                    values = ", ".join(f"{v}" for v in models[mat_key])
+                    if isinstance(models[mat_key], str):
+                        values = models[mat_key]
+                    else:
+                        values = ", ".join(f"{v}" for v in models[mat_key])
                 data_element.text = values
                 qualifier_element = ET.SubElement(
                     param_element, "Qualifier", {"name": "Variable Type"}

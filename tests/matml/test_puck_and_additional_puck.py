@@ -37,255 +37,15 @@ from ansys.materials.manager._models._material_models.stress_limits_orthotropic 
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
+from ansys.units import Quantity
+
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_puck_for_woven.xml")
+FIBER_ANGLE = os.path.join(DIR_PATH, "..", "data", "fiber_angle.txt")
+FIBER_ANGLE_METADATA = os.path.join(DIR_PATH, "..", "data", "fiber_angle_metadata.txt")
+PUCK = os.path.join(DIR_PATH, "..", "data", "puck.txt")
+PUCK_METADATA = os.path.join(DIR_PATH, "..", "data", "puck_metadata.txt")
 
-FIBER_ANGLE = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with puck for woven</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Data Set"/>
-      <Qualifier name="Data Set Information"/>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>Woven Specification for Puck</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>45.0</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-PUCK_CONSTANTS = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with puck for woven</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Data Set"/>
-      <Qualifier name="Data Set Information"/>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>Woven Specification for Puck</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>0.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>0.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>0.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>0.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-ADDITIONAL_PUCK_CONSTANTS = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with puck for woven</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Data Set"/>
-      <Qualifier name="Data Set Information"/>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>Woven Specification for Puck</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>0.8</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>0.5</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>0.5</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-STRESS_LIMITS = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with puck for woven</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Behavior">Orthotropic</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>Woven Specification for Puck</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>100.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>101.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>102.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>-100.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa5" format="float">
-        <Data>-101.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa6" format="float">
-        <Data>-102.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa7" format="float">
-        <Data>10.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa8" format="float">
-        <Data>14.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa9" format="float">
-        <Data>12.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-FIBER_ANGLE_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Fiber Angle</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Fiber Angle</Name>
-  </ParameterDetails>
-</Metadata>"""
-
-STRESS_LIMITS_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Stress Limits</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Tensile X direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Tensile Y direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Tensile Z direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa4">
-    <Unitless/>
-    <Name>Compressive X direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa5">
-    <Unitless/>
-    <Name>Compressive Y direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa6">
-    <Unitless/>
-    <Name>Compressive Z direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa7">
-    <Unitless/>
-    <Name>Shear XY</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa8">
-    <Unitless/>
-    <Name>Shear XZ</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa9">
-    <Unitless/>
-    <Name>Shear YZ</Name>
-  </ParameterDetails>
-</Metadata>"""
-
-PUCK_CONSTANTS_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Puck Constants</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Compressive Inclination XZ</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Compressive Inclination YZ</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Tensile Inclination XZ</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa4">
-    <Unitless/>
-    <Name>Tensile Inclination YZ</Name>
-  </ParameterDetails>
-</Metadata>"""
-
-ADDITIONAL_PUCK_CONSTANTS_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Additional Puck Constants</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Interface Weakening Factor</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Degradation Parameter s</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Degradation Parameter M</Name>
-  </ParameterDetails>
-</Metadata>"""
 
 
 def test_read_fiber_angle():
@@ -295,7 +55,8 @@ def test_read_fiber_angle():
     fiber_angle = material_dic["material with puck for woven"].models[1]
     assert fiber_angle.name == "Fiber Angle"
     assert fiber_angle.independent_parameters[0].name == "Fiber Angle"
-    assert fiber_angle.independent_parameters[0].values == [90.0]
+    assert fiber_angle.independent_parameters[0].values.value == [90.0]
+    assert fiber_angle.independent_parameters[0].values.unit == ""
     assert fiber_angle.model_qualifiers[0].name == "Data Set"
     assert fiber_angle.model_qualifiers[0].value == "2"
     assert fiber_angle.model_qualifiers[1].name == "Data Set Information"
@@ -321,10 +82,14 @@ def test_read_puck_constants():
     )
     assert puck_constants.model_qualifiers[2].name == "Material Classification"
     assert puck_constants.model_qualifiers[2].value == "Material Specific"
-    assert puck_constants.compressive_inclination_xz == [0.0]
-    assert puck_constants.compressive_inclination_yz == [0.0]
-    assert puck_constants.tensile_inclination_xz == [0.0]
-    assert puck_constants.tensile_inclination_yz == [0.0]
+    assert puck_constants.compressive_inclination_xz.value == [0.0]
+    assert puck_constants.compressive_inclination_xz.unit == ""
+    assert puck_constants.compressive_inclination_yz.value == [0.0]
+    assert puck_constants.compressive_inclination_yz.unit == ""
+    assert puck_constants.tensile_inclination_xz.value == [0.0]
+    assert puck_constants.tensile_inclination_xz.unit == ""
+    assert puck_constants.tensile_inclination_yz.value == [0.0]
+    assert puck_constants.tensile_inclination_yz.unit == ""
     assert puck_constants.material_property == "Woven Specification for Puck"
 
 
@@ -342,9 +107,12 @@ def test_read_puck_additional_constants():
         puck_additional_constants.model_qualifiers[1].value
         == "minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional"
     )
-    assert puck_additional_constants.degradation_parameter_s == [0.5]
-    assert puck_additional_constants.degradation_parameter_m == [0.5]
-    assert puck_additional_constants.interface_weakening_factor == [0.8]
+    assert puck_additional_constants.degradation_parameter_s.value == [0.5]
+    assert puck_additional_constants.degradation_parameter_s.unit == ""
+    assert puck_additional_constants.degradation_parameter_m.value == [0.5]
+    assert puck_additional_constants.degradation_parameter_m.unit == ""
+    assert puck_additional_constants.interface_weakening_factor.value == [0.8]
+    assert puck_additional_constants.interface_weakening_factor.unit == ""
     assert puck_additional_constants.material_property == "Woven Specification for Puck"
 
 
@@ -365,15 +133,24 @@ def test_read_stress_limits_orthotropic():
         stress_limits_orthotropic.model_qualifiers[2].value
         == "minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional"
     )
-    assert stress_limits_orthotropic.compressive_x_direction == [-100.0]
-    assert stress_limits_orthotropic.compressive_y_direction == [-101.0]
-    assert stress_limits_orthotropic.compressive_z_direction == [-102.0]
-    assert stress_limits_orthotropic.tensile_x_direction == [100.0]
-    assert stress_limits_orthotropic.tensile_y_direction == [101.0]
-    assert stress_limits_orthotropic.tensile_z_direction == [102.0]
-    assert stress_limits_orthotropic.shear_xy == [10.0]
-    assert stress_limits_orthotropic.shear_xz == [14.0]
-    assert stress_limits_orthotropic.shear_yz == [12.0]
+    assert stress_limits_orthotropic.compressive_x_direction.value == [-100.0]
+    assert stress_limits_orthotropic.compressive_x_direction.unit == "Pa"
+    assert stress_limits_orthotropic.compressive_y_direction.value == [-101.0]
+    assert stress_limits_orthotropic.compressive_y_direction.unit == "Pa"
+    assert stress_limits_orthotropic.compressive_z_direction.value == [-102.0]
+    assert stress_limits_orthotropic.compressive_z_direction.unit == "Pa"
+    assert stress_limits_orthotropic.tensile_x_direction.value == [100.0]
+    assert stress_limits_orthotropic.tensile_x_direction.unit == "Pa"
+    assert stress_limits_orthotropic.tensile_y_direction.value == [101.0]
+    assert stress_limits_orthotropic.tensile_y_direction.unit == "Pa"
+    assert stress_limits_orthotropic.tensile_z_direction.value == [102.0]
+    assert stress_limits_orthotropic.tensile_z_direction.unit == "Pa"
+    assert stress_limits_orthotropic.shear_xy.value == [10.0]
+    assert stress_limits_orthotropic.shear_xy.unit == "Pa"
+    assert stress_limits_orthotropic.shear_xz.value == [14.0]
+    assert stress_limits_orthotropic.shear_xz.unit == "Pa"
+    assert stress_limits_orthotropic.shear_yz.value == [12.0]
+    assert stress_limits_orthotropic.shear_yz.unit == "Pa"
 
 
 def test_write_fiber_angle():
@@ -391,30 +168,30 @@ def test_write_fiber_angle():
                     ],
                     material_property="Woven Specification for Puck",
                     independent_parameters=[
-                        IndependentParameter(name="Fiber Angle", values=[45.0])
+                        IndependentParameter(name="Fiber Angle", values=Quantity(value=[45.0], units=""))
                     ],
                 ),
             ],
         )
     ]
-
-    writer = MatmlWriter(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == FIBER_ANGLE
-    assert metadata_string == FIBER_ANGLE_METADATA
+    with open(FIBER_ANGLE, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(FIBER_ANGLE_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_puck_constants():
     materials = [
-        Material(
+    Material(
             name="material with puck for woven",
             models=[
                 PuckConstants(
-                    compressive_inclination_xz=[0.0],
-                    compressive_inclination_yz=[0.0],
-                    tensile_inclination_xz=[0.0],
-                    tensile_inclination_yz=[0.0],
+                    compressive_inclination_xz=Quantity(value=[0.0], units=""),
+                    compressive_inclination_yz=Quantity([0.0], units=""),
+                    tensile_inclination_xz=Quantity([0.0], units=""),
+                    tensile_inclination_yz=Quantity([0.0], units=""),
                     model_qualifiers=[
                         ModelQualifier(name="Data Set", values=["2"]),
                         ModelQualifier(
@@ -431,8 +208,12 @@ def test_write_puck_constants():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == PUCK_CONSTANTS
-    assert metadata_string == PUCK_CONSTANTS_METADATA
+    with open(PUCK, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(PUCK_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_puck_additional_constants():
@@ -490,3 +271,4 @@ def test_write_stress_limits():
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     assert material_string == STRESS_LIMITS
     assert metadata_string == STRESS_LIMITS_METADATA
+

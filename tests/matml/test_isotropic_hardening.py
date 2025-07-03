@@ -633,12 +633,3 @@ def test_read_variable_voce_isotropic_hardening():
       data = file.read()
       assert data == metadata_string
 
-# writer = MatmlWriter(materials)
-# tree = writer._to_etree()
-# material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-# path = r"D:\AnsysDev\pymaterials-manager\tests\data"
-# writer.export("trial.xml", indent=True)
-# with open(path + "\\isotropic_hardening_voce_variable.txt", 'w') as file:
-#   file.write(material_string)
-# with open(path + "\\isotropic_hardening_voce_variable_metadata.txt", 'w') as file:
-#   file.write(metadata_string)

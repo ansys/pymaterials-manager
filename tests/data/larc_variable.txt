@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>material with variable larc</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>5.0, 9.0, 13.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>6.0, 10.0, 14.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>7.0, 11.0, 15.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>8.0, 12.0, 16.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa4" format="float">
+        <Data>22.0, 50.0, 70.0</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

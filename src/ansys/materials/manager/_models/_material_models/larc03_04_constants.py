@@ -29,6 +29,7 @@ from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class LaRc0304Constants(MaterialModel):
     """Represents a LaRc03/04 constants material model."""
@@ -39,23 +40,23 @@ class LaRc0304Constants(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MATML], repr=False, frozen=True
     )
-    fracture_toughness_ratio: list[float] = ParameterField(
-        default=[],
+    fracture_toughness_ratio: Quantity | None = ParameterField(
+        default=None,
         description="The ratio of fracture toughness.",
         matml_name="Fracture Toughness Ratio",
     )
-    longitudinal_friction_coefficient: list[float] = ParameterField(
-        default=[],
+    longitudinal_friction_coefficient: Quantity | None = ParameterField(
+        default=None,
         description="The coefficient of friction in the longitudinal direction.",
         matml_name="Longitudinal Friction Coefficient",
     )
-    transverse_friction_coefficient: list[float] = ParameterField(
-        default=[],
+    transverse_friction_coefficient: Quantity | None = ParameterField(
+        default=None,
         description="The coefficient of friction in the transverse direction.",
         matml_name="Transverse Friction Coefficient",
     )
-    fracture_angle_under_compression: list[float] = ParameterField(
-        default=[],
+    fracture_angle_under_compression: Quantity | None = ParameterField(
+        default=None,
         description="The angle of fracture under compression.",
         matml_name="Fracture Angle Under Compression",
     )

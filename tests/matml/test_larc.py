@@ -29,96 +29,13 @@ from ansys.materials.manager._models._material_models.larc03_04_constants import
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
+from ansys.units import Quantity
+
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_larc.xml")
-
-LARC = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with larc</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>3.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>4.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-LARC_VARIABLE = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with variable larc</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>5.0, 9.0, 13.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>6.0, 10.0, 14.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>7.0, 11.0, 15.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>8.0, 12.0, 16.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>22.0, 50.0, 70.0</Data>
-        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-LARC_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>LaRc03/04 Constants</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Fracture Toughness Ratio</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Longitudinal Friction Coefficient</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Transverse Friction Coefficient</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Fracture Angle Under Compression</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa4">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
+LARC = os.path.join(DIR_PATH, "..", "data", "larc.txt")
+LARC_METADATA = os.path.join(DIR_PATH, "..", "data", "larc_metadata.txt")
+LARC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "larc_variable.txt")
 
 
 def test_read_constant_larc():
@@ -128,12 +45,17 @@ def test_read_constant_larc():
     assert len(material_dic[material_name].models) == 2
     larc = material_dic[material_name].models[1]
     assert larc.name == "LaRc03/04 Constants"
-    assert larc.fracture_toughness_ratio == [1.0]
-    assert larc.longitudinal_friction_coefficient == [2.0]
-    assert larc.transverse_friction_coefficient == [3.0]
-    assert larc.fracture_angle_under_compression == [4.0]
+    assert larc.fracture_toughness_ratio.value == [1.0]
+    assert larc.fracture_toughness_ratio.unit == ""
+    assert larc.longitudinal_friction_coefficient.value == [2.0]
+    assert larc.longitudinal_friction_coefficient.unit == ""
+    assert larc.transverse_friction_coefficient.value == [3.0]
+    assert larc.transverse_friction_coefficient.unit == ""
+    assert larc.fracture_angle_under_compression.value == [4.0]
+    assert larc.fracture_angle_under_compression.unit == ""
     assert larc.independent_parameters[0].name == "Temperature"
-    assert larc.independent_parameters[0].values == [7.88860905221012e-31]
+    assert larc.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert larc.independent_parameters[0].values.unit == "C"
 
 
 def test_read_variable_larc():
@@ -143,12 +65,17 @@ def test_read_variable_larc():
     assert len(material_dic[material_name].models) == 2
     larc = material_dic[material_name].models[1]
     assert larc.name == "LaRc03/04 Constants"
-    assert larc.fracture_toughness_ratio == [5.0, 9.0, 13.0]
-    assert larc.longitudinal_friction_coefficient == [6.0, 10.0, 14.0]
-    assert larc.transverse_friction_coefficient == [7.0, 11.0, 15.0]
-    assert larc.fracture_angle_under_compression == [8.0, 12.0, 16.0]
+    assert larc.fracture_toughness_ratio.value.tolist() == [5.0, 9.0, 13.0]
+    assert larc.fracture_toughness_ratio.unit == ""
+    assert larc.longitudinal_friction_coefficient.value.tolist() == [6.0, 10.0, 14.0]
+    assert larc.longitudinal_friction_coefficient.unit == ""
+    assert larc.transverse_friction_coefficient.value.tolist() == [7.0, 11.0, 15.0]
+    assert larc.transverse_friction_coefficient.unit == ""
+    assert larc.fracture_angle_under_compression.value.tolist() == [8.0, 12.0, 16.0]
+    assert larc.fracture_angle_under_compression.unit == ""
     assert larc.independent_parameters[0].name == "Temperature"
-    assert larc.independent_parameters[0].values == [22.0, 50.0, 70.0]
+    assert larc.independent_parameters[0].values.value.tolist() == [22.0, 50.0, 70.0]
+    assert larc.independent_parameters[0].values.unit == "C"
 
 
 def test_write_constant_larc():
@@ -157,12 +84,12 @@ def test_write_constant_larc():
             name="material with larc",
             models=[
                 LaRc0304Constants(
-                    fracture_toughness_ratio=[1.0],
-                    longitudinal_friction_coefficient=[2.0],
-                    transverse_friction_coefficient=[3.0],
-                    fracture_angle_under_compression=[4.0],
+                    fracture_toughness_ratio=Quantity(value=[1.0], units=""),
+                    longitudinal_friction_coefficient=Quantity(value=[2.0], units=""),
+                    transverse_friction_coefficient=Quantity(value=[3.0], units=""),
+                    fracture_angle_under_compression=Quantity(value=[4.0], units=""),
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=[7.88860905221012e-31])
+                        IndependentParameter(name="Temperature", values=Quantity(value=[7.88860905221012e-31], units="C"))
                     ],
                 ),
             ],
@@ -172,10 +99,12 @@ def test_write_constant_larc():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    print(material_string)
-    print(metadata_string)
-    assert material_string == LARC
-    assert metadata_string == LARC_METADATA
+    with open(LARC, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(LARC_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_variable_larc():
@@ -184,12 +113,12 @@ def test_write_variable_larc():
             name="material with variable larc",
             models=[
                 LaRc0304Constants(
-                    fracture_toughness_ratio=[5.0, 9.0, 13.0],
-                    longitudinal_friction_coefficient=[6.0, 10.0, 14.0],
-                    transverse_friction_coefficient=[7.0, 11.0, 15.0],
-                    fracture_angle_under_compression=[8.0, 12.0, 16.0],
+                    fracture_toughness_ratio=Quantity(value=[5.0, 9.0, 13.0], units=""),
+                    longitudinal_friction_coefficient=Quantity(value=[6.0, 10.0, 14.0], units=""),
+                    transverse_friction_coefficient=Quantity(value=[7.0, 11.0, 15.0], units=""),
+                    fracture_angle_under_compression=Quantity(value=[8.0, 12.0, 16.0], units=""),
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=[22.0, 50.0, 70.0])
+                        IndependentParameter(name="Temperature", values=Quantity(value=[22.0, 50.0, 70.0], units="C"))
                     ],
                 ),
             ],
@@ -199,6 +128,10 @@ def test_write_variable_larc():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    print(material_string)
-    assert material_string == LARC_VARIABLE
-    assert metadata_string == LARC_METADATA
+    with open(LARC_VARIABLE, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(LARC_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
+
