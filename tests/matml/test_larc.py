@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.larc03_04_constants import LaRc0304Constants
@@ -32,18 +32,16 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_larc.xml")
-LARC = os.path.join(DIR_PATH, "..", "data", "larc.txt")
-LARC_METADATA = os.path.join(DIR_PATH, "..", "data", "larc_metadata.txt")
-LARC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "larc_variable.txt")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_larc.xml")
+LARC = os.path.join(DIR_PATH, "..", "data", "matml_larc.txt")
+LARC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_larc_metadata.txt")
+LARC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_larc_variable.txt")
 
 
 def test_read_constant_larc():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "material with larc"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 2
-    larc = material_dic[material_name].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with larc")
+    assert len(material.models) == 2
+    larc = material.models[1]
     assert larc.name == "LaRc03/04 Constants"
     assert larc.fracture_toughness_ratio.value == [1.0]
     assert larc.fracture_toughness_ratio.unit == ""
@@ -59,11 +57,9 @@ def test_read_constant_larc():
 
 
 def test_read_variable_larc():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "material with variable larc"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 2
-    larc = material_dic[material_name].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with variable larc")
+    assert len(material.models) == 2
+    larc = material.models[1]
     assert larc.name == "LaRc03/04 Constants"
     assert larc.fracture_toughness_ratio.value.tolist() == [5.0, 9.0, 13.0]
     assert larc.fracture_toughness_ratio.unit == ""

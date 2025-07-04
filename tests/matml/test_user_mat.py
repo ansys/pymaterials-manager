@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.user_parameter import UserParameter
@@ -32,18 +32,16 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_usermat.xml")
-USER_MAT = os.path.join(DIR_PATH, "..", "data", "user_mat.txt")
-USER_MAT_METADATA = os.path.join(DIR_PATH, "..", "data", "user_mat_metadata.txt")
-USER_MAT_VARIABLE = os.path.join(DIR_PATH, "..", "data", "user_mat_variable.txt")
-USER_MAT_VARIABLE_METADATA = os.path.join(DIR_PATH, "..", "data", "user_mat_variable_metadata.txt")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_usermat.xml")
+USER_MAT = os.path.join(DIR_PATH, "..", "data", "matml_user_mat.txt")
+USER_MAT_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_user_mat_metadata.txt")
+USER_MAT_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_user_mat_variable.txt")
+USER_MAT_VARIABLE_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_user_mat_variable_metadata.txt")
 
 def test_read_usermat():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "usermat"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 4
-    usermat = material_dic[material_name].models[3]
+    material = read_specific_material(XML_FILE_PATH, "usermat")
+    assert len(material.models) == 4
+    usermat = material.models[3]
     assert usermat.name == "Model Coefficients"
     assert usermat.model_qualifiers[0].name == "UserMat"
     assert usermat.model_qualifiers[0].value == "USER"
@@ -61,11 +59,9 @@ def test_read_usermat():
 
 
 def test_variable_user_mat():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "variable usermat"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 4
-    usermat = material_dic[material_name].models[3]
+    material = read_specific_material(XML_FILE_PATH, "variable usermat")
+    assert len(material.models) == 4
+    usermat = material.models[3]
     assert usermat.name == "Model Coefficients"
     assert usermat.model_qualifiers[0].name == "UserMat"
     assert usermat.model_qualifiers[0].value == "USER"

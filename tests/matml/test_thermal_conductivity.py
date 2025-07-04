@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
@@ -37,20 +37,17 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_thermal_conductivity.xml")
-
-THERMAL_CONDUCTIVITY_ISOTROPIC = os.path.join(DIR_PATH, "..", "data", "thermal_conductivity_isotropic.txt")
-THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "thermal_conductivity_isotropic_metadata.txt")
-THERMAL_CONDUCTIVITY_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "thermal_conductivity_orthotropic.txt")
-THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "thermal_conductivity_orthotropic_metadata.txt")
-
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_thermal_conductivity.xml")
+THERMAL_CONDUCTIVITY_ISOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_thermal_conductivity_isotropic.txt")
+THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_thermal_conductivity_isotropic_metadata.txt")
+THERMAL_CONDUCTIVITY_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_thermal_conductivity_orthotropic.txt")
+THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_thermal_conductivity_orthotropic_metadata.txt")
 
 
 def test_read_thermal_conductivity_isotropic_material():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "Isotropic Convection Test Material" in material_dic.keys()
-    assert len(material_dic["Isotropic Convection Test Material"].models) == 2
-    isotropic_conductivity = material_dic["Isotropic Convection Test Material"].models[1]
+    material = read_specific_material(XML_FILE_PATH, "Isotropic Convection Test Material")
+    assert len(material.models) == 2
+    isotropic_conductivity = material.models[1]
     assert isotropic_conductivity.name == "Thermal Conductivity"
     assert isotropic_conductivity.model_qualifiers[0].name == "Behavior"
     assert isotropic_conductivity.model_qualifiers[0].value == "Isotropic"
@@ -68,10 +65,9 @@ def test_read_thermal_conductivity_isotropic_material():
 
 
 def test_read_thermal_conductivity_orthotropic_material():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "Orthotropic Convection Test Material" in material_dic.keys()
-    assert len(material_dic["Orthotropic Convection Test Material"].models) == 2
-    orthotropic_conductivity = material_dic["Orthotropic Convection Test Material"].models[1]
+    material = read_specific_material(XML_FILE_PATH, "Orthotropic Convection Test Material")
+    assert len(material.models) == 2
+    orthotropic_conductivity = material.models[1]
     assert orthotropic_conductivity.name == "Thermal Conductivity"
     assert orthotropic_conductivity.model_qualifiers[0].name == "Behavior"
     assert orthotropic_conductivity.model_qualifiers[0].value == "Orthotropic"

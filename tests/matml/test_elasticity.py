@@ -41,18 +41,20 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_elasticity.xml")
-ISOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "isotropic_elasticity.txt")
-ISOTROPIC_ELASTICITY_METADATA  = os.path.join(DIR_PATH, "..", "data", "isotropic_elasticity_metadata.txt")
-ORTHOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "orthotropic_elasticity.txt")
-ORTHOTROPIC_ELASTICITY_METADATA = os.path.join(DIR_PATH, "..", "data", "orthotropic_elasticity_metadata.txt")
-ANISOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "anisotropic_elasticity.txt")
-ANISOTROPIC_ELASTICITY_METADATA = os.path.join(DIR_PATH, "..", "data", "anisotropic_elasticity_metadata.txt")
-ORTHOTROPIC_ELASTICITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "orthotropic_elasticity_variable.txt")
-ISOTROPIC_ELASTICITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "isotropic_elasticity_variable.txt")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_elasticity.xml")
+ISOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_isotropic_elasticity.txt")
+ISOTROPIC_ELASTICITY_METADATA  = os.path.join(DIR_PATH, "..", "data", "matml_isotropic_elasticity_metadata.txt")
+ORTHOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_orthotropic_elasticity.txt")
+ORTHOTROPIC_ELASTICITY_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_orthotropic_elasticity_metadata.txt")
+ANISOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_anisotropic_elasticity.txt")
+ANISOTROPIC_ELASTICITY_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_anisotropic_elasticity_metadata.txt")
+ORTHOTROPIC_ELASTICITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_orthotropic_elasticity_variable.txt")
+ISOTROPIC_ELASTICITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_isotropic_elasticity_variable.txt")
 
 def test_read_constant_elastic_isotropic_material():
-    isotropic_elasticity = read_specific_material(XML_FILE_PATH, "Isotropic Test Material").models[1]
+    material = read_specific_material(XML_FILE_PATH, "Isotropic Test Material")
+    assert len(material.models) == 2
+    isotropic_elasticity = material.models[1]
     assert isotropic_elasticity.name == "Elasticity"
     assert isotropic_elasticity.model_qualifiers[0].name == "Behavior"
     assert isotropic_elasticity.model_qualifiers[0].value == "Isotropic"
@@ -77,7 +79,9 @@ def test_read_constant_elastic_isotropic_material():
 
 
 def test_read_constant_elastic_orthotropic_material():
-    orthotropic_elasticity = read_specific_material(XML_FILE_PATH, "Orthotropic Test Material").models[1]
+    material = read_specific_material(XML_FILE_PATH, "Orthotropic Test Material")
+    assert len(material.models) == 2
+    orthotropic_elasticity = material.models[1]
     assert orthotropic_elasticity.name == "Elasticity"
     assert orthotropic_elasticity.model_qualifiers[0].name == "Behavior"
     assert orthotropic_elasticity.model_qualifiers[0].value == "Orthotropic"
@@ -115,7 +119,9 @@ def test_read_constant_elastic_orthotropic_material():
 
 
 def test_read_constant_elastic_anisotropic_material():
-    anisotropic_elasticity = read_specific_material(XML_FILE_PATH, "Anisotropic Test Material").models[1]
+    material = read_specific_material(XML_FILE_PATH, "Anisotropic Test Material")
+    assert len(material.models) == 2
+    anisotropic_elasticity = material.models[1]
     assert anisotropic_elasticity.name == "Elasticity"
     assert anisotropic_elasticity.model_qualifiers[0].name == "Behavior"
     assert anisotropic_elasticity.model_qualifiers[0].value == "Anisotropic"
@@ -175,7 +181,9 @@ def test_read_constant_elastic_anisotropic_material():
     assert anisotropic_elasticity.column_6.unit == "Pa"
 
 def test_read_variable_elastic_isotropic_material():
-    isotropic_elasticity = read_specific_material(XML_FILE_PATH, "Variable Isotropic Test Material").models[1]
+    material = read_specific_material(XML_FILE_PATH, "Variable Isotropic Test Material")
+    assert len(material.models) == 2
+    isotropic_elasticity = material.models[1]
     assert isotropic_elasticity.name == "Elasticity"
     assert isotropic_elasticity.model_qualifiers[0].name == "Behavior"
     assert isotropic_elasticity.model_qualifiers[0].value == "Isotropic"
@@ -201,7 +209,9 @@ def test_read_variable_elastic_isotropic_material():
 
 
 def test_read_variable_elastic_orthotropic_material():
-    orthotropic_elasticity = read_specific_material(XML_FILE_PATH, "Variable Orthotropic Test Material").models[1]
+    material = read_specific_material(XML_FILE_PATH, "Variable Orthotropic Test Material")
+    assert len(material.models) == 2
+    orthotropic_elasticity = material.models[1]
     assert orthotropic_elasticity.name == "Elasticity"
     assert orthotropic_elasticity.model_qualifiers[0].name == "Behavior"
     assert orthotropic_elasticity.model_qualifiers[0].value == "Orthotropic"

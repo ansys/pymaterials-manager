@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.viscosity import Viscosity
@@ -32,17 +32,15 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_viscosity.xml")
-VISCOSITY = os.path.join(DIR_PATH, "..", "data", "viscosity.txt")
-VISCOSITY_METADATA = os.path.join(DIR_PATH, "..", "data", "viscosity_metadata.txt")
-VISCOSITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "viscosity_variable.txt")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_viscosity.xml")
+VISCOSITY = os.path.join(DIR_PATH, "..", "data", "matml_viscosity.txt")
+VISCOSITY_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_viscosity_metadata.txt")
+VISCOSITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_viscosity_variable.txt")
 
 def test_read_constant_viscosity():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "material with viscosity"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 2
-    viscosity = material_dic[material_name].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with viscosity")
+    assert len(material.models) == 2
+    viscosity = material.models[1]
     assert viscosity.name == "Viscosity"
     assert viscosity.model_qualifiers[0].name == "BETA"
     assert viscosity.model_qualifiers[0].value == "Mechanical.ModalAcoustics"
@@ -61,11 +59,9 @@ def test_read_constant_viscosity():
 
 
 def test_read_variable_viscosity():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "material with variable viscosity"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 2
-    viscosity = material_dic[material_name].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with variable viscosity")
+    assert len(material.models) == 2
+    viscosity = material.models[1]
     assert viscosity.name == "Viscosity"
     assert viscosity.model_qualifiers[0].name == "BETA"
     assert viscosity.model_qualifiers[0].value == "Mechanical.ModalAcoustics"

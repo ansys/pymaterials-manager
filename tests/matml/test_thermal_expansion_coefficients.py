@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
@@ -45,22 +45,21 @@ from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 INSTANTANEOUS_XML_FILE_PATH = os.path.join(
-    DIR_PATH, "..", "data", "MatML_unittest_instantaneous_thermal_coeffs.xml"
+    DIR_PATH, "..", "data", "matml_unittest_instantaneous_thermal_coeffs.xml"
 )
-SECANT_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_thermal_coeffs.xml")
+SECANT_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_thermal_coeffs.xml")
 
-CTE_ISOTROPIC = os.path.join(DIR_PATH, "..", "data", "cte_isotropic.txt")
-CTE_ISOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "cte_isotropic_metadata.txt")
-CTE_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "cte_orthotropic.txt")
-CTE_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "cte_orthotropic_metadata.txt")
-CTE_ISOTROPIC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "cte_isotropic_variable.txt")
-CTE_ORTHOTROPIC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "cte_orthotropic_variable.txt")
+CTE_ISOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_cte_isotropic.txt")
+CTE_ISOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_cte_isotropic_metadata.txt")
+CTE_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_cte_orthotropic.txt")
+CTE_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_cte_orthotropic_metadata.txt")
+CTE_ISOTROPIC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_cte_isotropic_variable.txt")
+CTE_ORTHOTROPIC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_cte_orthotropic_variable.txt")
 
 def test_read_constant_isotropic_instantaneous_cte_material():
-    material_dic = read_matml_file(INSTANTANEOUS_XML_FILE_PATH)
-    assert "Mat with constant isotropic instantaneous CTE" in material_dic.keys()
-    assert len(material_dic["Mat with constant isotropic instantaneous CTE"].models) == 2
-    isotropic_cte = material_dic["Mat with constant isotropic instantaneous CTE"].models[1]
+    material = read_specific_material(INSTANTANEOUS_XML_FILE_PATH, "Mat with constant isotropic instantaneous CTE")
+    assert len(material.models) == 2
+    isotropic_cte = material.models[1]
     assert isotropic_cte.name == "Coefficient of Thermal Expansion"
     assert isotropic_cte.model_qualifiers[0].name == "Definition"
     assert isotropic_cte.model_qualifiers[0].value == "Instantaneous"
@@ -74,10 +73,9 @@ def test_read_constant_isotropic_instantaneous_cte_material():
 
 
 def test_read_constant_orthotropic_instantaneous_cte_material():
-    material_dic = read_matml_file(INSTANTANEOUS_XML_FILE_PATH)
-    assert "Mat with constant orthotropic instanteous CTE" in material_dic.keys()
-    assert len(material_dic["Mat with constant orthotropic instanteous CTE"].models) == 2
-    orthotropic_cte = material_dic["Mat with constant orthotropic instanteous CTE"].models[1]
+    material = read_specific_material(INSTANTANEOUS_XML_FILE_PATH, "Mat with constant orthotropic instanteous CTE")
+    assert len(material.models) == 2
+    orthotropic_cte = material.models[1]
     assert orthotropic_cte.name == "Coefficient of Thermal Expansion"
     assert orthotropic_cte.model_qualifiers[0].name == "Definition"
     assert orthotropic_cte.model_qualifiers[0].value == "Instantaneous"
@@ -95,10 +93,9 @@ def test_read_constant_orthotropic_instantaneous_cte_material():
 
 
 def test_read_variable_isotropic_instantaneous_cte_material():
-    material_dic = read_matml_file(INSTANTANEOUS_XML_FILE_PATH)
-    assert "Mat with variable isotropic instantaneous CTE" in material_dic.keys()
-    assert len(material_dic["Mat with variable isotropic instantaneous CTE"].models) == 2
-    isotropic_cte = material_dic["Mat with variable isotropic instantaneous CTE"].models[1]
+    material = read_specific_material(INSTANTANEOUS_XML_FILE_PATH, "Mat with variable isotropic instantaneous CTE")
+    assert len(material.models) == 2
+    isotropic_cte = material.models[1]
     assert isotropic_cte.name == "Coefficient of Thermal Expansion"
     assert isotropic_cte.model_qualifiers[0].name == "Definition"
     assert isotropic_cte.model_qualifiers[0].value == "Instantaneous"
@@ -112,10 +109,9 @@ def test_read_variable_isotropic_instantaneous_cte_material():
 
 
 def test_read_variable_orthotropic_instantaneous_cte_material():
-    material_dic = read_matml_file(INSTANTANEOUS_XML_FILE_PATH)
-    assert "Mat with variable orthotropic instantaneous CTE" in material_dic.keys()
-    assert len(material_dic["Mat with variable orthotropic instantaneous CTE"].models) == 2
-    orthotropic_cte = material_dic["Mat with variable orthotropic instantaneous CTE"].models[1]
+    material = read_specific_material(INSTANTANEOUS_XML_FILE_PATH, "Mat with variable orthotropic instantaneous CTE")
+    assert len(material.models) == 2
+    orthotropic_cte = material.models[1]
     assert orthotropic_cte.name == "Coefficient of Thermal Expansion"
     assert orthotropic_cte.model_qualifiers[0].name == "Definition"
     assert orthotropic_cte.model_qualifiers[0].value == "Instantaneous"
@@ -133,13 +129,10 @@ def test_read_variable_orthotropic_instantaneous_cte_material():
 
 
 def test_read_constant_isotropic_secant_cte_material():
-    material_dic = read_matml_file(SECANT_XML_FILE_PATH)
-    assert "material with isotropic thermal expansion coefficients" in material_dic.keys()
-    assert len(material_dic["material with isotropic thermal expansion coefficients"].models) == 3
-    isotropic_cte = material_dic["material with isotropic thermal expansion coefficients"].models[1]
-    zero_thermal_strain_reference_temperature = material_dic[
-        "material with isotropic thermal expansion coefficients"
-    ].models[2]
+    material = read_specific_material(SECANT_XML_FILE_PATH, "material with isotropic thermal expansion coefficients")
+    assert len(material.models) == 3
+    isotropic_cte = material.models[1]
+    zero_thermal_strain_reference_temperature = material.models[2]
     assert isotropic_cte.name == "Coefficient of Thermal Expansion"
     assert isotropic_cte.model_qualifiers[0].name == "Definition"
     assert isotropic_cte.model_qualifiers[0].value == "Secant"
@@ -169,15 +162,10 @@ def test_read_constant_isotropic_secant_cte_material():
 
 
 def test_read_constant_orthotropic_secant_cte_material():
-    material_dic = read_matml_file(SECANT_XML_FILE_PATH)
-    assert "material with orthotropic thermal expansion coefficients" in material_dic.keys()
-    assert len(material_dic["material with orthotropic thermal expansion coefficients"].models) == 3
-    orthotropic_cte = material_dic[
-        "material with orthotropic thermal expansion coefficients"
-    ].models[1]
-    zero_thermal_strain_reference_temperature = material_dic[
-        "material with orthotropic thermal expansion coefficients"
-    ].models[2]
+    material = read_specific_material(SECANT_XML_FILE_PATH, "material with orthotropic thermal expansion coefficients")
+    assert len(material.models) == 3
+    orthotropic_cte = material.models[1]
+    zero_thermal_strain_reference_temperature = material.models[2]
     assert orthotropic_cte.name == "Coefficient of Thermal Expansion"
     assert orthotropic_cte.model_qualifiers[0].name == "Definition"
     assert orthotropic_cte.model_qualifiers[0].value == "Secant"
@@ -212,18 +200,10 @@ def test_read_constant_orthotropic_secant_cte_material():
 
 
 def test_read_variable_isotropic_secant_cte_material():
-    material_dic = read_matml_file(SECANT_XML_FILE_PATH)
-    assert "material with variable isotropic thermal expansion coefficients" in material_dic.keys()
-    assert (
-        len(material_dic["material with variable isotropic thermal expansion coefficients"].models)
-        == 3
-    )
-    isotropic_cte = material_dic[
-        "material with variable isotropic thermal expansion coefficients"
-    ].models[1]
-    zero_thermal_strain_reference_temperature = material_dic[
-        "material with variable isotropic thermal expansion coefficients"
-    ].models[2]
+    material = read_specific_material(SECANT_XML_FILE_PATH, "material with variable isotropic thermal expansion coefficients")
+    assert len(material.models) == 3
+    isotropic_cte = material.models[1]
+    zero_thermal_strain_reference_temperature = material.models[2]
     assert isotropic_cte.name == "Coefficient of Thermal Expansion"
     assert isotropic_cte.model_qualifiers[0].name == "Definition"
     assert isotropic_cte.model_qualifiers[0].value == "Secant"
@@ -253,22 +233,10 @@ def test_read_variable_isotropic_secant_cte_material():
 
 
 def test_read_variable_orthotropic_secant_cte_material():
-    material_dic = read_matml_file(SECANT_XML_FILE_PATH)
-    assert (
-        "material with variable orthotropic thermal expansion coefficients" in material_dic.keys()
-    )
-    assert (
-        len(
-            material_dic["material with variable orthotropic thermal expansion coefficients"].models
-        )
-        == 3
-    )
-    orthotropic_cte = material_dic[
-        "material with variable orthotropic thermal expansion coefficients"
-    ].models[1]
-    zero_thermal_strain_reference_temperature = material_dic[
-        "material with variable orthotropic thermal expansion coefficients"
-    ].models[2]
+    material = read_specific_material(SECANT_XML_FILE_PATH, "material with variable orthotropic thermal expansion coefficients")
+    assert len(material.models) == 3
+    orthotropic_cte = material.models[1]
+    zero_thermal_strain_reference_temperature = material.models[2]
     assert orthotropic_cte.name == "Coefficient of Thermal Expansion"
     assert orthotropic_cte.model_qualifiers[0].name == "Definition"
     assert orthotropic_cte.model_qualifiers[0].value == "Secant"

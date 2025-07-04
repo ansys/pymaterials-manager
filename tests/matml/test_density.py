@@ -31,10 +31,10 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_density.xml")
-DENSITY = os.path.join(DIR_PATH, "..", "data", "density.txt")
-DENSITY_METADATA = os.path.join(DIR_PATH, "..", "data", "density_metadata.txt")
-DENSITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "density_variable.txt")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_density.xml")
+DENSITY = os.path.join(DIR_PATH, "..", "data", "matml_density.txt")
+DENSITY_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_density_metadata.txt")
+DENSITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_density_variable.txt")
 
 
 def test_read_material_with_constant_density():

@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
@@ -33,19 +33,17 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_specific_heat.xml")
-SPECIFIC_HEAT_VOLUME = os.path.join(DIR_PATH, "..", "data", "specific_heat_volume.txt")
-SPECIFIC_HEAT_METADATA = os.path.join(DIR_PATH, "..", "data", "specific_heat_volume_metadata.txt")
-SPECIFIC_HEAT_VOLUME_VARIABLE = os.path.join(DIR_PATH, "..", "data", "specific_heat_volume_variable.txt")
-SPECIFIC_HEAT_PRESSURE = os.path.join(DIR_PATH, "..", "data", "specific_heat_pressure.txt")
-SPECIFIC_HEAT_PRESSURE_VARIABLE = os.path.join(DIR_PATH, "..", "data", "specific_heat_pressure_variable.txt")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_specific_heat.xml")
+SPECIFIC_HEAT_VOLUME = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_volume.txt")
+SPECIFIC_HEAT_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_volume_metadata.txt")
+SPECIFIC_HEAT_VOLUME_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_volume_variable.txt")
+SPECIFIC_HEAT_PRESSURE = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_pressure.txt")
+SPECIFIC_HEAT_PRESSURE_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_pressure_variable.txt")
 
 def test_read_constant_specific_heat_volume():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "material with specific heat volume"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 2
-    specific_heat = material_dic[material_name].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with specific heat volume")
+    assert len(material.models) == 2
+    specific_heat = material.models[1]
     assert specific_heat.name == "Specific Heat"
     assert specific_heat.model_qualifiers[0].name == "Definition"
     assert specific_heat.model_qualifiers[0].value == "Constant Volume"
@@ -66,11 +64,9 @@ def test_read_constant_specific_heat_volume():
 
 
 def test_read_variable_specific_heat_volume():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "material with variable specific heat volume"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 2
-    specific_heat = material_dic[material_name].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with variable specific heat volume")
+    assert len(material.models) == 2
+    specific_heat = material.models[1]
     assert specific_heat.name == "Specific Heat"
     assert specific_heat.model_qualifiers[0].name == "Definition"
     assert specific_heat.model_qualifiers[0].value == "Constant Volume"
@@ -90,11 +86,9 @@ def test_read_variable_specific_heat_volume():
     assert specific_heat.specific_heat.unit == "J kg^-1 C^-1"
 
 def test_read_constant_specific_heat_pressure():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "material with specific heat pressure"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 2
-    specific_heat = material_dic[material_name].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with specific heat pressure")
+    assert len(material.models) == 2
+    specific_heat = material.models[1]
     assert specific_heat.name == "Specific Heat"
     assert specific_heat.model_qualifiers[0].name == "Definition"
     assert specific_heat.model_qualifiers[0].value == "Constant Pressure"
@@ -121,11 +115,9 @@ def test_read_constant_specific_heat_pressure():
 
 
 def test_read_variable_specific_heat_pressure():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    material_name = "material with variable specific heat pressure"
-    assert material_name in material_dic.keys()
-    assert len(material_dic[material_name].models) == 2
-    specific_heat = material_dic[material_name].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with variable specific heat pressure")
+    assert len(material.models) == 2
+    specific_heat = material.models[1]
     assert specific_heat.name == "Specific Heat"
     assert specific_heat.model_qualifiers[0].name == "Definition"
     assert specific_heat.model_qualifiers[0].value == "Constant Pressure"

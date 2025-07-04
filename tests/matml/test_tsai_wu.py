@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.tsai_wu_constants import TsaiWuConstants
@@ -32,17 +32,16 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_tsai_wu.xml")
-TSAI_WU = os.path.join(DIR_PATH, "..", "data", "tsai_wu.txt")
-TSAI_WU_METADATA = os.path.join(DIR_PATH, "..", "data", "tsai_wu_metadata.txt")
-TSAI_WU_VARIABLE = os.path.join(DIR_PATH, "..", "data", "tsai_wu_variable.txt")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_tsai_wu.xml")
+TSAI_WU = os.path.join(DIR_PATH, "..", "data", "matml_tsai_wu.txt")
+TSAI_WU_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_tsai_wu_metadata.txt")
+TSAI_WU_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_tsai_wu_variable.txt")
 
 
 def test_read_constant_tsai_wu():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "material with tsai-wu" in material_dic.keys()
-    assert len(material_dic["material with tsai-wu"].models) == 2
-    tsai_wu = material_dic["material with tsai-wu"].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with tsai-wu")
+    assert len(material.models) == 2
+    tsai_wu = material.models[1]
     assert tsai_wu.name == "Tsai-Wu Constants"
     assert tsai_wu.coupling_coefficient_xy.value == [-1.0]
     assert tsai_wu.coupling_coefficient_xy.unit == ""
@@ -55,10 +54,9 @@ def test_read_constant_tsai_wu():
     assert tsai_wu.independent_parameters[0].values.unit == "C"
 
 def test_read_variable_tsai_wu():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "material with variable tsai-wu" in material_dic.keys()
-    assert len(material_dic["material with variable tsai-wu"].models) == 2
-    tsai_wu = material_dic["material with variable tsai-wu"].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with variable tsai-wu")
+    assert len(material.models) == 2
+    tsai_wu = material.models[1]
     assert tsai_wu.name == "Tsai-Wu Constants"
     assert tsai_wu.coupling_coefficient_xy.value.tolist() == [-1.0, -1.0, -1.0]
     assert tsai_wu.coupling_coefficient_xy.unit == ""

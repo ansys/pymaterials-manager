@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
@@ -40,21 +40,20 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_puck_for_woven.xml")
-FIBER_ANGLE = os.path.join(DIR_PATH, "..", "data", "fiber_angle.txt")
-FIBER_ANGLE_METADATA = os.path.join(DIR_PATH, "..", "data", "fiber_angle_metadata.txt")
-PUCK = os.path.join(DIR_PATH, "..", "data", "puck.txt")
-PUCK_METADATA = os.path.join(DIR_PATH, "..", "data", "puck_metadata.txt")
-PUCK_ADDITIONAL = os.path.join(DIR_PATH, "..", "data", "puck_additional.txt")
-PUCK_ADDITIONAL_METADATA = os.path.join(DIR_PATH, "..", "data", "puck_additional_metadata.txt")
-STRESS_LIMITS_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "stress_limits_orthotropic.txt")
-STRESS_LIMITS_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "stress_limits_orthotropic_metadata.txt")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_puck_for_woven.xml")
+FIBER_ANGLE = os.path.join(DIR_PATH, "..", "data", "matml_fiber_angle.txt")
+FIBER_ANGLE_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_fiber_angle_metadata.txt")
+PUCK = os.path.join(DIR_PATH, "..", "data", "matml_puck.txt")
+PUCK_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_puck_metadata.txt")
+PUCK_ADDITIONAL = os.path.join(DIR_PATH, "..", "data", "matml_puck_additional.txt")
+PUCK_ADDITIONAL_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_puck_additional_metadata.txt")
+STRESS_LIMITS_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_stress_limits_orthotropic.txt")
+STRESS_LIMITS_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_stress_limits_orthotropic_metadata.txt")
 
 def test_read_fiber_angle():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "material with puck for woven" in material_dic.keys()
-    assert len(material_dic["material with puck for woven"].models) == 5
-    fiber_angle = material_dic["material with puck for woven"].models[1]
+    material = read_specific_material(XML_FILE_PATH, "material with puck for woven")
+    assert len(material.models) == 5
+    fiber_angle = material.models[1]
     assert fiber_angle.name == "Fiber Angle"
     assert fiber_angle.independent_parameters[0].name == "Fiber Angle"
     assert fiber_angle.independent_parameters[0].values.value == [90.0]
@@ -69,10 +68,9 @@ def test_read_fiber_angle():
 
 
 def test_read_puck_constants():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "material with puck for woven" in material_dic.keys()
-    assert len(material_dic["material with puck for woven"].models) == 5
-    puck_constants = material_dic["material with puck for woven"].models[3]
+    material = read_specific_material(XML_FILE_PATH, "material with puck for woven")
+    assert len(material.models) == 5
+    puck_constants = material.models[3]
     assert puck_constants.name == "Puck Constants"
     assert puck_constants.independent_parameters == []
     assert puck_constants.model_qualifiers[0].name == "Data Set"
@@ -96,10 +94,9 @@ def test_read_puck_constants():
 
 
 def test_read_puck_additional_constants():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "material with puck for woven" in material_dic.keys()
-    assert len(material_dic["material with puck for woven"].models) == 5
-    puck_additional_constants = material_dic["material with puck for woven"].models[4]
+    material = read_specific_material(XML_FILE_PATH, "material with puck for woven")
+    assert len(material.models) == 5
+    puck_additional_constants = material.models[4]
     assert puck_additional_constants.name == "Additional Puck Constants"
     assert puck_additional_constants.independent_parameters == []
     assert puck_additional_constants.model_qualifiers[0].name == "Data Set"
@@ -119,11 +116,9 @@ def test_read_puck_additional_constants():
 
 
 def test_read_stress_limits_orthotropic():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "material with puck for woven" in material_dic.keys()
-    assert "material with puck for woven" in material_dic.keys()
-    assert len(material_dic["material with puck for woven"].models) == 5
-    stress_limits_orthotropic = material_dic["material with puck for woven"].models[2]
+    material = read_specific_material(XML_FILE_PATH, "material with puck for woven")
+    assert len(material.models) == 5
+    stress_limits_orthotropic = material.models[2]
     assert stress_limits_orthotropic.name == "Stress Limits"
     assert stress_limits_orthotropic.independent_parameters == []
     assert stress_limits_orthotropic.model_qualifiers[0].name == "Behavior"

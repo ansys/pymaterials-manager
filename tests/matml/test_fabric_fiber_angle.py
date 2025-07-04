@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
@@ -35,25 +35,19 @@ from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_fabric_fiber_angle.xml")
+XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_fabric_fiber_angle.xml")
 
-FABRIC_FIBER_ANGLE = os.path.join(DIR_PATH, "..", "data", "fabric_fiber_angle.txt")
-FABRIC_FIBER_ANGLE_METADATA = os.path.join(DIR_PATH, "..", "data", "fabric_fiber_angle_metadata.txt")
-FABRIC_FIBER_ANGLE_VARIABLE = os.path.join(DIR_PATH, "..", "data", "fabric_fiber_angle_variable.txt")
-FABRIC_FIBER_ANGLE_VARIABLE_METADATA = os.path.join(DIR_PATH, "..", "data", "fabric_fiber_angle_variable_metadata.txt")
-PLY_TYPE = os.path.join(DIR_PATH, "..", "data", "ply_type.txt")
-PLY_TYPE_METADATA = os.path.join(DIR_PATH, "..", "data", "ply_type_metadata.txt")
+FABRIC_FIBER_ANGLE = os.path.join(DIR_PATH, "..", "data", "matml_fabric_fiber_angle.txt")
+FABRIC_FIBER_ANGLE_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_fabric_fiber_angle_metadata.txt")
+FABRIC_FIBER_ANGLE_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_fabric_fiber_angle_variable.txt")
+FABRIC_FIBER_ANGLE_VARIABLE_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_fabric_fiber_angle_variable_metadata.txt")
+PLY_TYPE = os.path.join(DIR_PATH, "..", "data", "matml_ply_type.txt")
+PLY_TYPE_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_ply_type_metadata.txt")
 
 def test_read_constant_fabric_fiber_angle_0_deg():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0" in material_dic.keys()
-    assert (
-        len(material_dic["Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0"].models)
-        == 5
-    )
-    fabric_fiber_angle = material_dic[
-        "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0"
-    ].models[3]
+    material = read_specific_material(XML_FILE_PATH, "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0")
+    assert len(material.models) == 5
+    fabric_fiber_angle = material.models[3]
     assert fabric_fiber_angle.name == "Fabric Fiber Angle"
     assert fabric_fiber_angle.model_qualifiers[0].name == "Field Variable Compatible"
     assert fabric_fiber_angle.model_qualifiers[0].value == "Temperature"
@@ -66,19 +60,9 @@ def test_read_constant_fabric_fiber_angle_0_deg():
 
 
 def test_read_constant_fabric_fiber_angle_35_deg():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert (
-        "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=35" in material_dic.keys()
-    )
-    assert (
-        len(
-            material_dic["Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=35"].models
-        )
-        == 5
-    )
-    fabric_fiber_angle = material_dic[
-        "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=35"
-    ].models[3]
+    material = read_specific_material(XML_FILE_PATH, "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=35")
+    assert len(material.models) == 5
+    fabric_fiber_angle = material.models[3]
     assert fabric_fiber_angle.name == "Fabric Fiber Angle"
     assert fabric_fiber_angle.model_qualifiers[0].name == "Field Variable Compatible"
     assert fabric_fiber_angle.model_qualifiers[0].value == "Temperature"
@@ -91,19 +75,9 @@ def test_read_constant_fabric_fiber_angle_35_deg():
 
 
 def test_read_constant_fabric_fiber_angle_45_deg():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert (
-        "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=45" in material_dic.keys()
-    )
-    assert (
-        len(
-            material_dic["Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=45"].models
-        )
-        == 5
-    )
-    fabric_fiber_angle = material_dic[
-        "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=45"
-    ].models[3]
+    material = read_specific_material(XML_FILE_PATH, "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=45")
+    assert len(material.models) == 5
+    fabric_fiber_angle = material.models[3]
     assert fabric_fiber_angle.name == "Fabric Fiber Angle"
     assert fabric_fiber_angle.model_qualifiers[0].name == "Field Variable Compatible"
     assert fabric_fiber_angle.model_qualifiers[0].value == "Temperature"
@@ -116,15 +90,9 @@ def test_read_constant_fabric_fiber_angle_45_deg():
 
 
 def test_read_variable_fabric_fiber_angle():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "Variable Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%" in material_dic.keys()
-    assert (
-        len(material_dic["Variable Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%"].models)
-        == 5
-    )
-    fabric_fiber_angle = material_dic[
-        "Variable Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%"
-    ].models[3]
+    material = read_specific_material(XML_FILE_PATH, "Variable Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%")
+    assert len(material.models) == 5
+    fabric_fiber_angle = material.models[3]
     assert fabric_fiber_angle.name == "Fabric Fiber Angle"
     assert fabric_fiber_angle.model_qualifiers[0].name == "Field Variable Compatible"
     assert fabric_fiber_angle.model_qualifiers[0].value == "Temperature"
@@ -154,15 +122,9 @@ def test_read_variable_fabric_fiber_angle():
 
 
 def test_read_ply_type():
-    material_dic = read_matml_file(XML_FILE_PATH)
-    assert "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0" in material_dic.keys()
-    assert (
-        len(material_dic["Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0"].models)
-        == 5
-    )
-    ply_type = material_dic[
-        "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0"
-    ].models[0]
+    material = read_specific_material(XML_FILE_PATH, "Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0")
+    assert len(material.models) == 5
+    ply_type = material.models[0]
     assert ply_type.name == "Ply Type"
     assert ply_type.model_qualifiers[0].name == "source"
     assert ply_type.model_qualifiers[0].value == "ACP"

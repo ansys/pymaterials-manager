@@ -22,7 +22,7 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
@@ -36,35 +36,34 @@ from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 VOCE_XML_FILE_PATH = os.path.join(
-    DIR_PATH, "..", "data", "MatML_unittest_voce_isotropic_hardening.xml"
+    DIR_PATH, "..", "data", "matml_unittest_voce_isotropic_hardening.xml"
 )
 MULTILINEAR_XML_FILE_PATH = os.path.join(
-    DIR_PATH, "..", "data", "MatML_unittest_multilinear_isotropic_hardening.xml"
+    DIR_PATH, "..", "data", "matml_unittest_multilinear_isotropic_hardening.xml"
 )
 ISOTROPIC_HARDENING_MULTILINEAR = os.path.join(
-    DIR_PATH, "..", "data", "isotropic_hardening_multilinear.txt"
+    DIR_PATH, "..", "data", "matml_isotropic_hardening_multilinear.txt"
 )
 ISOTROPIC_HARDENING_MULTILINEAR_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "isotropic_hardening_multilinear_metadata.txt"
+    DIR_PATH, "..", "data", "matml_isotropic_hardening_multilinear_metadata.txt"
 )
 ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "isotropic_hardening_multilinear_variable.txt"
+    DIR_PATH, "..", "data", "matml_isotropic_hardening_multilinear_variable.txt"
 )
 ISOTROPIC_HARDENING_VOCE = os.path.join(
-    DIR_PATH, "..", "data", "isotropic_hardening_voce.txt"
+    DIR_PATH, "..", "data", "matml_isotropic_hardening_voce.txt"
 )
 ISOTROPIC_HARDENING_VOCE_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "isotropic_hardening_voce_metadata.txt"
+    DIR_PATH, "..", "data", "matml_isotropic_hardening_voce_metadata.txt"
 )
 ISOTROPIC_HARDENING_VOCE_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "isotropic_hardening_voce_variable.txt"
+    DIR_PATH, "..", "data", "matml_isotropic_hardening_voce_variable.txt"
 )
 
 def test_read_constant_voce_isotropic_hardening_material():
-    material_dic = read_matml_file(VOCE_XML_FILE_PATH)
-    assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 2
-    isotropic_hardening = material_dic["SFRP"].models[1]
+    material = read_specific_material(VOCE_XML_FILE_PATH, "SFRP")
+    assert len(material.models) == 2
+    isotropic_hardening = material.models[1]
     assert isotropic_hardening.name == "Isotropic Hardening"
     assert isotropic_hardening.model_qualifiers[0].name == "Definition"
     assert isotropic_hardening.model_qualifiers[0].value == "Nonlinear"
@@ -86,10 +85,9 @@ def test_read_constant_voce_isotropic_hardening_material():
 
 
 def test_read_variable_voce_isotropic_hardening_material():
-    material_dic = read_matml_file(VOCE_XML_FILE_PATH)
-    assert "SFRP Temp Dependent" in material_dic.keys()
-    assert len(material_dic["SFRP Temp Dependent"].models) == 2
-    isotropic_hardening = material_dic["SFRP Temp Dependent"].models[1]
+    material = read_specific_material(VOCE_XML_FILE_PATH, "SFRP Temp Dependent")
+    assert len(material.models) == 2
+    isotropic_hardening = material.models[1]
     assert isotropic_hardening.name == "Isotropic Hardening"
     assert isotropic_hardening.model_qualifiers[0].name == "Definition"
     assert isotropic_hardening.model_qualifiers[0].value == "Nonlinear"
@@ -111,10 +109,9 @@ def test_read_variable_voce_isotropic_hardening_material():
 
 
 def test_read_constant_multilinear_isotropic_hardening_material():
-    material_dic = read_matml_file(MULTILINEAR_XML_FILE_PATH)
-    assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 2
-    isotropic_hardening = material_dic["SFRP"].models[1]
+    material = read_specific_material(MULTILINEAR_XML_FILE_PATH, "SFRP")
+    assert len(material.models) == 2
+    isotropic_hardening = material.models[1]
     assert isotropic_hardening.name == "Isotropic Hardening"
     assert isotropic_hardening.model_qualifiers[0].name == "Definition"
     assert isotropic_hardening.model_qualifiers[0].value == "Multilinear"
@@ -225,10 +222,9 @@ def test_read_constant_multilinear_isotropic_hardening_material():
 
 
 def test_read_variable_multilinear_isotropic_hardening_material():
-    material_dic = read_matml_file(MULTILINEAR_XML_FILE_PATH)
-    assert "SFRP Temp Dependent" in material_dic.keys()
-    assert len(material_dic["SFRP Temp Dependent"].models) == 2
-    isotropic_hardening = material_dic["SFRP Temp Dependent"].models[1]
+    material = read_specific_material(MULTILINEAR_XML_FILE_PATH, "SFRP Temp Dependent")
+    assert len(material.models) == 2
+    isotropic_hardening = material.models[1]
     assert isotropic_hardening.name == "Isotropic Hardening"
     assert isotropic_hardening.model_qualifiers[0].name == "Definition"
     assert isotropic_hardening.model_qualifiers[0].value == "Multilinear"
