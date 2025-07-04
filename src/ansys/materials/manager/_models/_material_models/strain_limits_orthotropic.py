@@ -34,6 +34,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class StrainLimitsOrthotropic(MaterialModel):
     """Represents a strain limits orthotropic material model."""
@@ -47,55 +48,55 @@ class StrainLimitsOrthotropic(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the strain limits orthotropic model.",
     )
-    tensile_x_direction: list[float] = ParameterField(
-        default=[],
+    tensile_x_direction: Quantity | None = ParameterField(
+        default=None,
         description="The tensile strain limits in the X direction for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Tensile X direction",
     )
-    tensile_y_direction: list[float] = ParameterField(
-        default=[],
+    tensile_y_direction: Quantity | None  = ParameterField(
+        default=None,
         description="The tensile strain limits in the Y direction for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Tensile Y direction",
     )
-    tensile_z_direction: list[float] = ParameterField(
-        default=[],
+    tensile_z_direction: Quantity | None = ParameterField(
+        default=None,
         description="The tensile strain limits in the Z direction for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Tensile Z direction",
     )
-    compressive_x_direction: list[float] = ParameterField(
-        default=[],
+    compressive_x_direction: Quantity | None  = ParameterField(
+        default=None,
         description="The compressive strain limits in the X direction for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Compressive X direction",
     )
-    compressive_y_direction: list[float] = ParameterField(
-        default=[],
+    compressive_y_direction: Quantity | None  = ParameterField(
+        default=None,
         description="The compressive strain limits in the Y direction for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Compressive Y direction",
     )
-    compressive_z_direction: list[float] = ParameterField(
-        default=[],
+    compressive_z_direction: Quantity | None  = ParameterField(
+        default=None,
         description="The compressive strain limits in the Z direction for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Compressive Z direction",
     )
-    shear_xy: list[float] = ParameterField(
-        default=[],
+    shear_xy: Quantity | None  = ParameterField(
+        default=None,
         description="The shear strain limits in the XY plane for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Shear XY",
     )
-    shear_xz: list[float] = ParameterField(
-        default=[],
+    shear_xz: Quantity | None = ParameterField(
+        default=None,
         description="The shear strain limits in the XZ plane for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Shear XZ",
     )
-    shear_yz: list[float] = ParameterField(
-        default=[],
+    shear_yz: Quantity | None = ParameterField(
+        default=None,
         description="The shear strain limits in the YZ plane for the strain limits orthotropic model.",  # noqa: E501
         matml_name="Shear YZ",
     )
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        expected_qualifiers = {"Behavior": ["Isotropic", QualifierType.STRICT]}
+        expected_qualifiers = {"Behavior": ["Orthotropic", QualifierType.STRICT]}
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
             values, expected_qualifiers
         )

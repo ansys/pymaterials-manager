@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>orthotropic material with variable strain limit</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Behavior">Orthotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>324.0, 311.0, 312.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>236.0, 213.0, 234.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>15.0, 13.0, 14.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>-110.0, -132.0, -120.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa4" format="float">
+        <Data>-11.0, -13.0, -12.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa5" format="float">
+        <Data>-9.0, -13.0, -11.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa6" format="float">
+        <Data>26.0, 24.0, 25.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa7" format="float">
+        <Data>16.0, 12.0, 14.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa8" format="float">
+        <Data>255.0, 232.0, 244.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa9" format="float">
+        <Data>13.0, 21.0, 23.0</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
+        <Qualifier name="Field Units">C</Qualifier>
+        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
+        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

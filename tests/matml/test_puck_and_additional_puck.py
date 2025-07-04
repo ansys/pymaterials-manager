@@ -45,8 +45,10 @@ FIBER_ANGLE = os.path.join(DIR_PATH, "..", "data", "fiber_angle.txt")
 FIBER_ANGLE_METADATA = os.path.join(DIR_PATH, "..", "data", "fiber_angle_metadata.txt")
 PUCK = os.path.join(DIR_PATH, "..", "data", "puck.txt")
 PUCK_METADATA = os.path.join(DIR_PATH, "..", "data", "puck_metadata.txt")
-
-
+PUCK_ADDITIONAL = os.path.join(DIR_PATH, "..", "data", "puck_additional.txt")
+PUCK_ADDITIONAL_METADATA = os.path.join(DIR_PATH, "..", "data", "puck_additional_metadata.txt")
+STRESS_LIMITS_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "stress_limits_orthotropic.txt")
+STRESS_LIMITS_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "stress_limits_orthotropic_metadata.txt")
 
 def test_read_fiber_angle():
     material_dic = read_matml_file(XML_FILE_PATH)
@@ -174,6 +176,9 @@ def test_write_fiber_angle():
             ],
         )
     ]
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(FIBER_ANGLE, 'r') as file:
         data = file.read()
         assert data == material_string
@@ -222,9 +227,9 @@ def test_write_puck_additional_constants():
             name="material with puck for woven",
             models=[
                 AdditionalPuckConstants(
-                    degradation_parameter_s=[0.5],
-                    degradation_parameter_m=[0.5],
-                    interface_weakening_factor=[0.8],
+                    degradation_parameter_s=Quantity(value=[0.5], units=""),
+                    degradation_parameter_m=Quantity(value=[0.5], units=""),
+                    interface_weakening_factor=Quantity(value=[0.8], units=""),
                     model_qualifiers=[
                         ModelQualifier(name="Data Set", values=["2"]),
                         ModelQualifier(
@@ -241,26 +246,29 @@ def test_write_puck_additional_constants():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == ADDITIONAL_PUCK_CONSTANTS
-    assert metadata_string == ADDITIONAL_PUCK_CONSTANTS_METADATA
+    with open(PUCK_ADDITIONAL, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(PUCK_ADDITIONAL_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_stress_limits():
     materials = [
         Material(
-            name="material with puck for woven",
+            name="material with stress_limits",
             models=[
                 StressLimitsOrthotropic(
-                    compressive_x_direction=[-100.0],
-                    compressive_y_direction=[-101.0],
-                    compressive_z_direction=[-102.0],
-                    tensile_x_direction=[100.0],
-                    tensile_y_direction=[101.0],
-                    tensile_z_direction=[102.0],
-                    shear_xy=[10.0],
-                    shear_xz=[14.0],
-                    shear_yz=[12.0],
-                    material_property="Woven Specification for Puck",
+                    compressive_x_direction=Quantity(value=[-100.0], units="Pa"),
+                    compressive_y_direction=Quantity(value=[-101.0], units="Pa"),
+                    compressive_z_direction=Quantity(value=[-102.0], units="Pa"),
+                    tensile_x_direction=Quantity(value=[100.0], units="Pa"),
+                    tensile_y_direction=Quantity(value=[101.0], units="Pa"),
+                    tensile_z_direction=Quantity(value=[102.0], units="Pa"),
+                    shear_xy=Quantity(value=[10.0], units="Pa"),
+                    shear_xz=Quantity(value=[14.0], units="Pa"),
+                    shear_yz=Quantity(value=[12.0], units="Pa"),
                 ),
             ],
         )
@@ -269,6 +277,9 @@ def test_write_stress_limits():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == STRESS_LIMITS
-    assert metadata_string == STRESS_LIMITS_METADATA
-
+    with open(STRESS_LIMITS_ORTHOTROPIC, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(STRESS_LIMITS_ORTHOTROPIC_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string

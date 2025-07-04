@@ -34,6 +34,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class SpeedofSound(MaterialModel):
     """Represents a speed of sound material model."""
@@ -49,8 +50,8 @@ class SpeedofSound(MaterialModel):
         title="Model Qualifiers",
         description="Qualifiers for the speed of sound model.",
     )
-    speed_of_sound: list[float] = ParameterField(
-        default=[],
+    speed_of_sound: Quantity | None = ParameterField(
+        default=None,
         description="The speed of sound.",
         matml_name="Speed of Sound",
     )

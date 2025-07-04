@@ -34,6 +34,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class CoefficientofThermalExpansionOrthotropic(MaterialModel):
     """Represents an orthotropic coefficient of thermal expansion material model."""
@@ -44,18 +45,18 @@ class CoefficientofThermalExpansionOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    coefficient_of_thermal_expansion_x: list[float] = ParameterField(
-        default=[],
+    coefficient_of_thermal_expansion_x: Quantity | None = ParameterField(
+        default=None,
         description="The coefficient of thermal expansion in X direction  for the material.",
         matml_name="Coefficient of Thermal Expansion X direction",
     )
-    coefficient_of_thermal_expansion_y: list[float] = Field(
-        default=[],
+    coefficient_of_thermal_expansion_y: Quantity | None = ParameterField(
+        default=None,
         description="The coefficient of thermal expansion in Y direction for the material.",
         matml_name="Coefficient of Thermal Expansion Y direction",
     )
-    coefficient_of_thermal_expansion_z: list[float] = Field(
-        default=[],
+    coefficient_of_thermal_expansion_z: Quantity | None = ParameterField(
+        default=None,
         description="The coefficient of thermal expansion in Z direction for the material.",
         matml_name="Coefficient of Thermal Expansion Z direction",
     )

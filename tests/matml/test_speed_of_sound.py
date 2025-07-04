@@ -28,74 +28,13 @@ from ansys.materials.manager._models._common.independent_parameter import Indepe
 from ansys.materials.manager._models._material_models.speed_of_sound import SpeedofSound
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_speed_of_sound.xml")
-
-SPEED_OF_SOUND = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with speed of sound</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="BETA">Mechanical.ModalAcoustics</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>100.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-SPEED_OF_SOUND_VARIABLE = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with variable speed of sound</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="BETA">Mechanical.ModalAcoustics</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>200.0, 300.0, 350.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>22.0, 40.0, 60.0</Data>
-        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-SPEED_OF_SOUND_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Speed of Sound</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Speed of Sound</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
-
+SPEED_OF_SOUND = os.path.join(DIR_PATH, "..", "data", "speed_of_sound.txt")
+SPEED_OF_SOUND_METADATA = os.path.join(DIR_PATH, "..", "data", "speed_of_sound_metadata.txt")
+SPEED_OF_SOUND_VARIABLE = os.path.join(DIR_PATH, "..", "data", "speed_of_sound_variable.txt")
 
 def test_read_constant_speed_of_sound():
     material_dic = read_matml_file(XML_FILE_PATH)
@@ -110,12 +49,14 @@ def test_read_constant_speed_of_sound():
     assert speed_of_sound.model_qualifiers[1].value == "Temperature"
     assert speed_of_sound.independent_parameters[0].name == "Temperature"
     assert speed_of_sound.independent_parameters[0].field_variable == "Temperature"
-    assert speed_of_sound.independent_parameters[0].values == [7.88860905221012e-31]
-    assert speed_of_sound.independent_parameters[0].unit == "C"
+    assert speed_of_sound.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert speed_of_sound.independent_parameters[0].values.unit == "C"
+    assert speed_of_sound.independent_parameters[0].field_units == "C"
     assert speed_of_sound.independent_parameters[0].upper_limit == "Program Controlled"
     assert speed_of_sound.independent_parameters[0].lower_limit == "Program Controlled"
     assert speed_of_sound.independent_parameters[0].default_value == 22.0
-    assert speed_of_sound.speed_of_sound == [100.0]
+    assert speed_of_sound.speed_of_sound.value == [100.0]
+    assert speed_of_sound.speed_of_sound.unit == "m s^-1"
 
 
 def test_read_variable_speed_of_sound():
@@ -131,13 +72,14 @@ def test_read_variable_speed_of_sound():
     assert speed_of_sound.model_qualifiers[1].value == "Temperature"
     assert speed_of_sound.independent_parameters[0].name == "Temperature"
     assert speed_of_sound.independent_parameters[0].field_variable == "Temperature"
-    assert speed_of_sound.independent_parameters[0].values == [22.0, 40.0, 60.0]
-    assert speed_of_sound.independent_parameters[0].unit == "C"
+    assert speed_of_sound.independent_parameters[0].values.value.tolist() == [22.0, 40.0, 60.0]
+    assert speed_of_sound.independent_parameters[0].values.unit == "C"
+    assert speed_of_sound.independent_parameters[0].field_units == "C"
     assert speed_of_sound.independent_parameters[0].upper_limit == "Program Controlled"
     assert speed_of_sound.independent_parameters[0].lower_limit == "Program Controlled"
     assert speed_of_sound.independent_parameters[0].default_value == 22.0
-    assert speed_of_sound.speed_of_sound == [200.0, 300.0, 350.0]
-
+    assert speed_of_sound.speed_of_sound.value.tolist() == [200.0, 300.0, 350.0]
+    assert speed_of_sound.speed_of_sound.unit == "m s^-1"
 
 def test_write_constant_speed_of_sound():
     materials = [
@@ -145,13 +87,13 @@ def test_write_constant_speed_of_sound():
             name="material with speed of sound",
             models=[
                 SpeedofSound(
-                    speed_of_sound=[100.0],
+                    speed_of_sound=Quantity(value=[100.0], units="m s^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[7.88860905221012e-31],
-                            unit="C",
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
+                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -165,8 +107,12 @@ def test_write_constant_speed_of_sound():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == SPEED_OF_SOUND
-    assert metadata_string == SPEED_OF_SOUND_METADATA
+    with open(SPEED_OF_SOUND, 'r', encoding="utf8") as file:
+        data = file.read()
+        assert data == material_string
+    with open(SPEED_OF_SOUND_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_variable_speed_of_sound():
@@ -175,13 +121,13 @@ def test_write_variable_speed_of_sound():
             name="material with variable speed of sound",
             models=[
                 SpeedofSound(
-                    speed_of_sound=[200.0, 300.0, 350.0],
+                    speed_of_sound=Quantity(value=[200.0, 300.0, 350.0], units="m s^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[22.0, 40.0, 60.0],
-                            unit="C",
+                            values=Quantity(value=[22.0, 40.0, 60.0], units="C"),
+                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -195,5 +141,11 @@ def test_write_variable_speed_of_sound():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == SPEED_OF_SOUND_VARIABLE
-    assert metadata_string == SPEED_OF_SOUND_METADATA
+    with open(SPEED_OF_SOUND_VARIABLE, 'r', encoding="utf8") as file:
+        data = file.read()
+        assert data == material_string
+    with open(SPEED_OF_SOUND_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
+
+

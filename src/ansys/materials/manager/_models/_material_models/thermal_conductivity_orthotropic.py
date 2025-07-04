@@ -34,6 +34,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class ThermalConductivityOrthotropic(MaterialModel):
     """Represents an orthotropic thermal conductivity material model."""
@@ -44,18 +45,18 @@ class ThermalConductivityOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    thermal_conductivity_x: list[float] = ParameterField(
-        default=[],
+    thermal_conductivity_x: Quantity | None = ParameterField(
+        default=None,
         description="The thermal conductivity in the X direction of the material.",
         matml_name="Thermal Conductivity X direction",
     )
-    thermal_conductivity_y: list[float] = ParameterField(
-        default=[],
+    thermal_conductivity_y: Quantity | None = ParameterField(
+        default=None,
         description="The thermal conductivity in the Y direction of the material.",
         matml_name="Thermal Conductivity Y direction",
     )
-    thermal_conductivity_z: list[float] = ParameterField(
-        default=[],
+    thermal_conductivity_z: Quantity | None = ParameterField(
+        default=None,
         description="The thermal conductivity in the Z direction of the material.",
         matml_name="Thermal Conductivity Z direction",
     )

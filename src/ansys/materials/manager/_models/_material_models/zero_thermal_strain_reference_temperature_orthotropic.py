@@ -34,7 +34,7 @@ from ansys.materials.manager._models._common.common import (
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
-
+from ansys.units import Quantity
 
 class ZeroThermalStrainReferenceTemperatureOrthotropic(MaterialModel):
     """Represents a zero thermal strain reference temperature material model for orthotropic materials."""  # noqa: E501
@@ -45,8 +45,8 @@ class ZeroThermalStrainReferenceTemperatureOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    zero_thermal_strain_reference_temperature: list[float] = ParameterField(
-        default=[],
+    zero_thermal_strain_reference_temperature: Quantity | None = ParameterField(
+        default=None,
         description="The reference temperature for zero thermal strain.",
         matml_name="Zero-Thermal-Strain Reference Temperature",
     )

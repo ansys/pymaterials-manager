@@ -93,7 +93,6 @@ def convert_matml_materials(
                                 data = param_value.data
                                 if not isinstance(data, Sequence):
                                     data = [data]
-                                quantity = Quantity(value=data, units=units)
                                 independent_param = IndependentParameter(
                                     name=param_value.name,
                                     values=Quantity(value=data, units=units),
@@ -151,9 +150,12 @@ def convert_matml_materials(
                                 data = [value_param.data]
                             else:
                                 data = value_param.data
+                            unit = value_param.unit
+                            if unit == "Unitless":
+                                unit = ""
                             user_param = UserParameter(
                                 name=key_param,
-                                values=data,
+                                values=Quantity(value=data, units=unit),
                                 display=value_param.qualifiers.get("Display", True),
                                 user_mat_constant=value_param.qualifiers["UserMat Constant"],
                             )

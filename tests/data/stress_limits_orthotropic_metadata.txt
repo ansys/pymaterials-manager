@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Stress Limits</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Tensile X direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Tensile Y direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Tensile Z direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Compressive X direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa4">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Compressive Y direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa5">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Compressive Z direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa6">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Shear XY</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa7">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Shear XZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa8">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Shear YZ</Name>
+  </ParameterDetails>
+</Metadata>

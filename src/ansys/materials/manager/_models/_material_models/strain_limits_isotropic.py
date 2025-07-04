@@ -34,6 +34,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class StrainLimitsIsotropic(MaterialModel):
     """Represents a strain limits isotropic material model."""
@@ -47,10 +48,10 @@ class StrainLimitsIsotropic(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the strain limits isotropic model.",
     )
-    von_mises_stress: list[float] = ParameterField(
-        default=[],
+    von_mises: Quantity | None = ParameterField(
+        default=None,
         description="The von Mises stress values for the strain limits isotropic model.",
-        matml_name="Von Mises",
+        matml_name="Von Mises ",#bug from eng data, there is space in name
     )
 
     @model_validator(mode="before")

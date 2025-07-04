@@ -29,6 +29,7 @@ from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class TsaiWuConstants(MaterialModel):
     """Represents a Tsai-wu constants material model."""
@@ -37,18 +38,18 @@ class TsaiWuConstants(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MATML], repr=False, frozen=True
     )
-    coupling_coefficient_xy: list[float] = ParameterField(
-        default=[-1],
+    coupling_coefficient_xy: Quantity | None = ParameterField(
+        default=Quantity(value=-1.0, units=""),
         description="The coupling coefficient in the XY plane.",
         matml_name="Coupling Coefficient XY",
     )
-    coupling_coefficient_xz: list[float] = ParameterField(
-        default=[-1],
+    coupling_coefficient_xz: Quantity | None = ParameterField(
+        default=Quantity(value=-1.0, units=""),
         description="The coupling coefficient in the XZ plane.",
         matml_name="Coupling Coefficient XZ",
     )
-    coupling_coefficient_yz: list[float] = ParameterField(
-        default=[-1],
+    coupling_coefficient_yz: Quantity | None = ParameterField(
+        default=Quantity(value=-1.0, units=""),
         description="The coupling coefficient in the YZ plane.",
         matml_name="Coupling Coefficient YZ",
     )

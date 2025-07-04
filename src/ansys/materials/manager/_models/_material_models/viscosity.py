@@ -34,6 +34,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class Viscosity(MaterialModel):
     """Represents a Viscosity material model."""
@@ -49,8 +50,8 @@ class Viscosity(MaterialModel):
         title="Model Qualifiers",
         description="Qualifiers that describe the model.",
     )
-    viscosity: list[float] = ParameterField(
-        default=[],
+    viscosity: Quantity | None = ParameterField(
+        default=None,
         description="The viscosity of the material.",
         matml_name="Viscosity",
     )

@@ -34,6 +34,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class ThermalConductivityIsotropic(MaterialModel):
     """Represents an isotropic thermal conductivity material model."""
@@ -44,8 +45,8 @@ class ThermalConductivityIsotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    thermal_conductivity: list[float] = ParameterField(
-        default=[],
+    thermal_conductivity: Quantity | None = ParameterField(
+        default=None,
         description="The thermal conductivity of the material.",
         matml_name="Thermal Conductivity",
     )

@@ -213,11 +213,16 @@ class MatmlWriter:
                 index = len(self._metadata_parameters)
                 para_key = f"pa{index}"
                 self._metadata_parameters[user_parameter.name] = para_key
+                unit = user_parameter.values.unit
+                if unit == "":
+                    unit = "Unitless"
+                self._metadata_parameters_units[user_parameter.name] = unit
             param_element = ET.SubElement(
                 property_element, "ParameterValue", {"parameter": para_key, "format": "float"}
             )
             data_element = ET.SubElement(param_element, "Data")
-            values = str(user_parameter.values).strip("[]")
+            values = ", ".join(f"{v}" for v in user_parameter.values.value)
+            # values = str(user_parameter.values).strip("[]")
             data_element.text = values
             qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
             qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
@@ -237,7 +242,7 @@ class MatmlWriter:
     ):
         dependent_parameters = {
             name: field.matml_name
-            for name, field in material_model.model_fields.items()
+            for name, field in material_model.__class__.model_fields.items()
             if hasattr(field, "matml_name")
         }
         if len(dependent_parameters) > 0:

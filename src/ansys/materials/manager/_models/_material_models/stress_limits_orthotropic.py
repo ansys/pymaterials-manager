@@ -43,7 +43,7 @@ class StressLimitsOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    model_qualifiers: list[ModelQualifier] = ParameterField(
+    model_qualifiers: list[ModelQualifier] = Field(
         default=[ModelQualifier(name="Behavior", value="Orthotropic")],
         title="Model Qualifiers",
         description="Model qualifiers for the stress limits orthotropic model.",

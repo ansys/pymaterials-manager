@@ -34,6 +34,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class CoefficientofThermalExpansionIsotropic(MaterialModel):
     """Represents an isotropic coefficient of thermal expansion material model."""
@@ -44,8 +45,8 @@ class CoefficientofThermalExpansionIsotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    coefficient_of_thermal_expansion: list[float] = ParameterField(
-        default=[],
+    coefficient_of_thermal_expansion: Quantity | None = ParameterField(
+        default=None,
         description="The coefficient of thermal expansion for the material.",
         matml_name="Coefficient of Thermal Expansion",
     )

@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Isotropic Convection Test Material</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Behavior">Isotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>10.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
+        <Qualifier name="Field Units">C</Qualifier>
+        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
+        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

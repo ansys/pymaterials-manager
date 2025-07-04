@@ -29,86 +29,13 @@ from ansys.materials.manager._models._material_models.tsai_wu_constants import T
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
+from ansys.units import Quantity
+
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_tsai_wu.xml")
-
-TSAIWU = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with tsai-wu</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>-1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>-1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>-1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-TSAIWU_VARIABLE = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with variable tsai-wu</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>-1.0, -1.0, -1.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>-1.0, -1.0, -1.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>-1.0, -1.0, -1.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>22.0, 50.0, 70.0</Data>
-        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-TSAIWU_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Tsai-Wu Constants</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Coupling Coefficient XY</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Coupling Coefficient XZ</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Coupling Coefficient YZ</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
+TSAI_WU = os.path.join(DIR_PATH, "..", "data", "tsai_wu.txt")
+TSAI_WU_METADATA = os.path.join(DIR_PATH, "..", "data", "tsai_wu_metadata.txt")
+TSAI_WU_VARIABLE = os.path.join(DIR_PATH, "..", "data", "tsai_wu_variable.txt")
 
 
 def test_read_constant_tsai_wu():
@@ -117,12 +44,15 @@ def test_read_constant_tsai_wu():
     assert len(material_dic["material with tsai-wu"].models) == 2
     tsai_wu = material_dic["material with tsai-wu"].models[1]
     assert tsai_wu.name == "Tsai-Wu Constants"
-    assert tsai_wu.coupling_coefficient_xy == [-1.0]
-    assert tsai_wu.coupling_coefficient_xz == [-1.0]
-    assert tsai_wu.coupling_coefficient_yz == [-1.0]
+    assert tsai_wu.coupling_coefficient_xy.value == [-1.0]
+    assert tsai_wu.coupling_coefficient_xy.unit == ""
+    assert tsai_wu.coupling_coefficient_xz.value == [-1.0]
+    assert tsai_wu.coupling_coefficient_xz.unit == ""
+    assert tsai_wu.coupling_coefficient_yz.value == [-1.0]
+    assert tsai_wu.coupling_coefficient_yz.unit == ""
     assert tsai_wu.independent_parameters[0].name == "Temperature"
-    assert tsai_wu.independent_parameters[0].values == [7.88860905221012e-31]
-
+    assert tsai_wu.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert tsai_wu.independent_parameters[0].values.unit == "C"
 
 def test_read_variable_tsai_wu():
     material_dic = read_matml_file(XML_FILE_PATH)
@@ -130,12 +60,15 @@ def test_read_variable_tsai_wu():
     assert len(material_dic["material with variable tsai-wu"].models) == 2
     tsai_wu = material_dic["material with variable tsai-wu"].models[1]
     assert tsai_wu.name == "Tsai-Wu Constants"
-    assert tsai_wu.coupling_coefficient_xy == [-1.0, -1.0, -1.0]
-    assert tsai_wu.coupling_coefficient_xz == [-1.0, -1.0, -1.0]
-    assert tsai_wu.coupling_coefficient_yz == [-1.0, -1.0, -1.0]
+    assert tsai_wu.coupling_coefficient_xy.value.tolist() == [-1.0, -1.0, -1.0]
+    assert tsai_wu.coupling_coefficient_xy.unit == ""
+    assert tsai_wu.coupling_coefficient_xz.value.tolist() == [-1.0, -1.0, -1.0]
+    assert tsai_wu.coupling_coefficient_xz.unit == ""
+    assert tsai_wu.coupling_coefficient_yz.value.tolist() == [-1.0, -1.0, -1.0]
+    assert tsai_wu.coupling_coefficient_yz.unit == ""
     assert tsai_wu.independent_parameters[0].name == "Temperature"
-    assert tsai_wu.independent_parameters[0].values == [22.0, 50.0, 70.0]
-
+    assert tsai_wu.independent_parameters[0].values.value.tolist() == [22.0, 50.0, 70.0]
+    assert tsai_wu.independent_parameters[0].values.unit == "C"
 
 def test_write_constant_tsai_wu():
     materials = [
@@ -143,14 +76,14 @@ def test_write_constant_tsai_wu():
             name="material with tsai-wu",
             models=[
                 TsaiWuConstants(
-                    coupling_coefficient_xy=[-1.0],
-                    coupling_coefficient_xz=[-1.0],
-                    coupling_coefficient_yz=[-1.0],
+                    coupling_coefficient_xy=Quantity(value=[-1.0], unit=""),
+                    coupling_coefficient_xz=Quantity(value=[-1.0], unit=""),
+                    coupling_coefficient_yz=Quantity(value=[-1.0], unit=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[7.88860905221012e-31],
+                            values=Quantity(value=[7.88860905221012e-31], unit="C"),
                         ),
                     ],
                 ),
@@ -161,8 +94,12 @@ def test_write_constant_tsai_wu():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == TSAIWU
-    assert metadata_string == TSAIWU_METADATA
+    with open(TSAI_WU, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(TSAI_WU_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_variable_tsai_wu():
@@ -171,14 +108,14 @@ def test_write_variable_tsai_wu():
             name="material with variable tsai-wu",
             models=[
                 TsaiWuConstants(
-                    coupling_coefficient_xy=[-1.0, -1.0, -1.0],
-                    coupling_coefficient_xz=[-1.0, -1.0, -1.0],
-                    coupling_coefficient_yz=[-1.0, -1.0, -1.0],
+                    coupling_coefficient_xy=Quantity(value=[-1.0, -1.0, -1.0], unit=""),
+                    coupling_coefficient_xz=Quantity(value=[-1.0, -1.0, -1.0], unit=""),
+                    coupling_coefficient_yz=Quantity(value=[-1.0, -1.0, -1.0], unit=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[22.0, 50.0, 70.0],
+                            values=Quantity(value=[22.0, 50.0, 70.0], unit="C"),
                         ),
                     ],
                 ),
@@ -189,5 +126,9 @@ def test_write_variable_tsai_wu():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == TSAIWU_VARIABLE
-    assert metadata_string == TSAIWU_METADATA
+    with open(TSAI_WU_VARIABLE, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(TSAI_WU_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string

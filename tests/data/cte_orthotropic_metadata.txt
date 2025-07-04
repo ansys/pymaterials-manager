@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Coefficient of Thermal Expansion</Name>
+  </PropertyDetails>
+  <PropertyDetails id="pr1">
+    <Unitless/>
+    <Name>Zero-Thermal-Strain Reference Temperature</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Units>
+      <Unit power="-1">
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Coefficient of Thermal Expansion X direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit power="-1">
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Coefficient of Thermal Expansion Y direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Units>
+      <Unit power="-1">
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Coefficient of Thermal Expansion Z direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa4">
+    <Unitless/>
+    <Name>Material Property</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa5">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Zero-Thermal-Strain Reference Temperature</Name>
+  </ParameterDetails>
+</Metadata>

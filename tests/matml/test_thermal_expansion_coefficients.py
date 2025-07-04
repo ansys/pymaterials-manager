@@ -41,228 +41,20 @@ from ansys.materials.manager._models._material_models.zero_thermal_strain_refere
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
+from ansys.units import Quantity
+
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 INSTANTANEOUS_XML_FILE_PATH = os.path.join(
     DIR_PATH, "..", "data", "MatML_unittest_instantaneous_thermal_coeffs.xml"
 )
 SECANT_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_thermal_coeffs.xml")
 
-CTE_ISOTROPIC = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with isotropic thermal expansion coefficients</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Secant</Qualifier>
-      <Qualifier name="Behavior">Isotropic</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>0.1</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-    <PropertyData property="pr1">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Secant</Qualifier>
-      <Qualifier name="Behavior">Isotropic</Qualifier>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>Coefficient of Thermal Expansion</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>25.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-CTE_VARIABLE_ISOTROPIC = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with variable isotropic thermal expansion coefficients</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Secant</Qualifier>
-      <Qualifier name="Behavior">Isotropic</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>0.1, 0.4, 0.2</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>12.0, 21.0, 24.0</Data>
-        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-    <PropertyData property="pr1">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Secant</Qualifier>
-      <Qualifier name="Behavior">Isotropic</Qualifier>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>Coefficient of Thermal Expansion</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>25.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-CTE_ORTHOTROPIC = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with orthotropic thermal expansion coefficients</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Secant</Qualifier>
-      <Qualifier name="Behavior">Orthotropic</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>0.1</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>0.2</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>0.3</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-    <PropertyData property="pr1">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Secant</Qualifier>
-      <Qualifier name="Behavior">Orthotropic</Qualifier>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>Coefficient of Thermal Expansion</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa5" format="float">
-        <Data>27.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-CTE_VARIABLE_ORTHOTROPIC = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with variable orthotropic thermal expansion coefficients</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Secant</Qualifier>
-      <Qualifier name="Behavior">Orthotropic</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>0.1, 0.2, 0.3</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>0.2, 0.15, 0.1</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>0.3, 0.2, 0.1</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>12.0, 23.0, 26.0</Data>
-        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-    <PropertyData property="pr1">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Secant</Qualifier>
-      <Qualifier name="Behavior">Orthotropic</Qualifier>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>Coefficient of Thermal Expansion</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa5" format="float">
-        <Data>27.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-CTE_ISOTROPIC_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Coefficient of Thermal Expansion</Name>
-  </PropertyDetails>
-  <PropertyDetails id="pr1">
-    <Unitless/>
-    <Name>Zero-Thermal-Strain Reference Temperature</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Coefficient of Thermal Expansion</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Zero-Thermal-Strain Reference Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
-
-CTE_ORTHOTROPIC_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Coefficient of Thermal Expansion</Name>
-  </PropertyDetails>
-  <PropertyDetails id="pr1">
-    <Unitless/>
-    <Name>Zero-Thermal-Strain Reference Temperature</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Coefficient of Thermal Expansion X direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Coefficient of Thermal Expansion Y direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Coefficient of Thermal Expansion Z direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa4">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa5">
-    <Unitless/>
-    <Name>Zero-Thermal-Strain Reference Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
-
+CTE_ISOTROPIC = os.path.join(DIR_PATH, "..", "data", "cte_isotropic.txt")
+CTE_ISOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "cte_isotropic_metadata.txt")
+CTE_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "cte_orthotropic.txt")
+CTE_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "cte_orthotropic_metadata.txt")
+CTE_ISOTROPIC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "cte_isotropic_variable.txt")
+CTE_ORTHOTROPIC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "cte_orthotropic_variable.txt")
 
 def test_read_constant_isotropic_instantaneous_cte_material():
     material_dic = read_matml_file(INSTANTANEOUS_XML_FILE_PATH)
@@ -274,9 +66,11 @@ def test_read_constant_isotropic_instantaneous_cte_material():
     assert isotropic_cte.model_qualifiers[0].value == "Instantaneous"
     assert isotropic_cte.model_qualifiers[1].name == "Behavior"
     assert isotropic_cte.model_qualifiers[1].value == "Isotropic"
-    assert isotropic_cte.coefficient_of_thermal_expansion == [1.0e-05]
+    assert isotropic_cte.coefficient_of_thermal_expansion.value == [1.0e-05]
+    assert isotropic_cte.coefficient_of_thermal_expansion.unit == "C^-1"
     assert isotropic_cte.independent_parameters[0].name == "Temperature"
-    assert isotropic_cte.independent_parameters[0].values == [7.88860905221012e-31]
+    assert isotropic_cte.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert isotropic_cte.independent_parameters[0].values.unit == "C"
 
 
 def test_read_constant_orthotropic_instantaneous_cte_material():
@@ -289,11 +83,15 @@ def test_read_constant_orthotropic_instantaneous_cte_material():
     assert orthotropic_cte.model_qualifiers[0].value == "Instantaneous"
     assert orthotropic_cte.model_qualifiers[1].name == "Behavior"
     assert orthotropic_cte.model_qualifiers[1].value == "Orthotropic"
-    assert orthotropic_cte.coefficient_of_thermal_expansion_x == [1.0e-05]
-    assert orthotropic_cte.coefficient_of_thermal_expansion_y == [2.0e-05]
-    assert orthotropic_cte.coefficient_of_thermal_expansion_z == [3.0e-05]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_x.value == [1.0e-05]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_x.unit == "C^-1"
+    assert orthotropic_cte.coefficient_of_thermal_expansion_y.value == [2.0e-05]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_y.unit == "C^-1"
+    assert orthotropic_cte.coefficient_of_thermal_expansion_z.value == [3.0e-05]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_z.unit == "C^-1"
     assert orthotropic_cte.independent_parameters[0].name == "Temperature"
-    assert orthotropic_cte.independent_parameters[0].values == [7.88860905221012e-31]
+    assert orthotropic_cte.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert orthotropic_cte.independent_parameters[0].values.unit == "C"
 
 
 def test_read_variable_isotropic_instantaneous_cte_material():
@@ -306,9 +104,11 @@ def test_read_variable_isotropic_instantaneous_cte_material():
     assert isotropic_cte.model_qualifiers[0].value == "Instantaneous"
     assert isotropic_cte.model_qualifiers[1].name == "Behavior"
     assert isotropic_cte.model_qualifiers[1].value == "Isotropic"
-    assert isotropic_cte.coefficient_of_thermal_expansion == [1e-05, 1.2e-05]
+    assert isotropic_cte.coefficient_of_thermal_expansion.value.tolist() == [1e-05, 1.2e-05]
+    assert isotropic_cte.coefficient_of_thermal_expansion.unit == "C^-1"
     assert isotropic_cte.independent_parameters[0].name == "Temperature"
-    assert isotropic_cte.independent_parameters[0].values == [10, 20]
+    assert isotropic_cte.independent_parameters[0].values.value.tolist() == [10, 20]
+    assert isotropic_cte.independent_parameters[0].values.unit == "C"
 
 
 def test_read_variable_orthotropic_instantaneous_cte_material():
@@ -321,11 +121,15 @@ def test_read_variable_orthotropic_instantaneous_cte_material():
     assert orthotropic_cte.model_qualifiers[0].value == "Instantaneous"
     assert orthotropic_cte.model_qualifiers[1].name == "Behavior"
     assert orthotropic_cte.model_qualifiers[1].value == "Orthotropic"
-    assert orthotropic_cte.coefficient_of_thermal_expansion_x == [1e-05, 1.2e-05]
-    assert orthotropic_cte.coefficient_of_thermal_expansion_y == [2.0e-05, 2.2e-05]
-    assert orthotropic_cte.coefficient_of_thermal_expansion_z == [3e-05, 3.2e-05]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_x.value.tolist() == [1e-05, 1.2e-05]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_x.unit == "C^-1"
+    assert orthotropic_cte.coefficient_of_thermal_expansion_y.value.tolist() == [2.0e-05, 2.2e-05]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_y.unit == "C^-1"
+    assert orthotropic_cte.coefficient_of_thermal_expansion_z.value.tolist() == [3e-05, 3.2e-05]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_z.unit == "C^-1"
     assert orthotropic_cte.independent_parameters[0].name == "Temperature"
-    assert orthotropic_cte.independent_parameters[0].values == [10, 20]
+    assert orthotropic_cte.independent_parameters[0].values.value.tolist() == [10, 20]
+    assert orthotropic_cte.independent_parameters[0].values.unit == "C"
 
 
 def test_read_constant_isotropic_secant_cte_material():
@@ -341,20 +145,23 @@ def test_read_constant_isotropic_secant_cte_material():
     assert isotropic_cte.model_qualifiers[0].value == "Secant"
     assert isotropic_cte.model_qualifiers[1].name == "Behavior"
     assert isotropic_cte.model_qualifiers[1].value == "Isotropic"
-    assert isotropic_cte.coefficient_of_thermal_expansion == [0.1]
+    assert isotropic_cte.coefficient_of_thermal_expansion.value == [0.1]
+    assert isotropic_cte.coefficient_of_thermal_expansion.unit == "C^-1"
     assert isotropic_cte.independent_parameters[0].name == "Temperature"
-    assert isotropic_cte.independent_parameters[0].values == [7.88860905221012e-31]
+    assert isotropic_cte.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert (
         zero_thermal_strain_reference_temperature.name
         == "Zero-Thermal-Strain Reference Temperature"
     )
+    assert isotropic_cte.independent_parameters[0].values.unit == "C"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[0].name == "Definition"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[0].value == "Secant"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[1].name == "Behavior"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[1].value == "Isotropic"
-    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature == [
+    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.value == [
         25.0
     ]
+    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.unit == "C"
     assert (
         zero_thermal_strain_reference_temperature.material_property
         == "Coefficient of Thermal Expansion"
@@ -376,11 +183,15 @@ def test_read_constant_orthotropic_secant_cte_material():
     assert orthotropic_cte.model_qualifiers[0].value == "Secant"
     assert orthotropic_cte.model_qualifiers[1].name == "Behavior"
     assert orthotropic_cte.model_qualifiers[1].value == "Orthotropic"
-    assert orthotropic_cte.coefficient_of_thermal_expansion_x == [0.1]
-    assert orthotropic_cte.coefficient_of_thermal_expansion_y == [0.2]
-    assert orthotropic_cte.coefficient_of_thermal_expansion_z == [0.3]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_x.value == [0.1]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_x.unit == "C^-1"
+    assert orthotropic_cte.coefficient_of_thermal_expansion_y.value == [0.2]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_y.unit == "C^-1"
+    assert orthotropic_cte.coefficient_of_thermal_expansion_z.value == [0.3]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_z.unit == "C^-1"
     assert orthotropic_cte.independent_parameters[0].name == "Temperature"
-    assert orthotropic_cte.independent_parameters[0].values == [7.88860905221012e-31]
+    assert orthotropic_cte.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert orthotropic_cte.independent_parameters[0].values.unit == "C"
     assert (
         zero_thermal_strain_reference_temperature.name
         == "Zero-Thermal-Strain Reference Temperature"
@@ -389,13 +200,15 @@ def test_read_constant_orthotropic_secant_cte_material():
     assert zero_thermal_strain_reference_temperature.model_qualifiers[0].value == "Secant"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[1].name == "Behavior"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[1].value == "Orthotropic"
-    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature == [
+    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.value == [
         27.0
     ]
     assert (
         zero_thermal_strain_reference_temperature.material_property
         == "Coefficient of Thermal Expansion"
     )
+    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.unit == "C"
+
 
 
 def test_read_variable_isotropic_secant_cte_material():
@@ -416,9 +229,11 @@ def test_read_variable_isotropic_secant_cte_material():
     assert isotropic_cte.model_qualifiers[0].value == "Secant"
     assert isotropic_cte.model_qualifiers[1].name == "Behavior"
     assert isotropic_cte.model_qualifiers[1].value == "Isotropic"
-    assert isotropic_cte.coefficient_of_thermal_expansion == [0.1, 0.4, 0.2]
+    assert isotropic_cte.coefficient_of_thermal_expansion.value.tolist() == [0.1, 0.4, 0.2]
+    assert isotropic_cte.coefficient_of_thermal_expansion.unit == "C^-1"
     assert isotropic_cte.independent_parameters[0].name == "Temperature"
-    assert isotropic_cte.independent_parameters[0].values == [12, 21, 24]
+    assert isotropic_cte.independent_parameters[0].values.value.tolist() == [12, 21, 24]
+    assert isotropic_cte.independent_parameters[0].values.unit == "C"
     assert (
         zero_thermal_strain_reference_temperature.name
         == "Zero-Thermal-Strain Reference Temperature"
@@ -427,9 +242,10 @@ def test_read_variable_isotropic_secant_cte_material():
     assert zero_thermal_strain_reference_temperature.model_qualifiers[0].value == "Secant"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[1].name == "Behavior"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[1].value == "Isotropic"
-    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature == [
+    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.value == [
         25.0
     ]
+    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.unit == "C"
     assert (
         zero_thermal_strain_reference_temperature.material_property
         == "Coefficient of Thermal Expansion"
@@ -458,11 +274,15 @@ def test_read_variable_orthotropic_secant_cte_material():
     assert orthotropic_cte.model_qualifiers[0].value == "Secant"
     assert orthotropic_cte.model_qualifiers[1].name == "Behavior"
     assert orthotropic_cte.model_qualifiers[1].value == "Orthotropic"
-    assert orthotropic_cte.coefficient_of_thermal_expansion_x == [0.1, 0.2, 0.3]
-    assert orthotropic_cte.coefficient_of_thermal_expansion_y == [0.2, 0.15, 0.1]
-    assert orthotropic_cte.coefficient_of_thermal_expansion_z == [0.3, 0.2, 0.1]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_x.value.tolist() == [0.1, 0.2, 0.3]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_x.unit == "C^-1"
+    assert orthotropic_cte.coefficient_of_thermal_expansion_y.value.tolist() == [0.2, 0.15, 0.1]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_y.unit == "C^-1"
+    assert orthotropic_cte.coefficient_of_thermal_expansion_z.value.tolist() == [0.3, 0.2, 0.1]
+    assert orthotropic_cte.coefficient_of_thermal_expansion_z.unit == "C^-1"
     assert orthotropic_cte.independent_parameters[0].name == "Temperature"
-    assert orthotropic_cte.independent_parameters[0].values == [12, 23, 26]
+    assert orthotropic_cte.independent_parameters[0].values.value.tolist() == [12, 23, 26]
+    assert orthotropic_cte.independent_parameters[0].values.unit == "C"
     assert (
         zero_thermal_strain_reference_temperature.name
         == "Zero-Thermal-Strain Reference Temperature"
@@ -471,9 +291,10 @@ def test_read_variable_orthotropic_secant_cte_material():
     assert zero_thermal_strain_reference_temperature.model_qualifiers[0].value == "Secant"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[1].name == "Behavior"
     assert zero_thermal_strain_reference_temperature.model_qualifiers[1].value == "Orthotropic"
-    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature == [
+    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.value == [
         27.0
     ]
+    assert zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.unit == "C"
     assert (
         zero_thermal_strain_reference_temperature.material_property
         == "Coefficient of Thermal Expansion"
@@ -490,12 +311,12 @@ def test_write_constant_cte_isotropic():
                         ModelQualifier(name="Definition", value="Secant"),
                         ModelQualifier(name="Behavior", value="Isotropic"),
                     ],
-                    coefficient_of_thermal_expansion=[0.1],
+                    coefficient_of_thermal_expansion=Quantity(value=[0.1], units="C^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[7.88860905221012e-31],
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
                         ),
                     ],
                 ),
@@ -504,7 +325,7 @@ def test_write_constant_cte_isotropic():
                         ModelQualifier(name="Definition", value="Secant"),
                         ModelQualifier(name="Behavior", value="Isotropic"),
                     ],
-                    zero_thermal_strain_reference_temperature=[25.0],
+                    zero_thermal_strain_reference_temperature=Quantity(value=[25.0], units="C"),
                 ),
             ],
         )
@@ -513,8 +334,12 @@ def test_write_constant_cte_isotropic():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == CTE_ISOTROPIC
-    assert metadata_string == CTE_ISOTROPIC_METADATA
+    with open(CTE_ISOTROPIC, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(CTE_ISOTROPIC_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_constant_cte_orthotropic():
@@ -527,14 +352,14 @@ def test_write_constant_cte_orthotropic():
                         ModelQualifier(name="Definition", value="Secant"),
                         ModelQualifier(name="Behavior", value="Orthotropic"),
                     ],
-                    coefficient_of_thermal_expansion_x=[0.1],
-                    coefficient_of_thermal_expansion_y=[0.2],
-                    coefficient_of_thermal_expansion_z=[0.3],
+                    coefficient_of_thermal_expansion_x=Quantity(value=[0.1], units="C^-1"),
+                    coefficient_of_thermal_expansion_y=Quantity(value=[0.2], units="C^-1"),
+                    coefficient_of_thermal_expansion_z=Quantity(value=[0.3], units="C^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[7.88860905221012e-31],
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
                         ),
                     ],
                 ),
@@ -543,7 +368,7 @@ def test_write_constant_cte_orthotropic():
                         ModelQualifier(name="Definition", value="Secant"),
                         ModelQualifier(name="Behavior", value="Orthotropic"),
                     ],
-                    zero_thermal_strain_reference_temperature=[27.0],
+                    zero_thermal_strain_reference_temperature=Quantity(value=[27.0], units="C"),
                 ),
             ],
         )
@@ -552,8 +377,12 @@ def test_write_constant_cte_orthotropic():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == CTE_ORTHOTROPIC
-    assert metadata_string == CTE_ORTHOTROPIC_METADATA
+    with open(CTE_ORTHOTROPIC, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(CTE_ORTHOTROPIC_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_variable_cte_isotropic():
@@ -566,12 +395,12 @@ def test_write_variable_cte_isotropic():
                         ModelQualifier(name="Definition", value="Secant"),
                         ModelQualifier(name="Behavior", value="Isotropic"),
                     ],
-                    coefficient_of_thermal_expansion=[0.1, 0.4, 0.2],
+                    coefficient_of_thermal_expansion=Quantity(value=[0.1, 0.4, 0.2], units="C^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[12, 21, 24],
+                            values=Quantity(value=[12, 21, 24], units="C"),
                         ),
                     ],
                 ),
@@ -580,7 +409,7 @@ def test_write_variable_cte_isotropic():
                         ModelQualifier(name="Definition", value="Secant"),
                         ModelQualifier(name="Behavior", value="Isotropic"),
                     ],
-                    zero_thermal_strain_reference_temperature=[25.0],
+                    zero_thermal_strain_reference_temperature=Quantity(value=[25.0], units="C"),
                 ),
             ],
         )
@@ -589,8 +418,12 @@ def test_write_variable_cte_isotropic():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == CTE_VARIABLE_ISOTROPIC
-    assert metadata_string == CTE_ISOTROPIC_METADATA
+    with open(CTE_ISOTROPIC_VARIABLE, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(CTE_ISOTROPIC_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_variable_cte_orthotropic():
@@ -603,14 +436,14 @@ def test_write_variable_cte_orthotropic():
                         ModelQualifier(name="Definition", value="Secant"),
                         ModelQualifier(name="Behavior", value="Orthotropic"),
                     ],
-                    coefficient_of_thermal_expansion_x=[0.1, 0.2, 0.3],
-                    coefficient_of_thermal_expansion_y=[0.2, 0.15, 0.1],
-                    coefficient_of_thermal_expansion_z=[0.3, 0.2, 0.1],
+                    coefficient_of_thermal_expansion_x=Quantity(value=[0.1, 0.2, 0.3], units="C^-1"),
+                    coefficient_of_thermal_expansion_y=Quantity(value=[0.2, 0.15, 0.1], units="C^-1"),
+                    coefficient_of_thermal_expansion_z=Quantity(value=[0.3, 0.2, 0.1], units="C^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[12, 23, 26],
+                            values=Quantity(value=[12, 23, 26], units="C"),
                         ),
                     ],
                 ),
@@ -619,7 +452,7 @@ def test_write_variable_cte_orthotropic():
                         ModelQualifier(name="Definition", value="Secant"),
                         ModelQualifier(name="Behavior", value="Orthotropic"),
                     ],
-                    zero_thermal_strain_reference_temperature=[27.0],
+                    zero_thermal_strain_reference_temperature=Quantity(value=[27.0], units="C"),
                 ),
             ],
         )
@@ -628,5 +461,9 @@ def test_write_variable_cte_orthotropic():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == CTE_VARIABLE_ORTHOTROPIC
-    assert metadata_string == CTE_ORTHOTROPIC_METADATA
+    with open(CTE_ORTHOTROPIC_VARIABLE, 'r') as file:
+        data = file.read()
+        assert data == material_string
+    with open(CTE_ORTHOTROPIC_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string

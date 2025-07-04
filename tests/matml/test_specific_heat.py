@@ -30,129 +30,15 @@ from ansys.materials.manager._models._material_models.specific_heat import Speci
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
+from ansys.units import Quantity
+
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_specific_heat.xml")
-
-SPECIFIC_HEAT_VOLUME = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with specific heat volume</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Constant Volume</Qualifier>
-      <Qualifier name="Field Variable Compatible">Temperature</Qualifier>
-      <Qualifier name="Symbol">Cᵥ</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>22.0</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-SPECIFIC_HEAT_VOLUME_VARIABLE = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with variable specific heat volume</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Constant Volume</Qualifier>
-      <Qualifier name="Field Variable Compatible">Temperature</Qualifier>
-      <Qualifier name="Symbol">Cᵥ</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>10.0, 20.0, 30.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>22.0, 40.0, 60.0</Data>
-        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-SPECIFIC_HEAT_PRESSURE = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with specific heat pressure</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Constant Pressure</Qualifier>
-      <Qualifier name="Field Variable Compatible">Temperature</Qualifier>
-      <Qualifier name="Symbol">Cᵨ</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>22.0</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-SPECIFIC_HEAT_PRESSURE_VARIABLE = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>material with variable specific heat pressure</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Constant Pressure</Qualifier>
-      <Qualifier name="Field Variable Compatible">Temperature</Qualifier>
-      <Qualifier name="Symbol">Cᵨ</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>1.0, 2.0, 3.0</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>22.0, 40.0, 60.0</Data>
-        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-SPECIFIC_HEAT_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Specific Heat</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Specific Heat</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
-
+SPECIFIC_HEAT_VOLUME = os.path.join(DIR_PATH, "..", "data", "specific_heat_volume.txt")
+SPECIFIC_HEAT_METADATA = os.path.join(DIR_PATH, "..", "data", "specific_heat_volume_metadata.txt")
+SPECIFIC_HEAT_VOLUME_VARIABLE = os.path.join(DIR_PATH, "..", "data", "specific_heat_volume_variable.txt")
+SPECIFIC_HEAT_PRESSURE = os.path.join(DIR_PATH, "..", "data", "specific_heat_pressure.txt")
+SPECIFIC_HEAT_PRESSURE_VARIABLE = os.path.join(DIR_PATH, "..", "data", "specific_heat_pressure_variable.txt")
 
 def test_read_constant_specific_heat_volume():
     material_dic = read_matml_file(XML_FILE_PATH)
@@ -168,12 +54,15 @@ def test_read_constant_specific_heat_volume():
     assert specific_heat.model_qualifiers[2].name == "Symbol"
     assert specific_heat.model_qualifiers[2].value == "Cᵥ"
     assert specific_heat.independent_parameters[0].name == "Temperature"
-    assert specific_heat.independent_parameters[0].values == [22.0]
-    assert specific_heat.independent_parameters[0].unit == "C"
+    assert specific_heat.independent_parameters[0].values.value == [22.0]
+    assert specific_heat.independent_parameters[0].values.unit == "C"
+    assert specific_heat.independent_parameters[0].field_variable == "Temperature"
+    assert specific_heat.independent_parameters[0].field_units == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].default_value == 22.0
-    assert specific_heat.specific_heat == [2.0]
+    assert specific_heat.specific_heat.value == [2.0]
+    assert specific_heat.specific_heat.unit == "J kg^-1 C^-1"
 
 
 def test_read_variable_specific_heat_volume():
@@ -190,13 +79,15 @@ def test_read_variable_specific_heat_volume():
     assert specific_heat.model_qualifiers[2].name == "Symbol"
     assert specific_heat.model_qualifiers[2].value == "Cᵥ"
     assert specific_heat.independent_parameters[0].name == "Temperature"
-    assert specific_heat.independent_parameters[0].values == [22.0, 40.0, 60.0]
-    assert specific_heat.independent_parameters[0].unit == "C"
+    assert specific_heat.independent_parameters[0].values.value.tolist() == [22.0, 40.0, 60.0]
+    assert specific_heat.independent_parameters[0].values.unit == "C"
+    assert specific_heat.independent_parameters[0].field_variable == "Temperature"
+    assert specific_heat.independent_parameters[0].field_units == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].default_value == 22.0
-    assert specific_heat.specific_heat == [10.0, 20.0, 30.0]
-
+    assert specific_heat.specific_heat.value.tolist() == [10.0, 20.0, 30.0]
+    assert specific_heat.specific_heat.unit == "J kg^-1 C^-1"
 
 def test_read_constant_specific_heat_pressure():
     material_dic = read_matml_file(XML_FILE_PATH)
@@ -212,12 +103,15 @@ def test_read_constant_specific_heat_pressure():
     assert specific_heat.model_qualifiers[2].name == "Symbol"
     assert specific_heat.model_qualifiers[2].value == "Cᵨ"
     assert specific_heat.independent_parameters[0].name == "Temperature"
-    assert specific_heat.independent_parameters[0].values == [22.0]
-    assert specific_heat.independent_parameters[0].unit == "C"
+    assert specific_heat.independent_parameters[0].values.value == [22.0]
+    assert specific_heat.independent_parameters[0].values.unit == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].default_value == 22.0
-    assert specific_heat.specific_heat == [1.0]
+    assert specific_heat.independent_parameters[0].field_variable == "Temperature"
+    assert specific_heat.independent_parameters[0].field_units == "C"
+    assert specific_heat.specific_heat.value == [1.0]
+    assert specific_heat.specific_heat.unit == "J kg^-1 C^-1"
     assert specific_heat.interpolation_options.algorithm_type == "Linear Multivariate"
     assert specific_heat.interpolation_options.cached is True
     assert specific_heat.interpolation_options.normalized is True
@@ -240,12 +134,15 @@ def test_read_variable_specific_heat_pressure():
     assert specific_heat.model_qualifiers[2].name == "Symbol"
     assert specific_heat.model_qualifiers[2].value == "Cᵨ"
     assert specific_heat.independent_parameters[0].name == "Temperature"
-    assert specific_heat.independent_parameters[0].values == [22.0, 50.0, 75.0]
-    assert specific_heat.independent_parameters[0].unit == "C"
+    assert specific_heat.independent_parameters[0].values.value.tolist() == [22.0, 50.0, 75.0]
+    assert specific_heat.independent_parameters[0].values.unit == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
+    assert specific_heat.independent_parameters[0].field_variable == "Temperature"
+    assert specific_heat.independent_parameters[0].field_units == "C"
     assert specific_heat.independent_parameters[0].default_value == 22.0
-    assert specific_heat.specific_heat == [1.0, 2.0, 3.0]
+    assert specific_heat.specific_heat.value.tolist() == [1.0, 2.0, 3.0]
+    assert specific_heat.specific_heat.unit == "J kg^-1 C^-1"
     assert specific_heat.interpolation_options.algorithm_type == "Linear Multivariate"
     assert specific_heat.interpolation_options.cached is True
     assert specific_heat.interpolation_options.normalized is True
@@ -265,13 +162,13 @@ def test_write_constant_specific_heat_volume():
                         ModelQualifier(name="Field Variable Compatible", value="Temperature"),
                         ModelQualifier(name="Symbol", value="Cᵥ"),
                     ],
-                    specific_heat=[2.0],
+                    specific_heat=Quantity(value=[2.0], units="J kg^-1 C^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[22.0],
-                            unit="C",
+                            values=Quantity(value=[22.0], units="C"),
+                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -285,8 +182,12 @@ def test_write_constant_specific_heat_volume():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == SPECIFIC_HEAT_VOLUME
-    assert metadata_string == SPECIFIC_HEAT_METADATA
+    with open(SPECIFIC_HEAT_VOLUME, 'r', encoding="utf8") as file:
+        data = file.read()
+        assert data == material_string
+    with open(SPECIFIC_HEAT_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 
 def test_write_variable_specific_heat_volume():
@@ -300,13 +201,13 @@ def test_write_variable_specific_heat_volume():
                         ModelQualifier(name="Field Variable Compatible", value="Temperature"),
                         ModelQualifier(name="Symbol", value="Cᵥ"),
                     ],
-                    specific_heat=[10.0, 20.0, 30.0],
+                    specific_heat=Quantity(value=[10.0, 20.0, 30.0], units="J kg^-1 C^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[22.0, 40.0, 60.0],
-                            unit="C",
+                            values=Quantity(value=[22.0, 40.0, 60.0], units="C"),
+                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -320,9 +221,12 @@ def test_write_variable_specific_heat_volume():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == SPECIFIC_HEAT_VOLUME_VARIABLE
-    assert metadata_string == SPECIFIC_HEAT_METADATA
-
+    with open(SPECIFIC_HEAT_VOLUME_VARIABLE, 'r', encoding="utf8") as file:
+        data = file.read()
+        assert data == material_string
+    with open(SPECIFIC_HEAT_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
 
 def test_write_constant_specific_heat_pressure():
     materials = [
@@ -335,13 +239,13 @@ def test_write_constant_specific_heat_pressure():
                         ModelQualifier(name="Field Variable Compatible", value="Temperature"),
                         ModelQualifier(name="Symbol", value="Cᵨ"),
                     ],
-                    specific_heat=[1.0],
+                    specific_heat=Quantity(value=[1.0], units="J kg^-1 C^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[22.0],
-                            unit="C",
+                            values=Quantity(value=[22.0], units="C"),
+                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -355,8 +259,13 @@ def test_write_constant_specific_heat_pressure():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == SPECIFIC_HEAT_PRESSURE
-    assert metadata_string == SPECIFIC_HEAT_METADATA
+    with open(SPECIFIC_HEAT_PRESSURE, 'r', encoding="utf8") as file:
+        data = file.read()
+        assert data == material_string
+    with open(SPECIFIC_HEAT_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
+
 
 
 def test_write_variable_specific_heat_pressure():
@@ -370,13 +279,13 @@ def test_write_variable_specific_heat_pressure():
                         ModelQualifier(name="Field Variable Compatible", value="Temperature"),
                         ModelQualifier(name="Symbol", value="Cᵨ"),
                     ],
-                    specific_heat=[1.0, 2.0, 3.0],
+                    specific_heat=Quantity(value=[1.0, 2.0, 3.0], units="J kg^-1 C^-1"),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
                             field_variable="Temperature",
-                            values=[22.0, 40.0, 60.0],
-                            unit="C",
+                            values=Quantity(value=[22.0, 40.0, 60.0], units="C"),
+                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -390,5 +299,9 @@ def test_write_variable_specific_heat_pressure():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == SPECIFIC_HEAT_PRESSURE_VARIABLE
-    assert metadata_string == SPECIFIC_HEAT_METADATA
+    with open(SPECIFIC_HEAT_PRESSURE_VARIABLE, 'r', encoding="utf8") as file:
+        data = file.read()
+        assert data == material_string
+    with open(SPECIFIC_HEAT_METADATA, 'r') as file:
+      data = file.read()
+      assert data == metadata_string
