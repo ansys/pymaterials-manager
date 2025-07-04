@@ -25,9 +25,11 @@ from typing import Any, Literal
 from pydantic import Field
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class AdditionalPuckConstants(MaterialModel):
     """Represents additional Puck constants for material modeling."""
@@ -38,20 +40,20 @@ class AdditionalPuckConstants(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    interface_weakening_factor: list[float] = Field(
-        default=[],
-        title="Interface Weakening Factor",
+    interface_weakening_factor: Quantity | None = ParameterField(
+        default=None,
         description="The interface weakening factor for the additional Puck constants model.",
+        matml_name="Interface Weakening Factor",
     )
-    degradation_parameter_s: list[float] = Field(
-        default=[],
-        title="Degradation Parameter s",
+    degradation_parameter_s:  Quantity | None = ParameterField(
+        default=None,
         description="The degradation parameter s for the additional Puck constants model.",
+        matml_name="Degradation Parameter s",
     )
-    degradation_parameter_m: list[float] = Field(
-        default=[],
-        title="Degradation Parameter M",
+    degradation_parameter_m:  Quantity | None = ParameterField(
+        default=None,
         description="The degradation parameter M for the additional Puck constants model.",
+        matml_name="Degradation Parameter M",
     )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

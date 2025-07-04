@@ -26,10 +26,16 @@ from pydantic import Field, model_validator
 from pyparsing import Any
 
 from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class ElasticityOrthotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
@@ -39,58 +45,58 @@ class ElasticityOrthotropic(MaterialModel):
     supported_packages: SupportedPackage = Field(
         default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
-    youngs_modulus_x: list[float] = Field(
-        default=[],
-        title="Young's modulus x",
+    youngs_modulus_x: Quantity | None = ParameterField(
+        default=None,
         description="The Young's modulus of the material in the x direction.",
+        matml_name="Young's Modulus X direction",
     )
 
-    youngs_modulus_y: list[float] = Field(
-        default=[],
-        title="Young's modulus y",
+    youngs_modulus_y: Quantity | None = ParameterField(
+        default=None,
         description="The Young's modulus of the material in the y direction.",
+        matml_name="Young's Modulus Y direction",
     )
 
-    youngs_modulus_z: list[float] = Field(
-        default=[],
-        title="Young's modulus z",
+    youngs_modulus_z: Quantity | None = ParameterField(
+        default=None,
         description="The Young's modulus of the material in the z direction.",
+        matml_name="Young's Modulus Z direction",
     )
 
-    poissons_ratio_yz: list[float] = Field(
-        default=[],
-        title="Poisson's ratio yz",
+    poissons_ratio_yz: Quantity | None = ParameterField(
+        default=None,
         description="The Poisson's ratio yz of the material.",
+        matml_name="Poisson's Ratio YZ",
     )
 
-    poissons_ratio_xz: list[float] = Field(
-        default=[],
-        title="Poisson's ratio xz",
+    poissons_ratio_xz: Quantity | None = ParameterField(
+        default=None,
         description="The Poisson's ratio xz of the material.",
+        matml_name="Poisson's Ratio XZ",
     )
 
-    poissons_ratio_xy: list[float] = Field(
-        default=[],
-        title="Poisson's ratio xy",
+    poissons_ratio_xy: Quantity | None = ParameterField(
+        default=None,
         description="The Poisson's ratio xy of the material.",
+        matml_name="Poisson's Ratio XY",
     )
 
-    shear_modulus_yz: list[float] = Field(
-        default=[],
-        title="Shear modulus yz",
+    shear_modulus_yz: Quantity | None = ParameterField(
+        default=None,
         description="The shear modulus yz of the material.",
+        matml_name="Shear Modulus YZ",
     )
 
-    shear_modulus_xz: list[float] = Field(
-        default=[],
-        title="Shear modulus xz",
+    shear_modulus_xz: Quantity | None = ParameterField(
+        default=None,
         description="The shear modulus xz of the material.",
+        matml_name="Shear Modulus XZ",
     )
 
-    shear_modulus_xy: list[float] = Field(
-        default=[],
-        title="Shear modulus xy",
+    shear_modulus_xy: Quantity | None = ParameterField(
+        default=None,
         description="The shear modulus xy of the material.",
+        matml_name="Shear Modulus XY",
     )
     model_qualifiers: list[ModelQualifier] = Field(
         default=[ModelQualifier(name="Behavior", value="Orthotropic")],
@@ -100,19 +106,10 @@ class ElasticityOrthotropic(MaterialModel):
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        if "model_qualifiers" in values:
-            found_behavior = False
-            for model_qualifier in values["model_qualifiers"]:
-                if model_qualifier.name == "Behavior" and model_qualifier.value != "Orthotropic":
-                    raise ValueError(
-                        "Behavior must be 'Orthotropic' for ElasticityOrthotropic model."
-                    )
-                if model_qualifier.name == "Behavior":
-                    found_behavior = True
-            if not found_behavior:
-                model_qualifiers = values.get("model_qualifiers", [])
-                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Orthotropic")]
-                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        expected_qualifiers = {"Behavior": ["Orthotropic", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
         return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

@@ -25,10 +25,16 @@ from typing import Any, Dict, Literal
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common._packages import SupportedPackage
+from ansys.materials.manager._models._common.common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
+from ansys.units import Quantity
 
 class StrainLimitsIsotropic(MaterialModel):
     """Represents a strain limits isotropic material model."""
@@ -42,27 +48,18 @@ class StrainLimitsIsotropic(MaterialModel):
         title="Model Qualifiers",
         description="Model qualifiers for the strain limits isotropic model.",
     )
-    von_mises: list[float] = Field(
-        default=[],
-        title="Von Mises Stress",
+    von_mises: Quantity | None = ParameterField(
+        default=None,
         description="The von Mises stress values for the strain limits isotropic model.",
+        matml_name="Von Mises ",#bug from eng data, there is space in name
     )
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        if "model_qualifiers" in values:
-            found_behavior = False
-            for model_qualifier in values["model_qualifiers"]:
-                if model_qualifier.name == "Behavior" and model_qualifier.value != "Isotropic":
-                    raise ValueError(
-                        "Behavior must be 'Isotropic' for strainLimitsIsotropic model."
-                    )
-                if model_qualifier.name == "Behavior":
-                    found_behavior = True
-            if not found_behavior:
-                model_qualifiers = values.get("model_qualifiers", [])
-                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Isotropic")]
-                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        expected_qualifiers = {"Behavior": ["Isotropic", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
         return values
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:

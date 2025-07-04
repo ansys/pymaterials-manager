@@ -25,25 +25,28 @@ from ansys.materials.manager._models._common.independent_parameter import Indepe
 
 def test_independent_parameter_creation():
     name = "Temperature"
+    field_variable = "Temperature"
     values = [300.0]
     default_value = 293.15
-    unit = "K"
+    field_units = "K"
     upper_limit = 1000.0
     lower_limit = 0.0
 
     independent_param = IndependentParameter(
         name=name,
+        field_variable=field_variable,
         values=values,
         default_value=default_value,
-        unit=unit,
+        field_units=field_units,
         upper_limit=upper_limit,
         lower_limit=lower_limit,
     )
 
     assert independent_param.name == name
+    assert independent_param.field_variable == field_variable
     assert independent_param.values == values
     assert independent_param.default_value == default_value
-    assert independent_param.unit == unit
+    assert independent_param.field_units == field_units
     assert independent_param.upper_limit == upper_limit
     assert independent_param.lower_limit == lower_limit
     assert isinstance(independent_param, IndependentParameter)

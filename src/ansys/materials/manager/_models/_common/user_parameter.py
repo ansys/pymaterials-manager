@@ -22,14 +22,14 @@
 
 
 from pydantic import BaseModel, Field
-
+from ansys.units import Quantity
 
 class UserParameter(BaseModel):
     """Class representing an user parameter in a material model."""
 
     name: str = Field(default="", title="Name", description="The name of the user parameter.")
-    values: list[float] = Field(
-        default=[], title="Values", description="The values of the user parameter."
+    values: Quantity | None = Field(
+        default=None, title="Values", description="The values of the user parameter."
     )
     user_mat_constant: int = Field(
         default=1,

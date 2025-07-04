@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>SFRP Temp Dependent</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Separated Hill Potentials for Plasticity and Creep">No</Qualifier>
+      <ParameterValue parameter="pa0" format="string">
+        <Data>Interpolation Options</Data>
+        <Qualifier name="AlgorithmType">Linear Multivariate</Qualifier>
+        <Qualifier name="Cached">True</Qualifier>
+        <Qualifier name="Normalized">True</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>1.2, 1.2, 1.4</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>0.8, 0.8, 0.7</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>0.5, 0.5, 0.4</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa4" format="float">
+        <Data>0.12, 0.12, 0.12</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa5" format="float">
+        <Data>0.23, 0.23, 0.23</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa6" format="float">
+        <Data>0.23, 0.23, 0.23</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa7" format="float">
+        <Data>34.0, 78.0, 245.0</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
+        <Qualifier name="Field Units">C</Qualifier>
+        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
+        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>
