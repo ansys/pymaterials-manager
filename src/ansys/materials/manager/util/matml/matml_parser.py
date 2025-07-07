@@ -41,8 +41,9 @@ UNITLESS_KEY = "Unitless"
 BEHAVIOR_KEY = "Behavior"
 WBTRANSFER_KEY = "ANSYSWBTransferData"
 MAT_TRANSFER_ID = "DataTransferID"
-
-
+QUALIFIER_KEY = "Qualifier"
+PROPERTY_DATA_KEY = "PropertyData"
+PARAMETER_VALUE_KEY = "ParameterValue"
 # Todos:
 #   version handling
 
@@ -138,7 +139,7 @@ class MatmlReader:
     def _read_qualifiers(property_node: Any) -> Dict:
         # returns the qualifiers such as behavior, interpolation options etc.
         qualifiers = {}
-        for item in property_node.findall("Qualifier"):
+        for item in property_node.findall(QUALIFIER_KEY):
             qualifiers[item.attrib["name"]] = item.text
         return qualifiers
 
@@ -147,7 +148,7 @@ class MatmlReader:
         prop_dict = {}
 
         # iterate over the property sets
-        for prop_data in bulkdata.findall("PropertyData"):
+        for prop_data in bulkdata.findall(PROPERTY_DATA_KEY):
             property_key = prop_data.attrib["property"]
             property_name = metadata_dict[property_key]["Name"]
             property_unit = metadata_dict[property_key].get("Units", "")
@@ -157,7 +158,7 @@ class MatmlReader:
             parameters = {}
 
             # iterate over each parameter
-            for parameter in prop_data.findall("ParameterValue"):
+            for parameter in prop_data.findall(PARAMETER_VALUE_KEY):
                 parameter_key = parameter.attrib["parameter"]
                 parameter_name = metadata_dict[parameter_key]["Name"]
                 parameter_format = parameter.attrib["format"]
@@ -188,7 +189,7 @@ class MatmlReader:
     def _read_materials(matml_doc_node: Any, metadata_dict: Dict) -> Dict:
         materials = {}
         for material in matml_doc_node.findall("Material"):
-            bulkdata = material.find("BulkDetails")
+            bulkdata = material.find(BULKDATA_KEY)
             name = bulkdata.find("Name").text
             data = MatmlReader._read_property_sets_and_parameters(bulkdata, metadata_dict)
             materials[name] = data

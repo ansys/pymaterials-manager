@@ -36,6 +36,7 @@ from ansys.materials.manager._models._common import (
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.common import convert_to_float_or_keep
 
+from .matml_parser import BEHAVIOR_KEY
 from .utils import get_data_and_unit, parse_property_set_name
 
 MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
@@ -70,7 +71,7 @@ def convert_matml_materials(
             arguments = {}
             qualifiers = []
             for qualifier in property_set.qualifiers.keys():
-                if qualifier == "Behavior":
+                if qualifier == BEHAVIOR_KEY:
                     cls_name += property_set.qualifiers[qualifier].replace(" ", "")
                 qualifiers.append(
                     ModelQualifier(name=qualifier, value=property_set.qualifiers[qualifier])
