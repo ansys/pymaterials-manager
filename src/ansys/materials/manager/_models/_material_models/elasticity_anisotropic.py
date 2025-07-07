@@ -25,14 +25,12 @@ from typing import Any, Dict, Literal
 
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 from ansys.units import Quantity
 
@@ -40,9 +38,6 @@ class ElasticityAnisotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
     name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
     column_1: Quantity | None = ParameterField(
         default=None, description="The first column of the elasticity matrix.", matml_name="D[*,1]"
     )
@@ -60,11 +55,6 @@ class ElasticityAnisotropic(MaterialModel):
     )
     column_6: Quantity | None = ParameterField(
         default=None, description="The sixth column of the elasticity matrix.", matml_name="D[*,6]"
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="Behavior", value="Anisotropic")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the anisotropic elasticity model.",
     )
 
     @model_validator(mode="before")

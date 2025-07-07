@@ -24,7 +24,6 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
@@ -35,9 +34,6 @@ class TsaiWuConstants(MaterialModel):
     """Represents a Tsai-wu constants material model."""
 
     name: Literal["Tsai-Wu Constants"] = Field(default="Tsai-Wu Constants", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
-    )
     coupling_coefficient_xy: Quantity | None = ParameterField(
         default=Quantity(value=-1.0, units=""),
         description="The coupling coefficient in the XY plane.",

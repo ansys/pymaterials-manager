@@ -28,14 +28,12 @@ from pyparsing import Dict
 
 from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 from ansys.units import Quantity
 
@@ -43,9 +41,6 @@ class ElasticityIsotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
     name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
     youngs_modulus: Quantity | None = ParameterField(
         default=None,
         description="The Young's modulus of the material.",
@@ -55,11 +50,6 @@ class ElasticityIsotropic(MaterialModel):
         default=None,
         description="The Poisson's ratio of the material.",
         matml_name="Poisson's Ratio",
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="Behavior", value="Isotropic")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the isotropic elasticity model.",
     )
 
     @model_validator(mode="before")

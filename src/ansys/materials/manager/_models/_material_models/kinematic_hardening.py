@@ -25,14 +25,12 @@ from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
 from ansys.units import Quantity
@@ -42,18 +40,6 @@ class KinematicHardening(MaterialModel):
 
     name: Literal["Kinematic Hardening"] = Field(
         default="Kinematic Hardening", repr=False, frozen=True
-    )
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[
-            ModelQualifier(name="Definition", value="Chaboche"),
-            ModelQualifier(name="Number of Kinematic Models", value="1"),
-            ModelQualifier(name="source", value="ANSYS"),
-        ],
-        title="Model Qualifiers",
-        description="Model qualifiers for the kinematic hardening model.",
     )
     yield_stress: Quantity | None = ParameterField(
         default=None,
@@ -115,7 +101,7 @@ class KinematicHardening(MaterialModel):
     def _initialize_qualifiers(cls, values) -> Dict:
         expected_qualifiers = {
             "Definition": ["Chaboche", QualifierType.STRICT],
-            "Number of Kinematic Models": ["1", QualifierType.FREE, ["1", "2", "3", "4", "5"]],
+            "Number of Kinematic Models": ["1", QualifierType.RANGE, ["1", "2", "3", "4", "5"]],
             "source": ["ANSYS", QualifierType.STRICT],
         }
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(

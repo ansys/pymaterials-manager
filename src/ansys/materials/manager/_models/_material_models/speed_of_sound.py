@@ -24,14 +24,12 @@ from typing import Any, Dict, Literal
 
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
 from ansys.units import Quantity
@@ -40,16 +38,6 @@ class SpeedofSound(MaterialModel):
     """Represents a speed of sound material model."""
 
     name: Literal["Speed of Sound"] = Field(default="Speed of Sound", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[
-            ModelQualifier(name="BETA", value="Mechanical.ModalAcoustics"),
-        ],
-        title="Model Qualifiers",
-        description="Qualifiers for the speed of sound model.",
-    )
     speed_of_sound: Quantity | None = ParameterField(
         default=None,
         description="The speed of sound.",

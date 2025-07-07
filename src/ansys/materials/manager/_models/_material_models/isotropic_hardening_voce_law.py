@@ -25,14 +25,12 @@ from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
 
 from ansys.units import Quantity
@@ -42,10 +40,6 @@ class IsotropicHardeningVoceLaw(MaterialModel):
 
     name: Literal["Isotropic Hardening"] = Field(
         default="Isotropic Hardening", repr=False, frozen=True
-    )
-
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
 
     initial_yield_stress: Quantity | None = ParameterField(
@@ -70,14 +64,6 @@ class IsotropicHardeningVoceLaw(MaterialModel):
         default=None,
         description="Exponential saturation parameter values for the material.",
         matml_name="Exponential Saturation Parameter",
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[
-            ModelQualifier(name="Behavior", value="Voce Law"),
-            ModelQualifier(name="Definition", value="Nonlinear"),
-        ],
-        title="Model Qualifiers",
-        description="Model qualifiers for the isotropic elasticity model.",
     )
 
     @model_validator(mode="before")

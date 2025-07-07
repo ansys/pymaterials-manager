@@ -25,14 +25,12 @@ from typing import Dict, Literal
 from pydantic import Field, model_validator
 from pyparsing import Any
 
-from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
 from ansys.materials.manager._models._common.common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
 from ansys.units import Quantity
@@ -42,9 +40,6 @@ class ElasticityOrthotropic(MaterialModel):
 
     name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
 
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
     youngs_modulus_x: Quantity | None = ParameterField(
         default=None,
         description="The Young's modulus of the material in the x direction.",
@@ -97,11 +92,6 @@ class ElasticityOrthotropic(MaterialModel):
         default=None,
         description="The shear modulus xy of the material.",
         matml_name="Shear Modulus XY",
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="Behavior", value="Orthotropic")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the orthotropic elasticity model.",
     )
 
     @model_validator(mode="before")

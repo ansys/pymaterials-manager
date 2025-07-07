@@ -23,15 +23,12 @@
 from typing import Any, Dict, Literal
 
 from pydantic import Field, model_validator
-
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
 from ansys.units import Quantity
@@ -40,14 +37,6 @@ class StrainLimitsOrthotropic(MaterialModel):
     """Represents a strain limits orthotropic material model."""
 
     name: Literal["Strain Limit"] = Field(default="Strain Limits", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="Definition", value="Orthotropic")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the strain limits orthotropic model.",
-    )
     tensile_x_direction: Quantity | None = ParameterField(
         default=None,
         description="The tensile strain limits in the X direction for the strain limits orthotropic model.",  # noqa: E501

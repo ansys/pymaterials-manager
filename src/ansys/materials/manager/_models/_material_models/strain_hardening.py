@@ -24,7 +24,6 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager.material import Material
@@ -35,9 +34,6 @@ class StrainHardening(MaterialModel):
     """Represents a strain hardening material model."""
 
     name: Literal["Strain Hardening"] = Field(default="Strain Hardening", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
     creep_constant_1: Quantity | None = ParameterField(
         default=None,
         description="The first creep constant for the strain hardening model.",
