@@ -38,8 +38,8 @@ class MaterialModel(BaseModel, abc.ABC):
     """A base class for representing a material models."""
 
     name: str = Field(default="", title="Name", description="The name of the material model.")
-    supported_packages: list[SupportedPackage] | None = Field(
-        default=None,
+    supported_packages: list[SupportedPackage] = Field(
+        default=[],
         title="Supported Packages",
         description="The supported packages for this material model. Currently, only PyMAPDL and PyFluent are supported.",  # noqa: E501
         frozen=True,
