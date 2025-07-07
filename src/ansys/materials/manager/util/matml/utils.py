@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import re
+from typing import Dict, Sequence
 import xml.etree.ElementTree as ET
 
 
@@ -106,3 +107,77 @@ def units_to_xml(unit: str) -> ET.Element:
         name_elem.text = unit_name
 
     return units
+
+
+def parse_property_set_name(property_set_name):
+    """
+    Remove spaces, dashes and backslashes from the property set name.
+
+    Parameters
+    ----------
+    property_set_name : str
+        Property set name.
+
+    Returns
+    -------
+    str
+        the material model class name.
+    """
+    return property_set_name.replace(" ", "").replace("-", "").replace("/", "")
+
+
+def get_data_and_unit(param: Dict) -> tuple[list[float | int], str]:
+    """
+    Get data and unit from parameter.
+
+    Parameters
+    ----------
+    param : Dict
+        Parameter to parse.
+
+    Returns
+    -------
+    tuple[list[float | int], str]
+        Data and units.
+    """
+    units = param.unit
+    if units == "Unitless":
+        units = ""
+    data = param.data
+    if not isinstance(data, Sequence):
+        data = [data]
+    return data, units
+
+
+def create_xml_string_value(values: float | int | list[float | int]) -> str:
+    """
+    Extract the value for the xml.
+
+    Parameters
+    ----------
+    values : float | int | list[float | int]
+        Value to be parsed.
+
+    Returns
+    -------
+    str
+        Parsed value to add to xml data.
+    """
+    return ", ".join(f"{v}" for v in values)
+
+
+def convert_to_float_string(value: float | str) -> str:
+    """
+    Convert a float to string or keep it as it is otherwise.
+
+    Parameters
+    ----------
+    value : float | str
+        Value to be parsed.
+
+    Returns
+    -------
+    str
+        Parsed value.
+    """
+    return str(value).replace("e", "E") if type(value) == float else value

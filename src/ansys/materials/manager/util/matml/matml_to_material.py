@@ -36,7 +36,9 @@ from ansys.materials.manager._models._common import (
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.common import convert_to_float_or_keep
 
-MODELS_NAMESPACE = "ansys.materials.manager._models._material_models."
+from .utils import get_data_and_unit, parse_property_set_name
+
+MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
 
 
 def convert_matml_materials(
@@ -60,20 +62,16 @@ def convert_matml_materials(
     global_material_index = 1 + index_offset
     # loop over the materials
     for mat_id, material_data in materials_dict.items():
-
         models = []
         # loop over the defined property sets
         for propset_name, property_set in material_data.items():
-            cls_name = MODELS_NAMESPACE + propset_name.replace(" ", "").replace("-", "").replace(
-                "/", ""
-            )
+            cls_name = MODEL_NAMESPACE + parse_property_set_name(propset_name)
             property_map = []
             arguments = {}
             qualifiers = []
             for qualifier in property_set.qualifiers.keys():
                 if qualifier == "Behavior":
                     cls_name += property_set.qualifiers[qualifier].replace(" ", "")
-                    propset_name += "::" + property_set.qualifiers[qualifier].replace(" ", "")
                 qualifiers.append(
                     ModelQualifier(name=qualifier, value=property_set.qualifiers[qualifier])
                 )
@@ -91,12 +89,7 @@ def convert_matml_materials(
                         for param_value in property_set.parameters.values():
                             ind_param = param_value.qualifiers.get("Variable Type")
                             if ind_param and ind_param.split(",")[0] == "Independent":
-                                units = param_value.unit
-                                if units == "Unitless":
-                                    units = ""
-                                data = param_value.data
-                                if not isinstance(data, Sequence):
-                                    data = [data]
+                                data, units = get_data_and_unit(param_value)
                                 independent_param = IndependentParameter(
                                     name=param_value.name,
                                     values=Quantity(value=data, units=units),
@@ -119,15 +112,11 @@ def convert_matml_materials(
                         param_name = titles[name]
                         if param_name in property_set.parameters.keys():
                             param = property_set.parameters[param_name]
-                            data = param.data
                             if name not in ["red", "green", "blue", "material_property"]:
-                                if not isinstance(data, Sequence):
-                                    data = [data]
-                                units = param.unit
-                                if units == "Unitless":
-                                    units = ""
+                                data, units = get_data_and_unit(param)
                                 arguments[name] = Quantity(value=data, units=units)
                             else:
+                                data = param.data
                                 if isinstance(data, float):
                                     data = int(data)
                                 arguments[name] = data
@@ -150,16 +139,10 @@ def convert_matml_materials(
                     user_parameters = []
                     for key_param, value_param in property_set.parameters.items():
                         if value_param.qualifiers.get("UserMat Constant", None):
-                            if not isinstance(value_param.data, Sequence):
-                                data = [value_param.data]
-                            else:
-                                data = value_param.data
-                            unit = value_param.unit
-                            if unit == "Unitless":
-                                unit = ""
+                            data, units = get_data_and_unit(value_param)
                             user_param = UserParameter(
                                 name=key_param,
-                                values=Quantity(value=data, units=unit),
+                                values=Quantity(value=data, units=units),
                                 display=value_param.qualifiers.get("Display", True),
                                 user_mat_constant=value_param.qualifiers["UserMat Constant"],
                             )

@@ -44,9 +44,7 @@ MAT_TRANSFER_ID = "DataTransferID"
 
 
 # Todos:
-#   variable material properties with interpolation settings
 #   version handling
-#   support of units (exponents)
 
 
 @dataclass
