@@ -24,13 +24,14 @@ from typing import Any, List, Tuple
 
 from ansys.materials.manager._models._common._base import _BaseModel, _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ._packages import SupportedPackage
 from ansys.materials.manager._models._fluent.simple_properties import (
     property_codes as fluent_property_codes,
 )
 from ansys.materials.manager._models._mapdl.simple_properties import (
     property_codes as mapdl_property_codes,
 )
+
+from ._packages import SupportedPackage
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:

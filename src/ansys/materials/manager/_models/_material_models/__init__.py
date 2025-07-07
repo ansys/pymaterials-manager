@@ -29,16 +29,17 @@ from ansys.materials.manager._models._mapdl.anisotropic_elasticity import (
     AnisotropicElasticity,
     ElasticityMode,
 )
+
 from .cofficient_of_thermal_expansion_isotropic import (
     CoefficientofThermalExpansionIsotropic,
 )
 from .cofficient_of_thermal_expansion_orthotropic import (
     CoefficientofThermalExpansionOrthotropic,
 )
-from .density import Density
 from .color import (
     Color,
 )
+from .density import Density
 from .elasticity_anisotropic import (
     ElasticityAnisotropic,
 )

@@ -24,8 +24,7 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from ansys.materials.manager._models._common import ParameterField
-from ansys.materials.manager._models._common import MaterialModel
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 from ansys.materials.manager.material import Material
 
 

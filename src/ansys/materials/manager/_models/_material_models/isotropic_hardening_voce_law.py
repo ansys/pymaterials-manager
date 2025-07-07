@@ -23,17 +23,17 @@
 from ast import Dict
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager._models.material import Material
 
-from ansys.units import Quantity
 
 class IsotropicHardeningVoceLaw(MaterialModel):
     """Represents an isotropic hardening material model."""

@@ -22,18 +22,19 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common import IndependentParameter
-from ansys.materials.manager._models._common import InterpolationOptions
-from ansys.materials.manager._models._common import ModelQualifier
+from ansys.materials.manager._models._common import (
+    IndependentParameter,
+    InterpolationOptions,
+    ModelQualifier,
+)
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models._material_models.kinematic_hardening import KinematicHardening
 from ansys.materials.manager._models._material_models.strain_hardening import StrainHardening
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
-
-from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 NO_CREEP_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_hill_yield.xml")
@@ -42,11 +43,18 @@ HILL_YIELD = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield.txt")
 HILL_YIELD_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_metadata.txt")
 HILL_YIELD_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_variable.txt")
 HILL_YIELD_CREEP = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_creep.txt")
-HILL_YIELD_CREEP_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_creep_metadata.txt")
+HILL_YIELD_CREEP_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_hill_yield_creep_metadata.txt"
+)
 KINEMATIC_HARDENING = os.path.join(DIR_PATH, "..", "data", "matml_kinematic_harderning.txt")
-KINEMATIC_HARDENING_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_kinematic_harderning_metadata.txt")
+KINEMATIC_HARDENING_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_kinematic_harderning_metadata.txt"
+)
 STRAIN_HARDENING = os.path.join(DIR_PATH, "..", "data", "matml_strain_hardening.txt")
-STRAIN_HARDENING_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_strain_hardening_metadata.txt")
+STRAIN_HARDENING_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_strain_hardening_metadata.txt"
+)
+
 
 def test_read_constant_hill_yield_no_creep():
     material = read_specific_material(NO_CREEP_XML_FILE_PATH, "SFRP")
@@ -94,8 +102,6 @@ def test_read_constant_hill_yield_no_creep():
     assert hill_yield.independent_parameters[0].lower_limit == "Program Controlled"
     assert hill_yield.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert hill_yield.independent_parameters[0].values.unit == "C"
-    
-    
 
 
 def test_read_variable_temp_hill_yield_no_creep():
@@ -233,13 +239,29 @@ def test_read_variable_hill_yield_no_creep():
     assert hill_yield.yield_stress_ratio_xz_for_creep == None
     assert hill_yield.yield_stress_ratio_yz_for_creep == None
     assert hill_yield.independent_parameters[0].name == "Orientation Tensor A11"
-    assert hill_yield.independent_parameters[0].values.value.tolist() == [0, 0.5, 1, 0.3333333333, 0, 0.5, 0]
+    assert hill_yield.independent_parameters[0].values.value.tolist() == [
+        0,
+        0.5,
+        1,
+        0.3333333333,
+        0,
+        0.5,
+        0,
+    ]
     assert hill_yield.independent_parameters[0].values.units == ""
     assert hill_yield.independent_parameters[0].default_value == "Program Controlled"
     assert hill_yield.independent_parameters[0].upper_limit == "Program Controlled"
     assert hill_yield.independent_parameters[0].lower_limit == "Program Controlled"
     assert hill_yield.independent_parameters[1].name == "Orientation Tensor A22"
-    assert hill_yield.independent_parameters[1].values.value.tolist() == [0, 0, 0, 0.3333333333, 0.5, 0.5, 1]
+    assert hill_yield.independent_parameters[1].values.value.tolist() == [
+        0,
+        0,
+        0,
+        0.3333333333,
+        0.5,
+        0.5,
+        1,
+    ]
     assert hill_yield.independent_parameters[1].values.units == ""
     assert hill_yield.independent_parameters[1].default_value == "Program Controlled"
     assert hill_yield.independent_parameters[1].upper_limit == "Program Controlled"
@@ -318,7 +340,7 @@ def test_read_constant_kinematic_hardening_creep():
     assert kinematic_hardening.independent_parameters[0].name == "Temperature"
     assert kinematic_hardening.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert kinematic_hardening.independent_parameters[0].values.unit == "C"
-    
+
 
 def test_read_constant_strain_hardening_creep():
     material = read_specific_material(CREEP_XML_FILE_PATH, "SFRP")
@@ -379,12 +401,12 @@ def test_write_constant_hill_yield_no_creep():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(HILL_YIELD, 'r') as file:
+    with open(HILL_YIELD, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(HILL_YIELD_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(HILL_YIELD_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_hill_yield_no_creep():
@@ -422,12 +444,12 @@ def test_write_variable_hill_yield_no_creep():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(HILL_YIELD_VARIABLE, 'r') as file:
+    with open(HILL_YIELD_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(HILL_YIELD_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(HILL_YIELD_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_constant_hill_yield_creep():
@@ -477,12 +499,12 @@ def test_write_constant_hill_yield_creep():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(HILL_YIELD_CREEP, 'r') as file:
+    with open(HILL_YIELD_CREEP, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(HILL_YIELD_CREEP_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(HILL_YIELD_CREEP_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_kinematic_hardening():
@@ -495,7 +517,10 @@ def test_write_kinematic_hardening():
                     material_constant_gamma_1=Quantity(value=[1.0], units=""),
                     material_constant_c_1=Quantity(value=[45.0], units="Pa"),
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=Quantity(value=[7.88860905221012e-31], units="C")),
+                        IndependentParameter(
+                            name="Temperature",
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
+                        ),
                     ],
                 ),
             ],
@@ -505,13 +530,12 @@ def test_write_kinematic_hardening():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(KINEMATIC_HARDENING, 'r') as file:
+    with open(KINEMATIC_HARDENING, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(KINEMATIC_HARDENING_METADATA, 'r', encoding='utf-8') as file:
-      data = file.read()
-      assert data == metadata_string
-
+    with open(KINEMATIC_HARDENING_METADATA, "r", encoding="utf-8") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_strain_hardening():
@@ -525,7 +549,10 @@ def test_write_strain_hardening():
                     creep_constant_3=Quantity(value=[3.0], units=""),
                     creep_constant_4=Quantity(value=[4.0], units=""),
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=Quantity(value=[7.88860905221012e-31], units="C")),
+                        IndependentParameter(
+                            name="Temperature",
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
+                        ),
                     ],
                     model_qualifiers=[
                         ModelQualifier(
@@ -541,9 +568,9 @@ def test_write_strain_hardening():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(STRAIN_HARDENING, 'r') as file:
+    with open(STRAIN_HARDENING, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(STRAIN_HARDENING_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(STRAIN_HARDENING_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

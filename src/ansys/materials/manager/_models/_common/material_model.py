@@ -30,6 +30,7 @@ from .common import ParameterField
 from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
+
 # from ansys.materials.manager._models import Material
 
 
@@ -41,7 +42,7 @@ class MaterialModel(BaseModel, abc.ABC):
         default=None,
         title="Supported Packages",
         description="The supported packages for this material model. Currently, only PyMAPDL and PyFluent are supported.",  # noqa: E501
-        frozen=True
+        frozen=True,
     )
     independent_parameters: list[IndependentParameter] | None = Field(
         default=None,
@@ -62,7 +63,7 @@ class MaterialModel(BaseModel, abc.ABC):
         default=[],
         title="Model Qualifier",
         description="List of qualifiers for the model. This is used to determine the type of model and its applicability.",  # noqa: E501
-        frozen=True
+        frozen=True,
     )
 
     @classmethod

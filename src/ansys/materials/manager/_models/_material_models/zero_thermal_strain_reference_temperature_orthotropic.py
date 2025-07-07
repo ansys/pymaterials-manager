@@ -22,17 +22,18 @@
 
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 from pyparsing import Dict
 
 from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager.material import Material
-from ansys.units import Quantity
+
 
 class ZeroThermalStrainReferenceTemperatureOrthotropic(MaterialModel):
     """Represents a zero thermal strain reference temperature material model for orthotropic materials."""  # noqa: E501

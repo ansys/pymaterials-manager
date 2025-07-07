@@ -22,18 +22,18 @@
 
 from typing import Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 from pyparsing import Any
 
 from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class ElasticityOrthotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""

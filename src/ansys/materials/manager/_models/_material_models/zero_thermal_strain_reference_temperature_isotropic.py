@@ -22,17 +22,17 @@
 
 from typing import Any, Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class ZeroThermalStrainReferenceTemperatureIsotropic(MaterialModel):
     """Represents a zero thermal strain reference temperature material model for isotropic materials."""  # noqa: E501
@@ -40,7 +40,7 @@ class ZeroThermalStrainReferenceTemperatureIsotropic(MaterialModel):
     name: Literal["Zero-Thermal-Strain Reference Temperature"] = Field(
         default="Zero-Thermal-Strain Reference Temperature", repr=False, frozen=True
     )
-    zero_thermal_strain_reference_temperature: Quantity | None= ParameterField(
+    zero_thermal_strain_reference_temperature: Quantity | None = ParameterField(
         default=None,
         description="The reference temperature for zero thermal strain.",
         matml_name="Zero-Thermal-Strain Reference Temperature",

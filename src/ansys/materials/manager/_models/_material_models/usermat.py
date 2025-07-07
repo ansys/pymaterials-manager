@@ -26,11 +26,11 @@ from typing import Any, Literal
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
+    MaterialModel,
     QualifierType,
+    UserParameter,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common import MaterialModel
-from ansys.materials.manager._models._common import UserParameter
 from ansys.materials.manager.material import Material
 
 

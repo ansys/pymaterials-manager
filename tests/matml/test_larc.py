@@ -22,14 +22,13 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.larc03_04_constants import LaRc0304Constants
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
-
-from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_larc.xml")
@@ -85,7 +84,10 @@ def test_write_constant_larc():
                     transverse_friction_coefficient=Quantity(value=[3.0], units=""),
                     fracture_angle_under_compression=Quantity(value=[4.0], units=""),
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=Quantity(value=[7.88860905221012e-31], units="C"))
+                        IndependentParameter(
+                            name="Temperature",
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
+                        )
                     ],
                 ),
             ],
@@ -95,12 +97,12 @@ def test_write_constant_larc():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(LARC, 'r') as file:
+    with open(LARC, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(LARC_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(LARC_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_larc():
@@ -114,7 +116,9 @@ def test_write_variable_larc():
                     transverse_friction_coefficient=Quantity(value=[7.0, 11.0, 15.0], units=""),
                     fracture_angle_under_compression=Quantity(value=[8.0, 12.0, 16.0], units=""),
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=Quantity(value=[22.0, 50.0, 70.0], units="C"))
+                        IndependentParameter(
+                            name="Temperature", values=Quantity(value=[22.0, 50.0, 70.0], units="C")
+                        )
                     ],
                 ),
             ],
@@ -124,10 +128,9 @@ def test_write_variable_larc():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(LARC_VARIABLE, 'r') as file:
+    with open(LARC_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(LARC_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
-
+    with open(LARC_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

@@ -22,14 +22,13 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.tsai_wu_constants import TsaiWuConstants
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
-
-from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_tsai_wu.xml")
@@ -53,6 +52,7 @@ def test_read_constant_tsai_wu():
     assert tsai_wu.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert tsai_wu.independent_parameters[0].values.unit == "C"
 
+
 def test_read_variable_tsai_wu():
     material = read_specific_material(XML_FILE_PATH, "material with variable tsai-wu")
     assert len(material.models) == 2
@@ -67,6 +67,7 @@ def test_read_variable_tsai_wu():
     assert tsai_wu.independent_parameters[0].name == "Temperature"
     assert tsai_wu.independent_parameters[0].values.value.tolist() == [22.0, 50.0, 70.0]
     assert tsai_wu.independent_parameters[0].values.unit == "C"
+
 
 def test_write_constant_tsai_wu():
     materials = [
@@ -92,12 +93,12 @@ def test_write_constant_tsai_wu():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(TSAI_WU, 'r') as file:
+    with open(TSAI_WU, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(TSAI_WU_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(TSAI_WU_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_tsai_wu():
@@ -124,9 +125,9 @@ def test_write_variable_tsai_wu():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(TSAI_WU_VARIABLE, 'r') as file:
+    with open(TSAI_WU_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(TSAI_WU_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(TSAI_WU_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

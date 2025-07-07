@@ -22,17 +22,17 @@
 
 from typing import Any, Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class StrainLimitsIsotropic(MaterialModel):
     """Represents a strain limits isotropic material model."""
@@ -41,7 +41,7 @@ class StrainLimitsIsotropic(MaterialModel):
     von_mises: Quantity | None = ParameterField(
         default=None,
         description="The von Mises stress values for the strain limits isotropic model.",
-        matml_name="Von Mises ",#bug from eng data, there is space in name
+        matml_name="Von Mises ",  # bug from eng data, there is space in name
     )
 
     @model_validator(mode="before")

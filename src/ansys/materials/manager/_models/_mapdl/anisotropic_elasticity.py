@@ -25,9 +25,9 @@ from typing import Any, List, Optional, Tuple, Union
 
 import numpy as np
 
+from ansys.materials.manager._models._common import SupportedPackage
 from ansys.materials.manager._models._common._base import _BaseModel, _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common import SupportedPackage
 from ansys.materials.manager.util.common import (
     FLOAT_VALUE_REGEX,
     MATRIX_LABEL_REGEX,

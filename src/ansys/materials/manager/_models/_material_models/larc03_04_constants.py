@@ -22,13 +22,12 @@
 
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import ParameterField
-from ansys.materials.manager._models._common import MaterialModel
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class LaRc0304Constants(MaterialModel):
     """Represents a LaRc03/04 constants material model."""

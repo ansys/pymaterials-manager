@@ -22,21 +22,23 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common import IndependentParameter
-from ansys.materials.manager._models._common import UserParameter
+from ansys.materials.manager._models._common import IndependentParameter, UserParameter
 from ansys.materials.manager._models._material_models.usermat import ModelCoefficients
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
-from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_usermat.xml")
 USER_MAT = os.path.join(DIR_PATH, "..", "data", "matml_user_mat.txt")
 USER_MAT_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_user_mat_metadata.txt")
 USER_MAT_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_user_mat_variable.txt")
-USER_MAT_VARIABLE_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_user_mat_variable_metadata.txt")
+USER_MAT_VARIABLE_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_user_mat_variable_metadata.txt"
+)
+
 
 def test_read_usermat():
     material = read_specific_material(XML_FILE_PATH, "usermat")
@@ -90,13 +92,16 @@ def test_write_constant_usermat():
                     user_parameters=[
                         UserParameter(
                             name="y",
-                            values=Quantity(value=[0.0],units=""),
+                            values=Quantity(value=[0.0], units=""),
                             user_mat_constant=1,
                             display=True,
                         )
                     ],
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=Quantity(value=[7.88860905221012e-31], units="C"))
+                        IndependentParameter(
+                            name="Temperature",
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
+                        )
                     ],
                     material_property="UserDefinedPropertySet",
                 ),
@@ -107,10 +112,10 @@ def test_write_constant_usermat():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(USER_MAT, 'r', encoding="utf8") as file:
+    with open(USER_MAT, "r", encoding="utf8") as file:
         data = file.read()
         assert data == material_string
-    with open(USER_MAT_METADATA, 'r', encoding="utf8") as file:
+    with open(USER_MAT_METADATA, "r", encoding="utf8") as file:
         data = file.read()
         assert data == metadata_string
 
@@ -136,7 +141,9 @@ def test_write_variable_usermat():
                         ),
                     ],
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=Quantity(value=[10.0, 20.0], units="C"))
+                        IndependentParameter(
+                            name="Temperature", values=Quantity(value=[10.0, 20.0], units="C")
+                        )
                     ],
                     material_property="CustomPset",
                 ),
@@ -147,10 +154,10 @@ def test_write_variable_usermat():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(USER_MAT_VARIABLE, 'r') as file:
+    with open(USER_MAT_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string
 
-    with open(USER_MAT_VARIABLE_METADATA, 'r', encoding="utf8") as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(USER_MAT_VARIABLE_METADATA, "r", encoding="utf8") as file:
+        data = file.read()
+        assert data == metadata_string
