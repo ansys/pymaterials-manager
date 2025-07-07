@@ -35,13 +35,20 @@ from ansys.materials.manager._models._common import (
     UserParameter,
 )
 from ansys.materials.manager.material import Material
-from ansys.materials.manager.util.matml.utils import units_to_xml
+from ansys.materials.manager.util.matml.utils import (
+    convert_to_float_string,
+    create_xml_string_value,
+    units_to_xml,
+)
 
 from .matml_parser import (
     BULKDATA_KEY,
     MATERIALS_ELEMENT_KEY,
     MATML_DOC_KEY,
     METADATA_KEY,
+    PARAMETER_VALUE_KEY,
+    PROPERTY_DATA_KEY,
+    QUALIFIER_KEY,
     UNITLESS_KEY,
     WBTRANSFER_KEY,
 )
@@ -89,27 +96,28 @@ class MatmlWriter:
                     index = len(self._metadata_parameters)
                     para_key = f"pa{index}"
                     self._metadata_parameters[matml_key] = para_key
-                    unit = "Unitless"
+                    unit = UNITLESS_KEY
                     if not isinstance(models[mat_key], (str | float | int)):
-                        unit = models[mat_key].get("units", "Unitless")
+                        unit = models[mat_key].get("units", UNITLESS_KEY)
                     self._metadata_parameters_units[matml_key] = unit
                 param_element = ET.SubElement(
-                    property_element, "ParameterValue", {"parameter": para_key, "format": "float"}
+                    property_element,
+                    PARAMETER_VALUE_KEY,
+                    {"parameter": para_key, "format": "float"},
                 )
 
                 data_element = ET.SubElement(param_element, "Data")
                 if isinstance(models[mat_key], dict):
                     if "value" in models[mat_key].keys():
-                        # if the model has a values key, use that
-                        values = ", ".join(f"{v}" for v in models[mat_key]["value"])
+                        values = create_xml_string_value(models[mat_key]["value"])
                 else:
                     if isinstance(models[mat_key], str):
                         values = models[mat_key]
                     else:
-                        values = ", ".join(f"{v}" for v in models[mat_key])
+                        values = create_xml_string_value(models[mat_key])
                 data_element.text = values
                 qualifier_element = ET.SubElement(
-                    param_element, "Qualifier", {"name": "Variable Type"}
+                    param_element, QUALIFIER_KEY, {"name": "Variable Type"}
                 )
                 qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
 
@@ -123,22 +131,24 @@ class MatmlWriter:
             parameter_id = f"pa{index}"
             self._metadata_parameters["Options Variable"] = parameter_id
         param_element = ET.SubElement(
-            property_element, "ParameterValue", {"parameter": parameter_id, "format": "string"}
+            property_element, PARAMETER_VALUE_KEY, {"parameter": parameter_id, "format": "string"}
         )
         data_element = ET.SubElement(param_element, "Data")
         data_element.text = "Interpolation Options"
         if interpolation_options.algorithm_type:
-            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "AlgorithmType"})
+            qualifier_element = ET.SubElement(
+                param_element, QUALIFIER_KEY, {"name": "AlgorithmType"}
+            )
             qualifier_element.text = interpolation_options.algorithm_type
         if interpolation_options.cached:
-            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Cached"})
+            qualifier_element = ET.SubElement(param_element, QUALIFIER_KEY, {"name": "Cached"})
             qualifier_element.text = str(interpolation_options.cached)
         if interpolation_options.normalized:
-            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Normalized"})
+            qualifier_element = ET.SubElement(param_element, QUALIFIER_KEY, {"name": "Normalized"})
             qualifier_element.text = str(interpolation_options.normalized)
         if interpolation_options.extrapolation_type:
             qualifier_element = ET.SubElement(
-                param_element, "Qualifier", {"name": "ExtrapolationType"}
+                param_element, QUALIFIER_KEY, {"name": "ExtrapolationType"}
             )
             qualifier_element.text = str(interpolation_options.extrapolation_type)
 
@@ -154,11 +164,13 @@ class MatmlWriter:
                 self._metadata_parameters[independent_parameter.name] = parameter_id
                 unit = independent_parameter.values.unit
                 if unit == "":
-                    unit = "Unitless"
+                    unit = UNITLESS_KEY
                 self._metadata_parameters_units[independent_parameter.name] = unit
 
             param_element = ET.SubElement(
-                property_element, "ParameterValue", {"parameter": parameter_id, "format": "float"}
+                property_element,
+                PARAMETER_VALUE_KEY,
+                {"parameter": parameter_id, "format": "float"},
             )
             data_element = ET.SubElement(param_element, "Data")
             values = independent_parameter.values
@@ -166,45 +178,37 @@ class MatmlWriter:
                 values = values.value
             values = ", ".join(f"{v}" for v in values)
             data_element.text = values
-            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
+            qualifier_element = ET.SubElement(
+                param_element, QUALIFIER_KEY, {"name": "Variable Type"}
+            )
             qualifier_element.text = ",".join(["Independent"] * len(values.split(",")))
             if independent_parameter.field_variable:
                 qualifier_element = ET.SubElement(
-                    param_element, "Qualifier", {"name": "Field Variable"}
+                    param_element, QUALIFIER_KEY, {"name": "Field Variable"}
                 )
                 qualifier_element.text = independent_parameter.field_variable
             if independent_parameter.default_value is not None:
                 qualifier_element = ET.SubElement(
-                    param_element, "Qualifier", {"name": "Default Data"}
+                    param_element, QUALIFIER_KEY, {"name": "Default Data"}
                 )
-                qualifier_element.text = (
-                    str(independent_parameter.default_value).replace("e", "E")
-                    if type(independent_parameter.default_value) == float
-                    else independent_parameter.default_value
+                qualifier_element.text = convert_to_float_string(
+                    independent_parameter.default_value
                 )
             if independent_parameter.field_units:
                 qualifier_element = ET.SubElement(
-                    param_element, "Qualifier", {"name": "Field Units"}
+                    param_element, QUALIFIER_KEY, {"name": "Field Units"}
                 )
                 qualifier_element.text = independent_parameter.field_units
             if independent_parameter.upper_limit is not None:
                 qualifier_element = ET.SubElement(
-                    param_element, "Qualifier", {"name": "Upper Limit"}
+                    param_element, QUALIFIER_KEY, {"name": "Upper Limit"}
                 )
-                qualifier_element.text = (
-                    str(independent_parameter.upper_limit).replace("e", "E")
-                    if type(independent_parameter.upper_limit) == float
-                    else independent_parameter.upper_limit
-                )
+                qualifier_element.text = convert_to_float_string(independent_parameter.upper_limit)
             if independent_parameter.lower_limit is not None:
                 qualifier_element = ET.SubElement(
-                    param_element, "Qualifier", {"name": "Lower Limit"}
+                    param_element, QUALIFIER_KEY, {"name": "Lower Limit"}
                 )
-                qualifier_element.text = (
-                    str(independent_parameter.lower_limit).replace("e", "E")
-                    if type(independent_parameter.lower_limit) == float
-                    else independent_parameter.lower_limit
-                )
+                qualifier_element.text = convert_to_float_string(independent_parameter.lower_limit)
 
     def _add_usermat_parameters(
         self, property_element: ET.Element, user_parameters: Sequence[UserParameter]
@@ -218,22 +222,24 @@ class MatmlWriter:
                 self._metadata_parameters[user_parameter.name] = para_key
                 unit = user_parameter.values.unit
                 if unit == "":
-                    unit = "Unitless"
+                    unit = UNITLESS_KEY
                 self._metadata_parameters_units[user_parameter.name] = unit
             param_element = ET.SubElement(
-                property_element, "ParameterValue", {"parameter": para_key, "format": "float"}
+                property_element, PARAMETER_VALUE_KEY, {"parameter": para_key, "format": "float"}
             )
             data_element = ET.SubElement(param_element, "Data")
             values = ", ".join(f"{v}" for v in user_parameter.values.value)
             # values = str(user_parameter.values).strip("[]")
             data_element.text = values
-            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
+            qualifier_element = ET.SubElement(
+                param_element, QUALIFIER_KEY, {"name": "Variable Type"}
+            )
             qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
 
-            qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Display"})
+            qualifier_element = ET.SubElement(param_element, QUALIFIER_KEY, {"name": "Display"})
             qualifier_element.text = str(user_parameter.display)
             qualifier_element = ET.SubElement(
-                param_element, "Qualifier", {"name": "UserMat Constant"}
+                param_element, QUALIFIER_KEY, {"name": "UserMat Constant"}
             )
             qualifier_element.text = str(user_parameter.user_mat_constant)
 
@@ -258,14 +264,14 @@ class MatmlWriter:
                 self._metadata_property_sets[property_set_name] = property_id
 
             property_data_element = ET.SubElement(
-                bulkdata_element, "PropertyData", {"property": property_id}
+                bulkdata_element, PROPERTY_DATA_KEY, {"property": property_id}
             )
             data_element = ET.SubElement(property_data_element, "Data", {"format": "string"})
             data_element.text = "-"
             if len(material_model.model_qualifiers) > 0:
                 for model_qualifier in material_model.model_qualifiers:
                     qualifier_element = ET.SubElement(
-                        property_data_element, "Qualifier", {"name": model_qualifier.name}
+                        property_data_element, QUALIFIER_KEY, {"name": model_qualifier.name}
                     )
                     qualifier_element.text = model_qualifier.value
 
@@ -305,7 +311,6 @@ class MatmlWriter:
             ET.SubElement(prop_element, UNITLESS_KEY)
             name_element = ET.SubElement(prop_element, "Name")
             name_element.text = key
-
         for key, value in self._metadata_parameters.items():
             prop_element = ET.SubElement(metadata_element, "ParameterDetails", {"id": value})
             units = self._metadata_parameters_units.get(key, None)
