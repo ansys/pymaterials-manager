@@ -94,3 +94,6 @@ class Material:
     def get_model_by_name(self, model_name: str) -> List[MaterialModel]:
         """Get the material model or models with a given model name."""
         return [model for model in self.models if model.name.lower() == model_name.lower()]
+    
+    def write_material(self, unit_system, mat_id):
+        pass

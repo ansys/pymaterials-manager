@@ -20,15 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Any, Literal, Sequence
 
 from pydantic import Field
 
+from ansys.materials.manager._models._common._exceptions import ModelValidationException
 from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._common.common import ParameterField
 from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._mapdl.mapdl_constant_material_strings import CONSTANT_DENSITY
 from ansys.units import Quantity
+from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager._models._mapdl.mapdl_temperature_strings import TEMP_DATA
+from ansys.materials.manager._models._mapdl.mapdl_variable_material_strings import VARIABLE_DENSITY
 
 class Density(MaterialModel):
     """Represents an isotropic density material model."""
@@ -43,10 +47,53 @@ class Density(MaterialModel):
         matml_name="Density",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> str:
         """Write this model to the specified session."""
-        pass
+        is_ok, issues = self.validate_model()
+        if not is_ok:
+            raise ModelValidationException("\n".join(issues))
+        material_string = ""
+        if self.independent_parameters is None:
+            if isinstance(pyansys_session, _MapdlCore):
+                material_string += CONSTANT_DENSITY.format(
+                    material_id=material_id, 
+                    density=str(self.density.value).strip("[]"),
+                    unit=self.density.unit
+                )
+        else:
+            if isinstance(pyansys_session, _MapdlCore):
+                density_string = ", ".join(f"{v}" for v in self.density.value)
+                for independent_parameter in self.independent_parameters:
+                    if independent_parameter.name == "Temperature":
+                        for i in range(len(independent_parameter.values.value)):
+                            material_string += TEMP_DATA.format(
+                                value_id=i + 1,
+                                temperature_value=independent_parameter.values.value[i]
+                            )
+                material_string += VARIABLE_DENSITY.format(
+                    material_id=material_id,
+                    density=density_string,
+                    unit=self.density.unit
+                )
+        return material_string
+
 
     def validate_model(self) -> tuple[bool, list[str]]:
         """Validate the model."""
-        pass
+        failures = []
+        is_ok = True
+        if self.density is None:
+            failures.append("Value cannot be None")
+            is_ok = False
+            return is_ok, failures
+        if isinstance(self.density, Sequence):
+            if self.independent_parameters == None and len(self.density.value) > 1:
+                failures.append("Multiple value of density have been defined but independent paramters are None")
+                is_ok = False
+                return is_ok, failures
+            for independent_parameter in self.independent_parameters:
+                if len(independent_parameter.values.value) != len(self.density.value):
+                    failures.append(f"The number of defined indepedentent parameter is not equal to the number of densities defined for {independent_parameter.name}")
+                is_ok = False
+                return is_ok, failures
+        return is_ok, failures
