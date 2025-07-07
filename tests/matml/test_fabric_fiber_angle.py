@@ -24,9 +24,9 @@ import os
 
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager._models._common import IndependentParameter
+from ansys.materials.manager._models._common import InterpolationOptions
+from ansys.materials.manager._models._common import ModelQualifier
 from ansys.materials.manager._models._material_models.fabric_fiber_angle import FabricFiberAngle
 from ansys.materials.manager._models._material_models.ply_type import PlyType
 from ansys.materials.manager._models.material import Material

@@ -23,7 +23,7 @@
 from typing import List
 import uuid
 
-from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class Material:

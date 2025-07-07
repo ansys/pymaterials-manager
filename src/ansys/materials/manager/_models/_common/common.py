@@ -22,11 +22,9 @@
 
 from enum import Enum
 
-from ansys.units import Quantity
 from pydantic.fields import FieldInfo
-from pydantic_core import core_schema
 
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from .model_qualifier import ModelQualifier
 
 
 class QualifierType(str, Enum):

@@ -24,8 +24,8 @@ import os
 
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager._models._common import IndependentParameter
+from ansys.materials.manager._models._common import ModelQualifier
 from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
     CoefficientofThermalExpansionIsotropic,
 )

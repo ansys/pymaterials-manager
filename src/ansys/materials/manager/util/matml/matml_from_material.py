@@ -26,10 +26,10 @@ import os
 from typing import BinaryIO, Dict, Optional, Sequence, Union
 import xml.etree.ElementTree as ET
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.user_parameter import UserParameter
+from ansys.materials.manager._models._common import IndependentParameter
+from ansys.materials.manager._models._common import InterpolationOptions
+from ansys.materials.manager._models._common import MaterialModel
+from ansys.materials.manager._models._common import UserParameter
 from ansys.materials.manager.material import Material
 from ansys.materials.manager.util.matml.utils import units_to_xml
 

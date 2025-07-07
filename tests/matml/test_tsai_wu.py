@@ -24,7 +24,7 @@ import os
 
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.tsai_wu_constants import TsaiWuConstants
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter

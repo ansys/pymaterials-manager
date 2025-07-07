@@ -24,7 +24,7 @@
 
 from typing import List, Optional
 
-from ._models import _BaseModel
+from ansys.materials.manager._models._common import _BaseModel
 from ._models._common.constant import Constant
 
 

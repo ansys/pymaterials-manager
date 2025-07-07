@@ -28,12 +28,12 @@ from pyparsing import Dict
 
 from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common.common import (
+from ansys.materials.manager._models._common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager.material import Material
 from ansys.units import Quantity
 

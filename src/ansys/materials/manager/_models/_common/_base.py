@@ -38,7 +38,7 @@ except ImportError:
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
+    from ._packages import SupportedPackage  # noqa: F401
     from ansys.materials.manager.material import Material  # noqa: F401
 
 

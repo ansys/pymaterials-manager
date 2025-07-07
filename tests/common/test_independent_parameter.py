@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common import IndependentParameter
 
 
 def test_independent_parameter_creation():
