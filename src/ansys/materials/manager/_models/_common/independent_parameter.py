@@ -23,9 +23,9 @@
 
 from typing import Union
 
+from ansys.units import Quantity
 from pydantic import BaseModel, Field
 
-from ansys.units import Quantity
 
 class IndependentParameter(BaseModel):
     """Class representing an independent parameter in a material model."""

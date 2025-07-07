@@ -22,19 +22,20 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.speed_of_sound import SpeedofSound
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
-from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_speed_of_sound.xml")
 SPEED_OF_SOUND = os.path.join(DIR_PATH, "..", "data", "matml_speed_of_sound.txt")
 SPEED_OF_SOUND_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_speed_of_sound_metadata.txt")
 SPEED_OF_SOUND_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_speed_of_sound_variable.txt")
+
 
 def test_read_constant_speed_of_sound():
     material = read_specific_material(XML_FILE_PATH, "material with speed of sound")
@@ -77,6 +78,7 @@ def test_read_variable_speed_of_sound():
     assert speed_of_sound.speed_of_sound.value.tolist() == [200.0, 300.0, 350.0]
     assert speed_of_sound.speed_of_sound.unit == "m s^-1"
 
+
 def test_write_constant_speed_of_sound():
     materials = [
         Material(
@@ -103,12 +105,12 @@ def test_write_constant_speed_of_sound():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(SPEED_OF_SOUND, 'r', encoding="utf8") as file:
+    with open(SPEED_OF_SOUND, "r", encoding="utf8") as file:
         data = file.read()
         assert data == material_string
-    with open(SPEED_OF_SOUND_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(SPEED_OF_SOUND_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_speed_of_sound():
@@ -137,11 +139,9 @@ def test_write_variable_speed_of_sound():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(SPEED_OF_SOUND_VARIABLE, 'r', encoding="utf8") as file:
+    with open(SPEED_OF_SOUND_VARIABLE, "r", encoding="utf8") as file:
         data = file.read()
         assert data == material_string
-    with open(SPEED_OF_SOUND_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
-
-
+    with open(SPEED_OF_SOUND_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

@@ -22,10 +22,10 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
+from ansys.materials.manager._models._common import IndependentParameter, InterpolationOptions
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
 )
@@ -38,18 +38,27 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-from ansys.units import Quantity
-
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_elasticity.xml")
 ISOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_isotropic_elasticity.txt")
-ISOTROPIC_ELASTICITY_METADATA  = os.path.join(DIR_PATH, "..", "data", "matml_isotropic_elasticity_metadata.txt")
+ISOTROPIC_ELASTICITY_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_isotropic_elasticity_metadata.txt"
+)
 ORTHOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_orthotropic_elasticity.txt")
-ORTHOTROPIC_ELASTICITY_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_orthotropic_elasticity_metadata.txt")
+ORTHOTROPIC_ELASTICITY_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_orthotropic_elasticity_metadata.txt"
+)
 ANISOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_anisotropic_elasticity.txt")
-ANISOTROPIC_ELASTICITY_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_anisotropic_elasticity_metadata.txt")
-ORTHOTROPIC_ELASTICITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_orthotropic_elasticity_variable.txt")
-ISOTROPIC_ELASTICITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_isotropic_elasticity_variable.txt")
+ANISOTROPIC_ELASTICITY_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_anisotropic_elasticity_metadata.txt"
+)
+ORTHOTROPIC_ELASTICITY_VARIABLE = os.path.join(
+    DIR_PATH, "..", "data", "matml_orthotropic_elasticity_variable.txt"
+)
+ISOTROPIC_ELASTICITY_VARIABLE = os.path.join(
+    DIR_PATH, "..", "data", "matml_isotropic_elasticity_variable.txt"
+)
+
 
 def test_read_constant_elastic_isotropic_material():
     material = read_specific_material(XML_FILE_PATH, "Isotropic Test Material")
@@ -180,6 +189,7 @@ def test_read_constant_elastic_anisotropic_material():
     ]
     assert anisotropic_elasticity.column_6.unit == "Pa"
 
+
 def test_read_variable_elastic_isotropic_material():
     material = read_specific_material(XML_FILE_PATH, "Variable Isotropic Test Material")
     assert len(material.models) == 2
@@ -241,7 +251,7 @@ def test_read_variable_elastic_orthotropic_material():
     assert orthotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert orthotropic_elasticity.independent_parameters[0].values.value.tolist() == [21, 22]
     assert orthotropic_elasticity.independent_parameters[0].values.unit == "C"
-    assert orthotropic_elasticity.independent_parameters[0].field_variable == "Temperature" 
+    assert orthotropic_elasticity.independent_parameters[0].field_variable == "Temperature"
     assert orthotropic_elasticity.independent_parameters[0].field_units == "C"
     assert orthotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
     assert orthotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
@@ -280,58 +290,59 @@ def test_write_constant_elastic_isotropic_material():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(ISOTROPIC_ELASTICITY, 'r') as file:
+    with open(ISOTROPIC_ELASTICITY, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(ISOTROPIC_ELASTICITY_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(ISOTROPIC_ELASTICITY_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
+
 
 def test_write_constant_elastic_orthotropic_material():
     materials = [
-      Material(
-          name="Orthotropic Test Material",
-          models=[
-              ElasticityOrthotropic(
-                  youngs_modulus_x=Quantity(value=[1000000], units="Pa"),
-                  youngs_modulus_y=Quantity(value=[1500000], units="Pa"),
-                  youngs_modulus_z=Quantity(value=[2000000], units="Pa"),
-                  poissons_ratio_xy=Quantity(value=[0.2], units=""),
-                  poissons_ratio_yz=Quantity(value=[0.3], units=""),
-                  poissons_ratio_xz=Quantity(value=[0.4], units=""),
-                  shear_modulus_xy=Quantity(value=[1000000], units="Pa"),
-                  shear_modulus_yz=Quantity(value=[2000000], units="Pa"),
-                  shear_modulus_xz=Quantity(value=[3000000], units="Pa"),
-                  independent_parameters=[
-                      IndependentParameter(
-                          name="Temperature",
-                          default_value=22.0,
-                          upper_limit=1.18329135783152e-30,
-                          lower_limit=3.94430452610506e-31,
-                          values=Quantity(value=[7.88860905221012e-31], units="C"),
-                          field_variable="Temperature",
-                          field_units="C",
-                      )
-                  ],
-                  interpolation_options=InterpolationOptions(
-                      algorithm_type="Linear Multivariate",
-                      cached=True,
-                      normalized=True,
-                  ),
-              ),
-          ],
-      )
+        Material(
+            name="Orthotropic Test Material",
+            models=[
+                ElasticityOrthotropic(
+                    youngs_modulus_x=Quantity(value=[1000000], units="Pa"),
+                    youngs_modulus_y=Quantity(value=[1500000], units="Pa"),
+                    youngs_modulus_z=Quantity(value=[2000000], units="Pa"),
+                    poissons_ratio_xy=Quantity(value=[0.2], units=""),
+                    poissons_ratio_yz=Quantity(value=[0.3], units=""),
+                    poissons_ratio_xz=Quantity(value=[0.4], units=""),
+                    shear_modulus_xy=Quantity(value=[1000000], units="Pa"),
+                    shear_modulus_yz=Quantity(value=[2000000], units="Pa"),
+                    shear_modulus_xz=Quantity(value=[3000000], units="Pa"),
+                    independent_parameters=[
+                        IndependentParameter(
+                            name="Temperature",
+                            default_value=22.0,
+                            upper_limit=1.18329135783152e-30,
+                            lower_limit=3.94430452610506e-31,
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
+                            field_variable="Temperature",
+                            field_units="C",
+                        )
+                    ],
+                    interpolation_options=InterpolationOptions(
+                        algorithm_type="Linear Multivariate",
+                        cached=True,
+                        normalized=True,
+                    ),
+                ),
+            ],
+        )
     ]
 
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(ORTHOTROPIC_ELASTICITY, 'r') as file:
+    with open(ORTHOTROPIC_ELASTICITY, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(ORTHOTROPIC_ELASTICITY_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(ORTHOTROPIC_ELASTICITY_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_constant_elastic_anisotropic_material():
@@ -340,58 +351,71 @@ def test_write_constant_elastic_anisotropic_material():
             name="Anisotropic Test Material",
             models=[
                 ElasticityAnisotropic(
-                    column_1=Quantity(value=[100000000, 1000000, 2000000, 3000000, 4000000, 5000000], units="Pa"),
-                    column_2=Quantity(value=[7.88860905221012e-31, 150000000, 6000000, 7000000, 8000000, 9000000], units="Pa"),
-                    column_3=Quantity(value=[
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        200000000,
-                        10000000,
-                        11000000,
-                        12000000,
-                    ],
-                    units="Pa"),
-                    column_4=Quantity(value=[
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        50000000,
-                        13000000,
-                        14000000,
-                    ],
-                    units="Pa"),
-                    column_5=Quantity(value=[
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        60000000,
-                        15000000,
-                    ],
-                    units="Pa"),
-                    column_6=Quantity(value=[
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        7.88860905221012e-31,
-                        70000000,
-                    ],
-                    units="Pa"),
+                    column_1=Quantity(
+                        value=[100000000, 1000000, 2000000, 3000000, 4000000, 5000000], units="Pa"
+                    ),
+                    column_2=Quantity(
+                        value=[7.88860905221012e-31, 150000000, 6000000, 7000000, 8000000, 9000000],
+                        units="Pa",
+                    ),
+                    column_3=Quantity(
+                        value=[
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            200000000,
+                            10000000,
+                            11000000,
+                            12000000,
+                        ],
+                        units="Pa",
+                    ),
+                    column_4=Quantity(
+                        value=[
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            50000000,
+                            13000000,
+                            14000000,
+                        ],
+                        units="Pa",
+                    ),
+                    column_5=Quantity(
+                        value=[
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            60000000,
+                            15000000,
+                        ],
+                        units="Pa",
+                    ),
+                    column_6=Quantity(
+                        value=[
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            7.88860905221012e-31,
+                            70000000,
+                        ],
+                        units="Pa",
+                    ),
                 ),
             ],
         )
     ]
-    
+
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(ANISOTROPIC_ELASTICITY, 'r') as file:
+    with open(ANISOTROPIC_ELASTICITY, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(ANISOTROPIC_ELASTICITY_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(ANISOTROPIC_ELASTICITY_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_elastic_isotropic_material():
@@ -426,12 +450,12 @@ def test_write_variable_elastic_isotropic_material():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(ISOTROPIC_ELASTICITY_VARIABLE, 'r') as file:
+    with open(ISOTROPIC_ELASTICITY_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(ISOTROPIC_ELASTICITY_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(ISOTROPIC_ELASTICITY_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_elastic_orthotropic_material():
@@ -472,9 +496,9 @@ def test_write_variable_elastic_orthotropic_material():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(ORTHOTROPIC_ELASTICITY_VARIABLE, 'r') as file:
+    with open(ORTHOTROPIC_ELASTICITY_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(ORTHOTROPIC_ELASTICITY_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(ORTHOTROPIC_ELASTICITY_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

@@ -22,23 +22,18 @@
 
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.common import ParameterField
-from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class LaRc0304Constants(MaterialModel):
     """Represents a LaRc03/04 constants material model."""
 
     name: Literal["LaRc03/04 Constants"] = Field(
         default="LaRc03/04 Constants", repr=False, frozen=True
-    )
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
     )
     fracture_toughness_ratio: Quantity | None = ParameterField(
         default=None,

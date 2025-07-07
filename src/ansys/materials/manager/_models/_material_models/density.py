@@ -22,25 +22,21 @@
 
 from typing import Any, Literal, Sequence
 
+from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.common import ParameterField
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._mapdl.mapdl_constant_material_strings import CONSTANT_DENSITY
-from ansys.units import Quantity
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager._models._common._exceptions import ModelValidationException
+from ansys.materials.manager._models._mapdl.mapdl_constant_material_strings import CONSTANT_DENSITY
 from ansys.materials.manager._models._mapdl.mapdl_temperature_strings import TEMP_DATA
 from ansys.materials.manager._models._mapdl.mapdl_variable_material_strings import VARIABLE_DENSITY
+
 
 class Density(MaterialModel):
     """Represents an isotropic density material model."""
 
     name: Literal["Density"] = Field(default="Density", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
     density: Quantity | None = ParameterField(
         default=None,
         description="The density of the material.",
@@ -56,9 +52,9 @@ class Density(MaterialModel):
         if self.independent_parameters is None:
             if isinstance(pyansys_session, _MapdlCore):
                 material_string += CONSTANT_DENSITY.format(
-                    material_id=material_id, 
+                    material_id=material_id,
                     density=str(self.density.value).strip("[]"),
-                    unit=self.density.unit
+                    unit=self.density.unit,
                 )
         else:
             if isinstance(pyansys_session, _MapdlCore):
@@ -68,15 +64,12 @@ class Density(MaterialModel):
                         for i in range(len(independent_parameter.values.value)):
                             material_string += TEMP_DATA.format(
                                 value_id=i + 1,
-                                temperature_value=independent_parameter.values.value[i]
+                                temperature_value=independent_parameter.values.value[i],
                             )
                 material_string += VARIABLE_DENSITY.format(
-                    material_id=material_id,
-                    density=density_string,
-                    unit=self.density.unit
+                    material_id=material_id, density=density_string, unit=self.density.unit
                 )
         return material_string
-
 
     def validate_model(self) -> tuple[bool, list[str]]:
         """Validate the model."""
@@ -88,12 +81,16 @@ class Density(MaterialModel):
             return is_ok, failures
         if isinstance(self.density, Sequence):
             if self.independent_parameters == None and len(self.density.value) > 1:
-                failures.append("Multiple value of density have been defined but independent paramters are None")
+                failures.append(
+                    "Multiple value of density have been defined but independent parameters are None"  # noqa: E501
+                )
                 is_ok = False
                 return is_ok, failures
             for independent_parameter in self.independent_parameters:
                 if len(independent_parameter.values.value) != len(self.density.value):
-                    failures.append(f"The number of defined indepedentent parameter is not equal to the number of densities defined for {independent_parameter.name}")
+                    failures.append(
+                        f"The number of defined indepedentent parameter is not equal to the number of densities defined for {independent_parameter.name}"  # noqa: E501
+                    )
                 is_ok = False
                 return is_ok, failures
         return is_ok, failures

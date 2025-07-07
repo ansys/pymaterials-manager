@@ -22,34 +22,22 @@
 
 from typing import Any, Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.common import (
+from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class Viscosity(MaterialModel):
     """Represents a Viscosity material model."""
 
     name: Literal["Viscosity"] = Field(default="Viscosity", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[
-            ModelQualifier(name="BETA", value="Mechanical.ModalAcoustics"),
-        ],
-        title="Model Qualifiers",
-        description="Qualifiers that describe the model.",
-    )
     viscosity: Quantity | None = ParameterField(
         default=None,
         description="The viscosity of the material.",

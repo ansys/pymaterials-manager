@@ -24,8 +24,7 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager.material import Material
 
 
@@ -33,9 +32,6 @@ class PlyType(MaterialModel):
     """Represents a ply type material model."""
 
     name: Literal["Ply Type"] = Field(default="Ply Type", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
 
     def write_model(self, material: Material, pyansys_session: Any) -> None:
         """Write this model to the specified session."""

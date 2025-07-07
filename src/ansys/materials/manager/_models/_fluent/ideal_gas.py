@@ -23,8 +23,8 @@
 from typing import Any, List, Tuple
 
 from ansys.materials.manager._models import ModelValidationException, _BaseModel
+from ansys.materials.manager._models._common import SupportedPackage
 from ansys.materials.manager._models._common._base import _FluentCore
-from ansys.materials.manager._models._common._packages import SupportedPackage
 from ansys.materials.manager._models._fluent.simple_properties import (
     property_codes as fluent_property_codes,
 )

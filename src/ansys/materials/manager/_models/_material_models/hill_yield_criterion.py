@@ -22,34 +22,23 @@
 
 from typing import Any, Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.common import (
+from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models.material import Material
-from ansys.units import Quantity
+
 
 class HillYieldCriterion(MaterialModel):
     """Represents a Hill yield criterion material model."""
 
     name: Literal["Hill Yield Criterion"] = Field(
         default="Hill Yield Criterion", repr=False, frozen=True
-    )
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[
-            ModelQualifier(name="Separated Hill Potentials for Plasticity and Creep", value="No")
-        ],
-        title="Model Qualifiers",
-        description="Model qualifiers for the Hill yield criterion model.",
     )
     yield_stress_ratio_x: Quantity | None = ParameterField(
         default=None,

@@ -22,9 +22,10 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
@@ -34,14 +35,20 @@ from ansys.materials.manager._models._material_models.thermal_conductivity_ortho
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-from ansys.units import Quantity
-
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_thermal_conductivity.xml")
-THERMAL_CONDUCTIVITY_ISOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_thermal_conductivity_isotropic.txt")
-THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_thermal_conductivity_isotropic_metadata.txt")
-THERMAL_CONDUCTIVITY_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_thermal_conductivity_orthotropic.txt")
-THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_thermal_conductivity_orthotropic_metadata.txt")
+THERMAL_CONDUCTIVITY_ISOTROPIC = os.path.join(
+    DIR_PATH, "..", "data", "matml_thermal_conductivity_isotropic.txt"
+)
+THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_thermal_conductivity_isotropic_metadata.txt"
+)
+THERMAL_CONDUCTIVITY_ORTHOTROPIC = os.path.join(
+    DIR_PATH, "..", "data", "matml_thermal_conductivity_orthotropic.txt"
+)
+THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_thermal_conductivity_orthotropic_metadata.txt"
+)
 
 
 def test_read_thermal_conductivity_isotropic_material():
@@ -108,12 +115,12 @@ def test_write_thermal_conductivity_isotropic():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(THERMAL_CONDUCTIVITY_ISOTROPIC, 'r') as file:
+    with open(THERMAL_CONDUCTIVITY_ISOTROPIC, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_thermal_conductivity_orthotropic():
@@ -140,9 +147,9 @@ def test_write_thermal_conductivity_orthotropic():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC, 'r') as file:
+    with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

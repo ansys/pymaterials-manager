@@ -22,22 +22,22 @@
 
 from typing import Any, Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.common import ParameterField, QualifierType, validate_and_initialize_model_qualifiers
-from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common import (
+    MaterialModel,
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class SpecificHeat(MaterialModel):
     """Represents a specific heat material model."""
 
     name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
-    )
 
     specific_heat: Quantity | None = ParameterField(
         default=None,
@@ -47,7 +47,13 @@ class SpecificHeat(MaterialModel):
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        expected_qualifiers = {"Definition": ["Constant Pressure", QualifierType.RANGE, ["Constant Pressure", "Constant Volume"]]}
+        expected_qualifiers = {
+            "Definition": [
+                "Constant Pressure",
+                QualifierType.RANGE,
+                ["Constant Pressure", "Constant Volume"],
+            ]
+        }
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
             values, expected_qualifiers
         )

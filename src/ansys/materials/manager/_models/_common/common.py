@@ -22,11 +22,9 @@
 
 from enum import Enum
 
-from ansys.units import Quantity
 from pydantic.fields import FieldInfo
-from pydantic_core import core_schema
 
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from .model_qualifier import ModelQualifier
 
 
 class QualifierType(str, Enum):
@@ -65,7 +63,7 @@ def validate_and_initialize_model_qualifiers(
         for key, value in expected_values.items():
             inputed_qualifiers.append(ModelQualifier(name=key, value=value[0]))
         return inputed_qualifiers
-    
+
     qualifier_dict = {}
     for qualifier in values["model_qualifiers"]:
         qualifier_dict[qualifier.name] = qualifier.value
@@ -89,12 +87,8 @@ def validate_and_initialize_model_qualifiers(
             elif value[1] == QualifierType.FREE:
                 pass
             else:
-                raise ValueError(
-                    f"Unknown qualifier type: {value[1]}"
-                )
+                raise ValueError(f"Unknown qualifier type: {value[1]}")
         else:
-            missing_qualifiers.append(
-                ModelQualifier(name=key, value=value)
-            )
-            
+            missing_qualifiers.append(ModelQualifier(name=key, value=value))
+
     return missing_qualifiers + inputed_qualifiers

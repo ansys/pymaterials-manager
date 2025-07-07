@@ -23,8 +23,7 @@
 from ansys.materials.manager._models import (
     ElasticityIsotropic,
 )
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common import IndependentParameter, SupportedPackage
 
 
 def test_elasticity_isotropic():

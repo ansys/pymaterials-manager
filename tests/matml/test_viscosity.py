@@ -22,20 +22,20 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.viscosity import Viscosity
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
-
-from ansys.units import Quantity
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_viscosity.xml")
 VISCOSITY = os.path.join(DIR_PATH, "..", "data", "matml_viscosity.txt")
 VISCOSITY_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_viscosity_metadata.txt")
 VISCOSITY_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_viscosity_variable.txt")
+
 
 def test_read_constant_viscosity():
     material = read_specific_material(XML_FILE_PATH, "material with viscosity")
@@ -101,12 +101,12 @@ def test_write_constant_viscosity():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(VISCOSITY, 'r') as file:
+    with open(VISCOSITY, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(VISCOSITY_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(VISCOSITY_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_viscosity():
@@ -131,9 +131,9 @@ def test_write_variable_viscosity():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(VISCOSITY_VARIABLE, 'r') as file:
+    with open(VISCOSITY_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string
-    with open(VISCOSITY_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(VISCOSITY_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

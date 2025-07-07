@@ -22,23 +22,28 @@
 
 import os
 
+from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager._models._common import IndependentParameter, ModelQualifier
 from ansys.materials.manager._models._material_models.specific_heat import SpecificHeat
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-from ansys.units import Quantity
-
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_specific_heat.xml")
 SPECIFIC_HEAT_VOLUME = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_volume.txt")
-SPECIFIC_HEAT_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_volume_metadata.txt")
-SPECIFIC_HEAT_VOLUME_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_volume_variable.txt")
+SPECIFIC_HEAT_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_specific_heat_volume_metadata.txt"
+)
+SPECIFIC_HEAT_VOLUME_VARIABLE = os.path.join(
+    DIR_PATH, "..", "data", "matml_specific_heat_volume_variable.txt"
+)
 SPECIFIC_HEAT_PRESSURE = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_pressure.txt")
-SPECIFIC_HEAT_PRESSURE_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_specific_heat_pressure_variable.txt")
+SPECIFIC_HEAT_PRESSURE_VARIABLE = os.path.join(
+    DIR_PATH, "..", "data", "matml_specific_heat_pressure_variable.txt"
+)
+
 
 def test_read_constant_specific_heat_volume():
     material = read_specific_material(XML_FILE_PATH, "material with specific heat volume")
@@ -85,6 +90,7 @@ def test_read_variable_specific_heat_volume():
     assert specific_heat.specific_heat.value.tolist() == [10.0, 20.0, 30.0]
     assert specific_heat.specific_heat.unit == "J kg^-1 C^-1"
 
+
 def test_read_constant_specific_heat_pressure():
     material = read_specific_material(XML_FILE_PATH, "material with specific heat pressure")
     assert len(material.models) == 2
@@ -115,7 +121,9 @@ def test_read_constant_specific_heat_pressure():
 
 
 def test_read_variable_specific_heat_pressure():
-    material = read_specific_material(XML_FILE_PATH, "material with variable specific heat pressure")
+    material = read_specific_material(
+        XML_FILE_PATH, "material with variable specific heat pressure"
+    )
     assert len(material.models) == 2
     specific_heat = material.models[1]
     assert specific_heat.name == "Specific Heat"
@@ -174,12 +182,12 @@ def test_write_constant_specific_heat_volume():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(SPECIFIC_HEAT_VOLUME, 'r', encoding="utf8") as file:
+    with open(SPECIFIC_HEAT_VOLUME, "r", encoding="utf8") as file:
         data = file.read()
         assert data == material_string
-    with open(SPECIFIC_HEAT_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(SPECIFIC_HEAT_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_specific_heat_volume():
@@ -213,12 +221,13 @@ def test_write_variable_specific_heat_volume():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(SPECIFIC_HEAT_VOLUME_VARIABLE, 'r', encoding="utf8") as file:
+    with open(SPECIFIC_HEAT_VOLUME_VARIABLE, "r", encoding="utf8") as file:
         data = file.read()
         assert data == material_string
-    with open(SPECIFIC_HEAT_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(SPECIFIC_HEAT_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
+
 
 def test_write_constant_specific_heat_pressure():
     materials = [
@@ -251,13 +260,12 @@ def test_write_constant_specific_heat_pressure():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(SPECIFIC_HEAT_PRESSURE, 'r', encoding="utf8") as file:
+    with open(SPECIFIC_HEAT_PRESSURE, "r", encoding="utf8") as file:
         data = file.read()
         assert data == material_string
-    with open(SPECIFIC_HEAT_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
-
+    with open(SPECIFIC_HEAT_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_specific_heat_pressure():
@@ -291,9 +299,9 @@ def test_write_variable_specific_heat_pressure():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(SPECIFIC_HEAT_PRESSURE_VARIABLE, 'r', encoding="utf8") as file:
+    with open(SPECIFIC_HEAT_PRESSURE_VARIABLE, "r", encoding="utf8") as file:
         data = file.read()
         assert data == material_string
-    with open(SPECIFIC_HEAT_METADATA, 'r') as file:
-      data = file.read()
-      assert data == metadata_string
+    with open(SPECIFIC_HEAT_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

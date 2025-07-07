@@ -22,22 +22,17 @@
 
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.common import ParameterField
-from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class PuckConstants(MaterialModel):
     """Represents a Puck constants material model for composite materials."""
 
     name: Literal["Puck Constants"] = Field(default="Puck Constants", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
     compressive_inclination_xz: Quantity | None = ParameterField(
         default=None,
         description="The compressive inclination in the XZ plane for the Puck constants model.",

@@ -21,8 +21,9 @@
 # SOFTWARE.
 
 
-from pydantic import BaseModel, Field
 from ansys.units import Quantity
+from pydantic import BaseModel, Field
+
 
 class UserParameter(BaseModel):
     """Class representing an user parameter in a material model."""

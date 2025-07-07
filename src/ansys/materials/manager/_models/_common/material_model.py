@@ -25,12 +25,13 @@ import abc
 from pydantic import BaseModel, Field
 from pyparsing import Any
 
-from ansys.materials.manager._models._common._packages import SupportedPackage  # noqa: F401
-from ansys.materials.manager._models._common.common import ParameterField
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager.material import Material
+from ._packages import SupportedPackage  # noqa: F401
+from .common import ParameterField
+from .independent_parameter import IndependentParameter
+from .interpolation_options import InterpolationOptions
+from .model_qualifier import ModelQualifier
+
+# from ansys.materials.manager._models import Material
 
 
 class MaterialModel(BaseModel, abc.ABC):
@@ -41,6 +42,7 @@ class MaterialModel(BaseModel, abc.ABC):
         default=None,
         title="Supported Packages",
         description="The supported packages for this material model. Currently, only PyMAPDL and PyFluent are supported.",  # noqa: E501
+        frozen=True,
     )
     independent_parameters: list[IndependentParameter] | None = Field(
         default=None,
@@ -61,6 +63,7 @@ class MaterialModel(BaseModel, abc.ABC):
         default=[],
         title="Model Qualifier",
         description="List of qualifiers for the model. This is used to determine the type of model and its applicability.",  # noqa: E501
+        frozen=True,
     )
 
     @classmethod
@@ -76,7 +79,7 @@ class MaterialModel(BaseModel, abc.ABC):
         return cls(**value)
 
     @abc.abstractmethod
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material: str, pyansys_session: Any) -> None:
         """
         Write the model to the given PyAnsys session.
 

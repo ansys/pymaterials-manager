@@ -22,28 +22,23 @@
 
 from typing import Any, Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.common import (
+from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
 
-from ansys.units import Quantity
 
 class CoefficientofThermalExpansionOrthotropic(MaterialModel):
     """Represents an orthotropic coefficient of thermal expansion material model."""
 
     name: Literal["Coefficient of Thermal Expansion"] = Field(
         default="Coefficient of Thermal Expansion", repr=False, frozen=True
-    )
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
     coefficient_of_thermal_expansion_x: Quantity | None = ParameterField(
         default=None,
@@ -59,12 +54,6 @@ class CoefficientofThermalExpansionOrthotropic(MaterialModel):
         default=None,
         description="The coefficient of thermal expansion in Z direction for the material.",
         matml_name="Coefficient of Thermal Expansion Z direction",
-    )
-
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="Behavior", value="Orthotropic")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the orthotropic coefficient of thermal expansion model.",
     )
 
     @model_validator(mode="before")

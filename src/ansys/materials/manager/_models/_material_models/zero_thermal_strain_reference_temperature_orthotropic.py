@@ -22,28 +22,24 @@
 
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 from pyparsing import Dict
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.common import (
+from ansys.materials.manager._models._common import (
+    MaterialModel,
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.material import Material
-from ansys.units import Quantity
+
 
 class ZeroThermalStrainReferenceTemperatureOrthotropic(MaterialModel):
     """Represents a zero thermal strain reference temperature material model for orthotropic materials."""  # noqa: E501
 
     name: Literal["Zero-Thermal-Strain Reference Temperature"] = Field(
         default="Zero-Thermal-Strain Reference Temperature", repr=False, frozen=True
-    )
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
     )
     zero_thermal_strain_reference_temperature: Quantity | None = ParameterField(
         default=None,
@@ -55,11 +51,6 @@ class ZeroThermalStrainReferenceTemperatureOrthotropic(MaterialModel):
         description="The material property for zero thermal strain reference temperature.",
         matml_name="Material Property",
         frozen=True,
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="Definition", value="Orthotropic")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the zero thermal strain reference temperature model.",
     )
 
     @model_validator(mode="before")

@@ -27,12 +27,16 @@ from typing import Dict, Sequence
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._common.user_parameter import UserParameter
+from ansys.materials.manager._models._common import (
+    IndependentParameter,
+    InterpolationOptions,
+    ModelQualifier,
+    UserParameter,
+)
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.common import convert_to_float_or_keep
+
+MODELS_NAMESPACE = "ansys.materials.manager._models._material_models."
 
 
 def convert_matml_materials(
@@ -60,9 +64,9 @@ def convert_matml_materials(
         models = []
         # loop over the defined property sets
         for propset_name, property_set in material_data.items():
-            cls_name = "ansys.materials.manager._models." + propset_name.replace(" ", "").replace(
-                "-", ""
-            ).replace("/", "")
+            cls_name = MODELS_NAMESPACE + propset_name.replace(" ", "").replace("-", "").replace(
+                "/", ""
+            )
             property_map = []
             arguments = {}
             qualifiers = []

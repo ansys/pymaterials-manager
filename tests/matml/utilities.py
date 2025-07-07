@@ -48,6 +48,7 @@ def get_material_and_metadata_from_xml(tree):
     metadata_string = metadata_string.toprettyxml(indent="  ").strip()
     return material_string, metadata_string
 
+
 def read_specific_material(file_path, mat_name):
     material_dic = read_matml_file(file_path)
     assert mat_name in material_dic.keys()
