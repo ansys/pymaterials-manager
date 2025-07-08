@@ -22,8 +22,10 @@
 
 from enum import Enum
 
+import numpy as np
 from pydantic.fields import FieldInfo
 
+from .independent_parameter import IndependentParameter
 from .model_qualifier import ModelQualifier
 
 
@@ -92,3 +94,60 @@ def validate_and_initialize_model_qualifiers(
             missing_qualifiers.append(ModelQualifier(name=key, value=value))
 
     return missing_qualifiers + inputed_qualifiers
+
+
+def is_variable(value):
+    """Check if variable."""
+    if isinstance(value, (float, int)):
+        return False
+    if isinstance(value, np.ndarray):
+        if len(value) < 1:
+            return False
+    return True
+
+
+def validate_parameters(
+    dependent_name: str,
+    dependent_quantity: float | int | np.ndarray,
+    independent_parameters: list[IndependentParameter] | None,
+) -> None:
+    """Validate the parameters."""
+    if is_variable(dependent_quantity):
+        if len(dependent_quantity) == 0:
+            raise Exception(f"{dependent_name} has no values.")
+        if len(dependent_quantity) > 1:
+            if independent_parameters is None:
+                raise Exception(
+                    f"{dependent_name} is variable but no independent parameters have been defined."
+                )
+            if len(independent_parameters) == 0:
+                raise Exception(
+                    f"{dependent_name} is variable but no independent parameters have been defined."
+                )
+            n_dep_param = len(dependent_quantity)
+            for independent_parameter in independent_parameters:
+                if is_variable(independent_parameter.values.value):
+                    if len(independent_parameter.values.value) != n_dep_param:
+                        raise Exception(
+                            f"The number independent parameters {independent_parameter.name} and dependent parameters {dependent_name} do not match."  # noqa: E501
+                        )
+                else:
+                    if n_dep_param != 1:
+                        raise Exception(
+                            f"The number independent parameters {independent_parameter.name} and dependent parameters {dependent_name} do not match."  # noqa: E501
+                        )
+        if len(dependent_quantity) == 1 and not independent_parameters is None:
+            for independent_parameter in independent_parameters:
+                if is_variable(independent_parameter.values.value):
+                    if len(independent_parameter.values.value) != 1:
+                        raise Exception(
+                            f"The number independent parameters {independent_parameter.name} and dependent parameters {dependent_name} do not match."  # noqa: E501
+                        )
+    else:
+        if independent_parameters:
+            for independent_parameter in independent_parameters:
+                if isinstance(independent_parameter.values.value, np.ndarray):
+                    if len(independent_parameter.values.value) != 1:
+                        raise Exception(
+                            f"The number independent parameters {independent_parameter.name} and dependent parameters {dependent_name} do not match."  # noqa: E501
+                        )

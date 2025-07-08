@@ -20,36 +20,48 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.units import Quantity
+PREDIFINED_TB_FIELDS = {
+    "Temperature": "Temperature = 'TEMP' ! Temperature\n",
+}
 
-from ansys.materials.manager._models._common import IndependentParameter
+INTERPOLATION_ALGORITHM_MAP = {"Linear Multivariate": "LMUL"}
 
+EXTRAPOLATION_TYPE_MAP = {
+    "Projection to the Convex Hull": "PHULL",
+    "Projection to the Bounding Box": "BBOX",
+}
 
-def test_independent_parameter_creation():
-    name = "Temperature"
-    field_variable = "Temperature"
-    values = Quantity(value=100, units="K")
-    default_value = 293.15
-    field_units = "K"
-    upper_limit = 1000.0
-    lower_limit = 0.0
+USER_DEFINED_TB_FIELDS = """{name} = 'UF{idx:02d}' ! {unit}
+"""
 
-    independent_param = IndependentParameter(
-        name=name,
-        field_variable=field_variable,
-        values=values,
-        default_value=default_value,
-        field_units=field_units,
-        upper_limit=upper_limit,
-        lower_limit=lower_limit,
-    )
+CONSTANT_MP_PROPERTY = """MP,{lab},{matid},{unit},{c0},{c1},{c2},{c3},{c4} ! {unit}
+"""
 
-    assert independent_param.name == name
-    assert independent_param.field_variable == field_variable
-    assert independent_param.values.value == values.value
-    assert independent_param.values.unit == values.unit
-    assert independent_param.default_value == default_value
-    assert independent_param.field_units == field_units
-    assert independent_param.upper_limit == upper_limit
-    assert independent_param.lower_limit == lower_limit
-    assert isinstance(independent_param, IndependentParameter)
+TB = """TB,{lab},{matid},,,{tbopt}
+"""
+
+TB_FIELD = """TBFIELD,{type},{value}, ! {unit}
+"""
+
+TB_DATA = """TBDATA,{stloc},{c1},{c2},{c3},{c4},{c5},{c6} ! {unit}
+"""
+
+TBIN_SCALE = """TBIN,SCALE,{par1},{par2},{par3},{par4}
+"""
+
+TBIN_ALGO = """TBIN,ALGO,{par1}
+"""
+
+TBIN_DEFA = """TBIN,DEFA,{par1},{par2}
+"""
+
+TBIN_BNDS = """TBIN,BNDS,{par1},{par2},{par3}
+"""
+
+TBIN_NORM = """TBIN,NORM,{par1},{par2}
+"""
+
+TBIN_CACH = """TBIN,CACH,{par1},{par2}\n"""  # codespell:ignore CACH
+
+TBIN_EXTR = """TBIN,EXTR,{par1},{par2}
+"""

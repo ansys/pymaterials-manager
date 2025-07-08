@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field
 from pyparsing import Any
 
 from ._packages import SupportedPackage  # noqa: F401
-from .common import ParameterField
+from .common import ParameterField, validate_parameters
 from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
@@ -78,6 +78,19 @@ class MaterialModel(BaseModel, abc.ABC):
         """
         return cls(**value)
 
+    def validate_model(self) -> None:
+        """
+        Perform pre-flight validation of the model setup.
+
+        This method should not perform any calls to other processes.
+        """
+        model = self.model_dump()
+        for field_name, field_value in model.items():
+            if field_name not in MaterialModel.model_fields.keys():
+                if field_value is None:
+                    raise Exception(f"the value of {field_name} cannot be None, please update it.")
+                validate_parameters(field_name, field_value["value"], self.independent_parameters)
+
     @abc.abstractmethod
     def write_model(self, material: str, pyansys_session: Any) -> None:
         """
@@ -92,20 +105,5 @@ class MaterialModel(BaseModel, abc.ABC):
         pyansys_session: Any
             Supported PyAnsys product session. Only PyMAPDL and PyFluent are
             supported currently.
-        """
-        ...
-
-    @abc.abstractmethod
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """
-        Perform pre-flight validation of the model setup.
-
-        This method should not perform any calls to the MAPDL process.
-
-        Returns
-        -------
-        Tuple
-            First element is Boolean. ``True`` if validation is successful. If ``False``,
-            the second element contains a list of strings with more information.
         """
         ...

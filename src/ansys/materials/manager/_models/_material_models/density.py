@@ -20,17 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal, Sequence
+from typing import Any, Literal
 
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField
+from ansys.materials.manager._models._common import MaterialModel, ParameterField, SupportedPackage
 from ansys.materials.manager._models._common._base import _MapdlCore
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager._models._mapdl.mapdl_constant_material_strings import CONSTANT_DENSITY
-from ansys.materials.manager._models._mapdl.mapdl_temperature_strings import TEMP_DATA
-from ansys.materials.manager._models._mapdl.mapdl_variable_material_strings import VARIABLE_DENSITY
+from ansys.materials.manager.util.mapdl import (
+    write_constant_property,
+    write_interpolation_options,
+    write_table_values,
+)
 
 
 class Density(MaterialModel):
@@ -42,55 +43,39 @@ class Density(MaterialModel):
         description="The density of the material.",
         matml_name="Density",
     )
+    supported_packages: list[SupportedPackage] = Field(
+        default=[SupportedPackage.MAPDL],
+        title="Supported Packages",
+        description="The list of supported packages.",
+        frozen=True,
+    )
+
+    def _write_mapdl(self, material_id):
+        if self.independent_parameters is None:
+            material_string = write_constant_property(
+                label="DENS", property=self.density, material_id=material_id
+            )
+        else:
+            parameters_str, table_str = write_table_values(
+                label="DENS",
+                dependent_parameter=self.density,
+                material_id=material_id,
+                independent_parameters=self.independent_parameters,
+            )
+            interpolation_string = ""
+            if self.interpolation_options:
+                interpolation_string += write_interpolation_options(
+                    interpolation_options=self.interpolation_options,
+                    independent_parameters=self.independent_parameters,
+                )
+            material_string = parameters_str + "\n" + table_str + "\n" + interpolation_string
+        return material_string
 
     def write_model(self, material_id: int, pyansys_session: Any) -> str:
         """Write this model to the specified session."""
-        is_ok, issues = self.validate_model()
-        if not is_ok:
-            raise ModelValidationException("\n".join(issues))
-        material_string = ""
-        if self.independent_parameters is None:
-            if isinstance(pyansys_session, _MapdlCore):
-                material_string += CONSTANT_DENSITY.format(
-                    material_id=material_id,
-                    density=str(self.density.value).strip("[]"),
-                    unit=self.density.unit,
-                )
+        self.validate_model()
+        if isinstance(pyansys_session, _MapdlCore):
+            material_string = self._write_mapdl(material_id)
         else:
-            if isinstance(pyansys_session, _MapdlCore):
-                density_string = ", ".join(f"{v}" for v in self.density.value)
-                for independent_parameter in self.independent_parameters:
-                    if independent_parameter.name == "Temperature":
-                        for i in range(len(independent_parameter.values.value)):
-                            material_string += TEMP_DATA.format(
-                                value_id=i + 1,
-                                temperature_value=independent_parameter.values.value[i],
-                            )
-                material_string += VARIABLE_DENSITY.format(
-                    material_id=material_id, density=density_string, unit=self.density.unit
-                )
+            raise Exception("The session is not supported.")
         return material_string
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        failures = []
-        is_ok = True
-        if self.density is None:
-            failures.append("Value cannot be None")
-            is_ok = False
-            return is_ok, failures
-        if isinstance(self.density, Sequence):
-            if self.independent_parameters == None and len(self.density.value) > 1:
-                failures.append(
-                    "Multiple value of density have been defined but independent parameters are None"  # noqa: E501
-                )
-                is_ok = False
-                return is_ok, failures
-            for independent_parameter in self.independent_parameters:
-                if len(independent_parameter.values.value) != len(self.density.value):
-                    failures.append(
-                        f"The number of defined indepedentent parameter is not equal to the number of densities defined for {independent_parameter.name}"  # noqa: E501
-                    )
-                is_ok = False
-                return is_ok, failures
-        return is_ok, failures
