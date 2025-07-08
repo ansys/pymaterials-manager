@@ -79,7 +79,7 @@ def xml_to_unit(param: ET.Element) -> tuple[str, dict[str, str]]:
     return id, entry
 
 
-def units_to_xml(unit: str) -> ET.Element:
+def unit_to_xml(unit: str) -> ET.Element:
     """
     Convert a unit string to an XML element.
 

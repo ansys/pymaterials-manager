@@ -38,7 +38,7 @@ from ansys.materials.manager.material import Material
 from ansys.materials.manager.util.matml.utils import (
     convert_to_float_string,
     create_xml_string_value,
-    units_to_xml,
+    unit_to_xml,
 )
 
 from .matml_parser import (
@@ -315,7 +315,7 @@ class MatmlWriter:
             prop_element = ET.SubElement(metadata_element, "ParameterDetails", {"id": value})
             units = self._metadata_parameters_units.get(key, None)
             if units:
-                prop_element.append(units_to_xml(units))
+                prop_element.append(unit_to_xml(units))
             else:
                 ET.SubElement(prop_element, UNITLESS_KEY)
             name_element = ET.SubElement(prop_element, "Name")
