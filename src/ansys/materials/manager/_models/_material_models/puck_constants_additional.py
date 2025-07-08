@@ -26,7 +26,6 @@ from ansys.units import Quantity
 from pydantic import Field
 
 from ansys.materials.manager._models._common import MaterialModel, ParameterField
-from ansys.materials.manager.material import Material
 
 
 class AdditionalPuckConstants(MaterialModel):
@@ -51,7 +50,7 @@ class AdditionalPuckConstants(MaterialModel):
         matml_name="Degradation Parameter M",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 

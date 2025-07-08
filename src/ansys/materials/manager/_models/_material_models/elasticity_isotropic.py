@@ -35,7 +35,6 @@ from ansys.materials.manager._models._common import (
 )
 from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
-from ansys.materials.manager.material import Material
 
 
 class ElasticityIsotropic(MaterialModel):
@@ -61,17 +60,17 @@ class ElasticityIsotropic(MaterialModel):
         )
         return values
 
-    def _write_mapdl(self, mapdl: _MapdlCore, material: "Material") -> None:
+    def _write_mapdl(self, mapdl: _MapdlCore, material_id) -> None:
         if (
             not self.independent_parameters
             and len(self.youngs_modulus) == 1
             and len(self.poissons_ratio) == 1
         ):
-            mapdl.mp("EX", material.material_id, self.youngs_modulus[0])
-            mapdl.mp("PRXY", material.material_id, self.poissons_ratio[0])
+            mapdl.mp("EX", material_id, self.youngs_modulus[0])
+            mapdl.mp("PRXY", material_id, self.poissons_ratio[0])
         ### add variable cases
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """
         Write this model to the specified session.
 
@@ -87,7 +86,7 @@ class ElasticityIsotropic(MaterialModel):
             raise ModelValidationException("\n".join(issues))
 
         if isinstance(pyansys_session, _MapdlCore):
-            self._write_mapdl(pyansys_session, material)
+            self._write_mapdl(pyansys_session, material_id)
         else:
             raise TypeError(
                 "This model is only supported by MAPDL. Ensure that you have the correct"

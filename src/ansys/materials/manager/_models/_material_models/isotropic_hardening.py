@@ -32,7 +32,6 @@ from ansys.materials.manager._models._common import (
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models.material import Material
 
 
 class IsotropicHardening(MaterialModel):
@@ -56,7 +55,7 @@ class IsotropicHardening(MaterialModel):
         )
         return values
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write the isotropic hardening model to the specified session."""
         pass
 

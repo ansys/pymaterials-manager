@@ -79,7 +79,7 @@ class MaterialModel(BaseModel, abc.ABC):
         return cls(**value)
 
     @abc.abstractmethod
-    def write_model(self, material: str, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """
         Write the model to the given PyAnsys session.
 

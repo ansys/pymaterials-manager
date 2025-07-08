@@ -25,7 +25,6 @@ from typing import Any, Literal
 from pydantic import Field
 
 from ansys.materials.manager._models._common import MaterialModel
-from ansys.materials.manager.material import Material
 
 
 class PlyType(MaterialModel):
@@ -33,7 +32,7 @@ class PlyType(MaterialModel):
 
     name: Literal["Ply Type"] = Field(default="Ply Type", repr=False, frozen=True)
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 
