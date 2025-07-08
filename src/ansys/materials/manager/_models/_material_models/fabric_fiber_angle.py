@@ -26,7 +26,6 @@ from ansys.units import Quantity
 from pydantic import Field
 
 from ansys.materials.manager._models._common import MaterialModel, ParameterField
-from ansys.materials.manager.material import Material
 
 
 class FabricFiberAngle(MaterialModel):
@@ -42,7 +41,7 @@ class FabricFiberAngle(MaterialModel):
         matml_name="Fabric Fiber Angle",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 

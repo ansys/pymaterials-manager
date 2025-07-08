@@ -26,7 +26,6 @@ from ansys.units import Quantity
 from pydantic import Field
 
 from ansys.materials.manager._models._common import MaterialModel, ParameterField
-from ansys.materials.manager.material import Material
 
 
 class LaRc0304Constants(MaterialModel):
@@ -56,7 +55,7 @@ class LaRc0304Constants(MaterialModel):
         matml_name="Fracture Angle Under Compression",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
         pass
 

@@ -31,7 +31,6 @@ from ansys.materials.manager._models._common import (
     UserParameter,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager.material import Material
 
 
 class ModelCoefficients(MaterialModel):
@@ -54,7 +53,7 @@ class ModelCoefficients(MaterialModel):
         )
         return values
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 
