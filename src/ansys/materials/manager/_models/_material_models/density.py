@@ -22,27 +22,23 @@
 
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 
 
 class Density(MaterialModel):
     """Represents an isotropic density material model."""
 
     name: Literal["Density"] = Field(default="Density", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
-    density: list[float] = Field(
-        default=[],
-        title="Density",
+    density: Quantity | None = ParameterField(
+        default=None,
         description="The density of the material.",
+        matml_name="Density",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 

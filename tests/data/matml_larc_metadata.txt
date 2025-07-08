@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>LaRc03/04 Constants</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Fracture Toughness Ratio</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Longitudinal Friction Coefficient</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Transverse Friction Coefficient</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Unitless/>
+    <Name>Fracture Angle Under Compression</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa4">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

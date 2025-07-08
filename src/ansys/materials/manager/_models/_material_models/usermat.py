@@ -20,15 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ast import Dict
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._common.user_parameter import UserParameter
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import (
+    MaterialModel,
+    QualifierType,
+    UserParameter,
+    validate_and_initialize_model_qualifiers,
+)
 
 
 class ModelCoefficients(MaterialModel):
@@ -37,21 +39,21 @@ class ModelCoefficients(MaterialModel):
     name: Literal["Model Coefficients"] = Field(
         default="Model Coefficients", repr=False, frozen=True
     )
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
     user_parameters: list[UserParameter] = Field(
         default=[],
         title="User Parameter",
         description="User-defined parameters for the usermat constants model.",
     )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="UserMat", value="USER")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the usermat constants model.",
-    )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        expected_qualifiers = {"UserMat": ["USER", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
+        return values
+
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 

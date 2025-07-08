@@ -22,50 +22,36 @@
 
 from typing import Any, Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import (
+    MaterialModel,
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 
 
 class StrainLimitsIsotropic(MaterialModel):
     """Represents a strain limits isotropic material model."""
 
     name: Literal["Strain Limits"] = Field(default="Strain Limits", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="Definition", value="Isotropic")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the strain limits isotropic model.",
-    )
-    von_mises: list[float] = Field(
-        default=[],
-        title="Von Mises Stress",
+    von_mises: Quantity | None = ParameterField(
+        default=None,
         description="The von Mises stress values for the strain limits isotropic model.",
+        matml_name="Von Mises ",  # bug from eng data, there is space in name
     )
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        if "model_qualifiers" in values:
-            found_behavior = False
-            for model_qualifier in values["model_qualifiers"]:
-                if model_qualifier.name == "Behavior" and model_qualifier.value != "Isotropic":
-                    raise ValueError(
-                        "Behavior must be 'Isotropic' for strainLimitsIsotropic model."
-                    )
-                if model_qualifier.name == "Behavior":
-                    found_behavior = True
-            if not found_behavior:
-                model_qualifiers = values.get("model_qualifiers", [])
-                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Isotropic")]
-                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        expected_qualifiers = {"Behavior": ["Isotropic", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
         return values
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 

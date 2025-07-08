@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>isotropic material with strain limit</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="UserMat">USER</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>0.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+        <Qualifier name="Display">True</Qualifier>
+        <Qualifier name="UserMat Constant">1</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>UserDefinedPropertySet</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

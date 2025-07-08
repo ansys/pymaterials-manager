@@ -25,13 +25,21 @@
 from pydoc import locate
 from typing import Dict, Sequence
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._common.user_parameter import UserParameter
+from ansys.units import Quantity
+
+from ansys.materials.manager._models._common import (
+    IndependentParameter,
+    InterpolationOptions,
+    ModelQualifier,
+    UserParameter,
+)
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.common import convert_to_float_or_keep
-from ansys.materials.manager.util.matml.property_to_model_field import PROPERTY_TO_MODEL_FIELD
+
+from .matml_parser import BEHAVIOR_KEY
+from .utils import get_data_and_unit, parse_property_set_name
+
+MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
 
 
 def convert_matml_materials(
@@ -55,46 +63,44 @@ def convert_matml_materials(
     global_material_index = 1 + index_offset
     # loop over the materials
     for mat_id, material_data in materials_dict.items():
-
         models = []
         # loop over the defined property sets
         for propset_name, property_set in material_data.items():
-            cls_name = "ansys.materials.manager._models." + propset_name.replace(" ", "").replace(
-                "-", ""
-            ).replace("/", "")
+            cls_name = MODEL_NAMESPACE + parse_property_set_name(propset_name)
             property_map = []
             arguments = {}
             qualifiers = []
             for qualifier in property_set.qualifiers.keys():
-                if qualifier == "Behavior":
+                if qualifier == BEHAVIOR_KEY:
                     cls_name += property_set.qualifiers[qualifier].replace(" ", "")
-                    propset_name += "::" + property_set.qualifiers[qualifier].replace(" ", "")
                 qualifiers.append(
                     ModelQualifier(name=qualifier, value=property_set.qualifiers[qualifier])
                 )
             cls = locate(cls_name)
             if cls:
                 property_map += list(cls.model_fields.keys())
+                titles = {
+                    name: field_info.matml_name
+                    for name, field_info in cls.__fields__.items()
+                    if hasattr(field_info, "matml_name")  # noqa: E501
+                }
                 independent_parameters = []
                 for name in property_map:
                     if name == "independent_parameters":
                         for param_value in property_set.parameters.values():
                             ind_param = param_value.qualifiers.get("Variable Type")
                             if ind_param and ind_param.split(",")[0] == "Independent":
+                                data, units = get_data_and_unit(param_value)
                                 independent_param = IndependentParameter(
                                     name=param_value.name,
-                                    values=(
-                                        param_value.data
-                                        if isinstance(param_value.data, Sequence)
-                                        else [param_value.data]
-                                    ),
+                                    values=Quantity(value=data, units=units),
                                     default_value=convert_to_float_or_keep(
-                                        param_value.qualifiers.get("Default Data", "")
+                                        param_value.qualifiers.get("Default Data", None)
                                     ),
                                     field_variable=param_value.qualifiers.get(
                                         "Field Variable", None
                                     ),
-                                    unit=param_value.qualifiers.get("Field Units", ""),
+                                    field_units=param_value.qualifiers.get("Field Units", None),
                                     upper_limit=convert_to_float_or_keep(
                                         param_value.qualifiers.get("Upper Limit", None)
                                     ),
@@ -103,20 +109,18 @@ def convert_matml_materials(
                                     ),
                                 )
                                 independent_parameters.append(independent_param)
-                    if (
-                        name in PROPERTY_TO_MODEL_FIELD.keys()
-                        and cls.__class__.__name__ != "ModelCoefficients"
-                    ):
-                        param_name = PROPERTY_TO_MODEL_FIELD[name]
+                    if name in titles.keys() and cls.__class__.__name__ != "ModelCoefficients":
+                        param_name = titles[name]
                         if param_name in property_set.parameters.keys():
                             param = property_set.parameters[param_name]
-                            data = param.data
-                            if name not in ["red", "green", "blue"]:
-                                if not isinstance(data, Sequence):
-                                    data = [data]
+                            if name not in ["red", "green", "blue", "material_property"]:
+                                data, units = get_data_and_unit(param)
+                                arguments[name] = Quantity(value=data, units=units)
                             else:
-                                data = int(data)
-                            arguments[name] = data
+                                data = param.data
+                                if isinstance(data, float):
+                                    data = int(data)
+                                arguments[name] = data
 
                     if name == "model_qualifiers":
                         arguments["model_qualifiers"] = qualifiers
@@ -136,13 +140,10 @@ def convert_matml_materials(
                     user_parameters = []
                     for key_param, value_param in property_set.parameters.items():
                         if value_param.qualifiers.get("UserMat Constant", None):
-                            if not isinstance(value_param.data, Sequence):
-                                data = [value_param.data]
-                            else:
-                                data = value_param.data
+                            data, units = get_data_and_unit(value_param)
                             user_param = UserParameter(
                                 name=key_param,
-                                values=data,
+                                values=Quantity(value=data, units=units),
                                 display=value_param.qualifiers.get("Display", True),
                                 user_mat_constant=value_param.qualifiers["UserMat Constant"],
                             )

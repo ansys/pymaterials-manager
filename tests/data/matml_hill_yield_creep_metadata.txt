@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Hill Yield Criterion</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Options Variable</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Yield stress ratio in X direction for plasticity</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Yield stress ratio in Y direction for plasticity</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Unitless/>
+    <Name>Yield stress ratio in Z direction for plasticity</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa4">
+    <Unitless/>
+    <Name>Yield stress ratio in XY direction for plasticity</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa5">
+    <Unitless/>
+    <Name>Yield stress ratio in XZ direction for plasticity</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa6">
+    <Unitless/>
+    <Name>Yield stress ratio in YZ direction for plasticity</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa7">
+    <Unitless/>
+    <Name>Yield stress ratio in X direction for creep</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa8">
+    <Unitless/>
+    <Name>Yield stress ratio in Y direction for creep</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa9">
+    <Unitless/>
+    <Name>Yield stress ratio in Z direction for creep</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa10">
+    <Unitless/>
+    <Name>Yield stress ratio in XY direction for creep</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa11">
+    <Unitless/>
+    <Name>Yield stress ratio in XZ direction for creep</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa12">
+    <Unitless/>
+    <Name>Yield stress ratio in YZ direction for creep</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa13">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

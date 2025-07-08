@@ -24,32 +24,30 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 
 
 class Color(MaterialModel):
     """Represents a Color material model."""
 
     name: Literal["Color"] = Field(default="Color", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
+    red: int | None = ParameterField(
+        default=None, description="Red component of the color.", matml_name="Red"
     )
-    red: int | None = Field(default=None, title="Red", description="Red component of the color.")
-    green: int | None = Field(
-        default=None, title="Green", description="Green component of the color."
+    green: int | None = ParameterField(
+        default=None, description="Green component of the color.", matml_name="Green"
     )
-    blue: int | None = Field(default=None, title="Blue", description="Blue component of the color.")
-
-    material_property: str = Field(
+    blue: int | None = ParameterField(
+        default=None, description="Blue component of the color.", matml_name="Blue"
+    )
+    material_property: str = ParameterField(
         default="Appearance",
-        title="Material Property",
         description="The material property associated with this model.",
+        matml_name="Material Property",
         frozen=True,
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
         pass
 

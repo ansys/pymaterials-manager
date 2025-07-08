@@ -22,11 +22,14 @@
 
 import os
 
-from utilities import get_material_and_metadata_from_xml, read_matml_file
+from ansys.units import Quantity
+from utilities import get_material_and_metadata_from_xml, read_specific_material
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager._models._common import (
+    IndependentParameter,
+    InterpolationOptions,
+    ModelQualifier,
+)
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models._material_models.kinematic_hardening import KinematicHardening
 from ansys.materials.manager._models._material_models.strain_hardening import StrainHardening
@@ -34,405 +37,29 @@ from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-NO_CREEP_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_hill_yield.xml")
-CREEP_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "MatML_unittest_hill_yield_creep.xml")
-
-HILL_YIELD = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>SFRP</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Separated Hill Potentials for Plasticity and Creep">No</Qualifier>
-      <ParameterValue parameter="pa0" format="string">
-        <Data>Interpolation Options</Data>
-        <Qualifier name="AlgorithmType">Linear Multivariate</Qualifier>
-        <Qualifier name="Cached">True</Qualifier>
-        <Qualifier name="Normalized">True</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>1.2</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>0.8</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>0.5</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>0.12</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa5" format="float">
-        <Data>0.23</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa6" format="float">
-        <Data>0.23</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa7" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-HILL_YIELD_VARIABLE = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>SFRP Temp Dependent</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Separated Hill Potentials for Plasticity and Creep">No</Qualifier>
-      <ParameterValue parameter="pa0" format="string">
-        <Data>Interpolation Options</Data>
-        <Qualifier name="AlgorithmType">Linear Multivariate</Qualifier>
-        <Qualifier name="Cached">True</Qualifier>
-        <Qualifier name="Normalized">True</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>1.2, 1.2, 1.4</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>0.8, 0.8, 0.7</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>0.5, 0.5, 0.4</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>0.12, 0.12, 0.12</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa5" format="float">
-        <Data>0.23, 0.23, 0.23</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa6" format="float">
-        <Data>0.23, 0.23, 0.23</Data>
-        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa7" format="float">
-        <Data>34.0, 78.0, 245.0</Data>
-        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-HILL_YIELD_CREEP = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>SFRP</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Separated Hill Potentials for Plasticity and Creep">Yes</Qualifier>
-      <ParameterValue parameter="pa0" format="string">
-        <Data>Interpolation Options</Data>
-        <Qualifier name="AlgorithmType">Linear Multivariate</Qualifier>
-        <Qualifier name="Cached">True</Qualifier>
-        <Qualifier name="Normalized">True</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa5" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa6" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa7" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa8" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa9" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa10" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa11" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa12" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa13" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
-        <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
-        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
-        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-KINEMATIC_HARDENING = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>SFRP</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Definition">Chaboche</Qualifier>
-      <Qualifier name="Number of Kinematic Models">1</Qualifier>
-      <Qualifier name="source">ANSYS</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>12.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>45.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-STRAIN_HARDENING = """<?xml version="1.0" ?>
-<Material>
-  <BulkDetails>
-    <Name>SFRP</Name>
-    <PropertyData property="pr0">
-      <Data format="string">-</Data>
-      <Qualifier name="Reference Units (Length, Time, Temperature, Force)">m, s, K, N</Qualifier>
-      <ParameterValue parameter="pa0" format="float">
-        <Data>1.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa1" format="float">
-        <Data>2.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
-        <Data>3.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
-        <Data>4.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
-        <Data>7.88860905221012e-31</Data>
-        <Qualifier name="Variable Type">Independent</Qualifier>
-      </ParameterValue>
-    </PropertyData>
-  </BulkDetails>
-</Material>"""
-
-HILL_YIELD_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Hill Yield Criterion</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Options Variable</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Yield stress ratio in X direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Yield stress ratio in Y direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Yield stress ratio in Z direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa4">
-    <Unitless/>
-    <Name>Yield stress ratio in XY direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa5">
-    <Unitless/>
-    <Name>Yield stress ratio in XZ direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa6">
-    <Unitless/>
-    <Name>Yield stress ratio in YZ direction</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa7">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
-
-HILL_YIELD_CREEP_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Hill Yield Criterion</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Options Variable</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Yield stress ratio in X direction for plasticity</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Yield stress ratio in Y direction for plasticity</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Yield stress ratio in Z direction for plasticity</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa4">
-    <Unitless/>
-    <Name>Yield stress ratio in XY direction for plasticity</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa5">
-    <Unitless/>
-    <Name>Yield stress ratio in XZ direction for plasticity</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa6">
-    <Unitless/>
-    <Name>Yield stress ratio in YZ direction for plasticity</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa7">
-    <Unitless/>
-    <Name>Yield stress ratio in X direction for creep</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa8">
-    <Unitless/>
-    <Name>Yield stress ratio in Y direction for creep</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa9">
-    <Unitless/>
-    <Name>Yield stress ratio in Z direction for creep</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa10">
-    <Unitless/>
-    <Name>Yield stress ratio in XY direction for creep</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa11">
-    <Unitless/>
-    <Name>Yield stress ratio in XZ direction for creep</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa12">
-    <Unitless/>
-    <Name>Yield stress ratio in YZ direction for creep</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa13">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
-
-KINEMATIC_HARDENING_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Kinematic Hardening</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Yield Stress</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Material Constant γ1</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Material Constant C1</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
-
-STRAIN_HARDENING_METADATA = """<?xml version="1.0" ?>
-<Metadata>
-  <PropertyDetails id="pr0">
-    <Unitless/>
-    <Name>Strain Hardening</Name>
-  </PropertyDetails>
-  <ParameterDetails id="pa0">
-    <Unitless/>
-    <Name>Creep Constant 1</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Creep Constant 2</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Creep Constant 3</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
-    <Name>Creep Constant 4</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa4">
-    <Unitless/>
-    <Name>Temperature</Name>
-  </ParameterDetails>
-</Metadata>"""
+NO_CREEP_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_hill_yield.xml")
+CREEP_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_hill_yield_creep.xml")
+HILL_YIELD = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield.txt")
+HILL_YIELD_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_metadata.txt")
+HILL_YIELD_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_variable.txt")
+HILL_YIELD_CREEP = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_creep.txt")
+HILL_YIELD_CREEP_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_hill_yield_creep_metadata.txt"
+)
+KINEMATIC_HARDENING = os.path.join(DIR_PATH, "..", "data", "matml_kinematic_harderning.txt")
+KINEMATIC_HARDENING_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_kinematic_harderning_metadata.txt"
+)
+STRAIN_HARDENING = os.path.join(DIR_PATH, "..", "data", "matml_strain_hardening.txt")
+STRAIN_HARDENING_METADATA = os.path.join(
+    DIR_PATH, "..", "data", "matml_strain_hardening_metadata.txt"
+)
 
 
 def test_read_constant_hill_yield_no_creep():
-    material_dic = read_matml_file(NO_CREEP_XML_FILE_PATH)
-    assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 3
-    hill_yield = material_dic["SFRP"].models[2]
+    material = read_specific_material(NO_CREEP_XML_FILE_PATH, "SFRP")
+    assert len(material.models) == 3
+    hill_yield = material.models[2]
     assert hill_yield.name == "Hill Yield Criterion"
     assert (
         hill_yield.model_qualifiers[0].name == "Separated Hill Potentials for Plasticity and Creep"
@@ -443,12 +70,18 @@ def test_read_constant_hill_yield_no_creep():
     assert hill_yield.interpolation_options.algorithm_type == "Linear Multivariate"
     assert hill_yield.interpolation_options.cached == True
     assert hill_yield.interpolation_options.normalized == True
-    assert hill_yield.yield_stress_ratio_x == [1.2]
-    assert hill_yield.yield_stress_ratio_xy == [0.12]
-    assert hill_yield.yield_stress_ratio_xz == [0.23]
-    assert hill_yield.yield_stress_ratio_y == [0.8]
-    assert hill_yield.yield_stress_ratio_yz == [0.23]
-    assert hill_yield.yield_stress_ratio_z == [0.5]
+    assert hill_yield.yield_stress_ratio_x.value == [1.2]
+    assert hill_yield.yield_stress_ratio_x.unit == ""
+    assert hill_yield.yield_stress_ratio_xy.value == [0.12]
+    assert hill_yield.yield_stress_ratio_xy.unit == ""
+    assert hill_yield.yield_stress_ratio_xz.value == [0.23]
+    assert hill_yield.yield_stress_ratio_xz.unit == ""
+    assert hill_yield.yield_stress_ratio_y.value == [0.8]
+    assert hill_yield.yield_stress_ratio_y.unit == ""
+    assert hill_yield.yield_stress_ratio_yz.value == [0.23]
+    assert hill_yield.yield_stress_ratio_yz.unit == ""
+    assert hill_yield.yield_stress_ratio_z.value == [0.5]
+    assert hill_yield.yield_stress_ratio_z.unit == ""
     assert hill_yield.yield_stress_ratio_x_for_plasticity == None
     assert hill_yield.yield_stress_ratio_y_for_plasticity == None
     assert hill_yield.yield_stress_ratio_z_for_plasticity == None
@@ -462,17 +95,19 @@ def test_read_constant_hill_yield_no_creep():
     assert hill_yield.yield_stress_ratio_xz_for_creep == None
     assert hill_yield.yield_stress_ratio_yz_for_creep == None
     assert hill_yield.independent_parameters[0].name == "Temperature"
-    assert hill_yield.independent_parameters[0].unit == "C"
+    assert hill_yield.independent_parameters[0].field_variable == "Temperature"
+    assert hill_yield.independent_parameters[0].field_units == "C"
     assert hill_yield.independent_parameters[0].default_value == 22.0
     assert hill_yield.independent_parameters[0].upper_limit == "Program Controlled"
     assert hill_yield.independent_parameters[0].lower_limit == "Program Controlled"
+    assert hill_yield.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert hill_yield.independent_parameters[0].values.unit == "C"
 
 
 def test_read_variable_temp_hill_yield_no_creep():
-    material_dic = read_matml_file(NO_CREEP_XML_FILE_PATH)
-    assert "SFRP Temp Dependent" in material_dic.keys()
-    assert len(material_dic["SFRP Temp Dependent"].models) == 3
-    hill_yield = material_dic["SFRP Temp Dependent"].models[2]
+    material = read_specific_material(NO_CREEP_XML_FILE_PATH, "SFRP Temp Dependent")
+    assert len(material.models) == 3
+    hill_yield = material.models[2]
     assert hill_yield.name == "Hill Yield Criterion"
     assert (
         hill_yield.model_qualifiers[0].name == "Separated Hill Potentials for Plasticity and Creep"
@@ -483,12 +118,18 @@ def test_read_variable_temp_hill_yield_no_creep():
     assert hill_yield.interpolation_options.algorithm_type == "Linear Multivariate"
     assert hill_yield.interpolation_options.cached == True
     assert hill_yield.interpolation_options.normalized == True
-    assert hill_yield.yield_stress_ratio_x == [1.2, 1.2, 1.4]
-    assert hill_yield.yield_stress_ratio_xy == [0.12, 0.12, 0.12]
-    assert hill_yield.yield_stress_ratio_xz == [0.23, 0.23, 0.23]
-    assert hill_yield.yield_stress_ratio_y == [0.8, 0.8, 0.7]
-    assert hill_yield.yield_stress_ratio_yz == [0.23, 0.23, 0.23]
-    assert hill_yield.yield_stress_ratio_z == [0.5, 0.5, 0.4]
+    assert hill_yield.yield_stress_ratio_x.value.tolist() == [1.2, 1.2, 1.4]
+    assert hill_yield.yield_stress_ratio_x.unit == ""
+    assert hill_yield.yield_stress_ratio_xy.value.tolist() == [0.12, 0.12, 0.12]
+    assert hill_yield.yield_stress_ratio_xy.unit == ""
+    assert hill_yield.yield_stress_ratio_xz.value.tolist() == [0.23, 0.23, 0.23]
+    assert hill_yield.yield_stress_ratio_xz.unit == ""
+    assert hill_yield.yield_stress_ratio_y.value.tolist() == [0.8, 0.8, 0.7]
+    assert hill_yield.yield_stress_ratio_y.unit == ""
+    assert hill_yield.yield_stress_ratio_yz.value.tolist() == [0.23, 0.23, 0.23]
+    assert hill_yield.yield_stress_ratio_yz.unit == ""
+    assert hill_yield.yield_stress_ratio_z.value.tolist() == [0.5, 0.5, 0.4]
+    assert hill_yield.yield_stress_ratio_z.unit == ""
     assert hill_yield.yield_stress_ratio_x_for_plasticity == None
     assert hill_yield.yield_stress_ratio_y_for_plasticity == None
     assert hill_yield.yield_stress_ratio_z_for_plasticity == None
@@ -502,18 +143,19 @@ def test_read_variable_temp_hill_yield_no_creep():
     assert hill_yield.yield_stress_ratio_xz_for_creep == None
     assert hill_yield.yield_stress_ratio_yz_for_creep == None
     assert hill_yield.independent_parameters[0].name == "Temperature"
-    assert hill_yield.independent_parameters[0].values == [34, 78, 245]
-    assert hill_yield.independent_parameters[0].unit == "C"
+    assert hill_yield.independent_parameters[0].values.value.tolist() == [34, 78, 245]
+    assert hill_yield.independent_parameters[0].values.unit == "C"
+    assert hill_yield.independent_parameters[0].field_variable == "Temperature"
+    assert hill_yield.independent_parameters[0].field_units == "C"
     assert hill_yield.independent_parameters[0].default_value == 22.0
     assert hill_yield.independent_parameters[0].upper_limit == "Program Controlled"
     assert hill_yield.independent_parameters[0].lower_limit == "Program Controlled"
 
 
 def test_read_variable_hill_yield_no_creep():
-    material_dic = read_matml_file(NO_CREEP_XML_FILE_PATH)
-    assert "Variable Short Fiber" in material_dic.keys()
-    assert len(material_dic["Variable Short Fiber"].models) == 2
-    hill_yield = material_dic["Variable Short Fiber"].models[0]
+    material = read_specific_material(NO_CREEP_XML_FILE_PATH, "Variable Short Fiber")
+    assert len(material.models) == 2
+    hill_yield = material.models[0]
     assert hill_yield.name == "Hill Yield Criterion"
     assert (
         hill_yield.model_qualifiers[0].name == "Separated Hill Potentials for Plasticity and Creep"
@@ -524,7 +166,7 @@ def test_read_variable_hill_yield_no_creep():
     assert hill_yield.interpolation_options.algorithm_type == "Linear Multivariate"
     assert hill_yield.interpolation_options.cached == True
     assert hill_yield.interpolation_options.normalized == True
-    assert hill_yield.yield_stress_ratio_x == [
+    assert hill_yield.yield_stress_ratio_x.value.tolist() == [
         1.0,
         1.38717930847789,
         3.00721990713311,
@@ -533,7 +175,8 @@ def test_read_variable_hill_yield_no_creep():
         1.38717930847789,
         1.0,
     ]
-    assert hill_yield.yield_stress_ratio_xy == [
+    assert hill_yield.yield_stress_ratio_x.unit == ""
+    assert hill_yield.yield_stress_ratio_xy.value.tolist() == [
         1.27583858742812,
         1.27583858742812,
         1.27583858742812,
@@ -542,7 +185,8 @@ def test_read_variable_hill_yield_no_creep():
         1.27583858742812,
         1.27583858742812,
     ]
-    assert hill_yield.yield_stress_ratio_xz == [
+    assert hill_yield.yield_stress_ratio_xy.unit == ""
+    assert hill_yield.yield_stress_ratio_xz.value.tolist() == [
         1.27583858742812,
         1.27583858742812,
         1.27583858742812,
@@ -551,7 +195,8 @@ def test_read_variable_hill_yield_no_creep():
         1.27583858742812,
         1.27583858742812,
     ]
-    assert hill_yield.yield_stress_ratio_y == [
+    assert hill_yield.yield_stress_ratio_xz.unit == ""
+    assert hill_yield.yield_stress_ratio_y.value.tolist() == [
         1.0,
         1.0,
         1.0,
@@ -560,7 +205,8 @@ def test_read_variable_hill_yield_no_creep():
         1.38717930847789,
         3.00721990713311,
     ]
-    assert hill_yield.yield_stress_ratio_yz == [
+    assert hill_yield.yield_stress_ratio_y.unit == ""
+    assert hill_yield.yield_stress_ratio_yz.value.tolist() == [
         1.27583858742812,
         1.27583858742812,
         1.27583858742812,
@@ -569,7 +215,8 @@ def test_read_variable_hill_yield_no_creep():
         1.27583858742812,
         1.27583858742812,
     ]
-    assert hill_yield.yield_stress_ratio_z == [
+    assert hill_yield.yield_stress_ratio_yz.unit == ""
+    assert hill_yield.yield_stress_ratio_z.value.tolist() == [
         3.00721990713311,
         1.38717930847789,
         1.0,
@@ -578,6 +225,7 @@ def test_read_variable_hill_yield_no_creep():
         1.0,
         1.0,
     ]
+    assert hill_yield.yield_stress_ratio_z.unit == ""
     assert hill_yield.yield_stress_ratio_x_for_plasticity == None
     assert hill_yield.yield_stress_ratio_y_for_plasticity == None
     assert hill_yield.yield_stress_ratio_z_for_plasticity == None
@@ -591,54 +239,83 @@ def test_read_variable_hill_yield_no_creep():
     assert hill_yield.yield_stress_ratio_xz_for_creep == None
     assert hill_yield.yield_stress_ratio_yz_for_creep == None
     assert hill_yield.independent_parameters[0].name == "Orientation Tensor A11"
-    assert hill_yield.independent_parameters[0].values == [0, 0.5, 1, 0.3333333333, 0, 0.5, 0]
+    assert hill_yield.independent_parameters[0].values.value.tolist() == [
+        0,
+        0.5,
+        1,
+        0.3333333333,
+        0,
+        0.5,
+        0,
+    ]
+    assert hill_yield.independent_parameters[0].values.units == ""
     assert hill_yield.independent_parameters[0].default_value == "Program Controlled"
     assert hill_yield.independent_parameters[0].upper_limit == "Program Controlled"
     assert hill_yield.independent_parameters[0].lower_limit == "Program Controlled"
     assert hill_yield.independent_parameters[1].name == "Orientation Tensor A22"
-    assert hill_yield.independent_parameters[1].values == [0, 0, 0, 0.3333333333, 0.5, 0.5, 1]
+    assert hill_yield.independent_parameters[1].values.value.tolist() == [
+        0,
+        0,
+        0,
+        0.3333333333,
+        0.5,
+        0.5,
+        1,
+    ]
+    assert hill_yield.independent_parameters[1].values.units == ""
     assert hill_yield.independent_parameters[1].default_value == "Program Controlled"
     assert hill_yield.independent_parameters[1].upper_limit == "Program Controlled"
     assert hill_yield.independent_parameters[1].lower_limit == "Program Controlled"
 
 
 def test_read_constant_hill_yield_creep():
-    material_dic = read_matml_file(CREEP_XML_FILE_PATH)
-    assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 5
-    hill_yield = material_dic["SFRP"].models[2]
+    material = read_specific_material(CREEP_XML_FILE_PATH, "SFRP")
+    assert len(material.models) == 5
+    hill_yield = material.models[2]
     assert hill_yield.name == "Hill Yield Criterion"
     assert (
         hill_yield.model_qualifiers[0].name == "Separated Hill Potentials for Plasticity and Creep"
     )
     assert hill_yield.model_qualifiers[0].value == "Yes"
+    assert hill_yield.yield_stress_ratio_x_for_plasticity.value == [1.0]
+    assert hill_yield.yield_stress_ratio_x_for_plasticity.unit == ""
+    assert hill_yield.yield_stress_ratio_xy_for_plasticity.value == [1.0]
+    assert hill_yield.yield_stress_ratio_xy_for_plasticity.unit == ""
+    assert hill_yield.yield_stress_ratio_xz_for_plasticity.value == [1.0]
+    assert hill_yield.yield_stress_ratio_xz_for_plasticity.unit == ""
+    assert hill_yield.yield_stress_ratio_y_for_plasticity.value == [1.0]
+    assert hill_yield.yield_stress_ratio_y_for_plasticity.unit == ""
+    assert hill_yield.yield_stress_ratio_yz_for_plasticity.value == [1.0]
+    assert hill_yield.yield_stress_ratio_yz_for_plasticity.unit == ""
+    assert hill_yield.yield_stress_ratio_z_for_plasticity.value == [1.0]
+    assert hill_yield.yield_stress_ratio_z_for_plasticity.unit == ""
+    assert hill_yield.yield_stress_ratio_x_for_creep.value == [2.0]
+    assert hill_yield.yield_stress_ratio_x_for_creep.unit == ""
+    assert hill_yield.yield_stress_ratio_y_for_creep.value == [2.0]
+    assert hill_yield.yield_stress_ratio_y_for_creep.unit == ""
+    assert hill_yield.yield_stress_ratio_z_for_creep.value == [2.0]
+    assert hill_yield.yield_stress_ratio_z_for_creep.unit == ""
+    assert hill_yield.yield_stress_ratio_xy_for_creep.value == [2.0]
+    assert hill_yield.yield_stress_ratio_xy_for_creep.unit == ""
+    assert hill_yield.yield_stress_ratio_xz_for_creep.value == [2.0]
+    assert hill_yield.yield_stress_ratio_xz_for_creep.unit == ""
+    assert hill_yield.yield_stress_ratio_yz_for_creep.value == [2.0]
+    assert hill_yield.yield_stress_ratio_yz_for_creep.unit == ""
     assert hill_yield.yield_stress_ratio_x == None
+    assert hill_yield.yield_stress_ratio_y == None
+    assert hill_yield.yield_stress_ratio_z == None
     assert hill_yield.yield_stress_ratio_xy == None
     assert hill_yield.yield_stress_ratio_xz == None
-    assert hill_yield.yield_stress_ratio_y == None
     assert hill_yield.yield_stress_ratio_yz == None
-    assert hill_yield.yield_stress_ratio_z == None
-    assert hill_yield.yield_stress_ratio_x_for_plasticity == [1.0]
-    assert hill_yield.yield_stress_ratio_y_for_plasticity == [1.0]
-    assert hill_yield.yield_stress_ratio_z_for_plasticity == [1.0]
-    assert hill_yield.yield_stress_ratio_xy_for_plasticity == [1.0]
-    assert hill_yield.yield_stress_ratio_xz_for_plasticity == [1.0]
-    assert hill_yield.yield_stress_ratio_yz_for_plasticity == [1.0]
-    assert hill_yield.yield_stress_ratio_x_for_creep == [2.0]
-    assert hill_yield.yield_stress_ratio_y_for_creep == [2.0]
-    assert hill_yield.yield_stress_ratio_z_for_creep == [2.0]
-    assert hill_yield.yield_stress_ratio_xy_for_creep == [2.0]
-    assert hill_yield.yield_stress_ratio_xz_for_creep == [2.0]
-    assert hill_yield.yield_stress_ratio_yz_for_creep == [2.0]
     assert hill_yield.independent_parameters[0].name == "Temperature"
-    assert hill_yield.independent_parameters[0].values == [7.88860905221012e-31]
+    assert hill_yield.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert hill_yield.independent_parameters[0].values.unit == "C"
 
 
 def test_read_constant_kinematic_hardening_creep():
-    material_dic = read_matml_file(CREEP_XML_FILE_PATH)
-    assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 5
-    kinematic_hardening = material_dic["SFRP"].models[3]
+    material = read_specific_material(CREEP_XML_FILE_PATH, "SFRP")
+    assert len(material.models) == 5
+    kinematic_hardening = material.models[3]
     assert kinematic_hardening.name == "Kinematic Hardening"
     assert kinematic_hardening.model_qualifiers[0].name == "Definition"
     assert kinematic_hardening.model_qualifiers[0].value == "Chaboche"
@@ -646,9 +323,12 @@ def test_read_constant_kinematic_hardening_creep():
     assert kinematic_hardening.model_qualifiers[1].value == "1"
     assert kinematic_hardening.model_qualifiers[2].name == "source"
     assert kinematic_hardening.model_qualifiers[2].value == "ANSYS"
-    assert kinematic_hardening.yield_stress == [12.0]
-    assert kinematic_hardening.material_constant_gamma_1 == [1.0]
-    assert kinematic_hardening.material_constant_c_1 == [45.0]
+    assert kinematic_hardening.yield_stress.value == [12.0]
+    assert kinematic_hardening.yield_stress.unit == "Pa"
+    assert kinematic_hardening.material_constant_gamma_1.value == [1.0]
+    assert kinematic_hardening.material_constant_gamma_1.unit == ""
+    assert kinematic_hardening.material_constant_c_1.value == [45.0]
+    assert kinematic_hardening.material_constant_c_1.unit == "Pa"
     assert kinematic_hardening.material_constant_gamma_2 == None
     assert kinematic_hardening.material_constant_c_2 == None
     assert kinematic_hardening.material_constant_gamma_3 == None
@@ -658,26 +338,31 @@ def test_read_constant_kinematic_hardening_creep():
     assert kinematic_hardening.material_constant_gamma_5 == None
     assert kinematic_hardening.material_constant_c_5 == None
     assert kinematic_hardening.independent_parameters[0].name == "Temperature"
-    assert kinematic_hardening.independent_parameters[0].values == [7.88860905221012e-31]
+    assert kinematic_hardening.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert kinematic_hardening.independent_parameters[0].values.unit == "C"
 
 
 def test_read_constant_strain_hardening_creep():
-    material_dic = read_matml_file(CREEP_XML_FILE_PATH)
-    assert "SFRP" in material_dic.keys()
-    assert len(material_dic["SFRP"].models) == 5
-    strain_hardening = material_dic["SFRP"].models[4]
+    material = read_specific_material(CREEP_XML_FILE_PATH, "SFRP")
+    assert len(material.models) == 5
+    strain_hardening = material.models[4]
     assert strain_hardening.name == "Strain Hardening"
     assert (
         strain_hardening.model_qualifiers[0].name
         == "Reference Units (Length, Time, Temperature, Force)"
     )
     assert strain_hardening.model_qualifiers[0].value == "m, s, K, N"
-    assert strain_hardening.creep_constant_1 == [1.0]
-    assert strain_hardening.creep_constant_2 == [2.0]
-    assert strain_hardening.creep_constant_3 == [3.0]
-    assert strain_hardening.creep_constant_4 == [4.0]
+    assert strain_hardening.creep_constant_1.value == [1.0]
+    assert strain_hardening.creep_constant_1.unit == ""
+    assert strain_hardening.creep_constant_2.value == [2.0]
+    assert strain_hardening.creep_constant_2.unit == ""
+    assert strain_hardening.creep_constant_3.value == [3.0]
+    assert strain_hardening.creep_constant_3.unit == ""
+    assert strain_hardening.creep_constant_4.value == [4.0]
+    assert strain_hardening.creep_constant_4.unit == ""
     assert strain_hardening.independent_parameters[0].name == "Temperature"
-    assert strain_hardening.independent_parameters[0].values == [7.88860905221012e-31]
+    assert strain_hardening.independent_parameters[0].values.value == [7.88860905221012e-31]
+    assert strain_hardening.independent_parameters[0].values.unit == "C"
 
 
 def test_write_constant_hill_yield_no_creep():
@@ -686,19 +371,19 @@ def test_write_constant_hill_yield_no_creep():
             name="SFRP",
             models=[
                 HillYieldCriterion(
-                    yield_stress_ratio_x=[1.2],
-                    yield_stress_ratio_xy=[0.12],
-                    yield_stress_ratio_xz=[0.23],
-                    yield_stress_ratio_y=[0.8],
-                    yield_stress_ratio_yz=[0.23],
-                    yield_stress_ratio_z=[0.5],
+                    yield_stress_ratio_x=Quantity(value=[1.2], units=""),
+                    yield_stress_ratio_xy=Quantity(value=[0.12], units=""),
+                    yield_stress_ratio_xz=Quantity(value=[0.23], units=""),
+                    yield_stress_ratio_y=Quantity(value=[0.8], units=""),
+                    yield_stress_ratio_yz=Quantity(value=[0.23], units=""),
+                    yield_stress_ratio_z=Quantity(value=[0.5], units=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
-                            values=[7.88860905221012e-31],
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
                             default_value=22.0,
-                            unit="C",
+                            field_variable="Temperature",
+                            field_units="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -716,8 +401,12 @@ def test_write_constant_hill_yield_no_creep():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == HILL_YIELD
-    assert metadata_string == HILL_YIELD_METADATA
+    with open(HILL_YIELD, "r") as file:
+        data = file.read()
+        assert data == material_string
+    with open(HILL_YIELD_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_variable_hill_yield_no_creep():
@@ -726,19 +415,19 @@ def test_write_variable_hill_yield_no_creep():
             name="SFRP Temp Dependent",
             models=[
                 HillYieldCriterion(
-                    yield_stress_ratio_x=[1.2, 1.2, 1.4],
-                    yield_stress_ratio_xy=[0.12, 0.12, 0.12],
-                    yield_stress_ratio_xz=[0.23, 0.23, 0.23],
-                    yield_stress_ratio_y=[0.8, 0.8, 0.7],
-                    yield_stress_ratio_yz=[0.23, 0.23, 0.23],
-                    yield_stress_ratio_z=[0.5, 0.5, 0.4],
+                    yield_stress_ratio_x=Quantity(value=[1.2, 1.2, 1.4], units=""),
+                    yield_stress_ratio_xy=Quantity(value=[0.12, 0.12, 0.12], units=""),
+                    yield_stress_ratio_xz=Quantity(value=[0.23, 0.23, 0.23], units=""),
+                    yield_stress_ratio_y=Quantity(value=[0.8, 0.8, 0.7], units=""),
+                    yield_stress_ratio_yz=Quantity(value=[0.23, 0.23, 0.23], units=""),
+                    yield_stress_ratio_z=Quantity(value=[0.5, 0.5, 0.4], units=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
-                            values=[34.0, 78.0, 245.0],
+                            values=Quantity(value=[34.0, 78.0, 245.0], units="C"),
                             default_value=22.0,
-                            unit="C",
+                            field_variable="Temperature",
+                            field_units="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -752,12 +441,15 @@ def test_write_variable_hill_yield_no_creep():
             ],
         )
     ]
-
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == HILL_YIELD_VARIABLE
-    assert metadata_string == HILL_YIELD_METADATA
+    with open(HILL_YIELD_VARIABLE, "r") as file:
+        data = file.read()
+        assert data == material_string
+    with open(HILL_YIELD_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_constant_hill_yield_creep():
@@ -766,25 +458,25 @@ def test_write_constant_hill_yield_creep():
             name="SFRP",
             models=[
                 HillYieldCriterion(
-                    yield_stress_ratio_x_for_plasticity=[1.0],
-                    yield_stress_ratio_y_for_plasticity=[1.0],
-                    yield_stress_ratio_z_for_plasticity=[1.0],
-                    yield_stress_ratio_xy_for_plasticity=[1.0],
-                    yield_stress_ratio_xz_for_plasticity=[1.0],
-                    yield_stress_ratio_yz_for_plasticity=[1.0],
-                    yield_stress_ratio_x_for_creep=[2.0],
-                    yield_stress_ratio_y_for_creep=[2.0],
-                    yield_stress_ratio_z_for_creep=[2.0],
-                    yield_stress_ratio_xy_for_creep=[2.0],
-                    yield_stress_ratio_xz_for_creep=[2.0],
-                    yield_stress_ratio_yz_for_creep=[2.0],
+                    yield_stress_ratio_x_for_plasticity=Quantity(value=[1.0], units=""),
+                    yield_stress_ratio_y_for_plasticity=Quantity(value=[1.0], units=""),
+                    yield_stress_ratio_z_for_plasticity=Quantity(value=[1.0], units=""),
+                    yield_stress_ratio_xy_for_plasticity=Quantity(value=[1.0], units=""),
+                    yield_stress_ratio_xz_for_plasticity=Quantity(value=[1.0], units=""),
+                    yield_stress_ratio_yz_for_plasticity=Quantity(value=[1.0], units=""),
+                    yield_stress_ratio_x_for_creep=Quantity(value=[2.0], units=""),
+                    yield_stress_ratio_y_for_creep=Quantity(value=[2.0], units=""),
+                    yield_stress_ratio_z_for_creep=Quantity(value=[2.0], units=""),
+                    yield_stress_ratio_xy_for_creep=Quantity(value=[2.0], units=""),
+                    yield_stress_ratio_xz_for_creep=Quantity(value=[2.0], units=""),
+                    yield_stress_ratio_yz_for_creep=Quantity(value=[2.0], units=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
-                            values=[7.88860905221012e-31],
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
                             default_value=22.0,
-                            unit="C",
+                            field_variable="Temperature",
+                            field_units="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -807,8 +499,12 @@ def test_write_constant_hill_yield_creep():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == HILL_YIELD_CREEP
-    assert metadata_string == HILL_YIELD_CREEP_METADATA
+    with open(HILL_YIELD_CREEP, "r") as file:
+        data = file.read()
+        assert data == material_string
+    with open(HILL_YIELD_CREEP_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_kinematic_hardening():
@@ -817,11 +513,14 @@ def test_write_kinematic_hardening():
             name="SFRP",
             models=[
                 KinematicHardening(
-                    yield_stress=[12.0],
-                    material_constant_gamma_1=[1.0],
-                    material_constant_c_1=[45.0],
+                    yield_stress=Quantity(value=[12.0], units="Pa"),
+                    material_constant_gamma_1=Quantity(value=[1.0], units=""),
+                    material_constant_c_1=Quantity(value=[45.0], units="Pa"),
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=[7.88860905221012e-31]),
+                        IndependentParameter(
+                            name="Temperature",
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
+                        ),
                     ],
                 ),
             ],
@@ -831,8 +530,12 @@ def test_write_kinematic_hardening():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == KINEMATIC_HARDENING
-    assert metadata_string == KINEMATIC_HARDENING_METADATA
+    with open(KINEMATIC_HARDENING, "r") as file:
+        data = file.read()
+        assert data == material_string
+    with open(KINEMATIC_HARDENING_METADATA, "r", encoding="utf-8") as file:
+        data = file.read()
+        assert data == metadata_string
 
 
 def test_write_strain_hardening():
@@ -841,12 +544,15 @@ def test_write_strain_hardening():
             name="SFRP",
             models=[
                 StrainHardening(
-                    creep_constant_1=[1.0],
-                    creep_constant_2=[2.0],
-                    creep_constant_3=[3.0],
-                    creep_constant_4=[4.0],
+                    creep_constant_1=Quantity(value=[1.0], units=""),
+                    creep_constant_2=Quantity(value=[2.0], units=""),
+                    creep_constant_3=Quantity(value=[3.0], units=""),
+                    creep_constant_4=Quantity(value=[4.0], units=""),
                     independent_parameters=[
-                        IndependentParameter(name="Temperature", values=[7.88860905221012e-31]),
+                        IndependentParameter(
+                            name="Temperature",
+                            values=Quantity(value=[7.88860905221012e-31], units="C"),
+                        ),
                     ],
                     model_qualifiers=[
                         ModelQualifier(
@@ -862,5 +568,9 @@ def test_write_strain_hardening():
     writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    assert material_string == STRAIN_HARDENING
-    assert metadata_string == STRAIN_HARDENING_METADATA
+    with open(STRAIN_HARDENING, "r") as file:
+        data = file.read()
+        assert data == material_string
+    with open(STRAIN_HARDENING_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string

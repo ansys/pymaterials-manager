@@ -22,37 +22,33 @@
 
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 
 
 class TsaiWuConstants(MaterialModel):
     """Represents a Tsai-wu constants material model."""
 
     name: Literal["Tsai-Wu Constants"] = Field(default="Tsai-Wu Constants", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
-    )
-    coupling_coefficient_xy: list[float] = Field(
-        default=[-1],
-        title="Coupling Coefficient XY",
+    coupling_coefficient_xy: Quantity | None = ParameterField(
+        default=Quantity(value=-1.0, units=""),
         description="The coupling coefficient in the XY plane.",
+        matml_name="Coupling Coefficient XY",
     )
-    coupling_coefficient_xz: list[float] = Field(
-        default=[-1],
-        title="Coupling Coefficient XZ",
+    coupling_coefficient_xz: Quantity | None = ParameterField(
+        default=Quantity(value=-1.0, units=""),
         description="The coupling coefficient in the XZ plane.",
+        matml_name="Coupling Coefficient XZ",
     )
-    coupling_coefficient_yz: list[float] = Field(
-        default=[-1],
-        title="Coupling Coefficient YZ",
+    coupling_coefficient_yz: Quantity | None = ParameterField(
+        default=Quantity(value=-1.0, units=""),
         description="The coupling coefficient in the YZ plane.",
+        matml_name="Coupling Coefficient YZ",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
         pass
 

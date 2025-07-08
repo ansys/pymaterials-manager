@@ -24,20 +24,15 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class FiberAngle(MaterialModel):
     """Represents a fiber angle material model."""
 
     name: Literal["Fiber Angle"] = Field(default="Fiber Angle", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 

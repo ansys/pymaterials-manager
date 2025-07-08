@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>material with speed of sound</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="BETA">Mechanical.ModalAcoustics</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>100.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
+        <Qualifier name="Field Units">C</Qualifier>
+        <Qualifier name="Upper Limit">Program Controlled</Qualifier>
+        <Qualifier name="Lower Limit">Program Controlled</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

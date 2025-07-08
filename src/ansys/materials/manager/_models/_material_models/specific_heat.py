@@ -20,30 +20,45 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Any, Dict, Literal
 
-from pydantic import Field
+from ansys.units import Quantity
+from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import (
+    MaterialModel,
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 
 
 class SpecificHeat(MaterialModel):
     """Represents a specific heat material model."""
 
     name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
-    )
 
-    specific_heat: list[float] = Field(
-        default=[],
-        title="Specific Heat",
+    specific_heat: Quantity | None = ParameterField(
+        default=None,
         description="The specific heat of the material.",
+        matml_name="Specific Heat",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        expected_qualifiers = {
+            "Definition": [
+                "Constant Pressure",
+                QualifierType.RANGE,
+                ["Constant Pressure", "Constant Volume"],
+            ]
+        }
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
+        return values
+
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
         pass
 

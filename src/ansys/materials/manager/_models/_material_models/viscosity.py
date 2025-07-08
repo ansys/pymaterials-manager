@@ -20,37 +20,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Any, Dict, Literal
 
-from pydantic import Field
+from ansys.units import Quantity
+from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import (
+    MaterialModel,
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 
 
 class Viscosity(MaterialModel):
     """Represents a Viscosity material model."""
 
     name: Literal["Viscosity"] = Field(default="Viscosity", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MATML], repr=False, frozen=True
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[
-            ModelQualifier(name="BETA", value="Mechanical.ModalAcoustics"),
-        ],
-        title="Model Qualifiers",
-        description="Qualifiers that describe the model.",
-    )
-    viscosity: list[float] = Field(
-        default=[],
-        title="Viscosity",
+    viscosity: Quantity | None = ParameterField(
+        default=None,
         description="The viscosity of the material.",
+        matml_name="Viscosity",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    @model_validator(mode="before")
+    def _initialize_qualifiers(cls, values) -> Dict:
+        expected_qualifiers = {"BETA": ["Mechanical.ModalAcoustics", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
+        return values
+
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
         pass
 

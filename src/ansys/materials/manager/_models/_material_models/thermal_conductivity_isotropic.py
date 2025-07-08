@@ -22,12 +22,15 @@
 
 from typing import Any, Dict, Literal
 
+from ansys.units import Quantity
 from pydantic import Field, model_validator
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import (
+    MaterialModel,
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+)
 
 
 class ThermalConductivityIsotropic(MaterialModel):
@@ -36,38 +39,21 @@ class ThermalConductivityIsotropic(MaterialModel):
     name: Literal["Thermal Conductivity"] = Field(
         default="Thermal Conductivity", repr=False, frozen=True
     )
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
-    thermal_conductivity: list[float] = Field(
-        default=[],
-        title="Thermal Conductivity",
+    thermal_conductivity: Quantity | None = ParameterField(
+        default=None,
         description="The thermal conductivity of the material.",
-    )
-    model_qualifiers: list[ModelQualifier] = Field(
-        default=[ModelQualifier(name="Behavior", value="Isotropic")],
-        title="Model Qualifiers",
-        description="Model qualifiers for the isotropic thermal conductivity model.",
+        matml_name="Thermal Conductivity",
     )
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        if "model_qualifiers" in values:
-            found_behavior = False
-            for model_qualifier in values["model_qualifiers"]:
-                if model_qualifier.name == "Behavior" and model_qualifier.value != "Isotropic":
-                    raise ValueError(
-                        "Behavior must be 'Isotropic' for ThermalConductivityIsotropic model."
-                    )
-                if model_qualifier.name == "Behavior":
-                    found_behavior = True
-            if not found_behavior:
-                model_qualifiers = values.get("model_qualifiers", [])
-                isotropic_qualifier = [ModelQualifier(name="Behavior", value="Isotropic")]
-                values["model_qualifiers"] = isotropic_qualifier + model_qualifiers
+        expected_qualifiers = {"Behavior": ["Isotropic", QualifierType.STRICT]}
+        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
+            values, expected_qualifiers
+        )
         return values
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 

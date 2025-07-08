@@ -22,42 +22,38 @@
 
 from typing import Any, Literal
 
+from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common._packages import SupportedPackage
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models._common import MaterialModel, ParameterField
 
 
 class StrainHardening(MaterialModel):
     """Represents a strain hardening material model."""
 
     name: Literal["Strain Hardening"] = Field(default="Strain Hardening", repr=False, frozen=True)
-    supported_packages: SupportedPackage = Field(
-        default=[SupportedPackage.MAPDL], repr=False, frozen=True
-    )
-    creep_constant_1: list[float] = Field(
-        default=[],
-        title="Creep Constant 1",
+    creep_constant_1: Quantity | None = ParameterField(
+        default=None,
         description="The first creep constant for the strain hardening model.",
+        matml_name="Creep Constant 1",
     )
-    creep_constant_2: list[float] = Field(
-        default=[],
-        title="Creep Constant 2",
+    creep_constant_2: Quantity | None = ParameterField(
+        default=None,
         description="The second creep constant for the strain hardening model.",
+        matml_name="Creep Constant 2",
     )
-    creep_constant_3: list[float] | None = Field(
+    creep_constant_3: Quantity | None = ParameterField(
         default=None,
-        title="Creep Constant 3",
         description="The third creep constant for the strain hardening model.",
+        matml_name="Creep Constant 3",
     )
-    creep_constant_4: list[float] | None = Field(
+    creep_constant_4: Quantity | None = ParameterField(
         default=None,
-        title="Creep Constant 4",
         description="The fourth creep constant for the strain hardening model.",
+        matml_name="Creep Constant 4",
     )
 
-    def write_model(self, material: Material, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write this model to the specified session."""
         pass
 

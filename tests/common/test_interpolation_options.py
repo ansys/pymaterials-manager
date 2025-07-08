@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
+from ansys.materials.manager._models._common import InterpolationOptions
 
 
 def test_interpolation_options():

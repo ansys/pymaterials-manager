@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>material with isotropic thermal expansion coefficients</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Definition">Secant</Qualifier>
+      <Qualifier name="Behavior">Isotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>0.1</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+        <Qualifier name="Field Variable">Temperature</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+    <PropertyData property="pr1">
+      <Data format="string">-</Data>
+      <Qualifier name="Definition">Secant</Qualifier>
+      <Qualifier name="Behavior">Isotropic</Qualifier>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>Coefficient of Thermal Expansion</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>25.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Hill Yield Criterion</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Options Variable</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Yield stress ratio in X direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Yield stress ratio in Y direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Unitless/>
+    <Name>Yield stress ratio in Z direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa4">
+    <Unitless/>
+    <Name>Yield stress ratio in XY direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa5">
+    <Unitless/>
+    <Name>Yield stress ratio in XZ direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa6">
+    <Unitless/>
+    <Name>Yield stress ratio in YZ direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa7">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

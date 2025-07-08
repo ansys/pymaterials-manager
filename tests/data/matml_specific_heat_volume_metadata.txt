@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Specific Heat</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Units>
+      <Unit>
+        <Name>J</Name>
+      </Unit>
+      <Unit power="-1">
+        <Name>kg</Name>
+      </Unit>
+      <Unit power="-1">
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Specific Heat</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

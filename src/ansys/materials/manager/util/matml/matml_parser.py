@@ -29,6 +29,8 @@ import uuid
 import warnings
 import xml.etree.ElementTree as ET
 
+from ansys.materials.manager.util.matml.utils import xml_to_unit
+
 _PATH_TYPE = Union[str, os.PathLike]
 
 MATERIALS_ELEMENT_KEY = "Materials"
@@ -39,12 +41,11 @@ UNITLESS_KEY = "Unitless"
 BEHAVIOR_KEY = "Behavior"
 WBTRANSFER_KEY = "ANSYSWBTransferData"
 MAT_TRANSFER_ID = "DataTransferID"
-
-
+QUALIFIER_KEY = "Qualifier"
+PROPERTY_DATA_KEY = "PropertyData"
+PARAMETER_VALUE_KEY = "ParameterValue"
 # Todos:
-#   variable material properties with interpolation settings
 #   version handling
-#   support of units (exponents)
 
 
 @dataclass
@@ -56,6 +57,8 @@ class Parameter:
     name: str
     data: Any
     qualifiers: Dict
+    unit: str
+    unit_name: str
 
 
 @dataclass
@@ -65,6 +68,8 @@ class PropertySet:
     name: str
     parameters: Dict
     qualifiers: Dict
+    unit: str
+    unit_name: str
 
 
 class MatmlReader:
@@ -122,34 +127,19 @@ class MatmlReader:
 
         data = {}
         for item in metadata_node.iter("ParameterDetails"):
-            id = item.attrib["id"]
-            name = item.find("Name").text
-            if item.find(UNITLESS_KEY) is not None:
-                unit = item.find(UNITLESS_KEY).tag
-            elif item.find("Units") is not None:
-                if "name" in item.find("Units").attrib:
-                    unit = item.find("Units").attrib["name"]
-                else:
-                    unit = ""
-            else:
-                raise RuntimeError(f"unhandled case {id}")
-
-            data[id] = {"Name": name, "Units": unit}
+            id, entry = xml_to_unit(item)
+            data[id] = entry
 
         for item in metadata_node.iter("PropertyDetails"):
-            id = item.attrib["id"]
-            name = item.find("Name").text
-            unit = UNITLESS_KEY
-
-            data[id] = {"Name": name, "Units": unit}
-
+            id, entry = xml_to_unit(item)
+            data[id] = entry
         return data
 
     @staticmethod
     def _read_qualifiers(property_node: Any) -> Dict:
         # returns the qualifiers such as behavior, interpolation options etc.
         qualifiers = {}
-        for item in property_node.findall("Qualifier"):
+        for item in property_node.findall(QUALIFIER_KEY):
             qualifiers[item.attrib["name"]] = item.text
         return qualifiers
 
@@ -158,27 +148,39 @@ class MatmlReader:
         prop_dict = {}
 
         # iterate over the property sets
-        for prop_data in bulkdata.findall("PropertyData"):
+        for prop_data in bulkdata.findall(PROPERTY_DATA_KEY):
             property_key = prop_data.attrib["property"]
             property_name = metadata_dict[property_key]["Name"]
+            property_unit = metadata_dict[property_key].get("Units", "")
+            property_unit_name = metadata_dict[property_key].get("UnitsName", "")
             prop_set_qualifiers = MatmlReader._read_qualifiers(prop_data)
 
             parameters = {}
 
             # iterate over each parameter
-            for parameter in prop_data.findall("ParameterValue"):
+            for parameter in prop_data.findall(PARAMETER_VALUE_KEY):
                 parameter_key = parameter.attrib["parameter"]
                 parameter_name = metadata_dict[parameter_key]["Name"]
                 parameter_format = parameter.attrib["format"]
                 param_qualifiers = MatmlReader._read_qualifiers(parameter)
+                param_units = metadata_dict[parameter_key].get("Units", "")
+                param_units_name = metadata_dict[parameter_key].get("UnitsName", "")
                 data = MatmlReader._convert(parameter.find("Data").text, parameter_format)
 
                 parameters[parameter_name] = Parameter(
-                    name=parameter_name, data=data, qualifiers=param_qualifiers
+                    name=parameter_name,
+                    data=data,
+                    qualifiers=param_qualifiers,
+                    unit=param_units,
+                    unit_name=param_units_name,
                 )
 
             prop_dict[property_name] = PropertySet(
-                name=property_name, qualifiers=prop_set_qualifiers, parameters=parameters
+                name=property_name,
+                qualifiers=prop_set_qualifiers,
+                parameters=parameters,
+                unit=property_unit,
+                unit_name=property_unit_name,
             )
 
         return prop_dict
@@ -187,7 +189,7 @@ class MatmlReader:
     def _read_materials(matml_doc_node: Any, metadata_dict: Dict) -> Dict:
         materials = {}
         for material in matml_doc_node.findall("Material"):
-            bulkdata = material.find("BulkDetails")
+            bulkdata = material.find(BULKDATA_KEY)
             name = bulkdata.find("Name").text
             data = MatmlReader._read_property_sets_and_parameters(bulkdata, metadata_dict)
             materials[name] = data
