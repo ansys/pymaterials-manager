@@ -88,13 +88,13 @@ class ElasticityIsotropic(MaterialModel):
                 return material_string
             else:
                 material_string = write_temperature_table_values(
-                    label="EXX",
+                    labels=["EX"],
                     dependent_parameters=[self.youngs_modulus],
                     material_id=material_id,
                     temperature_parameter=self.independent_parameters[0],
                 )
-                material_string = write_temperature_table_values(
-                    label="PRXY",
+                material_string += write_temperature_table_values(
+                    labels=["PRXY"],
                     dependent_parameters=[self.poissons_ratio],
                     material_id=material_id,
                     temperature_parameter=self.independent_parameters[0],

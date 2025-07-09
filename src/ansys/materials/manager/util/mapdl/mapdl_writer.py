@@ -92,6 +92,26 @@ def write_constant_property(
     )
 
 
+def write_constant_properties(
+    labels: list[str],
+    properties: list[Quantity],
+    material_id,
+    c1: float | None = None,
+    c2: float | None = None,
+    c3: float | None = None,
+    c4: float | None = None,
+):
+    """Write constant properties."""
+    property_str = ""
+    for i in range(len(labels)):
+        label = labels[i]
+        property = properties[i]
+        property_str += write_constant_property(
+            label=label, property=property, material_id=material_id, c1=c1, c2=c2, c3=c3, c4=c4
+        )
+    return property_str
+
+
 def write_interpolation_options(
     interpolation_options: InterpolationOptions, independent_parameters: list[IndependentParameter]
 ) -> str:
@@ -132,7 +152,7 @@ def write_interpolation_options(
 
 
 def write_temperature_table_values(
-    label: str,
+    labels: list[str],
     dependent_parameters: list[Quantity],
     material_id: int,
     temperature_parameter: IndependentParameter,
@@ -145,12 +165,13 @@ def write_temperature_table_values(
         t1, t2, t3, t4, t5, t6 = _get_table_constants(i, temp_vals)
         table_str += MP_TEMP.format(sloc=i * 6 + 1, t1=t1, t2=t2, t3=t3, t4=t4, t5=t5, t6=t6)
     for i in range(n_loops):
+        j = 0
         for dependent_parameter in dependent_parameters:
             dep_vals = dependent_parameter.value
             dep_unit = dependent_parameter.unit
             c1, c2, c3, c4, c5, c6 = _get_table_constants(i, dep_vals)
             table_str += MP_DATA.format(
-                lab=label,
+                lab=labels[j],
                 matid=material_id,
                 sloc=i * 6 + 1,
                 c1=c1,
@@ -161,12 +182,13 @@ def write_temperature_table_values(
                 c6=c6,
                 unit=dep_unit,
             )
+            j += 1
     return table_str
 
 
 def write_table_values(
     label: str,
-    dependent_parameter: list[Quantity],
+    dependent_parameters: list[Quantity],
     material_id: int,
     independent_parameters: list[IndependentParameter],
     tb_opt: str | None = None,
@@ -196,7 +218,7 @@ def write_table_values(
         independent_values_units.append(independent_parameter.values.unit)
     table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
 
-    dependent_values = list(zip(*dependent_parameter))
+    dependent_values = list(zip(*dependent_parameters))
 
     for idx_val, ind_vals in enumerate(list(zip(*independent_values))):
         idx = 0

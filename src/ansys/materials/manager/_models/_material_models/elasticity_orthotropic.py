@@ -34,9 +34,10 @@ from ansys.materials.manager._models._common import (
 )
 from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager.util.mapdl.mapdl_writer import (
-    write_constant_property,
+    write_constant_properties,
     write_interpolation_options,
     write_table_values,
+    write_temperature_table_values,
 )
 
 
@@ -108,48 +109,47 @@ class ElasticityOrthotropic(MaterialModel):
         return values
 
     def _write_mapdl(self, material_id: int) -> str:
+        dependent_parameters = [
+            self.youngs_modulus_x,
+            self.youngs_modulus_y,
+            self.youngs_modulus_z,
+            self.shear_modulus_xy,
+            self.shear_modulus_yz,
+            self.shear_modulus_xz,
+            self.poissons_ratio_xy,
+            self.poissons_ratio_yz,
+            self.poissons_ratio_xz,
+        ]
         if self.independent_parameters is None:
-            material_string = write_constant_property(
-                label="EX", property=self.youngs_modulus_x, material_id=material_id
+            material_string = write_constant_properties(
+                labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                properties=dependent_parameters,
+                material_id=material_id,
             )
-            material_string += write_constant_property(
-                label="EY", property=self.youngs_modulus_y, material_id=material_id
-            )
-            material_string += write_constant_property(
-                label="EZ", property=self.youngs_modulus_z, material_id=material_id
-            )
-            material_string += write_constant_property(
-                label="GXY", property=self.shear_modulus_xy, material_id=material_id
-            )
-            material_string += write_constant_property(
-                label="GXZ", property=self.shear_modulus_xz, material_id=material_id
-            )
-            material_string += write_constant_property(
-                label="GYZ", property=self.shear_modulus_yz, material_id=material_id
-            )
-            material_string += write_constant_property(
-                label="PRXY", property=self.poissons_ratio_xy, material_id=material_id
-            )
-            material_string += write_constant_property(
-                label="PRXZ", property=self.poissons_ratio_xz, material_id=material_id
-            )
-            material_string += write_constant_property(
-                label="PRYZ", property=self.poissons_ratio_yz, material_id=material_id
-            )
+            return material_string
+        elif (
+            len(self.independent_parameters) == 1
+            and self.independent_parameters[0].name == "Temperature"
+        ):
+            if len(self.independent_parameters[0].values.value) == 1:
+                material_string = write_constant_properties(
+                    labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                    properties=dependent_parameters,
+                    material_id=material_id,
+                )
+                return material_string
+            else:
+                material_string = write_temperature_table_values(
+                    labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                    dependent_parameters=dependent_parameters,
+                    material_id=material_id,
+                    temperature_parameter=self.independent_parameters[0],
+                )
+
         else:
             parameters_str, table_str = write_table_values(
                 label="ELASTIC",
-                dependent_parameter=[
-                    self.youngs_modulus_x,
-                    self.youngs_modulus_y,
-                    self.youngs_modulus_z,
-                    self.shear_modulus_xy,
-                    self.shear_modulus_yz,
-                    self.shear_modulus_xz,
-                    self.poissons_ratio_xy,
-                    self.poissons_ratio_yz,
-                    self.poissons_ratio_xz,
-                ],
+                dependent_parameter=dependent_parameters,
                 material_id=material_id,
                 independent_parameters=self.independent_parameters,
                 tb_opt="OELM",

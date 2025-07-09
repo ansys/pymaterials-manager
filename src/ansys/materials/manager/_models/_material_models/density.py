@@ -68,7 +68,7 @@ class Density(MaterialModel):
                 return material_string
             else:
                 material_string = write_temperature_table_values(
-                    label="DENS",
+                    labels=["DENS"],
                     dependent_parameters=[self.density],
                     material_id=material_id,
                     temperature_parameter=self.independent_parameters[0],
