@@ -39,6 +39,7 @@ from ansys.materials.manager.util.mapdl import (
     write_interpolation_options,
     write_table_values,
 )
+from ansys.materials.manager.util.mapdl.mapdl_writer import write_temperature_table_values
 
 
 class ElasticityIsotropic(MaterialModel):
@@ -72,6 +73,33 @@ class ElasticityIsotropic(MaterialModel):
             material_string += write_constant_property(
                 label="PRXY", property=self.youngs_modulus, material_id=material_id
             )
+            return material_string
+        elif (
+            len(self.independent_parameters) == 1
+            and self.independent_parameters[0].name == "Temperature"
+        ):
+            if len(self.independent_parameters[0].values.value) == 1:
+                material_string = write_constant_property(
+                    label="EX", property=self.youngs_modulus, material_id=material_id
+                )
+                material_string += write_constant_property(
+                    label="PRXY", property=self.youngs_modulus, material_id=material_id
+                )
+                return material_string
+            else:
+                material_string = write_temperature_table_values(
+                    label="EXX",
+                    dependent_parameters=[self.youngs_modulus],
+                    material_id=material_id,
+                    temperature_parameter=self.independent_parameters[0],
+                )
+                material_string = write_temperature_table_values(
+                    label="PRXY",
+                    dependent_parameters=[self.poissons_ratio],
+                    material_id=material_id,
+                    temperature_parameter=self.independent_parameters[0],
+                )
+                return material_string
         else:
             parameters_str, table_str = write_table_values(
                 label="ELASTIC",
@@ -80,13 +108,14 @@ class ElasticityIsotropic(MaterialModel):
                 independent_parameters=self.independent_parameters,
                 tb_opt="ISOT",
             )
-            interpolation_string = ""
+            material_string = parameters_str + "\n" + table_str
+
             if self.interpolation_options:
                 interpolation_string += write_interpolation_options(
                     interpolation_options=self.interpolation_options,
                     independent_parameters=self.independent_parameters,
                 )
-            material_string = parameters_str + "\n" + table_str + "\n" + interpolation_string
+                material_string += "\n" + interpolation_string
         return material_string
 
     def write_model(self, material_id: int, pyansys_session: Any) -> str:

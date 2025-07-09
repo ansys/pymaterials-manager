@@ -61,7 +61,6 @@ class Density(MaterialModel):
             len(self.independent_parameters) == 1
             and self.independent_parameters[0].name == "Temperature"
         ):
-            parameters_str = ""
             if len(self.independent_parameters[0].values.value) == 1:
                 material_string = write_constant_property(
                     label="DENS", property=self.density, material_id=material_id
