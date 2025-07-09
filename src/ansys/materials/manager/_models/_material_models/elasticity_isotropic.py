@@ -34,7 +34,11 @@ from ansys.materials.manager._models._common import (
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common._base import _MapdlCore
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
+from ansys.materials.manager.util.mapdl import (
+    write_constant_property,
+    write_interpolation_options,
+    write_table_values,
+)
 
 
 class ElasticityIsotropic(MaterialModel):
@@ -60,64 +64,36 @@ class ElasticityIsotropic(MaterialModel):
         )
         return values
 
-    def _write_mapdl(self, mapdl: _MapdlCore, material_id) -> None:
-        if (
-            not self.independent_parameters
-            and len(self.youngs_modulus) == 1
-            and len(self.poissons_ratio) == 1
-        ):
-            mapdl.mp("EX", material_id, self.youngs_modulus[0])
-            mapdl.mp("PRXY", material_id, self.poissons_ratio[0])
-        ### add variable cases
-
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
-        """
-        Write this model to the specified session.
-
-        Parameters
-        ----------
-        material : Material
-            The material to which this model belongs.
-        pyansys_session : Any
-            The session to write the model to.
-        """
-        is_ok, issues = self.validate_model()
-        if not is_ok:
-            raise ModelValidationException("\n".join(issues))
-
-        if isinstance(pyansys_session, _MapdlCore):
-            self._write_mapdl(pyansys_session, material_id)
+    def _write_mapdl(self, material_id: int) -> str:
+        if self.independent_parameters is None:
+            material_string = write_constant_property(
+                label="EX", property=self.youngs_modulus, material_id=material_id
+            )
+            material_string += write_constant_property(
+                label="PRXY", property=self.youngs_modulus, material_id=material_id
+            )
         else:
-            raise TypeError(
-                "This model is only supported by MAPDL. Ensure that you have the correct"
-                "type of the PyAnsys session."
+            parameters_str, table_str = write_table_values(
+                label="ELASTIC",
+                dependent_parameter=[self.youngs_modulus, self.poissons_ratio],
+                material_id=material_id,
+                independent_parameters=self.independent_parameters,
+                tb_opt="ISOT",
             )
+            interpolation_string = ""
+            if self.interpolation_options:
+                interpolation_string += write_interpolation_options(
+                    interpolation_options=self.interpolation_options,
+                    independent_parameters=self.independent_parameters,
+                )
+            material_string = parameters_str + "\n" + table_str + "\n" + interpolation_string
+        return material_string
 
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """
-        Perform pre-flight validation of the model setup.
-
-        Returns
-        -------
-        Tuple
-            First element is Boolean. ``True`` if validation is successful. If ``False``,
-            the second element contains a list of strings with more information.
-        """
-        failures = []
-        is_ok = True
-
-        if self.name is None or self.name == "":
-            failures.append("Invalid materisl model name")
-            is_ok = False
-        if len(self.youngs_modulus) < 1:
-            failures.append("Young's modulus value is not defined.")
-            is_ok = False
-        if len(self.poissons_ratio) < 1:
-            failures.append("Poisson's ratio value is not defined.")
-            is_ok = False
-        if len(self.youngs_modulus) != len(self.poissons_ratio):
-            failures.append(
-                "The number of Young's modulus values must match the number of Poisson's ratio values."  # noqa: E501
-            )
-            is_ok = False
-        return is_ok, failures
+    def write_model(self, material_id: int, pyansys_session: Any) -> str:
+        """Write this model to the specified session."""
+        self.validate_model()
+        if isinstance(pyansys_session, _MapdlCore):
+            material_string = self._write_mapdl(material_id)
+        else:
+            raise Exception("The session is not supported.")
+        return material_string

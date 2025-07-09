@@ -37,14 +37,22 @@ USER_DEFINED_TB_FIELDS = """{name} = 'UF{idx:02d}' ! {unit}
 CONSTANT_MP_PROPERTY = """MP,{lab},{matid},{unit},{c0},{c1},{c2},{c3},{c4} ! {unit}
 """
 
+MP_DATA = """MPDATA,{lab},{matid},{sloc},{c1},{c2},{c3},{c4},{c5},{c6} ! {unit}
+"""
+
+MP_TEMP = """MPTEMP,{sloc},{t1},{t2},{t3},{t4},{t5},{t6}
+"""
+
 TB = """TB,{lab},{matid},,,{tbopt}
 """
 
 TB_FIELD = """TBFIELD,{type},{value}, ! {unit}
 """
 
-TB_DATA = """TBDATA,{stloc},{c1},{c2},{c3},{c4},{c5},{c6} ! {unit}
+TB_DATA = """TBDATA,{stloc},{c1},{c2},{c3},{c4},{c5},{c6}
 """
+
+TBPT = """TBPT,{oper}, {x}, {y}"""
 
 TBIN_SCALE = """TBIN,SCALE,{par1},{par2},{par3},{par4}
 """

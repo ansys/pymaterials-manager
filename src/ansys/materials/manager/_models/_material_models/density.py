@@ -32,6 +32,7 @@ from ansys.materials.manager.util.mapdl import (
     write_interpolation_options,
     write_table_values,
 )
+from ansys.materials.manager.util.mapdl.mapdl_writer import write_temperature_table_values
 
 
 class Density(MaterialModel):
@@ -50,15 +51,26 @@ class Density(MaterialModel):
         frozen=True,
     )
 
-    def _write_mapdl(self, material_id):
+    def _write_mapdl(self, material_id: int) -> str:
         if self.independent_parameters is None:
             material_string = write_constant_property(
                 label="DENS", property=self.density, material_id=material_id
             )
+        elif (
+            len(self.independent_parameters) == 1
+            and self.independent_parameters[0].name == "Temperature"
+        ):
+            parameters_str = ""
+            table_str = write_temperature_table_values(
+                label="DENS",
+                dependent_parameter=[self.density],
+                material_id=material_id,
+                temperature_parameter=self.independent_parameters[0],
+            )
         else:
             parameters_str, table_str = write_table_values(
                 label="DENS",
-                dependent_parameter=self.density,
+                dependent_parameter=[self.density],
                 material_id=material_id,
                 independent_parameters=self.independent_parameters,
             )
