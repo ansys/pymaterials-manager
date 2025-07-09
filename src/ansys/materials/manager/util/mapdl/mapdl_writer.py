@@ -47,7 +47,7 @@ from .mapdl_snippets_strings import (
 
 
 def _get_table_constants(idx, values):
-    val1 = values[idx * 6 + 1]
+    val1 = values[idx * 6]
     val2 = ""
     val3 = ""
     val4 = ""
@@ -76,7 +76,7 @@ def write_constant_property(
     c4: float | None = None,
 ):
     """Write constant property."""
-    if isinstance(property.value, int, float):
+    if isinstance(property.value, (int, float)):
         c0 = str(property.value)
     else:
         c0 = str(property.value).strip("[]")
@@ -135,12 +135,12 @@ def write_temperature_table_values(
     label: str,
     dependent_parameters: list[Quantity],
     material_id: int,
-    temerature_parameter: IndependentParameter,
+    temperature_parameter: IndependentParameter,
 ) -> str:
     """Write temperature table."""
-    n_loops = math.ceil(len(temerature_parameter.values.value) / 6)
+    n_loops = math.ceil(len(temperature_parameter.values.value) / 6)
     table_str = ""
-    temp_vals = temerature_parameter.values.value.tolist()
+    temp_vals = temperature_parameter.values.value.tolist()
     for i in range(n_loops):
         t1, t2, t3, t4, t5, t6 = _get_table_constants(i, temp_vals)
         table_str += MP_TEMP.format(sloc=i * 6 + 1, t1=t1, t2=t2, t3=t3, t4=t4, t5=t5, t6=t6)
@@ -179,7 +179,7 @@ def write_table_values(
     independent_values_units = []
     for independent_parameter in independent_parameters:
         if independent_parameter.name in PREDIFINED_TB_FIELDS.keys():
-            parameters_str += PREDIFINED_TB_FIELDS[independent_parameter.name]
+            parameters_str += f"{independent_parameter.name} = '{PREDIFINED_TB_FIELDS[independent_parameter.name]}' ! {independent_parameter.name}"  # noqa_ E501
         else:
             parameters_str += USER_DEFINED_TB_FIELDS.format(
                 name=independent_parameter.name,
@@ -202,7 +202,11 @@ def write_table_values(
         idx = 0
         for ind_val in ind_vals:
             table_str += TB_FIELD.format(
-                type=independent_values_names[idx],
+                type=(
+                    PREDIFINED_TB_FIELDS[independent_values_names[idx]]
+                    if independent_values_names[idx] in PREDIFINED_TB_FIELDS.keys()
+                    else independent_values_names[idx]
+                ),
                 value=ind_val,
                 unit=(
                     independent_values_units[idx]
@@ -214,8 +218,11 @@ def write_table_values(
 
         dep_vals = dependent_values[idx_val]
         n_loops = math.ceil(len(dep_vals) / 6)
+        vals = []
+        for j in range(len(dep_vals)):
+            vals.append(dep_vals[j].value)
         for i in range(n_loops):
-            c1, c2, c3, c4, c5, c6 = _get_table_constants(i, dep_vals.value)
+            c1, c2, c3, c4, c5, c6 = _get_table_constants(i, vals)
             table_str += TB_DATA.format(
                 stloc=i * 6 + 1,
                 c1=c1,

@@ -23,8 +23,11 @@
 PREDIFINED_TB_FIELDS = {
     "Temperature": "Temperature = 'TEMP' ! Temperature\n",
 }
+PREDIFINED_TB_FIELDS = {
+    "Temperature": "TEMP",
+}
 
-INTERPOLATION_ALGORITHM_MAP = {"Linear Multivariate": "LMUL"}
+INTERPOLATION_ALGORITHM_MAP = {"Linear Multivariate": "CLMUL"}
 
 EXTRAPOLATION_TYPE_MAP = {
     "Projection to the Convex Hull": "PHULL",
@@ -34,7 +37,7 @@ EXTRAPOLATION_TYPE_MAP = {
 USER_DEFINED_TB_FIELDS = """{name} = 'UF{idx:02d}' ! {unit}
 """
 
-CONSTANT_MP_PROPERTY = """MP,{lab},{matid},{unit},{c0},{c1},{c2},{c3},{c4} ! {unit}
+CONSTANT_MP_PROPERTY = """MP,{lab},{matid},{c0},{c1},{c2},{c3},{c4} ! {unit}
 """
 
 MP_DATA = """MPDATA,{lab},{matid},{sloc},{c1},{c2},{c3},{c4},{c5},{c6} ! {unit}
