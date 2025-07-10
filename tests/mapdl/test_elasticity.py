@@ -28,6 +28,9 @@ from ansys.units import Quantity
 from ansys.materials.manager._models._common import IndependentParameter, InterpolationOptions
 from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager._models._material_models import ElasticityIsotropic
+from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+    ElasticityAnisotropic,
+)
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
@@ -50,6 +53,9 @@ ELASTICITY_ORTHOTROPIC_VARIABLE_TEMP_A11_A22 = os.path.join(
 )
 ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22 = os.path.join(
     DIR_PATH, "..", "data", "mapdl_elasticity_orthotropic_variable_a11_a22.cdb"
+)
+ELASTICITY_ANISOTROPIC_CONSTANT = os.path.join(
+    DIR_PATH, "..", "data", "mapdl_elasticity_anisotropic_constant.cdb"
 )
 
 
@@ -380,5 +386,67 @@ def test_elasticity_orthotropic_variable_a11_a22():
     mock_mapdl = MagicMock(spec=_MapdlCore)
     material_string = elasticity.write_model(material_id=1, pyansys_session=mock_mapdl)
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22, "r") as file:
+        data = file.read()
+        assert data == material_string
+
+
+def test_elasticity_anisotropic_constant():
+    elasticity = ElasticityAnisotropic(
+        column_1=Quantity(
+            value=[100000000, 1000000, 2000000, 3000000, 4000000, 5000000], units="Pa"
+        ),
+        column_2=Quantity(
+            value=[7.88860905221012e-31, 150000000, 6000000, 7000000, 8000000, 9000000],
+            units="Pa",
+        ),
+        column_3=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                200000000,
+                10000000,
+                11000000,
+                12000000,
+            ],
+            units="Pa",
+        ),
+        column_4=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                50000000,
+                13000000,
+                14000000,
+            ],
+            units="Pa",
+        ),
+        column_5=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                60000000,
+                15000000,
+            ],
+            units="Pa",
+        ),
+        column_6=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                70000000,
+            ],
+            units="Pa",
+        ),
+    )
+
+    mock_mapdl = MagicMock(spec=_MapdlCore)
+    material_string = elasticity.write_model(material_id=1, pyansys_session=mock_mapdl)
+    with open(ELASTICITY_ANISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string

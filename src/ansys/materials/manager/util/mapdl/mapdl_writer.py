@@ -194,6 +194,26 @@ def write_temperature_table_values(
     return table_str
 
 
+def write_table_dep_values(
+    material_id: str, label: str, dependent_values: list[float], tb_opt: str | None = None
+) -> str:
+    """Write table of dependent values."""
+    table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
+    n_loops = math.ceil(len(dependent_values) / 6)
+    for i in range(n_loops):
+        c1, c2, c3, c4, c5, c6 = _get_table_constants(i, dependent_values)
+        table_str += TB_DATA.format(
+            stloc=i * 6 + 1,
+            c1=c1,
+            c2=c2,
+            c3=c3,
+            c4=c4,
+            c5=c5,
+            c6=c6,
+        )
+    return table_str
+
+
 def write_table_values(
     label: str,
     dependent_parameters: list[Quantity],
