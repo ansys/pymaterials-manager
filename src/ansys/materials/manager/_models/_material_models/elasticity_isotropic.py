@@ -39,7 +39,10 @@ from ansys.materials.manager.util.mapdl import (
     write_interpolation_options,
     write_table_values,
 )
-from ansys.materials.manager.util.mapdl.mapdl_writer import write_temperature_table_values
+from ansys.materials.manager.util.mapdl.mapdl_writer import (
+    write_constant_properties,
+    write_temperature_table_values,
+)
 
 
 class ElasticityIsotropic(MaterialModel):
@@ -79,11 +82,13 @@ class ElasticityIsotropic(MaterialModel):
             and self.independent_parameters[0].name == "Temperature"
         ):
             if len(self.independent_parameters[0].values.value) == 1:
-                material_string = write_constant_property(
-                    label="EX", property=self.youngs_modulus, material_id=material_id
-                )
-                material_string += write_constant_property(
-                    label="PRXY", property=self.youngs_modulus, material_id=material_id
+                material_string = write_constant_properties(
+                    labels=[
+                        "EX",
+                        "PRXY",
+                    ],
+                    properties=[self.youngs_modulus, self.poissons_ratio],
+                    material_id=material_id,
                 )
                 return material_string
             else:

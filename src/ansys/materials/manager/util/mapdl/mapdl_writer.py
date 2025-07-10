@@ -143,10 +143,18 @@ def write_interpolation_options(
             independent_parameter.lower_limit is not None
             and independent_parameter.upper_limit is not None
         ):
+            if independent_parameter.lower_limit == "Program Controlled":
+                lower_limit = min(independent_parameter.values.value.tolist())
+            else:
+                lower_limit = independent_parameter.lower_limit
+            if independent_parameter.upper_limit == "Program Controlled":
+                upper_limit = max(independent_parameter.values.value.tolist())
+            else:
+                upper_limit = independent_parameter.upper_limit
             interpolation_string += TBIN_BNDS.format(
                 par1=independent_parameter.name,
-                par2=independent_parameter.lower_limit,
-                par3=independent_parameter.upper_limit,
+                par2=lower_limit,
+                par3=upper_limit,
             )
     return interpolation_string
 

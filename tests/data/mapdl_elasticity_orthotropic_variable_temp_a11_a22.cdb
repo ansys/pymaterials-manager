@@ -1,0 +1,105 @@
+Orientation Tensor A11 = 'UF01' ! Orientation Tensor A11
+Orientation Tensor A22 = 'UF02' ! Orientation Tensor A22
+Temperature = 'TEMP' ! Temperature
+TB,ELASTIC,1,,,OELM
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,100.0,110.0,120.0,10.0,11.0,12.0
+TBDATA,7,0.1,0.11,0.12,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,200.0,210.0,220.0,20.0,21.0,22.0
+TBDATA,7,0.2,0.21,0.22,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,300.0,310.0,320.0,30.0,31.0,32.0
+TBDATA,7,0.3,0.31,0.32,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,100.0,110.0,120.0,10.0,11.0,12.0
+TBDATA,7,0.1,0.11,0.12,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,200.0,210.0,220.0,20.0,21.0,22.0
+TBDATA,7,0.2,0.21,0.22,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,300.0,310.0,320.0,30.0,31.0,32.0
+TBDATA,7,0.3,0.31,0.32,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,100.0,110.0,120.0,10.0,11.0,12.0
+TBDATA,7,0.1,0.11,0.12,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,200.0,210.0,220.0,20.0,21.0,22.0
+TBDATA,7,0.2,0.21,0.22,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBFIELD,TEMP,50, ! C
+TBDATA,1,300.0,310.0,320.0,30.0,31.0,32.0
+TBDATA,7,0.3,0.31,0.32,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,100.0,110.0,120.0,10.0,11.0,12.0
+TBDATA,7,0.1,0.11,0.12,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,200.0,210.0,220.0,20.0,21.0,22.0
+TBDATA,7,0.2,0.21,0.22,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,300.0,310.0,320.0,30.0,31.0,32.0
+TBDATA,7,0.3,0.31,0.32,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,100.0,110.0,120.0,10.0,11.0,12.0
+TBDATA,7,0.1,0.11,0.12,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,200.0,210.0,220.0,20.0,12.0,22.0
+TBDATA,7,0.2,0.21,0.22,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,300.0,310.0,320.0,30.0,31.0,32.0
+TBDATA,7,0.3,0.31,0.23,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,100.0,110.0,120.0,10.0,11.0,12.0
+TBDATA,7,0.1,0.11,0.12,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,200.0,210.0,220.0,20.0,21.0,22.0
+TBDATA,7,0.2,0.21,0.22,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBFIELD,TEMP,100, ! C
+TBDATA,1,300.0,310.0,320.0,30.0,31.0,32.0
+TBDATA,7,0.3,0.31,0.32,,,
+
+TBIN,ALGO,CLMUL
+TBIN,NORM,,ON
+TBIN,CACH,,ON
+TBIN,EXTR,,PHULL
+TBIN,DEFA,Orientation Tensor A11,0.0
+TBIN,BNDS,Orientation Tensor A11,0.0,1.0
+TBIN,DEFA,Orientation Tensor A22,0.0
+TBIN,BNDS,Orientation Tensor A22,0.0,1.0
+TBIN,DEFA,Temperature,22.0
+TBIN,BNDS,Temperature,50,100
