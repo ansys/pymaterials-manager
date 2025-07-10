@@ -36,6 +36,7 @@ from .mapdl_snippets_strings import (
     TB,
     TB_DATA,
     TB_FIELD,
+    TB_TEMP,
     TBIN_ALGO,
     TBIN_BNDS,
     TBIN_CACH,
@@ -75,7 +76,12 @@ def write_constant_property(
     c3: float | None = None,
     c4: float | None = None,
 ):
-    """Write constant property."""
+    """
+    Write constant property.
+
+    Example:
+    MP,EX,1,1000000,	! Pa
+    """
     if isinstance(property.value, (int, float)):
         c0 = str(property.value)
     else:
@@ -101,7 +107,13 @@ def write_constant_properties(
     c3: float | None = None,
     c4: float | None = None,
 ):
-    """Write constant properties."""
+    """
+    Write constant properties.
+
+    Example:
+    MP,EX,1,1000000,	! Pa
+    MP,NUXY,1,0.3,
+    """
     property_str = ""
     for i in range(len(labels)):
         label = labels[i]
@@ -115,7 +127,18 @@ def write_constant_properties(
 def write_interpolation_options(
     interpolation_options: InterpolationOptions, independent_parameters: list[IndependentParameter]
 ) -> str:
-    """Write interpolation options."""
+    """
+    Write interpolation options.
+
+    Example:
+    TBIN,ALGO,ALMUL
+    TBIN,NORM,,ON
+    TBIN,EXTR,,BBOX
+    TBIN,DEFA,Orientation Tensor A11,0
+    TBIN,BNDS,Orientation Tensor A11,0,1
+    TBIN,DEFA,Orientation Tensor A22,0
+    TBIN,BNDS,Orientation Tensor A22,0,1
+    """
     interpolation_string = ""
     if interpolation_options.algorithm_type:
         interpolation_string += TBIN_ALGO.format(
@@ -132,6 +155,10 @@ def write_interpolation_options(
     if interpolation_options.extrapolation_type:
         interpolation_string += TBIN_EXTR.format(
             par1="", par2=EXTRAPOLATION_TYPE_MAP[interpolation_options.extrapolation_type]
+        )
+    else:
+        interpolation_string += TBIN_EXTR.format(
+            par1="", par2=EXTRAPOLATION_TYPE_MAP["Projection to the Bounding Box"]
         )
     for independent_parameter in independent_parameters:
         if independent_parameter.default_value is not None:
@@ -165,7 +192,15 @@ def write_temperature_table_values(
     material_id: int,
     temperature_parameter: IndependentParameter,
 ) -> str:
-    """Write temperature table."""
+    """
+    Write temperature table.
+
+    Example:
+    MPTEMP,1,12.0,21.0,,,,
+    MPDATA,EX,3,1,2000000,1000000,,,, ! Pa
+    MPTEMP,1,12.0,21.0,,,,
+    MPDATA,PRXY,3,1,0.35,0.3,,,, !
+    """
     n_loops = math.ceil(len(temperature_parameter.values.value) / 6)
     table_str = ""
     temp_vals = temperature_parameter.values.value.tolist()
@@ -197,7 +232,16 @@ def write_temperature_table_values(
 def write_table_dep_values(
     material_id: str, label: str, dependent_values: list[float], tb_opt: str | None = None
 ) -> str:
-    """Write table of dependent values."""
+    """
+    Write table of dependent values.
+
+    Example:
+    TB,ELASTIC,1,,,AELS
+    TBDATA,1,100000000,1000000,2000000,3000000,4000000,5000000
+    TBDATA,7,150000000,6000000,7000000,8000000,9000000,200000000
+    TBDATA,13,10000000,11000000,12000000,50000000,13000000,14000000
+    TBDATA,19,60000000,15000000,70000000
+    """
     table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
     n_loops = math.ceil(len(dependent_values) / 6)
     for i in range(n_loops):
@@ -221,7 +265,25 @@ def write_table_values(
     independent_parameters: list[IndependentParameter],
     tb_opt: str | None = None,
 ) -> tuple[str, str]:
-    """Write table variables."""
+    """
+    Write table variables.
+
+    Example:
+    Orientation Tensor A11 = 'UF01' ! Orientation Tensor A11
+    Orientation Tensor A22 = 'UF02' ! Orientation Tensor A22
+    Temperature = 'TEMP' ! Temperature
+    TB,ELASTIC,1,,,OELM
+    TBFIELD,Orientation Tensor A11,0 ! Orientation Tensor A11
+    TBFIELD,Orientation Tensor A22,0 ! Orientation Tensor A22
+    TBFIELD,TEMP,50 ! Temperature
+    TBDATA,1,10,10,10,4.54,4.54,4.54
+    TBDATA,7,0.1,0.1,0.1
+    TBFIELD,Orientation Tensor A11,0 ! Orientation Tensor A11
+    TBFIELD,Orientation Tensor A22,0 ! Orientation Tensor A22
+    TBFIELD,TEMP,100 ! Temperature
+    TBDATA,1,10,10,10,4.54,4.54,4.54
+    TBDATA,7,0.1,0.1,0.1
+    """
     parameters_str = ""
     idx = 1
     independent_values = []
@@ -283,6 +345,47 @@ def write_table_values(
                 c6=c6,
             )
     return parameters_str, table_str
+
+
+def write_table_value_per_temperature(
+    label: str,
+    material_id: int,
+    dependent_parameters: list[Quantity],
+    temperature_parameter: IndependentParameter,
+) -> str:
+    """
+    Write table values per temperature.
+
+    Example:
+    Temperature = 'TEMP' ! Temperature
+    TB,HILL,2,,,
+    TBTEMP,34
+    TBDATA,1,1.2,0.8,0.5,0.12,0.23,0.23
+    TBTEMP,78
+    TBDATA,1,1.2,0.8,0.5,0.12,0.23,0.23
+    """
+    table_str = f"{temperature_parameter.name} = '{PREDIFINED_TB_FIELDS[temperature_parameter.name]}' ! {temperature_parameter.name}\n"  # noqa_ E501
+    table_str += TB.format(lab=label, matid=material_id, tbopt="")
+    n_loops = math.ceil(len(dependent_parameters) / 6)
+    temp_idx = 0
+    for temperature in temperature_parameter.values.value:
+        table_str += TB_TEMP.format(temp=temperature)
+        vals = []
+        for dep_vals in dependent_parameters:
+            vals.append(dep_vals.value[temp_idx])
+        for i in range(n_loops):
+            c1, c2, c3, c4, c5, c6 = _get_table_constants(i, vals)
+            table_str += TB_DATA.format(
+                stloc=i * 6 + 1,
+                c1=c1,
+                c2=c2,
+                c3=c3,
+                c4=c4,
+                c5=c5,
+                c6=c6,
+            )
+        temp_idx += 1
+    return table_str
 
 
 def write_tb_points(

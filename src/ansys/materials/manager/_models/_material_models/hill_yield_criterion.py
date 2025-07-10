@@ -23,6 +23,7 @@
 from typing import Any, Dict, Literal
 
 from ansys.units import Quantity
+import numpy as np
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
@@ -30,6 +31,13 @@ from ansys.materials.manager._models._common import (
     ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
+)
+from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager.util.mapdl.mapdl_writer import (
+    write_interpolation_options,
+    write_table_dep_values,
+    write_table_value_per_temperature,
+    write_table_values,
 )
 
 
@@ -144,10 +152,96 @@ class HillYieldCriterion(MaterialModel):
         )
         return values
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
-        """Write this model to the specified session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
+    def validate_model(self) -> None:
         """Validate the model."""
         pass
+
+    def _write_mapdl(self, material_id):
+        for qualifier in self.model_qualifiers:
+            if qualifier.name == "Separated Hill Potentials for Plasticity and Creep":
+                creep = True if qualifier.value == "Yes" else False
+        if self.independent_parameters is None:
+            dependent_values = [
+                self.yield_stress_ratio_x.value,
+                self.yield_stress_ratio_y.value,
+                self.yield_stress_ratio_z.value,
+                self.yield_stress_ratio_xy.value,
+                self.yield_stress_ratio_yz.value,
+                self.yield_stress_ratio_xz.value,
+            ]
+            dependent_values = [
+                dep_val[0] for dep_val in dependent_values if isinstance(dep_val, np.ndarray)
+            ]
+            if not creep:
+                material_string = write_table_dep_values(
+                    material_id=material_id, label="HILL", dependent_values=dependent_values
+                )
+            return material_string
+        elif (
+            len(self.independent_parameters) == 1
+            and self.independent_parameters[0].name == "Temperature"
+        ):
+            if len(self.independent_parameters[0].values.value) == 1:
+                dependent_values = [
+                    self.yield_stress_ratio_x.value,
+                    self.yield_stress_ratio_y.value,
+                    self.yield_stress_ratio_z.value,
+                    self.yield_stress_ratio_xy.value,
+                    self.yield_stress_ratio_yz.value,
+                    self.yield_stress_ratio_xz.value,
+                ]
+                if not creep:
+                    material_string = write_table_dep_values(
+                        material_id=material_id, label="HILL", dependent_values=dependent_values
+                    )
+            else:
+                dependent_values = [
+                    self.yield_stress_ratio_x,
+                    self.yield_stress_ratio_y,
+                    self.yield_stress_ratio_z,
+                    self.yield_stress_ratio_xy,
+                    self.yield_stress_ratio_yz,
+                    self.yield_stress_ratio_xz,
+                ]
+                if not creep:
+
+                    material_string = write_table_value_per_temperature(
+                        label="HILL",
+                        material_id=material_id,
+                        dependent_parameters=dependent_values,
+                        temperature_parameter=self.independent_parameters[0],
+                    )
+
+            return material_string
+        else:
+            dependent_values = [
+                self.yield_stress_ratio_x,
+                self.yield_stress_ratio_y,
+                self.yield_stress_ratio_z,
+                self.yield_stress_ratio_xy,
+                self.yield_stress_ratio_yz,
+                self.yield_stress_ratio_xz,
+            ]
+            parameters_str, table_str = write_table_values(
+                label="HILL",
+                dependent_parameters=dependent_values,
+                material_id=material_id,
+                independent_parameters=self.independent_parameters,
+            )
+            material_string = parameters_str + "\n" + table_str
+            if self.interpolation_options:
+                interpolation_string = write_interpolation_options(
+                    interpolation_options=self.interpolation_options,
+                    independent_parameters=self.independent_parameters,
+                )
+                material_string += "\n" + interpolation_string
+        return material_string
+
+    def write_model(self, material_id: int, pyansys_session: Any) -> str:
+        """Write this model to the specified session."""
+        self.validate_model()
+        if isinstance(pyansys_session, _MapdlCore):
+            material_string = self._write_mapdl(material_id)
+        else:
+            raise Exception("The session is not supported.")
+        return material_string

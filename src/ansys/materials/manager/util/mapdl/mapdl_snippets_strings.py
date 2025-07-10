@@ -27,7 +27,7 @@ PREDIFINED_TB_FIELDS = {
     "Temperature": "TEMP",
 }
 
-INTERPOLATION_ALGORITHM_MAP = {"Linear Multivariate": "CLMUL"}
+INTERPOLATION_ALGORITHM_MAP = {"Linear Multivariate": "LMUL"}
 
 EXTRAPOLATION_TYPE_MAP = {
     "Projection to the Convex Hull": "PHULL",
@@ -53,6 +53,9 @@ TB_FIELD = """TBFIELD,{type},{value}, ! {unit}
 """
 
 TB_DATA = """TBDATA,{stloc},{c1},{c2},{c3},{c4},{c5},{c6}
+"""
+
+TB_TEMP = """TBTEMP,{temp}
 """
 
 TBPT = """TBPT,{oper}, {x}, {y}"""
