@@ -161,20 +161,45 @@ class HillYieldCriterion(MaterialModel):
             if qualifier.name == "Separated Hill Potentials for Plasticity and Creep":
                 creep = True if qualifier.value == "Yes" else False
         if self.independent_parameters is None:
-            dependent_values = [
-                self.yield_stress_ratio_x.value,
-                self.yield_stress_ratio_y.value,
-                self.yield_stress_ratio_z.value,
-                self.yield_stress_ratio_xy.value,
-                self.yield_stress_ratio_yz.value,
-                self.yield_stress_ratio_xz.value,
-            ]
-            dependent_values = [
-                dep_val[0] for dep_val in dependent_values if isinstance(dep_val, np.ndarray)
-            ]
+
             if not creep:
+                dependent_values = [
+                    self.yield_stress_ratio_x.value,
+                    self.yield_stress_ratio_y.value,
+                    self.yield_stress_ratio_z.value,
+                    self.yield_stress_ratio_xy.value,
+                    self.yield_stress_ratio_yz.value,
+                    self.yield_stress_ratio_xz.value,
+                ]
+                dependent_values = [
+                    dep_val[0] for dep_val in dependent_values if isinstance(dep_val, np.ndarray)
+                ]
                 material_string = write_table_dep_values(
                     material_id=material_id, label="HILL", dependent_values=dependent_values
+                )
+            else:
+                dependent_values = [
+                    self.yield_stress_ratio_x_for_plasticity.value,
+                    self.yield_stress_ratio_y_for_plasticity.value,
+                    self.yield_stress_ratio_z_for_plasticity.value,
+                    self.yield_stress_ratio_xy_for_plasticity.value,
+                    self.yield_stress_ratio_yz_for_plasticity.value,
+                    self.yield_stress_ratio_xz_for_plasticity.value,
+                    self.yield_stress_ratio_x_for_creep.value,
+                    self.yield_stress_ratio_y_for_creep.value,
+                    self.yield_stress_ratio_z_for_creep.value,
+                    self.yield_stress_ratio_xy_for_creep.value,
+                    self.yield_stress_ratio_yz_for_creep.value,
+                    self.yield_stress_ratio_xz_for_creep.value,
+                ]
+                dependent_values = [
+                    dep_val[0] for dep_val in dependent_values if isinstance(dep_val, np.ndarray)
+                ]
+                material_string = write_table_dep_values(
+                    material_id=material_id,
+                    label="HILL",
+                    dependent_values=dependent_values,
+                    tb_opt="PC",
                 )
             return material_string
         elif (
@@ -210,6 +235,28 @@ class HillYieldCriterion(MaterialModel):
                         material_id=material_id,
                         dependent_parameters=dependent_values,
                         temperature_parameter=self.independent_parameters[0],
+                    )
+                else:
+                    dependent_values = [
+                        self.yield_stress_ratio_x_for_plasticity,
+                        self.yield_stress_ratio_y_for_plasticity,
+                        self.yield_stress_ratio_z_for_plasticity,
+                        self.yield_stress_ratio_xy_for_plasticity,
+                        self.yield_stress_ratio_yz_for_plasticity,
+                        self.yield_stress_ratio_xz_for_plasticity,
+                        self.yield_stress_ratio_x_for_creep,
+                        self.yield_stress_ratio_y_for_creep,
+                        self.yield_stress_ratio_z_for_creep,
+                        self.yield_stress_ratio_xy_for_creep,
+                        self.yield_stress_ratio_yz_for_creep,
+                        self.yield_stress_ratio_xz_for_creep,
+                    ]
+                    material_string = write_table_value_per_temperature(
+                        label="HILL",
+                        material_id=material_id,
+                        dependent_parameters=dependent_values,
+                        temperature_parameter=self.independent_parameters[0],
+                        tb_opt="PC",
                     )
 
             return material_string

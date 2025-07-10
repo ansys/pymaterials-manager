@@ -230,7 +230,7 @@ def write_temperature_table_values(
 
 
 def write_table_dep_values(
-    material_id: str, label: str, dependent_values: list[float], tb_opt: str | None = None
+    material_id: str, label: str, dependent_values: list[float], tb_opt: str = ""
 ) -> str:
     """
     Write table of dependent values.
@@ -242,7 +242,9 @@ def write_table_dep_values(
     TBDATA,13,10000000,11000000,12000000,50000000,13000000,14000000
     TBDATA,19,60000000,15000000,70000000
     """
-    table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
+    table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt)
+    if tb_opt == "PC":
+        table_str = table_str[:-5] + table_str[-4:]
     n_loops = math.ceil(len(dependent_values) / 6)
     for i in range(n_loops):
         c1, c2, c3, c4, c5, c6 = _get_table_constants(i, dependent_values)
@@ -255,6 +257,7 @@ def write_table_dep_values(
             c5=c5,
             c6=c6,
         )
+
     return table_str
 
 
@@ -352,6 +355,7 @@ def write_table_value_per_temperature(
     material_id: int,
     dependent_parameters: list[Quantity],
     temperature_parameter: IndependentParameter,
+    tb_opt: str = "",
 ) -> str:
     """
     Write table values per temperature.
@@ -365,7 +369,10 @@ def write_table_value_per_temperature(
     TBDATA,1,1.2,0.8,0.5,0.12,0.23,0.23
     """
     table_str = f"{temperature_parameter.name} = '{PREDIFINED_TB_FIELDS[temperature_parameter.name]}' ! {temperature_parameter.name}\n"  # noqa_ E501
-    table_str += TB.format(lab=label, matid=material_id, tbopt="")
+    line = TB.format(lab=label, matid=material_id, tbopt=tb_opt)
+    if tb_opt == "PC":
+        line = line[:-5] + line[-4:]
+    table_str += line
     n_loops = math.ceil(len(dependent_parameters) / 6)
     temp_idx = 0
     for temperature in temperature_parameter.values.value:
