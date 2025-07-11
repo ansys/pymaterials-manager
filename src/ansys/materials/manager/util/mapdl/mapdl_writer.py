@@ -426,7 +426,17 @@ def write_tb_points_for_temperature(
     temperature_parameter: list[float],
     tb_opt: str,
 ) -> tuple[str, str]:
-    """Write points table."""
+    """
+    Write points table.
+
+    Example:
+    TB,PLASTIC,2,,MISO
+    TBFIELD,TEMP,22, !
+    TBPT,,0.0,16704754.8966912
+    TBPT,,0.000189791542302976,21518003.4164155
+    TBPT,,0.000379583084605952,25601270.737195
+    TBPT,,0.000569374626908928,29108916.0548528
+    """
     table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
     if label == "PLASTIC":
         table_str = table_str.replace(",,", ",", 1)
