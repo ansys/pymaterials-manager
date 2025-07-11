@@ -21,7 +21,12 @@
 # SOFTWARE.
 from ._base import _BaseModel
 from ._packages import SupportedPackage
-from .common import ParameterField, QualifierType, validate_and_initialize_model_qualifiers
+from .common import (
+    ParameterField,
+    QualifierType,
+    validate_and_initialize_model_qualifiers,
+    validate_parameters,
+)
 from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .material_model import MaterialModel

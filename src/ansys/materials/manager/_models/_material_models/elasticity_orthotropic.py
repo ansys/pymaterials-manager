@@ -32,6 +32,13 @@ from ansys.materials.manager._models._common import (
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
+from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager.util.mapdl.mapdl_writer import (
+    write_constant_properties,
+    write_interpolation_options,
+    write_table_values,
+    write_temperature_table_values,
+)
 
 
 class ElasticityOrthotropic(MaterialModel):
@@ -101,10 +108,81 @@ class ElasticityOrthotropic(MaterialModel):
         )
         return values
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
-        """Write this model to the specified session."""
-        pass
+    def _write_mapdl(self, material_id: int) -> str:
+        dependent_parameters = [
+            self.youngs_modulus_x.value,
+            self.youngs_modulus_y.value,
+            self.youngs_modulus_z.value,
+            self.shear_modulus_xy.value,
+            self.shear_modulus_yz.value,
+            self.shear_modulus_xz.value,
+            self.poissons_ratio_xy.value,
+            self.poissons_ratio_yz.value,
+            self.poissons_ratio_xz.value,
+        ]
+        dependent_parameters_units = [
+            self.youngs_modulus_x.unit,
+            self.youngs_modulus_y.unit,
+            self.youngs_modulus_z.unit,
+            self.shear_modulus_xy.unit,
+            self.shear_modulus_yz.unit,
+            self.shear_modulus_xz.unit,
+            self.poissons_ratio_xy.unit,
+            self.poissons_ratio_yz.unit,
+            self.poissons_ratio_xz.unit,
+        ]
+        if self.independent_parameters is None:
+            material_string = write_constant_properties(
+                labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                properties=dependent_parameters,
+                property_units=dependent_parameters_units,
+                material_id=material_id,
+            )
+            return material_string
+        elif (
+            len(self.independent_parameters) == 1
+            and self.independent_parameters[0].name == "Temperature"
+        ):
+            if len(self.independent_parameters[0].values.value) == 1:
+                material_string = write_constant_properties(
+                    labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                    properties=dependent_parameters,
+                    property_units=dependent_parameters_units,
+                    material_id=material_id,
+                )
+                return material_string
+            else:
+                material_string = write_temperature_table_values(
+                    labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                    dependent_parameters=dependent_parameters,
+                    dependent_parameters_unit=dependent_parameters_units,
+                    material_id=material_id,
+                    temperature_parameter=self.independent_parameters[0],
+                )
+                return material_string
+        else:
+            parameters_str, table_str = write_table_values(
+                label="ELASTIC",
+                dependent_parameters=dependent_parameters,
+                material_id=material_id,
+                independent_parameters=self.independent_parameters,
+                tb_opt="OELM",
+            )
+            material_string = parameters_str + "\n" + table_str
 
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the orthotropic elasticity model."""
-        pass
+            if self.interpolation_options:
+                interpolation_string = write_interpolation_options(
+                    interpolation_options=self.interpolation_options,
+                    independent_parameters=self.independent_parameters,
+                )
+                material_string += "\n" + interpolation_string
+        return material_string
+
+    def write_model(self, material_id: int, pyansys_session: Any) -> str:
+        """Write this model to the specified session."""
+        self.validate_model()
+        if isinstance(pyansys_session, _MapdlCore):
+            material_string = self._write_mapdl(material_id)
+        else:
+            raise Exception("The session is not supported.")
+        return material_string

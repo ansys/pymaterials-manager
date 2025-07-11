@@ -32,6 +32,8 @@ from ansys.materials.manager._models._common import (
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
+from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager.util.mapdl.mapdl_writer import write_tb_points_for_temperature
 
 
 class IsotropicHardening(MaterialModel):
@@ -55,10 +57,60 @@ class IsotropicHardening(MaterialModel):
         )
         return values
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
-        """Write the isotropic hardening model to the specified session."""
-        pass
+    def _write_mapdl(self, material_id: int) -> str:
+        plastic_strain = [
+            ind_param.values.value.tolist()
+            for ind_param in self.independent_parameters
+            if ind_param.name == "Plastic Strain"
+        ][0]
+        temperature = [
+            ind_param.values.value.tolist()
+            for ind_param in self.independent_parameters
+            if ind_param.name == "Temperature"
+        ]
+        table_parameters = [
+            plastic_strain,
+            self.stress.value.tolist(),
+        ]
+        if len(self.independent_parameters) == 1:
+            temperature_parameter = len(table_parameters[0]) * [0]
+            material_string = write_tb_points_for_temperature(
+                label="PLASTIC",
+                table_parameters=table_parameters,
+                material_id=material_id,
+                temperature_parameter=temperature_parameter,
+                tb_opt="MISO",
+            )
 
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the isotropic hardening model."""
-        pass
+        elif len(self.independent_parameters) == 2 and len(temperature) == 1:
+            material_string = write_tb_points_for_temperature(
+                label="PLASTIC",
+                table_parameters=table_parameters,
+                material_id=material_id,
+                temperature_parameter=temperature[0],
+                tb_opt="MISO",
+            )
+        else:
+            raise Exception("Only variable supported at the moment is temperature")
+        return material_string
+
+    def validate_model(self):
+        """Override the validate_model implementation from the baseclass."""
+        is_plastic_strain = [
+            True if ind_par.name == "Plastic Strain" else False
+            for ind_par in self.independent_parameters
+        ]
+        if not any(is_plastic_strain):
+            raise Exception(
+                "Plastic Strain has not been provided for the isotropic hardening model."
+            )
+        super().validate_model()
+
+    def write_model(self, material_id: int, pyansys_session: Any) -> str:
+        """Write this model to the specified session."""
+        self.validate_model()
+        if isinstance(pyansys_session, _MapdlCore):
+            material_string = self._write_mapdl(material_id)
+        else:
+            raise Exception("The session is not supported.")
+        return material_string

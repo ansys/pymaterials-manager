@@ -20,13 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ansys.units import Quantity
+
 from ansys.materials.manager._models._common import IndependentParameter
 
 
 def test_independent_parameter_creation():
     name = "Temperature"
     field_variable = "Temperature"
-    values = [300.0]
+    values = Quantity(value=100, units="K")
     default_value = 293.15
     field_units = "K"
     upper_limit = 1000.0
@@ -44,7 +46,8 @@ def test_independent_parameter_creation():
 
     assert independent_param.name == name
     assert independent_param.field_variable == field_variable
-    assert independent_param.values == values
+    assert independent_param.values.value == values.value
+    assert independent_param.values.unit == values.unit
     assert independent_param.default_value == default_value
     assert independent_param.field_units == field_units
     assert independent_param.upper_limit == upper_limit

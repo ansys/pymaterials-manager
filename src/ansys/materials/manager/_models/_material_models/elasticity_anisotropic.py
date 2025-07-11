@@ -24,6 +24,7 @@
 from typing import Any, Dict, Literal
 
 from ansys.units import Quantity
+import numpy as np
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
@@ -32,6 +33,8 @@ from ansys.materials.manager._models._common import (
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
+from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager.util.mapdl.mapdl_writer import write_table_dep_values
 
 
 class ElasticityAnisotropic(MaterialModel):
@@ -65,10 +68,62 @@ class ElasticityAnisotropic(MaterialModel):
         )
         return values
 
+    def _write_mapdl(self, material_id: int) -> str:
+        d = np.column_stack(
+            (
+                self.column_1.value,
+                self.column_2.value,
+                self.column_3.value,
+                self.column_4.value,
+                self.column_5.value,
+                self.column_6.value,
+            )
+        )
+        # extract the lower triangular elements column-wise
+        dependent_values = []
+        for j in range(6):
+            dependent_values.extend(d[j:, j])
+
+        material_string = write_table_dep_values(
+            material_id=material_id,
+            label="ELASTIC",
+            dependent_values=dependent_values,
+            tb_opt="AELS",
+        )
+        return material_string
+
     def write_model(self, material_id: int, pyansys_session: Any) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
-        pass
+        self.validate_model()
+        if isinstance(pyansys_session, _MapdlCore):
+            material_string = self._write_mapdl(material_id)
+        else:
+            raise Exception("The session is not supported.")
+        return material_string
 
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the anisotropic elasticity model."""
-        pass
+    def validate_model(self) -> None:
+        """Validate anisotropic elasticity."""
+        if self.independent_parameters:
+            raise Exception("Variable anisotropic elasticity is currently not supported.")
+        if not all(
+            [
+                isinstance(self.column_1.value, np.ndarray),
+                isinstance(self.column_2.value, np.ndarray),
+                isinstance(self.column_3.value, np.ndarray),
+                isinstance(self.column_4.value, np.ndarray),
+                isinstance(self.column_5.value, np.ndarray),
+                isinstance(self.column_6.value, np.ndarray),
+            ]
+        ):
+            raise Exception("At least one of the columns is not defined as an array")
+        if not all(
+            [
+                len(self.column_1.value) == 6,
+                len(self.column_2.value) == 6,
+                len(self.column_3.value) == 6,
+                len(self.column_4.value) == 6,
+                len(self.column_5.value) == 6,
+                len(self.column_6.value) == 6,
+            ]
+        ):
+            raise Exception("At least one of the columns has not length equal 6")
