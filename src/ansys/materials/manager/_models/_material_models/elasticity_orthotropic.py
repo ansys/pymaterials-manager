@@ -110,20 +110,32 @@ class ElasticityOrthotropic(MaterialModel):
 
     def _write_mapdl(self, material_id: int) -> str:
         dependent_parameters = [
-            self.youngs_modulus_x,
-            self.youngs_modulus_y,
-            self.youngs_modulus_z,
-            self.shear_modulus_xy,
-            self.shear_modulus_yz,
-            self.shear_modulus_xz,
-            self.poissons_ratio_xy,
-            self.poissons_ratio_yz,
-            self.poissons_ratio_xz,
+            self.youngs_modulus_x.value,
+            self.youngs_modulus_y.value,
+            self.youngs_modulus_z.value,
+            self.shear_modulus_xy.value,
+            self.shear_modulus_yz.value,
+            self.shear_modulus_xz.value,
+            self.poissons_ratio_xy.value,
+            self.poissons_ratio_yz.value,
+            self.poissons_ratio_xz.value,
+        ]
+        dependent_parameters_units = [
+            self.youngs_modulus_x.unit,
+            self.youngs_modulus_y.unit,
+            self.youngs_modulus_z.unit,
+            self.shear_modulus_xy.unit,
+            self.shear_modulus_yz.unit,
+            self.shear_modulus_xz.unit,
+            self.poissons_ratio_xy.unit,
+            self.poissons_ratio_yz.unit,
+            self.poissons_ratio_xz.unit,
         ]
         if self.independent_parameters is None:
             material_string = write_constant_properties(
                 labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
                 properties=dependent_parameters,
+                property_units=dependent_parameters_units,
                 material_id=material_id,
             )
             return material_string
@@ -135,6 +147,7 @@ class ElasticityOrthotropic(MaterialModel):
                 material_string = write_constant_properties(
                     labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
                     properties=dependent_parameters,
+                    property_units=dependent_parameters_units,
                     material_id=material_id,
                 )
                 return material_string
@@ -142,10 +155,11 @@ class ElasticityOrthotropic(MaterialModel):
                 material_string = write_temperature_table_values(
                     labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
                     dependent_parameters=dependent_parameters,
+                    dependent_parameters_unit=dependent_parameters_units,
                     material_id=material_id,
                     temperature_parameter=self.independent_parameters[0],
                 )
-
+                return material_string
         else:
             parameters_str, table_str = write_table_values(
                 label="ELASTIC",
@@ -154,13 +168,14 @@ class ElasticityOrthotropic(MaterialModel):
                 independent_parameters=self.independent_parameters,
                 tb_opt="OELM",
             )
-            interpolation_string = ""
+            material_string = parameters_str + "\n" + table_str
+
             if self.interpolation_options:
-                interpolation_string += write_interpolation_options(
+                interpolation_string = write_interpolation_options(
                     interpolation_options=self.interpolation_options,
                     independent_parameters=self.independent_parameters,
                 )
-            material_string = parameters_str + "\n" + table_str + "\n" + interpolation_string
+                material_string += "\n" + interpolation_string
         return material_string
 
     def write_model(self, material_id: int, pyansys_session: Any) -> str:

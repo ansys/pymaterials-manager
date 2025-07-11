@@ -54,7 +54,10 @@ class Density(MaterialModel):
     def _write_mapdl(self, material_id: int) -> str:
         if self.independent_parameters is None:
             material_string = write_constant_property(
-                label="DENS", property=self.density, material_id=material_id
+                label="DENS",
+                property=self.density.value,
+                material_id=material_id,
+                unit=self.density.unit,
             )
             return material_string
         elif (
@@ -63,13 +66,17 @@ class Density(MaterialModel):
         ):
             if len(self.independent_parameters[0].values.value) == 1:
                 material_string = write_constant_property(
-                    label="DENS", property=self.density, material_id=material_id
+                    label="DENS",
+                    property=self.density.value,
+                    material_id=material_id,
+                    unit=self.density.unit,
                 )
                 return material_string
             else:
                 material_string = write_temperature_table_values(
                     labels=["DENS"],
-                    dependent_parameters=[self.density],
+                    dependent_parameters=[self.density.value],
+                    dependent_parameters_unit=[self.density.unit],
                     material_id=material_id,
                     temperature_parameter=self.independent_parameters[0],
                 )
@@ -77,7 +84,7 @@ class Density(MaterialModel):
         else:
             parameters_str, table_str = write_table_values(
                 label="DENS",
-                dependent_parameter=[self.density],
+                dependent_parameters=[self.density.value],
                 material_id=material_id,
                 independent_parameters=self.independent_parameters,
             )

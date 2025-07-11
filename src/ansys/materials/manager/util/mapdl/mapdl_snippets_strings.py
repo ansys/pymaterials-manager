@@ -58,7 +58,8 @@ TB_DATA = """TBDATA,{stloc},{c1},{c2},{c3},{c4},{c5},{c6}
 TB_TEMP = """TBTEMP,{temp}
 """
 
-TBPT = """TBPT,{oper}, {x}, {y}"""
+TBPT = """TBPT,{oper},{x},{y}
+"""
 
 TBIN_SCALE = """TBIN,SCALE,{par1},{par2},{par3},{par4}
 """

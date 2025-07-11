@@ -20,9 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from collections import Counter
 import math
 
-from ansys.units import Quantity
+import numpy as np
 
 from ansys.materials.manager._models._common import IndependentParameter, InterpolationOptions
 
@@ -43,6 +44,7 @@ from .mapdl_snippets_strings import (
     TBIN_DEFA,
     TBIN_EXTR,
     TBIN_NORM,
+    TBPT,
     USER_DEFINED_TB_FIELDS,
 )
 
@@ -69,12 +71,13 @@ def _get_table_constants(idx, values):
 
 def write_constant_property(
     label: str,
-    property: Quantity,
+    property: float | int | list[float | int] | np.ndarray,
     material_id,
     c1: float | None = None,
     c2: float | None = None,
     c3: float | None = None,
     c4: float | None = None,
+    unit: str = "",
 ):
     """
     Write constant property.
@@ -82,10 +85,10 @@ def write_constant_property(
     Example:
     MP,EX,1,1000000,	! Pa
     """
-    if isinstance(property.value, (int, float)):
-        c0 = str(property.value)
+    if isinstance(property, (int, float)):
+        c0 = str(property)
     else:
-        c0 = str(property.value).strip("[]")
+        c0 = str(property).strip("[]")
     return CONSTANT_MP_PROPERTY.format(
         lab=label,
         matid=material_id,
@@ -94,13 +97,14 @@ def write_constant_property(
         c2=c2 or "",
         c3=c3 or "",
         c4=c4 or "",
-        unit=property.unit,
+        unit=unit,
     )
 
 
 def write_constant_properties(
     labels: list[str],
-    properties: list[Quantity],
+    properties: list[list[float]],
+    property_units: list[str],
     material_id,
     c1: float | None = None,
     c2: float | None = None,
@@ -118,8 +122,16 @@ def write_constant_properties(
     for i in range(len(labels)):
         label = labels[i]
         property = properties[i]
+        unit = property_units[i]
         property_str += write_constant_property(
-            label=label, property=property, material_id=material_id, c1=c1, c2=c2, c3=c3, c4=c4
+            label=label,
+            property=property,
+            material_id=material_id,
+            c1=c1,
+            c2=c2,
+            c3=c3,
+            c4=c4,
+            unit=unit,
         )
     return property_str
 
@@ -188,7 +200,8 @@ def write_interpolation_options(
 
 def write_temperature_table_values(
     labels: list[str],
-    dependent_parameters: list[Quantity],
+    dependent_parameters: list[list[float]],
+    dependent_parameters_unit: list[str],
     material_id: int,
     temperature_parameter: IndependentParameter,
 ) -> str:
@@ -209,9 +222,9 @@ def write_temperature_table_values(
         table_str += MP_TEMP.format(sloc=i * 6 + 1, t1=t1, t2=t2, t3=t3, t4=t4, t5=t5, t6=t6)
     for i in range(n_loops):
         j = 0
-        for dependent_parameter in dependent_parameters:
-            dep_vals = dependent_parameter.value
-            dep_unit = dependent_parameter.unit
+        for k in range(len(dependent_parameters)):
+            dep_vals = dependent_parameters[k]
+            dep_unit = dependent_parameters_unit[k]
             c1, c2, c3, c4, c5, c6 = _get_table_constants(i, dep_vals)
             table_str += MP_DATA.format(
                 lab=labels[j],
@@ -261,9 +274,37 @@ def write_table_dep_values(
     return table_str
 
 
+def _get_field_variables(
+    independent_parameters: list[IndependentParameter],
+) -> tuple[list[list[float]], list[str], list[str], str]:
+    parameters_str = ""
+    idx = 1
+    independent_values = []
+    independent_values_names = []
+    independent_values_units = []
+    for independent_parameter in independent_parameters:
+        if independent_parameter.name in PREDIFINED_TB_FIELDS.keys():
+            parameters_str += f"{independent_parameter.name} = '{PREDIFINED_TB_FIELDS[independent_parameter.name]}' ! {independent_parameter.name}"  # noqa_ E501
+        else:
+            parameters_str += USER_DEFINED_TB_FIELDS.format(
+                name=independent_parameter.name,
+                idx=idx,
+                unit=(
+                    independent_parameter.values.unit
+                    if independent_parameter.values.unit != ""
+                    else independent_parameter.name
+                ),
+            )
+            idx += 1
+        independent_values.append(independent_parameter.values.value.tolist())
+        independent_values_names.append(independent_parameter.name)
+        independent_values_units.append(independent_parameter.values.unit)
+    return independent_values, independent_values_names, independent_values_units, parameters_str
+
+
 def write_table_values(
     label: str,
-    dependent_parameters: list[Quantity],
+    dependent_parameters: list[list[float]],
     material_id: int,
     independent_parameters: list[IndependentParameter],
     tb_opt: str | None = None,
@@ -287,30 +328,13 @@ def write_table_values(
     TBDATA,1,10,10,10,4.54,4.54,4.54
     TBDATA,7,0.1,0.1,0.1
     """
-    parameters_str = ""
-    idx = 1
-    independent_values = []
-    independent_values_names = []
-    independent_values_units = []
-    for independent_parameter in independent_parameters:
-        if independent_parameter.name in PREDIFINED_TB_FIELDS.keys():
-            parameters_str += f"{independent_parameter.name} = '{PREDIFINED_TB_FIELDS[independent_parameter.name]}' ! {independent_parameter.name}"  # noqa_ E501
-        else:
-            parameters_str += USER_DEFINED_TB_FIELDS.format(
-                name=independent_parameter.name,
-                idx=idx,
-                unit=(
-                    independent_parameter.values.unit
-                    if independent_parameter.values.unit != ""
-                    else independent_parameter.name
-                ),
-            )
-            idx += 1
-        independent_values.append(independent_parameter.values.value.tolist())
-        independent_values_names.append(independent_parameter.name)
-        independent_values_units.append(independent_parameter.values.unit)
-    table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
+    independent_values, independent_values_names, independent_values_units, parameters_str = (
+        _get_field_variables(independent_parameters=independent_parameters)
+    )
 
+    table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
+    if tb_opt == "PC":
+        table_str = table_str[:-5] + table_str[-4:]
     dependent_values = list(zip(*dependent_parameters))
 
     for idx_val, ind_vals in enumerate(list(zip(*independent_values))):
@@ -335,7 +359,7 @@ def write_table_values(
         n_loops = math.ceil(len(dep_vals) / 6)
         vals = []
         for j in range(len(dep_vals)):
-            vals.append(dep_vals[j].value)
+            vals.append(dep_vals[j])
         for i in range(n_loops):
             c1, c2, c3, c4, c5, c6 = _get_table_constants(i, vals)
             table_str += TB_DATA.format(
@@ -353,7 +377,7 @@ def write_table_values(
 def write_table_value_per_temperature(
     label: str,
     material_id: int,
-    dependent_parameters: list[Quantity],
+    dependent_parameters: list[list[float]],
     temperature_parameter: IndependentParameter,
     tb_opt: str = "",
 ) -> str:
@@ -379,7 +403,7 @@ def write_table_value_per_temperature(
         table_str += TB_TEMP.format(temp=temperature)
         vals = []
         for dep_vals in dependent_parameters:
-            vals.append(dep_vals.value[temp_idx])
+            vals.append(dep_vals[temp_idx])
         for i in range(n_loops):
             c1, c2, c3, c4, c5, c6 = _get_table_constants(i, vals)
             table_str += TB_DATA.format(
@@ -395,12 +419,20 @@ def write_table_value_per_temperature(
     return table_str
 
 
-def write_tb_points(
+def write_tb_points_for_temperature(
     label: str,
-    dependent_parameter: Quantity,
+    table_parameters: list[list[float]],
     material_id: int,
-    independent_parameters: list[IndependentParameter],
+    temperature_parameter: list[float],
     tb_opt: str,
 ) -> tuple[str, str]:
     """Write points table."""
-    pass
+    table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
+    if label == "PLASTIC":
+        table_str = table_str.replace(",,", ",", 1)
+    counts = Counter(temperature_parameter)
+    for num, count in counts.items():
+        table_str += TB_FIELD.format(type="TEMP", value=num, unit="")
+        for i in range(count):
+            table_str += TBPT.format(oper="", x=table_parameters[0][i], y=table_parameters[1][i])
+    return table_str

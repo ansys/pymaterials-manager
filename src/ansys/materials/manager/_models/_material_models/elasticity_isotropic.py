@@ -71,10 +71,16 @@ class ElasticityIsotropic(MaterialModel):
     def _write_mapdl(self, material_id: int) -> str:
         if self.independent_parameters is None:
             material_string = write_constant_property(
-                label="EX", property=self.youngs_modulus, material_id=material_id
+                label="EX",
+                property=self.youngs_modulus.value,
+                material_id=material_id,
+                unit=self.youngs_modulus.unit,
             )
             material_string += write_constant_property(
-                label="PRXY", property=self.youngs_modulus, material_id=material_id
+                label="PRXY",
+                property=self.poissons_ratio.value,
+                material_id=material_id,
+                unit=self.poissons_ratio.unit,
             )
             return material_string
         elif (
@@ -87,20 +93,23 @@ class ElasticityIsotropic(MaterialModel):
                         "EX",
                         "PRXY",
                     ],
-                    properties=[self.youngs_modulus, self.poissons_ratio],
+                    properties=[self.youngs_modulus.value, self.poissons_ratio.value],
+                    property_units=[self.youngs_modulus.unit, self.poissons_ratio.unit],
                     material_id=material_id,
                 )
                 return material_string
             else:
                 material_string = write_temperature_table_values(
                     labels=["EX"],
-                    dependent_parameters=[self.youngs_modulus],
+                    dependent_parameters=[self.youngs_modulus.value],
+                    dependent_parameters_unit=[self.youngs_modulus.unit],
                     material_id=material_id,
                     temperature_parameter=self.independent_parameters[0],
                 )
                 material_string += write_temperature_table_values(
                     labels=["PRXY"],
-                    dependent_parameters=[self.poissons_ratio],
+                    dependent_parameters=[self.poissons_ratio.value],
+                    dependent_parameters_unit=[self.poissons_ratio.unit],
                     material_id=material_id,
                     temperature_parameter=self.independent_parameters[0],
                 )
@@ -108,7 +117,7 @@ class ElasticityIsotropic(MaterialModel):
         else:
             parameters_str, table_str = write_table_values(
                 label="ELASTIC",
-                dependent_parameter=[self.youngs_modulus, self.poissons_ratio],
+                dependent_parameter=[self.youngs_modulus.value, self.poissons_ratio.value],
                 material_id=material_id,
                 independent_parameters=self.independent_parameters,
                 tb_opt="ISOT",

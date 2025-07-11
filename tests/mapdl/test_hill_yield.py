@@ -78,7 +78,8 @@ def test_hill_variable_temp():
         data = file.read()
         assert data == material_string
 
-    # def test_hill_variable_a11_a22():
+
+def test_hill_variable_a11_a22():
     hill = HillYieldCriterion(
         yield_stress_ratio_x=Quantity(
             value=[1, 1.38717930847789, 3.00721990713311, 1.2181891328774, 1, 1.38717930847789, 1],

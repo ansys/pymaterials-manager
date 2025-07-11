@@ -62,12 +62,13 @@ ELASTICITY_ANISOTROPIC_CONSTANT = os.path.join(
 def test_elasticity_isotropic_constant():
     elasticity = ElasticityIsotropic(
         youngs_modulus=Quantity(value=[1000000], units="Pa"),
-        poissons_ratio=Quantity(value=[0.3], unit=""),
+        poissons_ratio=Quantity(value=[0.3], units=""),
     )
     mock_mapdl = MagicMock(spec=_MapdlCore)
     material_string = elasticity.write_model(material_id=2, pyansys_session=mock_mapdl)
     with open(ELASTICITY_ISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
+        print(material_string)
         assert data == material_string
 
 
@@ -385,6 +386,7 @@ def test_elasticity_orthotropic_variable_a11_a22():
     )
     mock_mapdl = MagicMock(spec=_MapdlCore)
     material_string = elasticity.write_model(material_id=1, pyansys_session=mock_mapdl)
+    print(material_string)
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string
