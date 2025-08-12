@@ -38,7 +38,7 @@ sphinx-design = "^0.6.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7.3,<9.0"
-coolprop = "^6.4.1"
+coolprop = ">=6.4.1,<8.0.0"
 ansys-mapdl-core = ">=0.68"
 ansys-fluent-core = ">=0.28"
 twine = ">=4.0.2"
