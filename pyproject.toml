@@ -25,7 +25,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
-numpy = "^2.0"
+numpy = ">=1.24,<3"
 
 [tool.poetry.group.doc.dependencies]
 ansys-sphinx-theme = ">=0.12"
