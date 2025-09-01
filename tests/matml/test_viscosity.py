@@ -49,10 +49,8 @@ def test_read_constant_viscosity():
     assert viscosity.viscosity.value == [1.0]
     assert viscosity.viscosity.unit == "Pa s"
     assert viscosity.independent_parameters[0].name == "Temperature"
-    assert viscosity.independent_parameters[0].field_variable == "Temperature"
     assert viscosity.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert viscosity.independent_parameters[0].values.unit == "C"
-    assert viscosity.independent_parameters[0].field_units == "C"
     assert viscosity.independent_parameters[0].upper_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].lower_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].default_value == 22.0
@@ -70,10 +68,8 @@ def test_read_variable_viscosity():
     assert viscosity.viscosity.value.tolist() == [2.0, 3.0, 4.0]
     assert viscosity.viscosity.unit == "Pa s"
     assert viscosity.independent_parameters[0].name == "Temperature"
-    assert viscosity.independent_parameters[0].field_variable == "Temperature"
     assert viscosity.independent_parameters[0].values.value.tolist() == [22.0, 50.0, 70.0]
     assert viscosity.independent_parameters[0].values.unit == "C"
-    assert viscosity.independent_parameters[0].field_units == "C"
     assert viscosity.independent_parameters[0].upper_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].lower_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].default_value == 22.0
@@ -89,7 +85,6 @@ def test_write_constant_viscosity():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[22.0], units="C"),
                         ),
                     ],
@@ -119,7 +114,6 @@ def test_write_variable_viscosity():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[22.0, 50.0, 70.0], units="C"),
                         ),
                     ],

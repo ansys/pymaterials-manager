@@ -38,9 +38,7 @@
       <ParameterValue parameter="pa7" format="float">
         <Data>34.0, 78.0, 245.0</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
         <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">Program Controlled</Qualifier>
         <Qualifier name="Lower Limit">Program Controlled</Qualifier>
       </ParameterValue>

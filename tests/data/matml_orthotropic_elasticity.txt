@@ -50,9 +50,7 @@
       <ParameterValue parameter="pa10" format="float">
         <Data>7.88860905221012e-31</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
         <Qualifier name="Default Data">22.0</Qualifier>
-        <Qualifier name="Field Units">C</Qualifier>
         <Qualifier name="Upper Limit">1.18329135783152E-30</Qualifier>
         <Qualifier name="Lower Limit">3.94430452610506E-31</Qualifier>
       </ParameterValue>

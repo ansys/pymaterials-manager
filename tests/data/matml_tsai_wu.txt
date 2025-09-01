@@ -19,7 +19,6 @@
       <ParameterValue parameter="pa3" format="float">
         <Data>7.88860905221012e-31</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
       </ParameterValue>
     </PropertyData>
   </BulkDetails>

@@ -37,6 +37,7 @@ from ansys.materials.manager.util.mapdl.mapdl_writer import (
     write_constant_properties,
     write_interpolation_options,
     write_table_values,
+    write_temperature_reference_value,
     write_temperature_table_values,
 )
 
@@ -139,43 +140,55 @@ class ElasticityOrthotropic(MaterialModel):
                 material_id=material_id,
             )
             return material_string
-        elif (
-            len(self.independent_parameters) == 1
-            and self.independent_parameters[0].name == "Temperature"
-        ):
-            if len(self.independent_parameters[0].values.value) == 1:
-                material_string = write_constant_properties(
-                    labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
-                    properties=dependent_parameters,
-                    property_units=dependent_parameters_units,
-                    material_id=material_id,
-                )
-                return material_string
-            else:
-                material_string = write_temperature_table_values(
-                    labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
-                    dependent_parameters=dependent_parameters,
-                    dependent_parameters_unit=dependent_parameters_units,
-                    material_id=material_id,
-                    temperature_parameter=self.independent_parameters[0],
-                )
-                return material_string
-        else:
-            parameters_str, table_str = write_table_values(
-                label="ELASTIC",
-                dependent_parameters=dependent_parameters,
-                material_id=material_id,
-                independent_parameters=self.independent_parameters,
-                tb_opt="OELM",
-            )
-            material_string = parameters_str + "\n" + table_str
 
-            if self.interpolation_options:
-                interpolation_string = write_interpolation_options(
-                    interpolation_options=self.interpolation_options,
+        else:
+            material_string = ""
+            for param in self.independent_parameters:
+                if param.name == "Temperature":
+                    if param.default_value:
+                        temperature = param.default_value
+                        if temperature == "Program Controlled":
+                            temperature = 22.0
+                        material_string += write_temperature_reference_value(
+                            material_id, temperature
+                        )
+            if (
+                len(self.independent_parameters) == 1
+                and self.independent_parameters[0].name == "Temperature"
+            ):
+                if len(self.independent_parameters[0].values.value) == 1:
+                    material_string += write_constant_properties(
+                        labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                        properties=dependent_parameters,
+                        property_units=dependent_parameters_units,
+                        material_id=material_id,
+                    )
+                    return material_string
+                else:
+                    material_string += write_temperature_table_values(
+                        labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                        dependent_parameters=dependent_parameters,
+                        dependent_parameters_unit=dependent_parameters_units,
+                        material_id=material_id,
+                        temperature_parameter=self.independent_parameters[0],
+                    )
+                    return material_string
+            else:
+                parameters_str, table_str = write_table_values(
+                    label="ELASTIC",
+                    dependent_parameters=dependent_parameters,
+                    material_id=material_id,
                     independent_parameters=self.independent_parameters,
+                    tb_opt="OELM",
                 )
-                material_string += "\n" + interpolation_string
+                material_string += parameters_str + "\n" + table_str
+
+                if self.interpolation_options:
+                    interpolation_string = write_interpolation_options(
+                        interpolation_options=self.interpolation_options,
+                        independent_parameters=self.independent_parameters,
+                    )
+                    material_string += "\n" + interpolation_string
         return material_string
 
     def write_model(self, material_id: int, pyansys_session: Any) -> str:

@@ -47,13 +47,3 @@ class IndependentParameter(BaseModel):
     lower_limit: Union[str | float | None] = Field(
         default=None, title="Lower Limit", description="Lower limit of the independent parameter."
     )
-    field_variable: str | None = Field(
-        default=None,
-        title="Field Variable",
-        description="The field variable associated with the independent parameter.",
-    )
-    field_units: str | None = Field(
-        default=None,
-        title="Field Units",
-        description="The field units of the independent parameter.",
-    )

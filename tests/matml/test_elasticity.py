@@ -77,7 +77,6 @@ def test_read_constant_elastic_isotropic_material():
     assert isotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert isotropic_elasticity.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert isotropic_elasticity.independent_parameters[0].values.unit == "C"
-    assert isotropic_elasticity.independent_parameters[0].field_units == "C"
     assert isotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
     assert isotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
     assert isotropic_elasticity.independent_parameters[0].default_value == 22.0
@@ -120,8 +119,6 @@ def test_read_constant_elastic_orthotropic_material():
     assert orthotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert orthotropic_elasticity.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert orthotropic_elasticity.independent_parameters[0].values.unit == "C"
-    assert orthotropic_elasticity.independent_parameters[0].field_variable == "Temperature"
-    assert orthotropic_elasticity.independent_parameters[0].field_units == "C"
     assert orthotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
     assert orthotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
     assert orthotropic_elasticity.independent_parameters[0].default_value == 22.0
@@ -207,8 +204,6 @@ def test_read_variable_elastic_isotropic_material():
     assert isotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert isotropic_elasticity.independent_parameters[0].values.value.tolist() == [12, 21]
     assert isotropic_elasticity.independent_parameters[0].values.unit == "C"
-    assert isotropic_elasticity.independent_parameters[0].field_variable == "Temperature"
-    assert isotropic_elasticity.independent_parameters[0].field_units == "C"
     assert isotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
     assert isotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
     assert isotropic_elasticity.independent_parameters[0].default_value == 22.0
@@ -251,8 +246,6 @@ def test_read_variable_elastic_orthotropic_material():
     assert orthotropic_elasticity.independent_parameters[0].name == "Temperature"
     assert orthotropic_elasticity.independent_parameters[0].values.value.tolist() == [21, 22]
     assert orthotropic_elasticity.independent_parameters[0].values.unit == "C"
-    assert orthotropic_elasticity.independent_parameters[0].field_variable == "Temperature"
-    assert orthotropic_elasticity.independent_parameters[0].field_units == "C"
     assert orthotropic_elasticity.independent_parameters[0].upper_limit == 1.18329135783152e-30
     assert orthotropic_elasticity.independent_parameters[0].lower_limit == 3.94430452610506e-31
     assert orthotropic_elasticity.independent_parameters[0].default_value == 22.0
@@ -273,8 +266,6 @@ def test_write_constant_elastic_isotropic_material():
                             upper_limit=1.18329135783152e-30,
                             lower_limit=3.94430452610506e-31,
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
-                            field_variable="Temperarture",
-                            field_units="C",
                         )
                     ],
                     interpolation_options=InterpolationOptions(
@@ -320,8 +311,6 @@ def test_write_constant_elastic_orthotropic_material():
                             upper_limit=1.18329135783152e-30,
                             lower_limit=3.94430452610506e-31,
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
-                            field_variable="Temperature",
-                            field_units="C",
                         )
                     ],
                     interpolation_options=InterpolationOptions(
@@ -433,8 +422,6 @@ def test_write_variable_elastic_isotropic_material():
                             upper_limit=1.18329135783152e-30,
                             lower_limit=3.94430452610506e-31,
                             values=Quantity(value=[12.0, 21.0], units="C"),
-                            field_variable="Temperarture",
-                            field_units="C",
                         )
                     ],
                     interpolation_options=InterpolationOptions(
@@ -480,8 +467,6 @@ def test_write_variable_elastic_orthotropic_material():
                             upper_limit=1.18329135783152e-30,
                             lower_limit=3.94430452610506e-31,
                             values=Quantity(value=[21.0, 22.0], units="C"),
-                            field_variable="Temperarture",
-                            field_units="C",
                         )
                     ],
                     interpolation_options=InterpolationOptions(

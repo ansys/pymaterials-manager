@@ -81,7 +81,6 @@ def test_write_constant_tsai_wu():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[7.88860905221012e-31], unit="C"),
                         ),
                     ],
@@ -113,7 +112,6 @@ def test_write_variable_tsai_wu():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[22.0, 50.0, 70.0], unit="C"),
                         ),
                     ],

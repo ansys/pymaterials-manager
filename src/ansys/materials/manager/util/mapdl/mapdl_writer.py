@@ -45,6 +45,7 @@ from .mapdl_snippets_strings import (
     TBIN_EXTR,
     TBIN_NORM,
     TBPT,
+    TEMPERATURE_REFERENCE,
     USER_DEFINED_TB_FIELDS,
 )
 
@@ -446,3 +447,13 @@ def write_tb_points_for_temperature(
         for i in range(count):
             table_str += TBPT.format(oper="", x=table_parameters[0][i], y=table_parameters[1][i])
     return table_str
+
+
+def write_temperature_reference_value(material_id: int, temperature: float) -> str:
+    """
+    Write reference temperature.
+
+    Example:
+    MP,REFT,1,21,
+    """
+    return TEMPERATURE_REFERENCE.format(matid=material_id, temp=temperature)

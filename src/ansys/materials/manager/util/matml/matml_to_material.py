@@ -97,10 +97,6 @@ def convert_matml_materials(
                                     default_value=convert_to_float_or_keep(
                                         param_value.qualifiers.get("Default Data", None)
                                     ),
-                                    field_variable=param_value.qualifiers.get(
-                                        "Field Variable", None
-                                    ),
-                                    field_units=param_value.qualifiers.get("Field Units", None),
                                     upper_limit=convert_to_float_or_keep(
                                         param_value.qualifiers.get("Upper Limit", None)
                                     ),

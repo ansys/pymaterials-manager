@@ -95,8 +95,6 @@ def test_read_constant_hill_yield_no_creep():
     assert hill_yield.yield_stress_ratio_xz_for_creep == None
     assert hill_yield.yield_stress_ratio_yz_for_creep == None
     assert hill_yield.independent_parameters[0].name == "Temperature"
-    assert hill_yield.independent_parameters[0].field_variable == "Temperature"
-    assert hill_yield.independent_parameters[0].field_units == "C"
     assert hill_yield.independent_parameters[0].default_value == 22.0
     assert hill_yield.independent_parameters[0].upper_limit == "Program Controlled"
     assert hill_yield.independent_parameters[0].lower_limit == "Program Controlled"
@@ -145,8 +143,6 @@ def test_read_variable_temp_hill_yield_no_creep():
     assert hill_yield.independent_parameters[0].name == "Temperature"
     assert hill_yield.independent_parameters[0].values.value.tolist() == [34, 78, 245]
     assert hill_yield.independent_parameters[0].values.unit == "C"
-    assert hill_yield.independent_parameters[0].field_variable == "Temperature"
-    assert hill_yield.independent_parameters[0].field_units == "C"
     assert hill_yield.independent_parameters[0].default_value == 22.0
     assert hill_yield.independent_parameters[0].upper_limit == "Program Controlled"
     assert hill_yield.independent_parameters[0].lower_limit == "Program Controlled"
@@ -382,8 +378,6 @@ def test_write_constant_hill_yield_no_creep():
                             name="Temperature",
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
                             default_value=22.0,
-                            field_variable="Temperature",
-                            field_units="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -426,8 +420,6 @@ def test_write_variable_hill_yield_no_creep():
                             name="Temperature",
                             values=Quantity(value=[34.0, 78.0, 245.0], units="C"),
                             default_value=22.0,
-                            field_variable="Temperature",
-                            field_units="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),
@@ -475,8 +467,6 @@ def test_write_constant_hill_yield_creep():
                             name="Temperature",
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
                             default_value=22.0,
-                            field_variable="Temperature",
-                            field_units="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                         ),

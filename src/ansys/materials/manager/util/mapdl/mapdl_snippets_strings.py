@@ -40,6 +40,9 @@ USER_DEFINED_TB_FIELDS = """{name} = 'UF{idx:02d}' ! {unit}
 CONSTANT_MP_PROPERTY = """MP,{lab},{matid},{c0},{c1},{c2},{c3},{c4} ! {unit}
 """
 
+TEMPERATURE_REFERENCE = """MP,REFT,{matid},{temp},
+"""
+
 MP_DATA = """MPDATA,{lab},{matid},{sloc},{c1},{c2},{c3},{c4},{c5},{c6} ! {unit}
 """
 

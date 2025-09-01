@@ -122,7 +122,6 @@ def test_read_constant_strain_limit_orthotropic():
         7.88860905221012e-31
     ]
     assert orthotropic_strain_limits.independent_parameters[0].values.unit == "C"
-    assert orthotropic_strain_limits.independent_parameters[0].field_units == "C"
     assert orthotropic_strain_limits.independent_parameters[0].upper_limit == "Program Controlled"
     assert orthotropic_strain_limits.independent_parameters[0].lower_limit == "Program Controlled"
     assert orthotropic_strain_limits.independent_parameters[0].default_value == 22.0
@@ -171,7 +170,6 @@ def test_read_variable_strain_limit_orthotropic():
         23.0,
     ]
     assert orthotropic_strain_limits.independent_parameters[0].values.unit == "C"
-    assert orthotropic_strain_limits.independent_parameters[0].field_units == "C"
     assert orthotropic_strain_limits.independent_parameters[0].upper_limit == "Program Controlled"
     assert orthotropic_strain_limits.independent_parameters[0].lower_limit == "Program Controlled"
     assert orthotropic_strain_limits.independent_parameters[0].default_value == 22.0
@@ -195,9 +193,7 @@ def test_write_constant_strain_limits_orthotropic():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
-                            field_units="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                             default_value=22.0,
@@ -293,7 +289,6 @@ def test_write_variable_strain_limits_orthotropic():
                         IndependentParameter(
                             name="Temperature",
                             values=Quantity(value=[13.0, 21.0, 23.0], units="C"),
-                            field_units="C",
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
                             default_value=22.0,

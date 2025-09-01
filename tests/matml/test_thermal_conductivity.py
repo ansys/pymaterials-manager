@@ -65,7 +65,6 @@ def test_read_thermal_conductivity_isotropic_material():
     assert isotropic_conductivity.independent_parameters[0].name == "Temperature"
     assert isotropic_conductivity.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert isotropic_conductivity.independent_parameters[0].values.unit == "C"
-    assert isotropic_conductivity.independent_parameters[0].field_units == "C"
     assert isotropic_conductivity.independent_parameters[0].upper_limit == "Program Controlled"
     assert isotropic_conductivity.independent_parameters[0].lower_limit == "Program Controlled"
     assert isotropic_conductivity.independent_parameters[0].default_value == 22.0
@@ -99,9 +98,7 @@ def test_write_thermal_conductivity_isotropic():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
-                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -135,7 +132,6 @@ def test_write_thermal_conductivity_orthotropic():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
                         ),
                     ],

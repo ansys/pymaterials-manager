@@ -59,8 +59,6 @@ def test_read_constant_specific_heat_volume():
     assert specific_heat.independent_parameters[0].name == "Temperature"
     assert specific_heat.independent_parameters[0].values.value == [22.0]
     assert specific_heat.independent_parameters[0].values.unit == "C"
-    assert specific_heat.independent_parameters[0].field_variable == "Temperature"
-    assert specific_heat.independent_parameters[0].field_units == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].default_value == 22.0
@@ -82,8 +80,6 @@ def test_read_variable_specific_heat_volume():
     assert specific_heat.independent_parameters[0].name == "Temperature"
     assert specific_heat.independent_parameters[0].values.value.tolist() == [22.0, 40.0, 60.0]
     assert specific_heat.independent_parameters[0].values.unit == "C"
-    assert specific_heat.independent_parameters[0].field_variable == "Temperature"
-    assert specific_heat.independent_parameters[0].field_units == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].default_value == 22.0
@@ -108,8 +104,6 @@ def test_read_constant_specific_heat_pressure():
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].default_value == 22.0
-    assert specific_heat.independent_parameters[0].field_variable == "Temperature"
-    assert specific_heat.independent_parameters[0].field_units == "C"
     assert specific_heat.specific_heat.value == [1.0]
     assert specific_heat.specific_heat.unit == "J kg^-1 C^-1"
     assert specific_heat.interpolation_options.algorithm_type == "Linear Multivariate"
@@ -138,8 +132,6 @@ def test_read_variable_specific_heat_pressure():
     assert specific_heat.independent_parameters[0].values.unit == "C"
     assert specific_heat.independent_parameters[0].upper_limit == "Program Controlled"
     assert specific_heat.independent_parameters[0].lower_limit == "Program Controlled"
-    assert specific_heat.independent_parameters[0].field_variable == "Temperature"
-    assert specific_heat.independent_parameters[0].field_units == "C"
     assert specific_heat.independent_parameters[0].default_value == 22.0
     assert specific_heat.specific_heat.value.tolist() == [1.0, 2.0, 3.0]
     assert specific_heat.specific_heat.unit == "J kg^-1 C^-1"
@@ -166,9 +158,7 @@ def test_write_constant_specific_heat_volume():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[22.0], units="C"),
-                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -205,9 +195,7 @@ def test_write_variable_specific_heat_volume():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[22.0, 40.0, 60.0], units="C"),
-                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -244,9 +232,7 @@ def test_write_constant_specific_heat_pressure():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[22.0], units="C"),
-                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",
@@ -283,9 +269,7 @@ def test_write_variable_specific_heat_pressure():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[22.0, 40.0, 60.0], units="C"),
-                            field_units="C",
                             default_value=22.0,
                             upper_limit="Program Controlled",
                             lower_limit="Program Controlled",

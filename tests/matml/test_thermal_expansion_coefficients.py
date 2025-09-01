@@ -317,7 +317,6 @@ def test_write_constant_cte_isotropic():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
                         ),
                     ],
@@ -360,7 +359,6 @@ def test_write_constant_cte_orthotropic():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
                         ),
                     ],
@@ -401,7 +399,6 @@ def test_write_variable_cte_isotropic():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[12, 21, 24], units="C"),
                         ),
                     ],
@@ -450,7 +447,6 @@ def test_write_variable_cte_orthotropic():
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
-                            field_variable="Temperature",
                             values=Quantity(value=[12, 23, 26], units="C"),
                         ),
                     ],

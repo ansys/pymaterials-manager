@@ -68,7 +68,10 @@ def validate_and_initialize_model_qualifiers(
 
     qualifier_dict = {}
     for qualifier in values["model_qualifiers"]:
-        qualifier_dict[qualifier.name] = qualifier.value
+        if isinstance(qualifier, dict):
+            qualifier_dict[qualifier["name"]] = qualifier["value"]
+        else:
+            qualifier_dict[qualifier.name] = qualifier.value
 
     missing_qualifiers = []
 

@@ -17,9 +17,7 @@
       <ParameterValue parameter="pa2" format="float">
         <Data>-0.349065850398866, -0.261799387799149, -0.174532925199433, -0.0872664625997165, 0.0, 0.0872664625997165, 0.174532925199433, 0.261799387799149, 0.349065850398866</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Shear Angle</Qualifier>
         <Qualifier name="Default Data">0.0</Qualifier>
-        <Qualifier name="Field Units">radian</Qualifier>
         <Qualifier name="Upper Limit">0.349065850398866</Qualifier>
         <Qualifier name="Lower Limit">-0.3490658503988659</Qualifier>
       </ParameterValue>

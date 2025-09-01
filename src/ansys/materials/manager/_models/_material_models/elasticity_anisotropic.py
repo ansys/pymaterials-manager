@@ -34,7 +34,10 @@ from ansys.materials.manager._models._common import (
     validate_and_initialize_model_qualifiers,
 )
 from ansys.materials.manager._models._common._base import _MapdlCore
-from ansys.materials.manager.util.mapdl.mapdl_writer import write_table_dep_values
+from ansys.materials.manager.util.mapdl.mapdl_writer import (
+    write_table_dep_values,
+    write_temperature_reference_value,
+)
 
 
 class ElasticityAnisotropic(MaterialModel):
@@ -69,6 +72,17 @@ class ElasticityAnisotropic(MaterialModel):
         return values
 
     def _write_mapdl(self, material_id: int) -> str:
+        material_string = ""
+        if self.independent_parameters:
+            for param in self.independent_parameters:
+                if param.name == "Temperature":
+                    if param.default_value:
+                        temperature = param.default_value
+                        if temperature == "Program Controlled":
+                            temperature = 22.0
+                        material_string += write_temperature_reference_value(
+                            material_id, temperature
+                        )
         d = np.column_stack(
             (
                 self.column_1.value,
@@ -84,7 +98,7 @@ class ElasticityAnisotropic(MaterialModel):
         for j in range(6):
             dependent_values.extend(d[j:, j])
 
-        material_string = write_table_dep_values(
+        material_string += write_table_dep_values(
             material_id=material_id,
             label="ELASTIC",
             dependent_values=dependent_values,

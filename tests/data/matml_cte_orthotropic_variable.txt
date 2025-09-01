@@ -21,7 +21,6 @@
       <ParameterValue parameter="pa3" format="float">
         <Data>12, 23, 26</Data>
         <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
-        <Qualifier name="Field Variable">Temperature</Qualifier>
       </ParameterValue>
     </PropertyData>
     <PropertyData property="pr1">

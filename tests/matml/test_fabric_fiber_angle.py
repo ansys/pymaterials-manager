@@ -143,8 +143,6 @@ def test_read_variable_fabric_fiber_angle():
     assert fabric_fiber_angle.independent_parameters[0].upper_limit == 0.349065850398866
     assert fabric_fiber_angle.independent_parameters[0].lower_limit == -0.3490658503988659
     assert fabric_fiber_angle.independent_parameters[0].default_value == 0.0
-    assert fabric_fiber_angle.independent_parameters[0].field_variable == "Shear Angle"
-    assert fabric_fiber_angle.independent_parameters[0].field_units == "radian"
 
 
 def test_read_ply_type():
@@ -211,8 +209,6 @@ def test_write_variable_fabric_fiber_angle():
                                 ],
                                 units="radian",
                             ),
-                            field_variable="Shear Angle",
-                            field_units="radian",
                         )
                     ],
                     interpolation_options=InterpolationOptions(

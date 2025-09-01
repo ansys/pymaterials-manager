@@ -182,11 +182,6 @@ class MatmlWriter:
                 param_element, QUALIFIER_KEY, {"name": "Variable Type"}
             )
             qualifier_element.text = ",".join(["Independent"] * len(values.split(",")))
-            if independent_parameter.field_variable:
-                qualifier_element = ET.SubElement(
-                    param_element, QUALIFIER_KEY, {"name": "Field Variable"}
-                )
-                qualifier_element.text = independent_parameter.field_variable
             if independent_parameter.default_value is not None:
                 qualifier_element = ET.SubElement(
                     param_element, QUALIFIER_KEY, {"name": "Default Data"}
@@ -194,11 +189,6 @@ class MatmlWriter:
                 qualifier_element.text = convert_to_float_string(
                     independent_parameter.default_value
                 )
-            if independent_parameter.field_units:
-                qualifier_element = ET.SubElement(
-                    param_element, QUALIFIER_KEY, {"name": "Field Units"}
-                )
-                qualifier_element.text = independent_parameter.field_units
             if independent_parameter.upper_limit is not None:
                 qualifier_element = ET.SubElement(
                     param_element, QUALIFIER_KEY, {"name": "Upper Limit"}
