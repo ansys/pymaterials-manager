@@ -20,10 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models import (
+from ansys.materials.manager._models._common import IndependentParameter, SupportedPackage
+from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
-from ansys.materials.manager._models._common import IndependentParameter, SupportedPackage
 
 
 def test_elasticity_isotropic():
