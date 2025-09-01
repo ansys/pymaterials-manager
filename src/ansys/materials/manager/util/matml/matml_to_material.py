@@ -149,7 +149,7 @@ def convert_matml_materials(
                 obj = cls.load(arguments)
                 models.append(obj)
             else:
-                print(f"Could not find a material model for: {cls_name.split(".")[-1]}")
+                print(f"Could not find a material model for: {cls_name.split('.')[-1]}")
 
         mapdl_material = Material(name=mat_id, material_id=global_material_index, models=models)
 
