@@ -22,7 +22,7 @@
 
 import os
 
-from ansys.mapdl.core import launch_mapdl
+from ansys.mapdl.core import Mapdl
 import pytest
 
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
@@ -47,11 +47,18 @@ ELASTICITY_ORTHOTROPIC_VARIABLE = os.path.join(
     DIR_PATH, "..", "data", "mapdl_elasticity_orthotropic_variable.cdb"
 )
 
-pytest.xfail("Set up the MAPDL client")
+pytestmark = pytest.mark.mapdl_integration
 
 
-def test_constant_isotropic_elasticity_mapdl_read():
-    mapdl = launch_mapdl(version=252, override=True)
+@pytest.fixture
+def mapdl():
+    mapdl = Mapdl(ip="127.0.0.1", port="50052", local=False)
+    mapdl.prep7()
+    yield mapdl
+    mapdl.mpdele("all", "all")
+
+
+def test_constant_isotropic_elasticity_mapdl_read(mapdl):
     with open(ELASTICITY_ISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
     mapdl.prep7()
@@ -64,14 +71,9 @@ def test_constant_isotropic_elasticity_mapdl_read():
     assert material.models[0].youngs_modulus.value.tolist() == [1000000.0]
     assert material.models[0].poissons_ratio.value.tolist() == [0.3]
     assert material.models[0].independent_parameters == None
-    mapdl.exit()
 
 
-pytest.xfail("Set up the MAPDL client")
-
-
-def test_constant_orthotropic_elasticity_mapdl_read():
-    mapdl = launch_mapdl(version=252, override=True)
+def test_constant_orthotropic_elasticity_mapdl_read(mapdl):
     with open(ELASTICITY_ORTHOTROPIC_CONSTANT, "r") as file:
         data = file.read()
     mapdl.prep7()
@@ -91,14 +93,9 @@ def test_constant_orthotropic_elasticity_mapdl_read():
     assert material.models[0].poissons_ratio_yz.value.tolist() == [0.4]
     assert material.models[0].poissons_ratio_xz.value.tolist() == [0.3]
     assert material.models[0].independent_parameters == None
-    mapdl.exit()
 
 
-pytest.xfail("Set up the MAPDL client")
-
-
-def test_variable_temp_isotropic_elasticity_mapdl_read():
-    mapdl = launch_mapdl(version=252, override=True)
+def test_variable_temp_isotropic_elasticity_mapdl_read(mapdl):
     with open(ELASTICITY_ISOTROPIC_VARIABLE, "r") as file:
         data = file.read()
     mapdl.prep7()
@@ -112,14 +109,9 @@ def test_variable_temp_isotropic_elasticity_mapdl_read():
     assert material.models[0].poissons_ratio.value.tolist() == [0.35, 0.3]
     assert material.models[0].independent_parameters[0].name == "Temperature"
     assert material.models[0].independent_parameters[0].values.value.tolist() == [12, 21]
-    mapdl.exit()
 
 
-pytest.xfail("Set up the MAPDL client")
-
-
-def test_variable_temp_orthotropic_elasticity_mapdl_read():
-    mapdl = launch_mapdl(version=252, override=True)
+def test_variable_temp_orthotropic_elasticity_mapdl_read(mapdl):
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE, "r") as file:
         data = file.read()
     mapdl.prep7()
@@ -140,4 +132,3 @@ def test_variable_temp_orthotropic_elasticity_mapdl_read():
     assert material.models[0].poissons_ratio_xz.value.tolist() == [0.3, 0.31, 0.32]
     assert material.models[0].independent_parameters[0].name == "Temperature"
     assert material.models[0].independent_parameters[0].values.value.tolist() == [12, 21, 31]
-    mapdl.exit()
