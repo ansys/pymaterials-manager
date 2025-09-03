@@ -34,7 +34,7 @@ from ansys.materials.manager._models._common import (
     MaterialModel,
     UserParameter,
 )
-from ansys.materials.manager.material import Material
+from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.utils import (
     convert_to_float_string,
     create_xml_string_value,
