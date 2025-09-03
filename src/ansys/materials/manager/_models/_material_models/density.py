@@ -97,7 +97,7 @@ class Density(MaterialModel):
                 )
                 material_string += "\n" + interpolation_string
 
-        return
+        return material_string
 
     def _write_fluent(self) -> dict:
         return {
