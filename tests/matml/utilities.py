@@ -28,7 +28,7 @@ from ansys.materials.manager.util.matml.matml_to_material import convert_matml_m
 
 
 def read_matml_file(file_path):
-    parsed_data = MatmlReader.parse_from_file(str(file_path))
+    parsed_data = MatmlReader.parse_from_file(file_path)
     materials = convert_matml_materials(
         {k: v["material"] for k, v in parsed_data.items()},
         {k: v["transfer_id"] for k, v in parsed_data.items()},
