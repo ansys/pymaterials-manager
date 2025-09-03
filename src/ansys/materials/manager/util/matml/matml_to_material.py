@@ -140,7 +140,6 @@ def convert_matml_materials(
                             user_param = UserParameter(
                                 name=key_param,
                                 values=Quantity(value=data, units=units),
-                                display=value_param.qualifiers.get("Display", True),
                                 user_mat_constant=value_param.qualifiers["UserMat Constant"],
                             )
                             user_parameters.append(user_param)

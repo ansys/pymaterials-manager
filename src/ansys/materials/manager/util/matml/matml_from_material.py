@@ -225,9 +225,6 @@ class MatmlWriter:
                 param_element, QUALIFIER_KEY, {"name": "Variable Type"}
             )
             qualifier_element.text = ",".join(["Dependent"] * len(values.split(",")))
-
-            qualifier_element = ET.SubElement(param_element, QUALIFIER_KEY, {"name": "Display"})
-            qualifier_element.text = str(user_parameter.display)
             qualifier_element = ET.SubElement(
                 param_element, QUALIFIER_KEY, {"name": "UserMat Constant"}
             )

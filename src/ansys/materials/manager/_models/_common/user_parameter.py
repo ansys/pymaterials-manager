@@ -37,8 +37,3 @@ class UserParameter(BaseModel):
         title="User Material Constant",
         description="The user material constant associated with the user parameter.",
     )
-    display: bool = Field(
-        default=True,
-        title="Display",
-        description="Whether the user parameter should be displayed in the user interface.",
-    )

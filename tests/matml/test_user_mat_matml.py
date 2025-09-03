@@ -57,7 +57,6 @@ def test_read_usermat():
     assert usermat.user_parameters[0].values.value == [0.0]
     assert usermat.user_parameters[0].values.unit == ""
     assert usermat.user_parameters[0].user_mat_constant == 1
-    assert usermat.user_parameters[0].display == True
 
 
 def test_variable_user_mat():
@@ -75,12 +74,10 @@ def test_variable_user_mat():
     assert usermat.user_parameters[0].values.value.tolist() == [0.1, 0.4]
     assert usermat.user_parameters[0].values.unit == ""
     assert usermat.user_parameters[0].user_mat_constant == 1
-    assert usermat.user_parameters[0].display == True
     assert usermat.user_parameters[1].name == "beta"
     assert usermat.user_parameters[1].values.value.tolist() == [0.2, 0.8]
     assert usermat.user_parameters[0].values.unit == ""
     assert usermat.user_parameters[1].user_mat_constant == 2
-    assert usermat.user_parameters[1].display == True
 
 
 def test_write_constant_usermat():
@@ -94,7 +91,6 @@ def test_write_constant_usermat():
                             name="y",
                             values=Quantity(value=[0.0], units=""),
                             user_mat_constant=1,
-                            display=True,
                         )
                     ],
                     independent_parameters=[
@@ -131,13 +127,11 @@ def test_write_variable_usermat():
                             name="alpha",
                             values=Quantity(value=[0.1, 0.4], units=""),
                             user_mat_constant=1,
-                            display=True,
                         ),
                         UserParameter(
                             name="beta",
                             values=Quantity(value=[0.2, 0.8], units=""),
                             user_mat_constant=2,
-                            display=True,
                         ),
                     ],
                     independent_parameters=[
