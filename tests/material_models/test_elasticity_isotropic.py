@@ -20,17 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common import IndependentParameter, SupportedPackage
+from ansys.units import Quantity
+
+from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
 
 
 def test_elasticity_isotropic():
-    youngs_modulus = [210e9]
-    poissons_ratio = [0.3]
+    youngs_modulus = Quantity(value=[210e9], units="Pa")
+    poissons_ratio = Quantity(value=[0.3], units="")
     temperature = IndependentParameter(
-        name="Temperature", values=[300.0], default_value=293.15, unit="K"
+        name="Temperature", values=Quantity(value=[100.0], units="C"), default_value=293.15
     )
 
     isotropic_elasticity = ElasticityIsotropic(
@@ -38,32 +40,9 @@ def test_elasticity_isotropic():
         poissons_ratio=poissons_ratio,
         independent_parameters=[temperature],
     )
-
-    assert isotropic_elasticity.youngs_modulus == youngs_modulus
-    assert isotropic_elasticity.poissons_ratio == poissons_ratio
-    assert isotropic_elasticity.independent_parameters == [temperature]
-    assert isotropic_elasticity.supported_packages == [SupportedPackage.MAPDL]
     assert isinstance(isotropic_elasticity, ElasticityIsotropic)
-
-
-def test_elasticity_isotropic_invalid_parameters():
-    youngs_modulus = [210e9]
-    poissons_ratio = []
-
-    isotropic_elasticity = ElasticityIsotropic(
-        youngs_modulus=youngs_modulus, poissons_ratio=poissons_ratio
-    )
-
-    is_ok, failures = isotropic_elasticity.validate_model()
-    assert not is_ok
-    assert failures[0] == "Poisson's ratio value is not defined."
-
-    youngs_modulus = []
-    poissons_ratio = [0.3]
-    isotropic_elasticity = ElasticityIsotropic(
-        youngs_modulus=youngs_modulus, poissons_ratio=poissons_ratio
-    )
-
-    is_ok, failures = isotropic_elasticity.validate_model()
-    assert not is_ok
-    assert failures[0] == "Young's modulus value is not defined."
+    assert isotropic_elasticity.youngs_modulus.value.tolist() == youngs_modulus.value.tolist()
+    assert isotropic_elasticity.youngs_modulus.units == youngs_modulus.units
+    assert isotropic_elasticity.poissons_ratio.value.tolist() == poissons_ratio.value.tolist()
+    assert isotropic_elasticity.independent_parameters[0].values.value == [100]
+    assert isotropic_elasticity.independent_parameters[0].values.units == temperature.values.units

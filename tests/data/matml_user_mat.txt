@@ -8,7 +8,6 @@
       <ParameterValue parameter="pa0" format="float">
         <Data>0.0</Data>
         <Qualifier name="Variable Type">Dependent</Qualifier>
-        <Qualifier name="Display">True</Qualifier>
         <Qualifier name="UserMat Constant">1</Qualifier>
       </ParameterValue>
       <ParameterValue parameter="pa1" format="float">
