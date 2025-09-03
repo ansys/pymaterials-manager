@@ -21,7 +21,7 @@
 # # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # # SOFTWARE.
 
-# """Provides the ``MaterialManager`` class."""
+"""Provides the ``MaterialManager`` class."""
 
 # import inspect
 # from typing import Any, Dict
@@ -33,12 +33,13 @@
 # from .util.mapdl.mapdl_reader import read_mapdl
 
 
-# class MaterialManager:
-#     """
-#     Manage material creation, assignment, and other management tasks.
+class MaterialManager:
+    """
+    Manage material creation, assignment, and other management tasks.
 
-#     This class is the main entry point for the Pythonic material management interface.
-#     """
+    This class is the main entry point for the Pythonic material management interface.
+    """
+
 
 #     model_type_map: Dict[str, models._BaseModel] = {}
 #     _client: Any
