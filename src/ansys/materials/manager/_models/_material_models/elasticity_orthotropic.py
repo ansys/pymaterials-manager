@@ -134,7 +134,7 @@ class ElasticityOrthotropic(MaterialModel):
         ]
         if self.independent_parameters is None:
             material_string = write_constant_properties(
-                labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                labels=["EX", "EY", "EZ", "GXY", "GXZ", "GYZ", "PRXY", "PRXZ", "PRYZ"],
                 properties=dependent_parameters,
                 property_units=dependent_parameters_units,
                 material_id=material_id,
@@ -158,7 +158,7 @@ class ElasticityOrthotropic(MaterialModel):
             ):
                 if len(self.independent_parameters[0].values.value) == 1:
                     material_string += write_constant_properties(
-                        labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                        labels=["EX", "EY", "EZ", "GXY", "GXZ", "GYZ", "PRXY", "PRXZ", "PRYZ"],
                         properties=dependent_parameters,
                         property_units=dependent_parameters_units,
                         material_id=material_id,
@@ -166,7 +166,7 @@ class ElasticityOrthotropic(MaterialModel):
                     return material_string
                 else:
                     material_string += write_temperature_table_values(
-                        labels=["EX", "EY", "EZ", "GXY", "GXZ", "GZY", "PRXY", "PRXZ", "PRYZ"],
+                        labels=["EX", "EY", "EZ", "GXY", "GXZ", "GYZ", "PRXY", "PRXZ", "PRYZ"],
                         dependent_parameters=dependent_parameters,
                         dependent_parameters_unit=dependent_parameters_units,
                         material_id=material_id,

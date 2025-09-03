@@ -22,18 +22,16 @@
 
 """Provides the ``MaterialDataParser`` class."""
 
-from typing import Dict, List, Optional
+from typing import Dict, List
 
-import numpy as np
-
-from ansys.materials.manager._models import Constant, PiecewiseLinear, _BaseModel
+# from ansys.materials.manager._models import Constant, PiecewiseLinear, _BaseModel
 from ansys.materials.manager._models._mapdl.simple_properties import property_codes
 from ansys.materials.manager.util.common import FLOAT_VALUE_REGEX, MP_MATERIAL_HEADER_REGEX
 
 
 class _MaterialDataParser:
     @staticmethod
-    def parse_material(data: str, id_: int) -> List[_BaseModel]:
+    def parse_material(data: str, id_: int):  # -> List[_BaseModel]:
         """
         Parse the response from an `MPLIST` command.
 
@@ -93,7 +91,7 @@ class _MaterialDataParser:
         return relevant_lines
 
     @staticmethod
-    def _process_material(material_data: List[str]) -> List[_BaseModel]:
+    def _process_material(material_data: List[str]):  # -> List[_BaseModel]:
         """
         Deserialize a material into a list of material models.
 
@@ -107,7 +105,7 @@ class _MaterialDataParser:
         List[_BaseModel]
             List of models applied to this material.
         """
-        property_data: List[_BaseModel] = []
+        property_data: List = []  # [_BaseModel] = []
         property_lines: Dict[str, List[str]] = {}
         reference_temperature = None
         current_property_code = None
@@ -126,8 +124,8 @@ class _MaterialDataParser:
                 property_lines[current_property_code].append(line)
         for name, value in property_lines.items():
             property_data.append(_MaterialDataParser._process_property(name, value))
-        if reference_temperature is not None:
-            property_data.append(Constant("Strain Reference Temperature", reference_temperature))
+        # if reference_temperature is not None:
+        #     property_data.append(Constant("Strain Reference Temperature", reference_temperature))
         return property_data
 
     @staticmethod
@@ -163,7 +161,7 @@ class _MaterialDataParser:
             raise KeyError(f"Invalid property: '{property_name}'")
 
     @staticmethod
-    def _process_property(property_name: str, property_data: List[str]) -> _BaseModel:
+    def _process_property(property_name: str, property_data: List[str]):  # -> _BaseModel:
         """
         Deserialize the property data into a model representing the property.
 
@@ -182,12 +180,12 @@ class _MaterialDataParser:
         _BaseModel
             Deserialized model, either a Constant or PiecewiseLinear model at this point.
         """
-        model: Optional[_BaseModel] = None
+        model = None  #: Optional[_BaseModel] = None
         if len(property_data) == 1:
             match = FLOAT_VALUE_REGEX.search(property_data[0])
             if match:
                 property_value = float(match.group(0))
-                model = Constant(property_name, property_value)
+                # model = Constant(property_name, property_value)
         else:
             property_value = []
             parameter_value = []
@@ -195,9 +193,9 @@ class _MaterialDataParser:
                 line_values = FLOAT_VALUE_REGEX.findall(data_line)
                 parameter_value.append(float(line_values[0][0]))
                 property_value.append(float(line_values[1][0]))
-            model = PiecewiseLinear(
-                property_name, x=np.array(parameter_value), y=np.array(property_value)
-            )
+            # model = PiecewiseLinear(
+            #     property_name, x=np.array(parameter_value), y=np.array(property_value)
+            # )
 
         assert model is not None, "Invalid property data input"
         return model

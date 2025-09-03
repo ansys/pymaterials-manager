@@ -70,6 +70,7 @@ from .kinematic_hardening import (
 from .larc03_04_constants import (
     LaRc0304Constants,
 )
+from .molecular_weight import MolecularWeight
 from .ply_type import (
     PlyType,
 )

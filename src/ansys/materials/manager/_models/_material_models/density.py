@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Any, Literal, Sequence
 
 from ansys.units import Quantity
 from pydantic import Field
 
 from ansys.materials.manager._models._common import MaterialModel, ParameterField, SupportedPackage
-from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager._models._common._base import _FluentCore, _MapdlCore
 from ansys.materials.manager.util.mapdl import (
     write_constant_property,
     write_interpolation_options,
@@ -45,7 +45,7 @@ class Density(MaterialModel):
         matml_name="Density",
     )
     supported_packages: list[SupportedPackage] = Field(
-        default=[SupportedPackage.MAPDL],
+        default=[SupportedPackage.MAPDL, SupportedPackage.FLUENT],
         title="Supported Packages",
         description="The list of supported packages.",
         frozen=True,
@@ -97,13 +97,27 @@ class Density(MaterialModel):
                 )
                 material_string += "\n" + interpolation_string
 
-        return material_string
+        return
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> str:
+    def _write_fluent(self) -> dict:
+        return {
+            "density": {
+                "option": "constant",
+                "value": (
+                    self.density.value[0]
+                    if isinstance(self.density.value, Sequence)
+                    else self.density.value
+                ),
+            }
+        }
+
+    def write_model(self, material_id: int, pyansys_session: Any) -> str | dict:
         """Write this model to the specified session."""
         self.validate_model()
         if isinstance(pyansys_session, _MapdlCore):
-            material_string = self._write_mapdl(material_id)
+            material = self._write_mapdl(material_id)
+        elif isinstance(pyansys_session, _FluentCore):
+            material = self._write_fluent()
         else:
             raise Exception("The session is not supported.")
-        return material_string
+        return material
