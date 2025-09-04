@@ -89,26 +89,26 @@ TB_MATERIAL_MODELS = {
     },
     "HillYieldCriterion::Separated Hill Potentials for Plasticity and Creep::Yes": {},
     "ElasticityOrthotropic": {
-        "c 1": "youngs_modulus_x",
-        "c 2": "youngs_modulus_y",
-        "c 3": "youngs_modulus_z",
-        "c 4": "shear_modulus_xy",
-        "c 5": "shear_modulus_yz",
-        "c 6": "shear_modulus_xz",
-        "c 7": "poissons_ratio_xy",
-        "c 8": "poissons_ratio_yz",
-        "c 9": "poissons_ratio_xz",
+        "c1": "youngs_modulus_x",
+        "c2": "youngs_modulus_y",
+        "c3": "youngs_modulus_z",
+        "c4": "shear_modulus_xy",
+        "c5": "shear_modulus_yz",
+        "c6": "shear_modulus_xz",
+        "c7": "poissons_ratio_xy",
+        "c8": "poissons_ratio_yz",
+        "c9": "poissons_ratio_xz",
     },
     "ElasticityAnisotropic": {
-        "c 1": "c1",
-        "c 2": "c2",
-        "c 3": "c3",
-        "c 4": "c4",
-        "c 5": "c5",
-        "c 6": "c6",
-        "c 7": "c7",
-        "c 8": "c8",
-        "c 9": "c9",
+        "c1": "c1",
+        "c2": "c2",
+        "c3": "c3",
+        "c4": "c4",
+        "c5": "c5",
+        "c6": "c6",
+        "c7": "c7",
+        "c8": "c8",
+        "c9": "c9",
         "c10": "c10",
         "c11": "c11",
         "c12": "c12",
@@ -263,6 +263,9 @@ def _parse_tb_table(table_str: str) -> dict:
         parts = line.split()
         if all(part.replace(".", "", 1).isdigit() for part in parts):  # skip header row
             continue
+        if len(parts) > 2:
+            if parts[0] == "C" and type(_try_parse_value(parts[1])) == int:
+                parts = [parts[0] + parts[1]] + parts[2:]
         key = parts[0]
         if (
             key.lower() in skip_lines
@@ -308,8 +311,8 @@ def _parse_tb_table_to_dict(class_name: str, table_str: str) -> dict:
         independent_variables = []
         material_key = material_model.keys()
         for key, values in tb_filtered.items():
-            if key in material_key:
-                built_model[material_model[key]] = {"value": values, "units": ""}
+            if key.lower() in material_key:
+                built_model[material_model[key.lower()]] = {"value": values, "units": ""}
                 remaining_fields.pop(key)
             if key in interpolation_fields.keys():
                 interpolation_options[key] = values[0]
@@ -324,16 +327,14 @@ def _parse_tb_table_to_dict(class_name: str, table_str: str) -> dict:
                 lower_dict[key] = value
 
         for key, value in upper_dict.items():
-            independent_variables.append(
-                {
-                    "name": key,
-                    "values": {"value": value, "units": ""},
-                    "lower_limit": lower_dict[key.lower()][0],
-                    "upper_limit": lower_dict[key.lower()][1],
-                    "default_value": lower_dict[key.lower()][-1],
-                }
-            )
-
+            variable = {}
+            variable["name"] = key
+            variable["values"] = {"value": value, "units": ""}
+            if key.lower() in lower_dict.keys():
+                variable["lower_limit"] = lower_dict[key.lower()][0]
+                variable["upper_limit"] = lower_dict[key.lower()][1]
+                variable["default_value"] = lower_dict[key.lower()][-1]
+            independent_variables.append(variable)
         if len(independent_variables) > 0:
             built_model["independent_parameters"] = independent_variables
         if len(interpolation_options.keys()) > 0:

@@ -46,6 +46,9 @@ ELASTICITY_ISOTROPIC_VARIABLE = os.path.join(
 ELASTICITY_ORTHOTROPIC_VARIABLE = os.path.join(
     DIR_PATH, "..", "data", "mapdl_elasticity_orthotropic_variable.cdb"
 )
+ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22 = os.path.join(
+    DIR_PATH, "..", "data", "mapdl_elasticity_orthotropic_variable_a11_a22.cdb"
+)
 
 pytestmark = pytest.mark.mapdl_integration
 
@@ -132,3 +135,138 @@ def test_variable_temp_orthotropic_elasticity_mapdl_read(mapdl):
     assert material.models[0].poissons_ratio_xz.value.tolist() == [0.3, 0.31, 0.32]
     assert material.models[0].independent_parameters[0].name == "Temperature"
     assert material.models[0].independent_parameters[0].values.value.tolist() == [12, 21, 31]
+
+
+def test_variable_a11_a22_orthotropic_elasticity_mapdl_read(mapdl):
+    with open(ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22, "r") as file:
+        data = file.read()
+    mapdl.prep7()
+    mapdl.input_strings(data)
+    materials = read_mapdl(mapdl)
+    material_name = "MATERIAL NUMBER 1"
+    assert material_name in materials.keys()
+    material = materials[material_name]
+    assert isinstance(material.models[0], ElasticityOrthotropic)
+    assert material.models[0].youngs_modulus_x.value.tolist() == [
+        100.0,
+        200.0,
+        300.0,
+        100.0,
+        200.0,
+        300.0,
+        100.0,
+        200.0,
+        300.0,
+    ]
+    assert material.models[0].youngs_modulus_y.value.tolist() == [
+        110.0,
+        210.0,
+        310.0,
+        110.0,
+        210.0,
+        310.0,
+        110.0,
+        210.0,
+        310.0,
+    ]
+    assert material.models[0].youngs_modulus_z.value.tolist() == [
+        120.0,
+        220.0,
+        320.0,
+        120.0,
+        220.0,
+        320.0,
+        120.0,
+        220.0,
+        320.0,
+    ]
+    assert material.models[0].shear_modulus_xy.value.tolist() == [
+        10.0,
+        20.0,
+        30.0,
+        10.0,
+        20.0,
+        30.0,
+        10.0,
+        20.0,
+        30.0,
+    ]
+    assert material.models[0].shear_modulus_yz.value.tolist() == [
+        11.0,
+        21.0,
+        31.0,
+        11.0,
+        21.0,
+        31.0,
+        11.0,
+        21.0,
+        31.0,
+    ]
+    assert material.models[0].shear_modulus_xz.value.tolist() == [
+        12.0,
+        22.0,
+        32.0,
+        12.0,
+        22.0,
+        32.0,
+        12.0,
+        22.0,
+        32.0,
+    ]
+    assert material.models[0].poissons_ratio_xy.value.tolist() == [
+        0.1,
+        0.2,
+        0.3,
+        0.1,
+        0.2,
+        0.3,
+        0.1,
+        0.2,
+        0.3,
+    ]
+    assert material.models[0].poissons_ratio_yz.value.tolist() == [
+        0.11,
+        0.21,
+        0.31,
+        0.11,
+        0.21,
+        0.31,
+        0.11,
+        0.21,
+        0.31,
+    ]
+    assert material.models[0].poissons_ratio_xz.value.tolist() == [
+        0.12,
+        0.22,
+        0.32,
+        0.12,
+        0.22,
+        0.32,
+        0.12,
+        0.22,
+        0.32,
+    ]
+    assert material.models[0].independent_parameters[0].name == "UF01"
+    assert material.models[0].independent_parameters[0].values.value.tolist() == [
+        0.0,
+        0.5,
+        1.0,
+        0.0,
+        0.5,
+        1.0,
+        0.0,
+        0.5,
+        1.0,
+    ]
+    assert material.models[0].independent_parameters[1].name == "UF02"
+    assert material.models[0].independent_parameters[1].values.value.tolist() == [
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.5,
+        0.5,
+        1.0,
+        1.0,
+        1.0,
+    ]
