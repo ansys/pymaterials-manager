@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>isotropic material with variable strain limit</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Behavior">Isotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>2333, 2324, 2432</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>23, 25, 27</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

@@ -1,3 +1,3 @@
 [codespell]
-skip = *.lock,*.toml
+skip = *.lock,*.toml, *cdb
 ignore-words = ./doc/styles/config/vocabularies/ANSYS/accept.txt

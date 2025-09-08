@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>SFRP Temp Dependent</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Definition">Multilinear</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>29.52801806, 30.93946596, 31.56895322, 32.83324607, 34.28804632, 35.45779394, 36.7206105, 37.86550163, 38.9800331, 40.37409873</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent,Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>0.0, 0.000175189, 0.000257223, 0.00043005, 0.000643825, 0.0, 0.00104416, 0.001255108, 0.001477263, 0.00178269</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>22, 22, 22, 22, 22, 45, 45, 45, 45, 45</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent,Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>
