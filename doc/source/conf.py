@@ -81,6 +81,11 @@ numpydoc_validation_checks = {
     # type, unless multiple values are being returned"
 }
 
+numpydoc_validation_exclude = {
+    "__cause__",
+    "__context__",
+}
+
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
 
