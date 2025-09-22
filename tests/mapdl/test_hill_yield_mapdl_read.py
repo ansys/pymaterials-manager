@@ -42,7 +42,7 @@ def mapdl():
     mapdl.mpdele("all", "all")
 
 
-def test_variable_a11_a22_hill_yield_mapdl_read(mapld):
+def test_variable_a11_a22_hill_yield_mapdl_read(mapdl):
     with open(HILL_VARIABLE_A11_A22, "r") as file:
         data = file.read()
     mapdl.prep7()
