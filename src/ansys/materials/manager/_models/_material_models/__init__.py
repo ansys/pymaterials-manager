@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common._base import _BaseModel
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
 
 from .cofficient_of_thermal_expansion_isotropic import (
