@@ -211,13 +211,15 @@ jobs:
     needs: build
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@v9
+        uses: ansys/actions/doc-deploy-dev@v10.1.1
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
           bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
           doc-artifact-name: "documentation-html"
+          optional-dependencies-name: ""
+          group-dependencies-name: "doc"
 
   release:
     name: Release project
