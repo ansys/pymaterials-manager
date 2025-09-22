@@ -49,6 +49,7 @@ def mapdl():
 
 
 def test_density_orthotropic_elasticity_variable_mapdl_read(mapdl):
+    mapdl.mpdele("all", "all")
     with open(VARIABLE_DENSITY_TEMP, "r") as file:
         data = file.read()
     mapdl.input_strings(data)
