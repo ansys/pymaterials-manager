@@ -192,12 +192,8 @@ jobs:
 
       - name: Install dependencies and build the library
         run: |
-          python -m pip uninstall -y poetry || true
-          python -m pip install --upgrade pip 'poetry>=1.2.0'
-          which poetry
-          poetry --version
-          poetry debug info
-          poetry install --with doc
+          python -m pip install --upgrade pip poetry
+          poetry install --extras "doc"
           poetry build
           poetry run twine check dist/*
 
