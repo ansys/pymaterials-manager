@@ -34,7 +34,7 @@ HILL_VARIABLE_A11_A22 = os.path.join(DIR_PATH, "..", "data", "mapdl_hill_variabl
 pytestmark = pytest.mark.mapdl_integration
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def mapdl():
     mapdl = Mapdl(ip="127.0.0.1", port="50052", local=False)
     mapdl.prep7()

@@ -35,7 +35,7 @@ VARIABLE_DENSITY_TEMP = os.path.join(DIR_PATH, "..", "data", "mapdl_density_vari
 pytestmark = pytest.mark.mapdl_integration
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def mapdl():
     mapdl = Mapdl(ip="127.0.0.1", port="50052", local=False)
     mapdl.prep7()
