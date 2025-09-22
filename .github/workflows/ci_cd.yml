@@ -179,6 +179,7 @@ jobs:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           optional-dependencies-name: ""
           group-dependencies-name: "doc"
+          sphinxopts: -j auto --keep-going
 
   build:
     name: Build library
