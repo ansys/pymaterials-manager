@@ -19,6 +19,20 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+try:
+    from ansys.mapdl.core.mapdl import MapdlBase as _MapdlCore
+except ImportError:
+    try:
+        from ansys.mapdl.core.mapdl import _MapdlCore
+    except ImportError:
+        _MapdlCore = type(None)
+
+try:
+    from ansys.fluent.core.session_solver import Solver as _FluentCore
+except ImportError:
+    _FluentCore = type(None)
+
 from ._packages import SupportedPackage
 from .common import (
     ParameterField,

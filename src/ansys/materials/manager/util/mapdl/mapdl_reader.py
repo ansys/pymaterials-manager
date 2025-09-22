@@ -27,7 +27,7 @@ import inspect
 
 from pydantic import BaseModel
 
-from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 import ansys.materials.manager._models._material_models as PydanticModels
 from ansys.materials.manager._models.material import Material

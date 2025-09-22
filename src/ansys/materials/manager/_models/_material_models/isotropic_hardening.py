@@ -30,9 +30,9 @@ from ansys.materials.manager._models._common import (
     MaterialModel,
     ParameterField,
     QualifierType,
+    _MapdlCore,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager._models._common._base import _MapdlCore
 from ansys.materials.manager.util.mapdl.mapdl_writer import write_tb_points_for_temperature
 
 

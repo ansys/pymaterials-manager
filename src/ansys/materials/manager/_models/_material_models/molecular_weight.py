@@ -25,8 +25,12 @@ from typing import Literal, Sequence
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField, SupportedPackage
-from ansys.materials.manager._models._common._base import _FluentCore
+from ansys.materials.manager._models._common import (
+    MaterialModel,
+    ParameterField,
+    SupportedPackage,
+    _FluentCore,
+)
 
 
 class MolecularWeight(MaterialModel):

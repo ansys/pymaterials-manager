@@ -25,7 +25,7 @@ from unittest.mock import MagicMock
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models import IsotropicHardening
 

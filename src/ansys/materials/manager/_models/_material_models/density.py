@@ -25,8 +25,13 @@ from typing import Any, Literal, Sequence
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField, SupportedPackage
-from ansys.materials.manager._models._common._base import _FluentCore, _MapdlCore
+from ansys.materials.manager._models._common import (
+    MaterialModel,
+    ParameterField,
+    SupportedPackage,
+    _FluentCore,
+    _MapdlCore,
+)
 from ansys.materials.manager.util.mapdl import (
     write_constant_property,
     write_interpolation_options,

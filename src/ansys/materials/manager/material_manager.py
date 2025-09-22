@@ -27,7 +27,7 @@
 # from typing import Any, Dict
 
 # import ansys.materials.manager._models as models
-# from ansys.materials.manager._models._common._base import _FluentCore, _MapdlCore
+# from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
 
 # from .material import Material
 # from .util.mapdl.mapdl_reader import read_mapdl

@@ -25,8 +25,11 @@ from unittest.mock import MagicMock
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import IndependentParameter, InterpolationOptions
-from ansys.materials.manager._models._common._base import _MapdlCore
+from ansys.materials.manager._models._common import (
+    IndependentParameter,
+    InterpolationOptions,
+    _MapdlCore,
+)
 from ansys.materials.manager._models._material_models import ElasticityIsotropic
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
