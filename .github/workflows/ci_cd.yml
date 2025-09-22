@@ -192,6 +192,7 @@ jobs:
 
       - name: Install dependencies and build the library
         run: |
+          python -m pip uninstall -y poetry
           python -m pip install --upgrade pip 'poetry>=1.2.0'
           poetry install --with doc
           poetry build
