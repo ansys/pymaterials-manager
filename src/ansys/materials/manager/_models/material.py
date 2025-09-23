@@ -118,9 +118,13 @@ class Material:
         self._models.extend(value)
         self._check_unique_models()
 
-    def get_model_by_name(self, model_name: str) -> MaterialModel:
+    def get_model_by_name(self, model_name: str) -> MaterialModel | None:
         """Get the material model with a given model name."""
-        return [model for model in self.models if model.name.lower() == model_name.lower()][0]
+        model = None
+        for mat_model in self.models:
+            if model_name.lower() == mat_model.name.lower():
+                model = mat_model
+        return model
 
     def write_material(self, pyansys_session: Any, material_id: int, unit_system: Any = None):
         """Write material to the pyansys session."""

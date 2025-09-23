@@ -188,7 +188,7 @@ class HillYieldCriterion(MaterialModel):
             ]
             tb_opt = "PC"
 
-        if self.independent_parameters is None:
+        if not self.independent_parameters:
             dependent_values = [
                 dep_val[0] for dep_val in dependent_values if isinstance(dep_val, np.ndarray)
             ]

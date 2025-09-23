@@ -70,7 +70,7 @@ class ElasticityIsotropic(MaterialModel):
         return values
 
     def _write_mapdl(self, material_id: int) -> str:
-        if self.independent_parameters is None:
+        if not self.independent_parameters:
             material_string = write_constant_property(
                 label="EX",
                 property=self.youngs_modulus.value,

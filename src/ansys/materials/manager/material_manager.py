@@ -130,20 +130,18 @@ class MaterialManager:
                 )
         self.materials |= material_dic
 
-    def write_material(self, material_name: str, material_id: int | None) -> None:
+    def write_material(self, material_name: str, material_id: int | None = None) -> None:
         """Write material to the pyansys session."""
-        if material_id is None:
-            # this is a placeholder to have a functionality to automatically set the material id
-            # available in the pyansys client.
-            print("Material has not been written as the id has not been provided.")
-            return
         material = self._materials.get(material_name, None)
         if not material:
             print(f"Material with name {material_name} has not been found in the library.")
             return
+        if material_id is None:
+            material_id = material.mat_id
         if not self.client:
             print("The pyansys session has not been defined.")
             return
+        material.write_material(self._client, material_id)
 
         material.write_material(self._client, material_id)
 

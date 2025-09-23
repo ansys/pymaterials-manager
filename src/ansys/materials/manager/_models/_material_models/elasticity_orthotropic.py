@@ -132,7 +132,7 @@ class ElasticityOrthotropic(MaterialModel):
             self.poissons_ratio_yz.unit,
             self.poissons_ratio_xz.unit,
         ]
-        if self.independent_parameters is None:
+        if not self.independent_parameters:
             material_string = write_constant_properties(
                 labels=["EX", "EY", "EZ", "GXY", "GXZ", "GYZ", "PRXY", "PRXZ", "PRYZ"],
                 properties=dependent_parameters,
