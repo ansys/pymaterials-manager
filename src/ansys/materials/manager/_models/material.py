@@ -36,7 +36,7 @@ class Material:
 
     name: str
     models: List[MaterialModel]
-    _id: str
+    _mat_id: str
     _guid: str
 
     def __init__(
@@ -63,7 +63,7 @@ class Material:
             Unique identifier for the material.
         """
         self.name = name
-        self._id = material_id
+        self._mat_id = material_id
         if uuid is not None:
             self._guid = guid
         else:
@@ -80,6 +80,15 @@ class Material:
     @guid.setter
     def guid(self, value: str) -> None:
         self._guid = value
+
+    @property
+    def mat_id(self) -> int:
+        """The material id."""
+        return self._mat_id
+
+    @mat_id.setter
+    def mat_id(self, value: int) -> None:
+        self._mat_id = value
 
     @property
     def models(self) -> list[MaterialModel]:
