@@ -23,14 +23,16 @@
 
 """Provides the ``MaterialManager`` class."""
 
-# import inspect
-# from typing import Any, Dict
+from pathlib import Path
+from typing import Any
 
-# import ansys.materials.manager._models as models
-# from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
-
-# from .material import Material
-# from .util.mapdl.mapdl_reader import read_mapdl
+from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
+from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
+from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.matml_parser import MatmlReader
+from ansys.materials.manager.util.matml.matml_to_material import convert_matml_materials
 
 
 class MaterialManager:
@@ -40,82 +42,120 @@ class MaterialManager:
     This class is the main entry point for the Pythonic material management interface.
     """
 
+    _materials: dict[str, Material]
+    _client: Any | None
 
-#     model_type_map: Dict[str, models._BaseModel] = {}
-#     _client: Any
+    def __init__(self, client: Any | None):
+        """Initialize the material manager instance."""
+        self._client = client
+        self._materials = {}
 
-#     def __init__(self, pyansys_client: Any):
-#         """
-#         Create a ``MaterialManager`` object ready for use.
+    @property
+    def materials(self) -> dict[str, Material]:
+        """The material models."""
+        return self._materials
 
-#         Parameters
-#         # ----------
-#         pyansys_client : Any
-#             Valid instance of a PyAnsys client. Only PyMAPDL and PyFluent are
-#             supported currently.
-#         """
-#         self._client = pyansys_client
-#         # response = inspect.getmembers(models, self.__is_subclass_predicate)
-#         # model_classes: List[models._BaseModel] = [tple[1] for tple in response]
-#         # for class_ in model_classes:
-#         #     supported_model_codes = class_.model_codes
-#         #     for model_code in supported_model_codes:
-#         #         self.model_type_map[model_code] = class_
+    @property
+    def client(self) -> Any:
+        """The provided client."""
+        return self._client
 
-#     @staticmethod
-#     def __is_subclass_predicate(obj: object) -> bool:
-#         """
-#         Determine if an object is a strict subclass of the :obj:`models._BaseModel` class.
+    @client.setter
+    def client(self, value: Any) -> None:
+        self._client = value
 
-#         Parameters
-#         ----------
-#         obj : object
-#             Any Python object.
+    def add_material(self, material: Material) -> None:
+        """Add a material into the library."""
+        material_found = self.materials.get(material.name, None)
+        if material_found is None:
+            self.materials[material.name] = material
+            print(f"The material with name {material.name} was added to the library.")
+            # TODO: we might need to consider taking care of the ids and uids probably
+        else:
+            raise Exception(
+                f"The material with name {material.name} is already present in the library."
+            )
 
-#         Returns
-#         -------
-#         bool
-#             ``True`` if the object is strictly a subclass of the :obj:`models._BaseModel`
-#             class, ``False`` otherwise.
-#         """
-#         return (
-#             isinstance(obj, type)
-#             and issubclass(obj, models._BaseModel)
-#             and not inspect.isabstract(obj)
-#         )
+    def extend_material(self, material_name: str, material_models: list[MaterialModel]) -> None:
+        """Extend the models defined within a specific material."""
+        material = self.materials.get(material_name, None)
+        if material is not None:
+            material.append_models(material_models)
+        else:
+            print(f"The material with name {material_name} was not found.")
 
-#     def write_material(self, material: Material) -> None:
-#         """
-#         Write a material to the solver.
+    def delete_material(self, material_name: str):
+        """Delete a material from the library."""
+        material = self.materials.pop(material_name, None)
+        if material is None:
+            print(f"The material with name {material_name} was not found.")
 
-#         Parameters
-#         ----------
-#         material : Material
-#             Material object to write to solver.
-#         """
-#         for model in material.models:
-#             assert isinstance(model, models._BaseModel)
-#             model.write_model(material, self._client)
+    def read_from_matml(self, path: str | Path) -> None:
+        """Read materials from a MatML file and add them to the library."""
+        parsed_data = MatmlReader.parse_from_file(path)
+        materials = convert_matml_materials(
+            {k: v["material"] for k, v in parsed_data.items()},
+            {k: v["transfer_id"] for k, v in parsed_data.items()},
+            0,
+        )
+        material_dic = {material.name: material for material in materials}
+        if not self.materials:
+            self._materials = material_dic
+        else:
+            self._add_library(material_dic)
+        print("The materials were correctly read from the provided xml file.")
 
-#     def read_materials_from_session(self) -> Dict[str, Material]:
-#         """
-#         Given a PyAnsys session, return the materials present.
+    def write_to_matml(self, path: str | Path) -> None:
+        """Write the materials in the library to a MatML file."""
+        writer = MatmlWriter(self.materials.values())
+        writer.export(str(path), indent=True)
+        print(f"{len(self.materials)} materials written to {path}.")
 
-#         This method only supports PyMAPDL currently.
+    def get_material(self, material_name) -> Material | None:
+        """Return a material from the library."""
+        material = self.materials.get(material_name, None)
+        if material is None:
+            print(f"The material with name {material_name} was not found in the library.")
+        return material
 
-#         Returns
-#         -------
-#         Dict[str, Material]
-#             Materials in the current session, indexed by an ID. For MAPDL, this is the material
-#             ID. For Fluent, this is the material name.
-#         """
-#         if isinstance(self._client, _MapdlCore):
-#             return self._read_mapdl()
-#         elif isinstance(self._client, _FluentCore):
-#             return self._read_fluent()
+    def _add_library(self, material_dic: dict[str, Material]):
+        """Add a material dictionary to the library."""
+        for material in material_dic.values():
+            if material.name in self.materials:
+                raise Exception(
+                    (
+                        f"The materials were not added to the library as {material.name}",
+                        "is already present.",
+                    )
+                )
+        self.materials |= material_dic
 
-#     def _read_mapdl(self) -> Dict[str, Material]:
-#         return read_mapdl(self._client)
+    def write_material(self, material_name: str, material_id: int | None) -> None:
+        """Write material to the pyansys session."""
+        if material_id is None:
+            # this is a placeholder to have a functionality to automatically set the material id
+            # available in the pyansys client.
+            print("Material has not been written as the id has not been provided.")
+            return
+        material = self._materials.get(material_name, None)
+        if not material:
+            print(f"Material with name {material_name} has not been found in the library.")
+            return
+        if not self.client:
+            print("The pyansys session has not been defined.")
+            return
 
-#     def _read_fluent(self) -> Dict[str, Material]:
-#         return []
+        material.write_material(self._client, material_id)
+
+    def read_from_client_session(self) -> None:
+        """Read material from the pyansys client session."""
+        if isinstance(self._client, _MapdlCore):
+            try:
+                materials = read_mapdl(self._client)
+                self._add_library(materials)
+            except:
+                print("Not Supported material models defined.")
+        elif isinstance(self._client, _FluentCore):
+            raise NotImplementedError("The method has not been implemented yet.")
+        else:
+            print("Not valid pyansys session.")
