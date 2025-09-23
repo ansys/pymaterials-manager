@@ -128,7 +128,7 @@ class MaterialManager:
                         "is already present.",
                     )
                 )
-        self.materials |= material_dic
+        self._materials |= material_dic
 
     def write_material(self, material_name: str, material_id: int | None = None) -> None:
         """Write material to the pyansys session."""
@@ -148,11 +148,8 @@ class MaterialManager:
     def read_from_client_session(self) -> None:
         """Read material from the pyansys client session."""
         if isinstance(self._client, _MapdlCore):
-            try:
-                materials = read_mapdl(self._client)
-                self._add_library(materials)
-            except:
-                print("Not Supported material models defined.")
+            materials = read_mapdl(self._client)
+            self._add_library(materials)
         elif isinstance(self._client, _FluentCore):
             raise NotImplementedError("The method has not been implemented yet.")
         else:

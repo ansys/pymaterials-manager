@@ -31,8 +31,6 @@ from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
 
-# from ansys.materials.manager._models import Material
-
 
 class MaterialModel(BaseModel, abc.ABC):
     """A base class for representing a material models."""

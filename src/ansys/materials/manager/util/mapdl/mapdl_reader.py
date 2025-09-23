@@ -144,6 +144,10 @@ def _parse_mp_temp_table(raw_data: str) -> tuple[dict, list[str]]:
         elif line.startswith("TEMP"):
             current_section = line.split()[1]
             result[material_number][current_section] = []
+        elif line.startswith("REFT"):
+            current_section = line.split()[0]
+            value = float(line.split()[-1])
+            result[material_number][current_section] = {"value": value}
         # Parse value-only rows
         elif current_section:
             parts = line.split()
@@ -161,6 +165,10 @@ def _parse_mp_temp_table(raw_data: str) -> tuple[dict, list[str]]:
 
 def _extract_defined_models_for_material(material_model_dict: dict):
     defined_models = {}
+    reft = None
+    if "REFT" in material_model_dict.keys():
+        reft = material_model_dict["REFT"]
+        material_model_dict.pop("REFT")
     for model_name, model_properties in MP_MATERIAL_MODELS.items():
         if all(key in material_model_dict.keys() for key in model_properties.keys()):
             defined_properties = {}
@@ -196,6 +204,19 @@ def _extract_defined_models_for_material(material_model_dict: dict):
                         "values": {"value": temperature_parameter[0]["Temperature"], "units": ""},
                     }
                 ]
+                if reft:
+                    defined_properties["independent_parameters"][0]["default_value"] = [
+                        reft["value"]
+                    ]
+            else:
+                if reft:
+                    defined_properties["independent_parameters"] = [
+                        {
+                            "name": "Temperature",
+                            "values": {"value": [reft["value"]], "units": ""},
+                            "default_value": reft["value"],
+                        }
+                    ]
 
             defined_models[model_name] = defined_properties
 
