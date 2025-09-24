@@ -45,7 +45,7 @@ class MaterialManager:
     _materials: dict[str, Material]
     _client: Any | None
 
-    def __init__(self, client: Any | None):
+    def __init__(self, client: Any | None = None):
         """Initialize the material manager instance."""
         self._client = client
         self._materials = {}
