@@ -130,7 +130,7 @@ class ElasticityIsotropic(MaterialModel):
             else:
                 parameters_str, table_str = write_table_values(
                     label="ELASTIC",
-                    dependent_parameter=[self.youngs_modulus.value, self.poissons_ratio.value],
+                    dependent_parameters=[self.youngs_modulus.value, self.poissons_ratio.value],
                     material_id=material_id,
                     independent_parameters=self.independent_parameters,
                     tb_opt="ISOT",
