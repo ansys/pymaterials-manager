@@ -107,7 +107,7 @@ class ThermalConductivityIsotropic(MaterialModel):
             else:
                 parameters_str, table_str = write_table_values(
                     label="THERM",
-                    dependent_parameter=[self.thermal_conductivity.value],
+                    dependent_parameters=[self.thermal_conductivity.value],
                     material_id=material_id,
                     independent_parameters=self.independent_parameters,
                     tb_opt="COND",

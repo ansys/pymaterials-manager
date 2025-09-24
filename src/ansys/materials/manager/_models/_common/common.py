@@ -94,7 +94,7 @@ def validate_and_initialize_model_qualifiers(
             else:
                 raise ValueError(f"Unknown qualifier type: {value[1]}")
         else:
-            missing_qualifiers.append(ModelQualifier(name=key, value=value))
+            missing_qualifiers.append(ModelQualifier(name=key, value=value[0]))
 
     return missing_qualifiers + inputed_qualifiers
 

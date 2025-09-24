@@ -1,0 +1,58 @@
+Orientation Tensor A11 = 'UF01' ! Orientation Tensor A11
+Orientation Tensor A22 = 'UF02' ! Orientation Tensor A22
+
+TB,CTE,4,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBDATA,1,0.12,,,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBDATA,1,0.22,,,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBDATA,1,0.32,,,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBDATA,1,0.12,,,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBDATA,1,0.22,,,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBDATA,1,0.32,,,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBDATA,1,0.12,,,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBDATA,1,0.22,,,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBDATA,1,0.32,,,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBDATA,1,0.12,,,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBDATA,1,0.22,,,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.0, ! Orientation Tensor A22
+TBDATA,1,0.32,,,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBDATA,1,0.12,,,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBDATA,1,0.22,,,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,0.5, ! Orientation Tensor A22
+TBDATA,1,0.32,,,,,
+TBFIELD,Orientation Tensor A11,0.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBDATA,1,0.12,,,,,
+TBFIELD,Orientation Tensor A11,0.5, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBDATA,1,0.22,,,,,
+TBFIELD,Orientation Tensor A11,1.0, ! Orientation Tensor A11
+TBFIELD,Orientation Tensor A22,1.0, ! Orientation Tensor A22
+TBDATA,1,0.32,,,,,
