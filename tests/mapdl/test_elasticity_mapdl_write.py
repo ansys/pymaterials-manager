@@ -499,21 +499,3 @@ def test_elasticity_anisotropic_constant():
     with open(ELASTICITY_ANISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
-
-
-elasticity = ElasticityIsotropic(
-    youngs_modulus=Quantity(value=[1000000], units="Pa"),
-    poissons_ratio=Quantity(value=[0.3], units=""),
-    independent_parameters=[
-        IndependentParameter(
-            name="Temperature",
-            values=Quantity(value=[7.88860905221012e-31], units="C"),
-            default_value=22.0,
-        )
-    ],
-)
-mock_mapdl = MagicMock(spec=_MapdlCore)
-material_string = elasticity.write_model(material_id=2, pyansys_session=mock_mapdl)
-with open(ELASTICITY_ISOTROPIC_CONSTANT, "r") as file:
-    data = file.read()
-    print(material_string)
