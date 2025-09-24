@@ -37,6 +37,29 @@ MATRIX_LABEL_REGEX = re.compile(r"(\w\s?\d{1,2})")
 model_type = Union[float, np.ndarray]
 
 
+def convert_to_float_or_keep(val: float | str | None) -> float | str | None:
+    """
+    Attempt to convert a string to float.
+
+    Parameters
+    ----------
+    val : str | None
+        The value to convert.
+    Returns
+    -------
+    float | str | None
+        - float if conversion succeeds
+        - original string if conversion fails
+        - None if input is None
+    """
+    if val is None:
+        return None
+    try:
+        return float(val)
+    except (ValueError, TypeError):
+        return val
+
+
 def _chunk_data(data: Iterable) -> Generator[List, None, None]:
     """
     Split an iterable into chunks of size six lazily.

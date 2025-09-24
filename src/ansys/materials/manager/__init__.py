@@ -25,4 +25,6 @@
 from importlib import metadata as metadata
 import sys
 
+from ._models import *
+
 __version__ = metadata.version("ansys-materials-manager")

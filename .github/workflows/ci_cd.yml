@@ -174,9 +174,12 @@ jobs:
     needs: doc-style
     steps:
       - name: "Run Ansys documentation building action"
-        uses: ansys/actions/doc-build@v10
+        uses: ansys/actions/doc-build@v10.1.1
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          optional-dependencies-name: ""
+          group-dependencies-name: "doc"
+          sphinxopts: -j auto --keep-going
 
   build:
     name: Build library

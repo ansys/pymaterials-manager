@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>material with stress_limits</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Behavior">Orthotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>100.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>101.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>102.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>-100.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa4" format="float">
+        <Data>-101.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa5" format="float">
+        <Data>-102.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa6" format="float">
+        <Data>10.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa7" format="float">
+        <Data>14.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa8" format="float">
+        <Data>12.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Isotropic Hardening</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Stress</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit>
+        <Name>m</Name>
+      </Unit>
+      <Unit power="-1">
+        <Name>m</Name>
+      </Unit>
+    </Units>
+    <Name>Plastic Strain</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

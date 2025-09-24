@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="source">ACP</Qualifier>
+      <Qualifier name="Type">Woven</Qualifier>
+    </PropertyData>
+  </BulkDetails>
+</Material>

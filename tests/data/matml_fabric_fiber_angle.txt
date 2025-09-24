@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Plain woven Resin Epoxy/UD Resin Epoxy/T300 Typical 65%; angle=0</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>0.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

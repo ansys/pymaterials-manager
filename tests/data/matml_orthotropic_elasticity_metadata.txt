@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Elasticity</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Options Variable</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Young's Modulus X direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Young's Modulus Y direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Young's Modulus Z direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa4">
+    <Unitless/>
+    <Name>Poisson's Ratio YZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa5">
+    <Unitless/>
+    <Name>Poisson's Ratio XZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa6">
+    <Unitless/>
+    <Name>Poisson's Ratio XY</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa7">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Shear Modulus YZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa8">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Shear Modulus XZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa9">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Shear Modulus XY</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa10">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

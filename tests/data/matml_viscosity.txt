@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>material with viscosity</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="BETA">Mechanical.ModalAcoustics</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>22.0</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>
