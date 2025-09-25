@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, List, Tuple
+from typing import Any, List, Optional, Tuple, Union
+
+from ansys.units import Quantity
 
 from ansys.materials.manager._models._common._base import _BaseModel, _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common._exceptions import ModelValidationException
@@ -43,8 +45,9 @@ class Constant(_BaseModel):
     applicable_packages: SupportedPackage.MAPDL | SupportedPackage.FLUENT
     _name: str
     _value: float
+    _unit: Optional[str]
 
-    def __init__(self, name: str, value: float) -> None:
+    def __init__(self, name: str, value: Union[float, Quantity]) -> None:
         """
         Create a constant property value.
 
@@ -55,11 +58,16 @@ class Constant(_BaseModel):
         ----------
         name: str
             Name of the property to model as a constant.
-        value: float
-            Value of the constant property.
+        value: Union[float, Quantity]
+            Value of the constant property or a quantity if a unit is attached
         """
         self._name = name
-        self._value = value
+        if isinstance(value, float):
+            self._value = value
+            self._unit = None
+        elif isinstance(value, Quantity):
+            self._value = value.value
+            self._unit = value.unit
 
     @property
     def name(self) -> str:
@@ -74,6 +82,22 @@ class Constant(_BaseModel):
     @value.setter
     def value(self, value: float) -> None:
         self._value = value
+
+    @property
+    def unit(self) -> Optional[str]:
+        """Optional unit of the constant."""
+        return self._unit
+
+    @unit.setter
+    def unit(self, value: Optional[str]) -> None:
+        self._unit = value
+
+    def __repr__(self) -> str:
+        """Get the string representation of the constant."""
+        unit = self.unit
+        if unit is None:
+            return f"Constant('{self.name}', {self.value})"
+        return f"Constant('{self.name}', {self.value}, '{self.unit}')"
 
     def write_model(self, material: "Material", pyansys_session: Any) -> None:
         """
