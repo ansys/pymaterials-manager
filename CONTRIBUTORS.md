@@ -7,6 +7,7 @@
 ## Individual Contributors
 
 * [andreas-hilti](https://github.com/andreas-hilti)
+* [Andy Grigg](https://github.com/Andy-Grigg)
 * [Dan Williams](https://github.com/dnwillia-work)
 * [janvonrickenbach](https://github.com/janvonrickenbach)
 * [Jorge Martínez](https://github.com/jorgepiloto)
