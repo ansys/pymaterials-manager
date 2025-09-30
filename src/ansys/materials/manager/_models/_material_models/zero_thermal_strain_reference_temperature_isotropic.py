@@ -29,6 +29,7 @@ from ansys.materials.manager._models._common import (
     MaterialModel,
     ParameterField,
     QualifierType,
+    _MapdlCore,
     validate_and_initialize_model_qualifiers,
 )
 
@@ -59,10 +60,14 @@ class ZeroThermalStrainReferenceTemperatureIsotropic(MaterialModel):
         )
         return values
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
-        """Write this model to the specified session."""
-        pass
+    def _write_mapdl(self, material_id: int):
+        return f"MPAMOD,{material_id},{self.zero_thermal_strain_reference_temperature.value[0]}\n"
 
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        pass
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
+        """Write this model to the specified session."""
+        self.validate_model()
+        if isinstance(pyansys_session, _MapdlCore):
+            material_string = self._write_mapdl(material_id)
+        else:
+            raise Exception("The session is not supported.")
+        return material_string
