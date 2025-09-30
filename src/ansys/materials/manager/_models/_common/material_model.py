@@ -90,7 +90,7 @@ class MaterialModel(BaseModel, abc.ABC):
                 validate_parameters(field_name, field_value["value"], self.independent_parameters)
 
     @abc.abstractmethod
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
         """
         Write the model to the given PyAnsys session.
 

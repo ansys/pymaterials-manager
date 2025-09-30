@@ -37,7 +37,10 @@ from ansys.materials.manager.util.mapdl import (
     write_interpolation_options,
     write_table_values,
 )
-from ansys.materials.manager.util.mapdl.mapdl_writer import write_temperature_table_values
+from ansys.materials.manager.util.mapdl.mapdl_writer import (
+    write_temperature_reference_value,
+    write_temperature_table_values,
+)
 
 
 class Density(MaterialModel):
@@ -56,9 +59,13 @@ class Density(MaterialModel):
         frozen=True,
     )
 
-    def _write_mapdl(self, material_id: int) -> str:
+    def _write_mapdl(self, material_id: int, reference_temperature: float | None) -> str:
+        material_string = ""
+        if reference_temperature:
+            material_string += write_temperature_reference_value(material_id, reference_temperature)
+
         if self.independent_parameters is None:
-            material_string = write_constant_property(
+            material_string += write_constant_property(
                 label="DENS",
                 property=self.density.value,
                 material_id=material_id,
@@ -70,7 +77,7 @@ class Density(MaterialModel):
             and self.independent_parameters[0].name == "Temperature"
         ):
             if len(self.independent_parameters[0].values.value) == 1:
-                material_string = write_constant_property(
+                material_string += write_constant_property(
                     label="DENS",
                     property=self.density.value,
                     material_id=material_id,
@@ -78,7 +85,7 @@ class Density(MaterialModel):
                 )
                 return material_string
             else:
-                material_string = write_temperature_table_values(
+                material_string += write_temperature_table_values(
                     labels=["DENS"],
                     dependent_parameters=[self.density.value],
                     dependent_parameters_unit=[self.density.unit],
@@ -93,7 +100,7 @@ class Density(MaterialModel):
                 material_id=material_id,
                 independent_parameters=self.independent_parameters,
             )
-            material_string = parameters_str + "\n" + table_str
+            material_string += parameters_str + "\n" + table_str
 
             if self.interpolation_options:
                 interpolation_string = write_interpolation_options(
@@ -116,11 +123,12 @@ class Density(MaterialModel):
             }
         }
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> str | dict:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> str | dict:
         """Write this model to the specified session."""
         self.validate_model()
         if isinstance(pyansys_session, _MapdlCore):
-            material = self._write_mapdl(material_id)
+            reference_temperature = kwargs.get("reference_temperature", None)
+            material = self._write_mapdl(material_id, reference_temperature)
         elif isinstance(pyansys_session, _FluentCore):
             material = self._write_fluent()
         else:

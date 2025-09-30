@@ -62,9 +62,13 @@ class ThermalConductivityIsotropic(MaterialModel):
         )
         return values
 
-    def _write_mapdl(self, material_id: int) -> str:
+    def _write_mapdl(self, material_id: int, reference_temperature: float | None) -> str:
+        material_string = ""
+        if reference_temperature:
+            material_string += write_temperature_reference_value(material_id, reference_temperature)
+
         if not self.independent_parameters:
-            material_string = write_constant_property(
+            material_string += write_constant_property(
                 label="KXX",
                 property=self.thermal_conductivity.value,
                 material_id=material_id,
@@ -72,17 +76,6 @@ class ThermalConductivityIsotropic(MaterialModel):
             )
             return material_string
         else:
-            material_string = ""
-            for param in self.independent_parameters:
-                if param.name == "Temperature":
-                    if param.default_value:
-                        temperature = param.default_value
-                        if temperature == "Program Controlled":
-                            temperature = 22.0
-                        material_string += write_temperature_reference_value(
-                            material_id, temperature
-                        )
-
             if (
                 len(self.independent_parameters) == 1
                 and self.independent_parameters[0].name == "Temperature"
@@ -122,11 +115,12 @@ class ThermalConductivityIsotropic(MaterialModel):
                     material_string += "\n" + interpolation_string
         return material_string
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> str:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> str:
         """Write this model to the specified session."""
         self.validate_model()
         if isinstance(pyansys_session, _MapdlCore):
-            material_string = self._write_mapdl(material_id)
+            reference_temperature = kwargs.get("reference_temperature", None)
+            material_string = self._write_mapdl(material_id, reference_temperature)
         else:
             raise Exception("The session is not supported.")
         return material_string

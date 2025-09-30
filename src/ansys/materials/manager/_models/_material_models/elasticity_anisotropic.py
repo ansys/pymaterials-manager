@@ -71,18 +71,10 @@ class ElasticityAnisotropic(MaterialModel):
         )
         return values
 
-    def _write_mapdl(self, material_id: int) -> str:
+    def _write_mapdl(self, material_id: int, reference_temperature: float | None) -> str:
         material_string = ""
-        if self.independent_parameters:
-            for param in self.independent_parameters:
-                if param.name == "Temperature":
-                    if param.default_value:
-                        temperature = param.default_value
-                        if temperature == "Program Controlled":
-                            temperature = 22.0
-                        material_string += write_temperature_reference_value(
-                            material_id, temperature
-                        )
+        if reference_temperature:
+            material_string += write_temperature_reference_value(material_id, reference_temperature)
         d = np.column_stack(
             (
                 self.column_1.value,
@@ -106,11 +98,12 @@ class ElasticityAnisotropic(MaterialModel):
         )
         return material_string
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
         self.validate_model()
         if isinstance(pyansys_session, _MapdlCore):
-            material_string = self._write_mapdl(material_id)
+            reference_temperature = kwargs.get("reference_temperature", None)
+            material_string = self._write_mapdl(material_id, reference_temperature)
         else:
             raise Exception("The session is not supported.")
         return material_string

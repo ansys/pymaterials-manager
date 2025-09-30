@@ -126,10 +126,10 @@ class Material:
                 model = mat_model
         return model
 
-    def write_material(self, pyansys_session: Any, material_id: int, unit_system: Any = None):
+    def write_material(self, pyansys_session: Any, material_id: int, **kwargs: dict):
         """Write material to the pyansys session."""
         for model in self.models:
-            model = model.write_model(material_id, pyansys_session)
+            model = model.write_model(material_id, pyansys_session, kwargs)
             if model:
                 if isinstance(pyansys_session, _MapdlCore):
                     pyansys_session.prep7()

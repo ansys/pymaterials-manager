@@ -84,16 +84,11 @@ def test_elasticity_isotropic_constant_temperature():
     elasticity = ElasticityIsotropic(
         youngs_modulus=Quantity(value=[1000000], units="Pa"),
         poissons_ratio=Quantity(value=[0.3], units=""),
-        independent_parameters=[
-            IndependentParameter(
-                name="Temperature",
-                values=Quantity(value=[7.88860905221012e-31], units="C"),
-                default_value=22.0,
-            )
-        ],
     )
     mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = elasticity.write_model(
+        material_id=2, pyansys_session=mock_mapdl, reference_temperature=22.0
+    )
     with open(ELASTICITY_ISOTROPIC_CONSTANT_REFERENCE_TEMPERATURE, "r") as file:
         data = file.read()
     assert data == material_string
@@ -125,12 +120,13 @@ def test_elasticity_isotropic_variable_reference_temperature():
             IndependentParameter(
                 name="Temperature",
                 values=Quantity(value=[12.0, 77.0], units="C"),
-                default_value=35,
             )
         ],
     )
     mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=3, pyansys_session=mock_mapdl)
+    material_string = elasticity.write_model(
+        material_id=3, pyansys_session=mock_mapdl, reference_temperature=35.0
+    )
     print(material_string)
     with open(ELASTICITY_ISOTROPIC_VARIABLE_TEMP_REFERENCE_TEMP, "r") as file:
         data = file.read()
@@ -390,7 +386,9 @@ def test_elasticity_orthotropic_variable_temp_a11_a22():
         ),
     )
     mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=1, pyansys_session=mock_mapdl)
+    material_string = elasticity.write_model(
+        material_id=1, pyansys_session=mock_mapdl, reference_temperature=22.0
+    )
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE_TEMP_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string
