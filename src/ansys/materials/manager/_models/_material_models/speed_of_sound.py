@@ -51,7 +51,7 @@ class SpeedofSound(MaterialModel):
         )
         return values
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
         pass
 

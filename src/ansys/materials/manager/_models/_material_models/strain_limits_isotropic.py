@@ -51,7 +51,7 @@ class StrainLimitsIsotropic(MaterialModel):
         )
         return values
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
         """Write this model to the specified session."""
         pass
 

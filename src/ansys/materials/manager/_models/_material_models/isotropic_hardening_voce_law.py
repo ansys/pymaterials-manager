@@ -76,7 +76,7 @@ class IsotropicHardeningVoceLaw(MaterialModel):
         )
         return values
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
         """Write the isotropic hardening model to the specified session."""
         pass
 

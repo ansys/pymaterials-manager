@@ -55,7 +55,7 @@ class LaRc0304Constants(MaterialModel):
         matml_name="Fracture Angle Under Compression",
     )
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> None:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
         """Write the anisotropic elasticity model to the pyansys session."""
         pass
 

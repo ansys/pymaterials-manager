@@ -236,7 +236,7 @@ class HillYieldCriterion(MaterialModel):
                 material_string += "\n" + interpolation_string
         return material_string
 
-    def write_model(self, material_id: int, pyansys_session: Any) -> str:
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> str:
         """Write this model to the specified session."""
         self.validate_model()
         if isinstance(pyansys_session, _MapdlCore):

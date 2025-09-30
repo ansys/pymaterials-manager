@@ -61,7 +61,7 @@ class MolecularWeight(MaterialModel):
             }
         }
 
-    def write_model(self, material_id, pyansys_session):
+    def write_model(self, material_id, pyansys_session, **kwargs: dict):
         """Write molecular weight model."""
         self.validate_model()
         if isinstance(pyansys_session, _FluentCore):
