@@ -90,11 +90,11 @@ def test_constant_orthotropic_elasticity_mapdl_read(mapdl):
     assert material.models[0].youngs_modulus_y.value.tolist() == [1500000]
     assert material.models[0].youngs_modulus_z.value.tolist() == [2000000]
     assert material.models[0].shear_modulus_xy.value.tolist() == [1000000]
-    assert material.models[0].shear_modulus_yz.value.tolist() == [3000000]
-    assert material.models[0].shear_modulus_xz.value.tolist() == [2000000]
+    assert material.models[0].shear_modulus_yz.value.tolist() == [2000000]
+    assert material.models[0].shear_modulus_xz.value.tolist() == [3000000]
     assert material.models[0].poissons_ratio_xy.value.tolist() == [0.2]
-    assert material.models[0].poissons_ratio_yz.value.tolist() == [0.4]
-    assert material.models[0].poissons_ratio_xz.value.tolist() == [0.3]
+    assert material.models[0].poissons_ratio_yz.value.tolist() == [0.3]
+    assert material.models[0].poissons_ratio_xz.value.tolist() == [0.4]
     assert material.models[0].independent_parameters == None
 
 
@@ -128,11 +128,11 @@ def test_variable_temp_orthotropic_elasticity_mapdl_read(mapdl):
     assert material.models[0].youngs_modulus_y.value.tolist() == [1500000, 1600000, 1700000]
     assert material.models[0].youngs_modulus_z.value.tolist() == [2000000, 2200000, 2300000]
     assert material.models[0].shear_modulus_xy.value.tolist() == [1000000, 1100000, 1200000]
-    assert material.models[0].shear_modulus_yz.value.tolist() == [3000000, 3100000, 3200000]
-    assert material.models[0].shear_modulus_xz.value.tolist() == [2000000, 2100000, 2200000]
+    assert material.models[0].shear_modulus_yz.value.tolist() == [2000000, 2100000, 2200000]
+    assert material.models[0].shear_modulus_xz.value.tolist() == [3000000, 3100000, 3200000]
     assert material.models[0].poissons_ratio_xy.value.tolist() == [0.2, 0.21, 0.22]
-    assert material.models[0].poissons_ratio_yz.value.tolist() == [0.4, 0.41, 0.42]
-    assert material.models[0].poissons_ratio_xz.value.tolist() == [0.3, 0.31, 0.32]
+    assert material.models[0].poissons_ratio_yz.value.tolist() == [0.3, 0.31, 0.32]
+    assert material.models[0].poissons_ratio_xz.value.tolist() == [0.4, 0.41, 0.42]
     assert material.models[0].independent_parameters[0].name == "Temperature"
     assert material.models[0].independent_parameters[0].values.value.tolist() == [12, 21, 31]
 

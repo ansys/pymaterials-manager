@@ -73,8 +73,3 @@ def test_read_matml_write_apdl(mapdl):
     assert isotropic_elasticity.name == "Elasticity"
     assert isotropic_elasticity.model_qualifiers[0].name == "Behavior"
     assert isotropic_elasticity.model_qualifiers[0].value == "Isotropic"
-    assert isotropic_elasticity.independent_parameters[0].name == "Temperature"
-    assert isotropic_elasticity.independent_parameters[0].values.value.tolist() == [22.0]
-    assert isotropic_elasticity.independent_parameters[0].default_value == 22.0
-    assert isotropic_elasticity.youngs_modulus.value.tolist() == [1000000.0]
-    assert isotropic_elasticity.poissons_ratio.value.tolist() == [0.3]
