@@ -29,7 +29,7 @@ numpy = ">=1.24,<3"
 
 [tool.poetry.group.doc.dependencies]
 ansys-sphinx-theme = ">=0.12"
-numpydoc = "^1.6.0"
+numpydoc = "^1.9.0"
 Sphinx = ">=7.2,<9.0"
 sphinx-autoapi = "^3.0"
 sphinx-copybutton = "==0.5.2"
@@ -44,6 +44,8 @@ ansys-fluent-core = ">=0.28"
 twine = ">=4.0.2"
 pytest-cov = ">=4"
 pre-commit = ">=3.2.2"
+pydantic = ">=2.7.0"
+ansys-units = ">=0.8.dev0"
 
 [tool.black]
 line-length = 100
