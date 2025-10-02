@@ -22,10 +22,16 @@
 
 """Provides the ``MatmlWriter`` class."""
 
+from dataclasses import dataclass
 import os
 from typing import BinaryIO, Dict, Optional, Sequence, Union
 import xml.etree.ElementTree as ET
 
+import ansys.units
+
+from ansys.materials.manager._models._matml.property_info import (
+    property_infos as matml_property_infos,
+)
 from ansys.materials.manager.material import Material
 
 from .matml_parser import (
@@ -33,7 +39,12 @@ from .matml_parser import (
     MATERIALS_ELEMENT_KEY,
     MATML_DOC_KEY,
     METADATA_KEY,
+    NAME_ATTR,
+    NAME_KEY,
+    POWER_ATTR,
+    UNIT_KEY,
     UNITLESS_KEY,
+    UNITS_KEY,
     WBTRANSFER_KEY,
 )
 from .matml_property_map import MATML_PROPERTY_MAP
@@ -43,6 +54,19 @@ _PATH_TYPE = Union[str, os.PathLike]
 ROOT_ELEMENT = "EngineeringData"
 VERSION = "18.0.0.60"
 VERSION_DATE = "29.08.2016 15:02:00"
+
+
+@dataclass
+class MetadataParameter:
+    """Name of the parameter, for example pa74."""
+
+    name: str
+
+    """The material model name."""
+    model_name: str
+
+    """The parameter value unit."""
+    unit: Optional[str]
 
 
 class MatmlWriter:
@@ -57,7 +81,7 @@ class MatmlWriter:
 
     _materials: Sequence[Material]
     _metadata_property_sets: Dict
-    _metadata_parameters: Dict
+    _metadata_parameters: Dict[str, MetadataParameter]
 
     def __init__(self, materials: Sequence[Material]):
         """Construct a Matml writer."""
@@ -68,18 +92,22 @@ class MatmlWriter:
     def _add_parameters(self, property_element: ET.Element, material: Material, parameters: Dict):
         # add the parameters of a property set to the tree
         for mat_key, matml_key in parameters.items():
+            model = material.get_model_by_name(mat_key)
+            assert len(model) == 1
+            model = model[0]
+
             if matml_key in self._metadata_parameters.keys():
                 para_key = self._metadata_parameters[matml_key]
             else:
                 index = len(self._metadata_parameters) + 1
-                para_key = f"pa{index}"
+                para_key = MetadataParameter(f"pa{index}", model.name, model.unit)
                 self._metadata_parameters[matml_key] = para_key
 
             param_element = ET.SubElement(
-                property_element, "ParameterValue", {"format": "float", "parameter": para_key}
+                property_element, "ParameterValue", {"format": "float", "parameter": para_key.name}
             )
             data_element = ET.SubElement(param_element, "Data")
-            data_element.text = str(material.get_model_by_name(mat_key)[0].value)
+            data_element.text = str(model.value)
             qualifier_element = ET.SubElement(param_element, "Qualifier", {"name": "Variable Type"})
             qualifier_element.text = "Dependent"
 
@@ -95,6 +123,7 @@ class MatmlWriter:
         # check if at least one parameter is specified (case-insensitive)
         # and build a map from material to Matml properties
         available_mat_properties = [model.name.lower() for model in material.models]
+        # print(available_mat_properties)
         property_set_parameters = {item: item for item in parameter_map["properties"]}
         for key, mapped_properties in parameter_map["mappings"].items():
             property_set_parameters.update({item: key for item in mapped_properties})
@@ -157,7 +186,53 @@ class MatmlWriter:
                         behavior,
                     )
 
+    def _write_unit(self, prop_element: ET.Element, value: MetadataParameter):
+        """Write unit in one of the following valid forms.
+
+        If there is a unit:
+          <Units name="Density">
+            <Unit>
+              <Name>kg</Name>
+            </Unit>
+            <Unit power="-3">
+              <Name>m</Name>
+            </Unit>
+          </Units>
+
+        If there is a unit for a property with no unit category defined:
+           <Units>
+            <Unit>
+              <Name>kg</Name>
+            </Unit>
+            <Unit power="-3">
+              <Name>m</Name>
+            </Unit>
+          </Units>
+        If there is no unit:
+          <Unitless />
+        """
+        if value.unit is None:
+            ET.SubElement(prop_element, UNITLESS_KEY)
+        else:
+            unit_tokens = value.unit.split(" ")
+            matml_property_info = matml_property_infos[value.model_name]
+            unit_category = matml_property_info.unit_category
+            unit_name_dict = {}
+            if unit_category is not None:
+                unit_name_dict[NAME_ATTR] = unit_category
+            units_element = ET.SubElement(prop_element, UNITS_KEY, unit_name_dict)
+            for unit_token in unit_tokens:
+                _, term, exp = ansys.units.unit._filter_unit_term(unit_token)
+                power = int(exp)
+                power_dict = {}
+                if power != 1:
+                    power_dict[POWER_ATTR] = str(power)
+                unit_element = ET.SubElement(units_element, UNIT_KEY, power_dict)
+                unit_name_element = ET.SubElement(unit_element, NAME_KEY)
+                unit_name_element.text = term
+
     def _add_metadata(self, metadata_element: ET.Element):
+
         # add the metadata to the XML tree
         for key, value in self._metadata_property_sets.items():
             prop_element = ET.SubElement(metadata_element, "PropertyDetails", {"id": value})
@@ -166,23 +241,32 @@ class MatmlWriter:
             name_element.text = key
 
         for key, value in self._metadata_parameters.items():
-            prop_element = ET.SubElement(metadata_element, "ParameterDetails", {"id": value})
-            ET.SubElement(prop_element, UNITLESS_KEY)
+            prop_element = ET.SubElement(metadata_element, "ParameterDetails", {"id": value.name})
+
             name_element = ET.SubElement(prop_element, "Name")
             name_element.text = key
+
+            self._write_unit(prop_element, value)
 
     def _add_transfer_ids(self, root: ET.Element) -> None:
         # add the WB transfer IDs to the XML tree
         wb_transfer_element = ET.SubElement(root, WBTRANSFER_KEY)
         materials_element = ET.SubElement(wb_transfer_element, MATERIALS_ELEMENT_KEY)
+        any_uuid = False
         for mat in self._materials:
-            mat_element = ET.SubElement(materials_element, "Material")
-            name_element = ET.SubElement(mat_element, "Name")
-            name_element.text = mat.name
-            transfer_element = ET.SubElement(mat_element, "DataTransferID")
-            transfer_element.text = mat.uuid
+            if len(mat.uuid) > 0:
+                any_uuid = True
+                mat_element = ET.SubElement(materials_element, "Material")
+                name_element = ET.SubElement(mat_element, "Name")
+                name_element.text = mat.name
+                transfer_element = ET.SubElement(mat_element, "DataTransferID")
+                transfer_element.text = mat.uuid
+        if not any_uuid:
+            root.remove(wb_transfer_element)
 
-    def _to_etree(self) -> ET.ElementTree:
+    def _to_etree(
+        self,
+    ) -> ET.ElementTree:
         root = ET.Element(ROOT_ELEMENT)
         tree = ET.ElementTree(root)
 
