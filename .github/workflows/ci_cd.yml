@@ -145,22 +145,15 @@ jobs:
           mkdir ./mapdl_logs 
           docker cp mapdl:/mapdl_logs/. ./mapdl_logs/.
           
-      - name: "Tar logs"
+      - name: "Copy logs"
         if: always()
         run: |
           cp log.txt ./mapdl_logs/
-          tar cvzf ./mapdl_logs.tgz ./mapdl_logs
 
-      - name: "Upload logs to GitHub"
+      - name: "Display MAPDL Logs on workflow"
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
-        with:
-          name: mapdl_logs.tgz
-          path: ./mapdl_logs.tgz
-
-      - name: "Display MAPDL Logs"
-        if: always()
-        run: cat log.txt
+        run: |
+          cat mapdl_logs/*
 
       - name: Upload coverage report
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7  # v5.5.1
