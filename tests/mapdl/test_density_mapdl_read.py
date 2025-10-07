@@ -22,7 +22,6 @@
 
 from pathlib import Path
 
-from ansys.mapdl.core import Mapdl
 import pytest
 
 from ansys.materials.manager._models._material_models.density import Density
@@ -33,14 +32,6 @@ CONSTANT_DENSITY = DIR_PATH.joinpath("..", "data", "mapdl_density_constant.cdb")
 VARIABLE_DENSITY_TEMP = DIR_PATH.joinpath("..", "data", "mapdl_density_variable_1.cdb")
 
 pytestmark = pytest.mark.mapdl_integration
-
-
-@pytest.fixture(scope="module")
-def mapdl():
-    mapdl = Mapdl(ip="127.0.0.1", port="50052", local=False)
-    mapdl.prep7()
-    yield mapdl
-    mapdl.mpdele("all", "all")
 
 
 def test_constant_density_mapdl_read(mapdl):

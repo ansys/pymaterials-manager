@@ -22,7 +22,6 @@
 
 from pathlib import Path
 
-from ansys.mapdl.core import Mapdl
 import pytest
 
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
@@ -32,14 +31,6 @@ DIR_PATH = Path(__file__).resolve().parent
 HILL_VARIABLE_A11_A22 = DIR_PATH.joinpath("..", "data", "mapdl_hill_variable_a11_a22.cdb")
 
 pytestmark = pytest.mark.mapdl_integration
-
-
-@pytest.fixture(scope="module")
-def mapdl():
-    mapdl = Mapdl(ip="127.0.0.1", port="50052", local=False)
-    mapdl.prep7()
-    yield mapdl
-    mapdl.mpdele("all", "all")
 
 
 def test_variable_a11_a22_hill_yield_mapdl_read(mapdl):
