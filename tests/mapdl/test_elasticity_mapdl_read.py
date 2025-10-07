@@ -22,6 +22,7 @@
 
 from pathlib import Path
 
+from ansys.mapdl.core import Mapdl
 import pytest
 
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
@@ -50,6 +51,14 @@ ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22 = DIR_PATH.joinpath(
 )
 
 pytestmark = pytest.mark.mapdl_integration
+
+
+@pytest.fixture(scope="module")
+def mapdl():
+    mapdl = Mapdl(ip="127.0.0.1", port="50052", local=False)
+    mapdl.prep7()
+    yield mapdl
+    mapdl.mpdele("all", "all")
 
 
 def test_constant_isotropic_elasticity_mapdl_read(mapdl):

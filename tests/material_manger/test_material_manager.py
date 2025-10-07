@@ -22,6 +22,7 @@
 
 from pathlib import Path
 
+from ansys.mapdl.core import Mapdl
 import pytest
 
 from ansys.materials.manager.material_manager import MaterialManager
@@ -30,6 +31,14 @@ DIR_PATH = Path(__file__).resolve().parent
 ELASTICITY_MATML = DIR_PATH.joinpath("..", "data", "matml_unittest_elasticity.xml")
 
 pytestmark = pytest.mark.mapdl_integration
+
+
+@pytest.fixture(scope="module")
+def mapdl():
+    mapdl = Mapdl(ip="127.0.0.1", port="50052", local=False)
+    mapdl.prep7()
+    yield mapdl
+    mapdl.mpdele("all", "all")
 
 
 def test_read_matml_write_apdl(mapdl):
