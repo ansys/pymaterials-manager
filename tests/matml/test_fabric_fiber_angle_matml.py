@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -35,21 +35,21 @@ from ansys.materials.manager._models._material_models.ply_type import PlyType
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_fabric_fiber_angle.xml")
+DIR_PATH = Path(__file__).resolve().parent
+XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_fabric_fiber_angle.xml")
 
-FABRIC_FIBER_ANGLE = os.path.join(DIR_PATH, "..", "data", "matml_fabric_fiber_angle.txt")
-FABRIC_FIBER_ANGLE_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_fabric_fiber_angle_metadata.txt"
+FABRIC_FIBER_ANGLE = DIR_PATH.joinpath("..", "data", "matml_fabric_fiber_angle.txt")
+FABRIC_FIBER_ANGLE_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_fabric_fiber_angle_metadata.txt"
 )
-FABRIC_FIBER_ANGLE_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "matml_fabric_fiber_angle_variable.txt"
+FABRIC_FIBER_ANGLE_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "matml_fabric_fiber_angle_variable.txt"
 )
-FABRIC_FIBER_ANGLE_VARIABLE_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_fabric_fiber_angle_variable_metadata.txt"
+FABRIC_FIBER_ANGLE_VARIABLE_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_fabric_fiber_angle_variable_metadata.txt"
 )
-PLY_TYPE = os.path.join(DIR_PATH, "..", "data", "matml_ply_type.txt")
-PLY_TYPE_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_ply_type_metadata.txt")
+PLY_TYPE = DIR_PATH.joinpath("..", "data", "matml_ply_type.txt")
+PLY_TYPE_METADATA = DIR_PATH.joinpath("..", "data", "matml_ply_type_metadata.txt")
 
 
 def test_read_constant_fabric_fiber_angle_0_deg():

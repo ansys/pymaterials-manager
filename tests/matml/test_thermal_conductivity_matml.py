@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -35,19 +35,19 @@ from ansys.materials.manager._models._material_models.thermal_conductivity_ortho
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_thermal_conductivity.xml")
-THERMAL_CONDUCTIVITY_ISOTROPIC = os.path.join(
-    DIR_PATH, "..", "data", "matml_thermal_conductivity_isotropic.txt"
+DIR_PATH = Path(__file__).resolve().parent
+XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_thermal_conductivity.xml")
+THERMAL_CONDUCTIVITY_ISOTROPIC = DIR_PATH.joinpath(
+    "..", "data", "matml_thermal_conductivity_isotropic.txt"
 )
-THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_thermal_conductivity_isotropic_metadata.txt"
+THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_thermal_conductivity_isotropic_metadata.txt"
 )
-THERMAL_CONDUCTIVITY_ORTHOTROPIC = os.path.join(
-    DIR_PATH, "..", "data", "matml_thermal_conductivity_orthotropic.txt"
+THERMAL_CONDUCTIVITY_ORTHOTROPIC = DIR_PATH.joinpath(
+    "..", "data", "matml_thermal_conductivity_orthotropic.txt"
 )
-THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_thermal_conductivity_orthotropic_metadata.txt"
+THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_thermal_conductivity_orthotropic_metadata.txt"
 )
 
 

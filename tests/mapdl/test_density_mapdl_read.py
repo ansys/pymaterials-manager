@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.mapdl.core import Mapdl
 import pytest
@@ -28,9 +28,9 @@ import pytest
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-CONSTANT_DENSITY = os.path.join(DIR_PATH, "..", "data", "mapdl_density_constant.cdb")
-VARIABLE_DENSITY_TEMP = os.path.join(DIR_PATH, "..", "data", "mapdl_density_variable_1.cdb")
+DIR_PATH = Path(__file__).resolve().parent
+CONSTANT_DENSITY = DIR_PATH.joinpath("..", "data", "mapdl_density_constant.cdb")
+VARIABLE_DENSITY_TEMP = DIR_PATH.joinpath("..", "data", "mapdl_density_variable_1.cdb")
 
 pytestmark = pytest.mark.mapdl_integration
 

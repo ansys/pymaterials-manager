@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 from unittest.mock import MagicMock
 
 from ansys.units import Quantity
@@ -29,12 +29,12 @@ from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models import IsotropicHardening
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_isotropic_hardening_multilinear_constant.cdb"
+DIR_PATH = Path(__file__).resolve().parent
+ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT = DIR_PATH.joinpath(
+    "..", "data", "mapdl_isotropic_hardening_multilinear_constant.cdb"
 )
-ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_isotropic_hardening_multilinear_variable.cdb"
+ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "mapdl_isotropic_hardening_multilinear_variable.cdb"
 )
 
 

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 from unittest.mock import MagicMock
 
 from ansys.units import Quantity
@@ -34,27 +34,27 @@ from ansys.materials.manager._models._material_models.thermal_conductivity_ortho
     ThermalConductivityOrthotropic,
 )
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-THERMAL_CONDUCTIVITY_ISOTROPIC_CONSTANT = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_thermal_conductivity_isotropic_constant.cdb"
+DIR_PATH = Path(__file__).resolve().parent
+THERMAL_CONDUCTIVITY_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(
+    "..", "data", "mapdl_thermal_conductivity_isotropic_constant.cdb"
 )
-THERMAL_CONDUCTIVITY_ISOTROPIC_CONSTANT_REFERENCE_TEMPERATURE = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_thermal_conductivity_isotropic_constant_ref_temp.cdb"
+THERMAL_CONDUCTIVITY_ISOTROPIC_CONSTANT_REFERENCE_TEMPERATURE = DIR_PATH.joinpath(
+    "..", "data", "mapdl_thermal_conductivity_isotropic_constant_ref_temp.cdb"
 )
-THERMAL_CONDUCTIVITY_ISOTROPIC_VARIABLE_TEMP = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_thermal_conductivity_isotropic_variable_temp.cdb"
+THERMAL_CONDUCTIVITY_ISOTROPIC_VARIABLE_TEMP = DIR_PATH.joinpath(
+    "..", "data", "mapdl_thermal_conductivity_isotropic_variable_temp.cdb"
 )
-THERMAL_CONDUCTIVITY_ORTHOTROPIC_CONSTANT = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_thermal_conductivity_orthotropic_constant.cdb"
+THERMAL_CONDUCTIVITY_ORTHOTROPIC_CONSTANT = DIR_PATH.joinpath(
+    "..", "data", "mapdl_thermal_conductivity_orthotropic_constant.cdb"
 )
-THERMAL_CONDUCTIVITY_ORTHOTROPIC_CONSTANT_REFERENCE_TEMPERATURE = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_thermal_conductivity_orthotropic_constant_ref_temp.cdb"
+THERMAL_CONDUCTIVITY_ORTHOTROPIC_CONSTANT_REFERENCE_TEMPERATURE = DIR_PATH.joinpath(
+    "..", "data", "mapdl_thermal_conductivity_orthotropic_constant_ref_temp.cdb"
 )
-THERMAL_CONDUCTIVITY_ORTHOTROPIC_VARIABLE_TEMP = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_thermal_conductivity_orthotropic_variable_temp.cdb"
+THERMAL_CONDUCTIVITY_ORTHOTROPIC_VARIABLE_TEMP = DIR_PATH.joinpath(
+    "..", "data", "mapdl_thermal_conductivity_orthotropic_variable_temp.cdb"
 )
-THERMAL_CONDUCTIVITY_ORTHOTROPIC_VARIABLE_A11_A22 = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_thermal_conductivity_orthotropic_variable_a11_a22.cdb"
+THERMAL_CONDUCTIVITY_ORTHOTROPIC_VARIABLE_A11_A22 = DIR_PATH.joinpath(
+    "..", "data", "mapdl_thermal_conductivity_orthotropic_variable_a11_a22.cdb"
 )
 
 

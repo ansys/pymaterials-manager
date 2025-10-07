@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 from unittest.mock import MagicMock
 
 from ansys.units import Quantity
@@ -35,39 +35,35 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
     CoefficientofThermalExpansionOrthotropic,
 )
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_CONSTANT = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_coefficient_of_thermal_expansion_isotropic_secant_constant.cdb"
+DIR_PATH = Path(__file__).resolve().parent
+COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(
+    "..", "data", "mapdl_coefficient_of_thermal_expansion_isotropic_secant_constant.cdb"
 )
-COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_CONSTANT_REF_TEMP = os.path.join(
-    DIR_PATH,
+COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_CONSTANT_REF_TEMP = DIR_PATH.joinpath(
     "..",
     "data",
     "mapdl_coefficient_of_thermal_expansion_isotropic_secant_constant_ref_temp.cdb",
 )
-COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_coefficient_of_thermal_expansion_isotropic_secant_variable.cdb"
+COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "mapdl_coefficient_of_thermal_expansion_isotropic_secant_variable.cdb"
 )
-COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_VARIABLE_A11_A22 = os.path.join(
-    DIR_PATH,
+COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_VARIABLE_A11_A22 = DIR_PATH.joinpath(
     "..",
     "data",
     "mapdl_coefficient_of_thermal_expansion_isotropic_secant_variable_a11_a22.cdb",
 )
-COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_CONSTANT = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_coefficient_of_thermal_expansion_orthotropic_secant_constant.cdb"
+COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_CONSTANT = DIR_PATH.joinpath(
+    "..", "data", "mapdl_coefficient_of_thermal_expansion_orthotropic_secant_constant.cdb"
 )
-COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_CONSTANT_REF_TEMP = os.path.join(
-    DIR_PATH,
+COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_CONSTANT_REF_TEMP = DIR_PATH.joinpath(
     "..",
     "data",
     "mapdl_coefficient_of_thermal_expansion_orthotropic_secant_constant_ref_temp.cdb",
 )
-COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_coefficient_of_thermal_expansion_orthotropic_secant_variable.cdb"
+COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "mapdl_coefficient_of_thermal_expansion_orthotropic_secant_variable.cdb"
 )
-COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_VARIABLE_A11_A22 = os.path.join(
-    DIR_PATH,
+COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_VARIABLE_A11_A22 = DIR_PATH.joinpath(
     "..",
     "data",
     "mapdl_coefficient_of_thermal_expansion_orthotropic_secant_variable_a11_a22.cdb",

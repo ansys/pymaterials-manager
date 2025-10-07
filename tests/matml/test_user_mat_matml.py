@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -30,14 +30,12 @@ from ansys.materials.manager._models._material_models.usermat import ModelCoeffi
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_usermat.xml")
-USER_MAT = os.path.join(DIR_PATH, "..", "data", "matml_user_mat.txt")
-USER_MAT_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_user_mat_metadata.txt")
-USER_MAT_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_user_mat_variable.txt")
-USER_MAT_VARIABLE_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_user_mat_variable_metadata.txt"
-)
+DIR_PATH = Path(__file__).resolve().parent
+XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_usermat.xml")
+USER_MAT = DIR_PATH.joinpath("..", "data", "matml_user_mat.txt")
+USER_MAT_METADATA = DIR_PATH.joinpath("..", "data", "matml_user_mat_metadata.txt")
+USER_MAT_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_user_mat_variable.txt")
+USER_MAT_VARIABLE_METADATA = DIR_PATH.joinpath("..", "data", "matml_user_mat_variable_metadata.txt")
 
 
 def test_read_usermat():

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -35,23 +35,21 @@ from ansys.materials.manager._models._material_models.strain_limits_orthotropic 
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_strain_limit.xml")
-STRAIN_LIMITS_ORTHOTROPIC = os.path.join(
-    DIR_PATH, "..", "data", "matml_strain_limits_orthotropic.txt"
+DIR_PATH = Path(__file__).resolve().parent
+XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_strain_limit.xml")
+STRAIN_LIMITS_ORTHOTROPIC = DIR_PATH.joinpath("..", "data", "matml_strain_limits_orthotropic.txt")
+STRAIN_LIMITS_ORTHOTROPIC_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_strain_limits_orthotropic_metadata.txt"
 )
-STRAIN_LIMITS_ORTHOTROPIC_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_strain_limits_orthotropic_metadata.txt"
+STRAIN_LIMITS_ISOTROPIC = DIR_PATH.joinpath("..", "data", "matml_strain_limits_isotropic.txt")
+STRAIN_LIMITS_ISOTROPIC_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_strain_limits_isotropic_metadata.txt"
 )
-STRAIN_LIMITS_ISOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_strain_limits_isotropic.txt")
-STRAIN_LIMITS_ISOTROPIC_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_strain_limits_isotropic_metadata.txt"
+STRAIN_LIMITS_ISOTROPIC_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "matml_strain_limits_isotropic_variable.txt"
 )
-STRAIN_LIMITS_ISOTROPIC_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "matml_strain_limits_isotropic_variable.txt"
-)
-STRAIN_LIMITS_ORTHOTROPIC_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "matml_strain_limits_orthotropic_variable.txt"
+STRAIN_LIMITS_ORTHOTROPIC_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "matml_strain_limits_orthotropic_variable.txt"
 )
 
 

@@ -20,15 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.mapdl.core import Mapdl
 import pytest
 
 from ansys.materials.manager.material_manager import MaterialManager
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-ELASTICITY_MATML = os.path.join(DIR_PATH, "..", "data", "matml_unittest_elasticity.xml")
+DIR_PATH = Path(__file__).resolve().parent
+ELASTICITY_MATML = DIR_PATH.joinpath("..", "data", "matml_unittest_elasticity.xml")
 
 pytestmark = pytest.mark.mapdl_integration
 

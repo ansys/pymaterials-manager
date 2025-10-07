@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -37,21 +37,17 @@ from ansys.materials.manager._models._material_models.stress_limits_orthotropic 
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_puck_for_woven.xml")
-FIBER_ANGLE = os.path.join(DIR_PATH, "..", "data", "matml_fiber_angle.txt")
-FIBER_ANGLE_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_fiber_angle_metadata.txt")
-PUCK = os.path.join(DIR_PATH, "..", "data", "matml_puck.txt")
-PUCK_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_puck_metadata.txt")
-PUCK_ADDITIONAL = os.path.join(DIR_PATH, "..", "data", "matml_puck_additional.txt")
-PUCK_ADDITIONAL_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_puck_additional_metadata.txt"
-)
-STRESS_LIMITS_ORTHOTROPIC = os.path.join(
-    DIR_PATH, "..", "data", "matml_stress_limits_orthotropic.txt"
-)
-STRESS_LIMITS_ORTHOTROPIC_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_stress_limits_orthotropic_metadata.txt"
+DIR_PATH = Path(__file__).resolve().parent
+XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_puck_for_woven.xml")
+FIBER_ANGLE = DIR_PATH.joinpath("..", "data", "matml_fiber_angle.txt")
+FIBER_ANGLE_METADATA = DIR_PATH.joinpath("..", "data", "matml_fiber_angle_metadata.txt")
+PUCK = DIR_PATH.joinpath("..", "data", "matml_puck.txt")
+PUCK_METADATA = DIR_PATH.joinpath("..", "data", "matml_puck_metadata.txt")
+PUCK_ADDITIONAL = DIR_PATH.joinpath("..", "data", "matml_puck_additional.txt")
+PUCK_ADDITIONAL_METADATA = DIR_PATH.joinpath("..", "data", "matml_puck_additional_metadata.txt")
+STRESS_LIMITS_ORTHOTROPIC = DIR_PATH.joinpath("..", "data", "matml_stress_limits_orthotropic.txt")
+STRESS_LIMITS_ORTHOTROPIC_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_stress_limits_orthotropic_metadata.txt"
 )
 
 

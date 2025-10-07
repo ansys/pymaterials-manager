@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 from unittest.mock import MagicMock
 
 from ansys.units import Quantity
@@ -31,14 +31,12 @@ from ansys.materials.manager._models._common.interpolation_options import Interp
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._material_models import HillYieldCriterion
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-HILL_CONSTANT = os.path.join(DIR_PATH, "..", "data", "mapdl_hill_constant.cdb")
-HILL_VARIABLE_TEMP = os.path.join(DIR_PATH, "..", "data", "mapdl_hill_variable_temp.cdb")
-HILL_VARIABLE_A11_A22 = os.path.join(DIR_PATH, "..", "data", "mapdl_hill_variable_a11_a22.cdb")
-HILL_CREEP_CONSTANT = os.path.join(DIR_PATH, "..", "data", "mapdl_hill_creep_constant.cdb")
-HILL_CREEP_VARIABLE_TEMP = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_hill_creep_variable_temp.cdb"
-)
+DIR_PATH = Path(__file__).resolve().parent
+HILL_CONSTANT = DIR_PATH.joinpath("..", "data", "mapdl_hill_constant.cdb")
+HILL_VARIABLE_TEMP = DIR_PATH.joinpath("..", "data", "mapdl_hill_variable_temp.cdb")
+HILL_VARIABLE_A11_A22 = DIR_PATH.joinpath("..", "data", "mapdl_hill_variable_a11_a22.cdb")
+HILL_CREEP_CONSTANT = DIR_PATH.joinpath("..", "data", "mapdl_hill_creep_constant.cdb")
+HILL_CREEP_VARIABLE_TEMP = DIR_PATH.joinpath("..", "data", "mapdl_hill_creep_variable_temp.cdb")
 
 
 def test_hill_constant():

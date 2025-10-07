@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 from unittest.mock import MagicMock
 
 from ansys.units import Quantity
@@ -30,16 +30,14 @@ from ansys.materials.manager._models._common.independent_parameter import Indepe
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._material_models.density import Density
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-CONSTANT_DENSITY = os.path.join(DIR_PATH, "..", "data", "mapdl_density_constant.cdb")
-VARIABLE_DENSITY_TEMP_1 = os.path.join(DIR_PATH, "..", "data", "mapdl_density_variable_1.cdb")
-VARIABLE_DENSITY_TEMP_2 = os.path.join(DIR_PATH, "..", "data", "mapdl_density_variable_2.cdb")
-VARIABLE_DENSITY_A11_A22 = os.path.join(DIR_PATH, "..", "data", "mapdl_density_a11_a22.cdb")
-VARIABLE_DENSITY_TEMP_A11_A22 = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_density_a11_a22_temp.cdb"
-)
-VARIABLE_DENSITY_TEMP_A11_A22_INTERP = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_density_a11_a22_temp_interp.cdb"
+DIR_PATH = Path(__file__).resolve().parent
+CONSTANT_DENSITY = DIR_PATH.joinpath("..", "data", "mapdl_density_constant.cdb")
+VARIABLE_DENSITY_TEMP_1 = DIR_PATH.joinpath("..", "data", "mapdl_density_variable_1.cdb")
+VARIABLE_DENSITY_TEMP_2 = DIR_PATH.joinpath("..", "data", "mapdl_density_variable_2.cdb")
+VARIABLE_DENSITY_A11_A22 = DIR_PATH.joinpath("..", "data", "mapdl_density_a11_a22.cdb")
+VARIABLE_DENSITY_TEMP_A11_A22 = DIR_PATH.joinpath("..", "data", "mapdl_density_a11_a22_temp.cdb")
+VARIABLE_DENSITY_TEMP_A11_A22_INTERP = DIR_PATH.joinpath(
+    "..", "data", "mapdl_density_a11_a22_temp_interp.cdb"
 )
 
 

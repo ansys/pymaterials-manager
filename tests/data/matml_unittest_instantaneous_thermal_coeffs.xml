@@ -42,7 +42,7 @@
       </Material>
       <Material>
         <BulkDetails>
-          <Name>Mat with constant orthotropic instanteous CTE</Name>
+          <Name>Mat with constant orthotropic instantaneous CTE</Name>
           <PropertyData property="pr0">
             <Data format="string">-</Data>
             <ParameterValue parameter="pa0" format="float">

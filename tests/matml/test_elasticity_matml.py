@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -38,25 +38,25 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_elasticity.xml")
-ISOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_isotropic_elasticity.txt")
-ISOTROPIC_ELASTICITY_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_isotropic_elasticity_metadata.txt"
+DIR_PATH = Path(__file__).resolve().parent
+XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_elasticity.xml")
+ISOTROPIC_ELASTICITY = DIR_PATH.joinpath("..", "data", "matml_isotropic_elasticity.txt")
+ISOTROPIC_ELASTICITY_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_isotropic_elasticity_metadata.txt"
 )
-ORTHOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_orthotropic_elasticity.txt")
-ORTHOTROPIC_ELASTICITY_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_orthotropic_elasticity_metadata.txt"
+ORTHOTROPIC_ELASTICITY = DIR_PATH.joinpath("..", "data", "matml_orthotropic_elasticity.txt")
+ORTHOTROPIC_ELASTICITY_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_orthotropic_elasticity_metadata.txt"
 )
-ANISOTROPIC_ELASTICITY = os.path.join(DIR_PATH, "..", "data", "matml_anisotropic_elasticity.txt")
-ANISOTROPIC_ELASTICITY_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_anisotropic_elasticity_metadata.txt"
+ANISOTROPIC_ELASTICITY = DIR_PATH.joinpath("..", "data", "matml_anisotropic_elasticity.txt")
+ANISOTROPIC_ELASTICITY_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_anisotropic_elasticity_metadata.txt"
 )
-ORTHOTROPIC_ELASTICITY_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "matml_orthotropic_elasticity_variable.txt"
+ORTHOTROPIC_ELASTICITY_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "matml_orthotropic_elasticity_variable.txt"
 )
-ISOTROPIC_ELASTICITY_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "matml_isotropic_elasticity_variable.txt"
+ISOTROPIC_ELASTICITY_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "matml_isotropic_elasticity_variable.txt"
 )
 
 

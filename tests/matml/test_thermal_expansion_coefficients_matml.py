@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -41,22 +41,18 @@ from ansys.materials.manager._models._material_models.zero_thermal_strain_refere
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-INSTANTANEOUS_XML_FILE_PATH = os.path.join(
-    DIR_PATH, "..", "data", "matml_unittest_instantaneous_thermal_coeffs.xml"
+DIR_PATH = Path(__file__).resolve().parent
+INSTANTANEOUS_XML_FILE_PATH = DIR_PATH.joinpath(
+    "..", "data", "matml_unittest_instantaneous_thermal_coeffs.xml"
 )
-SECANT_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_thermal_coeffs.xml")
+SECANT_XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_thermal_coeffs.xml")
 
-CTE_ISOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_cte_isotropic.txt")
-CTE_ISOTROPIC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_cte_isotropic_metadata.txt")
-CTE_ORTHOTROPIC = os.path.join(DIR_PATH, "..", "data", "matml_cte_orthotropic.txt")
-CTE_ORTHOTROPIC_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_cte_orthotropic_metadata.txt"
-)
-CTE_ISOTROPIC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_cte_isotropic_variable.txt")
-CTE_ORTHOTROPIC_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "matml_cte_orthotropic_variable.txt"
-)
+CTE_ISOTROPIC = DIR_PATH.joinpath("..", "data", "matml_cte_isotropic.txt")
+CTE_ISOTROPIC_METADATA = DIR_PATH.joinpath("..", "data", "matml_cte_isotropic_metadata.txt")
+CTE_ORTHOTROPIC = DIR_PATH.joinpath("..", "data", "matml_cte_orthotropic.txt")
+CTE_ORTHOTROPIC_METADATA = DIR_PATH.joinpath("..", "data", "matml_cte_orthotropic_metadata.txt")
+CTE_ISOTROPIC_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_cte_isotropic_variable.txt")
+CTE_ORTHOTROPIC_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_cte_orthotropic_variable.txt")
 
 
 def test_read_constant_isotropic_instantaneous_cte_material():
@@ -79,7 +75,7 @@ def test_read_constant_isotropic_instantaneous_cte_material():
 
 def test_read_constant_orthotropic_instantaneous_cte_material():
     material = read_specific_material(
-        INSTANTANEOUS_XML_FILE_PATH, "Mat with constant orthotropic instanteous CTE"
+        INSTANTANEOUS_XML_FILE_PATH, "Mat with constant orthotropic instantaneous CTE"
     )
     assert len(material.models) == 2
     orthotropic_cte = material.models[1]

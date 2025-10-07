@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -33,30 +33,26 @@ from ansys.materials.manager._models._material_models.isotropic_hardening_voce_l
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-VOCE_XML_FILE_PATH = os.path.join(
-    DIR_PATH, "..", "data", "matml_unittest_voce_isotropic_hardening.xml"
+DIR_PATH = Path(__file__).resolve().parent
+VOCE_XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_voce_isotropic_hardening.xml")
+MULTILINEAR_XML_FILE_PATH = DIR_PATH.joinpath(
+    "..", "data", "matml_unittest_multilinear_isotropic_hardening.xml"
 )
-MULTILINEAR_XML_FILE_PATH = os.path.join(
-    DIR_PATH, "..", "data", "matml_unittest_multilinear_isotropic_hardening.xml"
+ISOTROPIC_HARDENING_MULTILINEAR = DIR_PATH.joinpath(
+    "..", "data", "matml_isotropic_hardening_multilinear.txt"
 )
-ISOTROPIC_HARDENING_MULTILINEAR = os.path.join(
-    DIR_PATH, "..", "data", "matml_isotropic_hardening_multilinear.txt"
+ISOTROPIC_HARDENING_MULTILINEAR_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_isotropic_hardening_multilinear_metadata.txt"
 )
-ISOTROPIC_HARDENING_MULTILINEAR_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_isotropic_hardening_multilinear_metadata.txt"
+ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "matml_isotropic_hardening_multilinear_variable.txt"
 )
-ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "matml_isotropic_hardening_multilinear_variable.txt"
+ISOTROPIC_HARDENING_VOCE = DIR_PATH.joinpath("..", "data", "matml_isotropic_hardening_voce.txt")
+ISOTROPIC_HARDENING_VOCE_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_isotropic_hardening_voce_metadata.txt"
 )
-ISOTROPIC_HARDENING_VOCE = os.path.join(
-    DIR_PATH, "..", "data", "matml_isotropic_hardening_voce.txt"
-)
-ISOTROPIC_HARDENING_VOCE_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_isotropic_hardening_voce_metadata.txt"
-)
-ISOTROPIC_HARDENING_VOCE_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "matml_isotropic_hardening_voce_variable.txt"
+ISOTROPIC_HARDENING_VOCE_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "matml_isotropic_hardening_voce_variable.txt"
 )
 
 

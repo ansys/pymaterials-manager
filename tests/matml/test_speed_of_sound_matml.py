@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -30,11 +30,11 @@ from ansys.materials.manager._models._material_models.speed_of_sound import Spee
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_speed_of_sound.xml")
-SPEED_OF_SOUND = os.path.join(DIR_PATH, "..", "data", "matml_speed_of_sound.txt")
-SPEED_OF_SOUND_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_speed_of_sound_metadata.txt")
-SPEED_OF_SOUND_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_speed_of_sound_variable.txt")
+DIR_PATH = Path(__file__).resolve().parent
+XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_speed_of_sound.xml")
+SPEED_OF_SOUND = DIR_PATH.joinpath("..", "data", "matml_speed_of_sound.txt")
+SPEED_OF_SOUND_METADATA = DIR_PATH.joinpath("..", "data", "matml_speed_of_sound_metadata.txt")
+SPEED_OF_SOUND_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_speed_of_sound_variable.txt")
 
 
 def test_read_constant_speed_of_sound():

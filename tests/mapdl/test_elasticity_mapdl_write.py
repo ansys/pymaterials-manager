@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 from unittest.mock import MagicMock
 
 from ansys.units import Quantity
@@ -38,33 +38,33 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
     ElasticityOrthotropic,
 )
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-ELASTICITY_ISOTROPIC_CONSTANT = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_isotropic_constant.cdb"
+DIR_PATH = Path(__file__).resolve().parent
+ELASTICITY_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_isotropic_constant.cdb"
 )
-ELASTICITY_ISOTROPIC_CONSTANT_REFERENCE_TEMPERATURE = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_isotropic_constant_reference_temperature.cdb"
+ELASTICITY_ISOTROPIC_CONSTANT_REFERENCE_TEMPERATURE = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_isotropic_constant_reference_temperature.cdb"
 )
-ELASTICITY_ISOTROPIC_VARIABLE_TEMP = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_isotropic_variable.cdb"
+ELASTICITY_ISOTROPIC_VARIABLE_TEMP = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_isotropic_variable.cdb"
 )
-ELASTICITY_ISOTROPIC_VARIABLE_TEMP_REFERENCE_TEMP = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_isotropic_variable_reference_temperature.cdb"
+ELASTICITY_ISOTROPIC_VARIABLE_TEMP_REFERENCE_TEMP = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_isotropic_variable_reference_temperature.cdb"
 )
-ELASTICITY_ORTHOTROPIC_CONSTANT = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_orthotropic_constant.cdb"
+ELASTICITY_ORTHOTROPIC_CONSTANT = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_orthotropic_constant.cdb"
 )
-ELASTICITY_ORTHOTROPIC_VARIABLE = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_orthotropic_variable.cdb"
+ELASTICITY_ORTHOTROPIC_VARIABLE = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_orthotropic_variable.cdb"
 )
-ELASTICITY_ORTHOTROPIC_VARIABLE_TEMP_A11_A22 = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_orthotropic_variable_temp_a11_a22.cdb"
+ELASTICITY_ORTHOTROPIC_VARIABLE_TEMP_A11_A22 = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_orthotropic_variable_temp_a11_a22.cdb"
 )
-ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22 = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_orthotropic_variable_a11_a22.cdb"
+ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22 = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_orthotropic_variable_a11_a22.cdb"
 )
-ELASTICITY_ANISOTROPIC_CONSTANT = os.path.join(
-    DIR_PATH, "..", "data", "mapdl_elasticity_anisotropic_constant.cdb"
+ELASTICITY_ANISOTROPIC_CONSTANT = DIR_PATH.joinpath(
+    "..", "data", "mapdl_elasticity_anisotropic_constant.cdb"
 )
 
 

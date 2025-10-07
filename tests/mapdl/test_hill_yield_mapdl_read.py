@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.mapdl.core import Mapdl
 import pytest
@@ -28,8 +28,8 @@ import pytest
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-HILL_VARIABLE_A11_A22 = os.path.join(DIR_PATH, "..", "data", "mapdl_hill_variable_a11_a22.cdb")
+DIR_PATH = Path(__file__).resolve().parent
+HILL_VARIABLE_A11_A22 = DIR_PATH.joinpath("..", "data", "mapdl_hill_variable_a11_a22.cdb")
 
 pytestmark = pytest.mark.mapdl_integration
 

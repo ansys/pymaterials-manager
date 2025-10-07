@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -30,11 +30,11 @@ from ansys.materials.manager._models._material_models.larc03_04_constants import
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_larc.xml")
-LARC = os.path.join(DIR_PATH, "..", "data", "matml_larc.txt")
-LARC_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_larc_metadata.txt")
-LARC_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_larc_variable.txt")
+DIR_PATH = Path(__file__).resolve().parent
+XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_larc.xml")
+LARC = DIR_PATH.joinpath("..", "data", "matml_larc.txt")
+LARC_METADATA = DIR_PATH.joinpath("..", "data", "matml_larc_metadata.txt")
+LARC_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_larc_variable.txt")
 
 
 def test_read_constant_larc():

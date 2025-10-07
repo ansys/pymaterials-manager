@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
+from pathlib import Path
 
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml, read_specific_material
@@ -36,24 +36,20 @@ from ansys.materials.manager._models._material_models.strain_hardening import St
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 
-DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-NO_CREEP_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_hill_yield.xml")
-CREEP_XML_FILE_PATH = os.path.join(DIR_PATH, "..", "data", "matml_unittest_hill_yield_creep.xml")
-HILL_YIELD = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield.txt")
-HILL_YIELD_METADATA = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_metadata.txt")
-HILL_YIELD_VARIABLE = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_variable.txt")
-HILL_YIELD_CREEP = os.path.join(DIR_PATH, "..", "data", "matml_hill_yield_creep.txt")
-HILL_YIELD_CREEP_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_hill_yield_creep_metadata.txt"
+DIR_PATH = Path(__file__).resolve().parent
+NO_CREEP_XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_hill_yield.xml")
+CREEP_XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_hill_yield_creep.xml")
+HILL_YIELD = DIR_PATH.joinpath("..", "data", "matml_hill_yield.txt")
+HILL_YIELD_METADATA = DIR_PATH.joinpath("..", "data", "matml_hill_yield_metadata.txt")
+HILL_YIELD_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_hill_yield_variable.txt")
+HILL_YIELD_CREEP = DIR_PATH.joinpath("..", "data", "matml_hill_yield_creep.txt")
+HILL_YIELD_CREEP_METADATA = DIR_PATH.joinpath("..", "data", "matml_hill_yield_creep_metadata.txt")
+KINEMATIC_HARDENING = DIR_PATH.joinpath("..", "data", "matml_kinematic_harderning.txt")
+KINEMATIC_HARDENING_METADATA = DIR_PATH.joinpath(
+    "..", "data", "matml_kinematic_harderning_metadata.txt"
 )
-KINEMATIC_HARDENING = os.path.join(DIR_PATH, "..", "data", "matml_kinematic_harderning.txt")
-KINEMATIC_HARDENING_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_kinematic_harderning_metadata.txt"
-)
-STRAIN_HARDENING = os.path.join(DIR_PATH, "..", "data", "matml_strain_hardening.txt")
-STRAIN_HARDENING_METADATA = os.path.join(
-    DIR_PATH, "..", "data", "matml_strain_hardening_metadata.txt"
-)
+STRAIN_HARDENING = DIR_PATH.joinpath("..", "data", "matml_strain_hardening.txt")
+STRAIN_HARDENING_METADATA = DIR_PATH.joinpath("..", "data", "matml_strain_hardening_metadata.txt")
 
 
 def test_read_constant_hill_yield_no_creep():
