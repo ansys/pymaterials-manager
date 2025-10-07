@@ -360,13 +360,47 @@ description = "An abstract syntax tree for Python with inference support."
 optional = false
 python-versions = ">=3.9.0"
 groups = ["doc"]
+markers = "python_version < \"3.12\""
 files = [
     {file = "astroid-3.3.11-py3-none-any.whl", hash = "sha256:54c760ae8322ece1abd213057c4b5bba7c49818853fc901ef09719a60dbf9dec"},
     {file = "astroid-3.3.11.tar.gz", hash = "sha256:1e5a5011af2920c7c67a53f65d536d65bfa7116feeaf2354d8b94f29573bb0ce"},
 ]
 
 [package.dependencies]
-typing-extensions = {version = ">=4", markers = "python_version < \"3.11\""}
+typing-extensions = {version = ">=4.0.0", markers = "python_version < \"3.11\""}
+
+[[package]]
+name = "astroid"
+version = "4.0.0"
+description = "An abstract syntax tree for Python with inference support."
+optional = false
+python-versions = ">=3.10.0"
+groups = ["doc"]
+markers = "python_version >= \"3.12\""
+files = [
+    {file = "astroid-4.0.0-py3-none-any.whl", hash = "sha256:235980d60cdf94f63d1084d6e7fb4c1718a7f461149fc5800834e4625632f5ac"},
+    {file = "astroid-4.0.0.tar.gz", hash = "sha256:b1bf640a2dbd198e26516fce7757f6484a28fb6e77d8d19eb965bf84d4c0997b"},
+]
+
+[[package]]
+name = "attrs"
+version = "24.2.0"
+description = "Classes Without Boilerplate"
+optional = false
+python-versions = ">=3.7"
+groups = ["dev"]
+files = [
+    {file = "attrs-24.2.0-py3-none-any.whl", hash = "sha256:81921eb96de3191c8258c199618104dd27ac608d9366f5e35d011eae1867ede2"},
+    {file = "attrs-24.2.0.tar.gz", hash = "sha256:5cfb1b9148b5b086569baec03f20d7b6bf3bcacc9a42bebf87ffaaca362f6346"},
+]
+
+[package.extras]
+benchmark = ["cloudpickle ; platform_python_implementation == \"CPython\"", "hypothesis", "mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\"", "pympler", "pytest (>=4.3.0)", "pytest-codspeed", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\" and python_version < \"3.13\"", "pytest-xdist[psutil]"]
+cov = ["cloudpickle ; platform_python_implementation == \"CPython\"", "coverage[toml] (>=5.3)", "hypothesis", "mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\"", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\" and python_version < \"3.13\"", "pytest-xdist[psutil]"]
+dev = ["cloudpickle ; platform_python_implementation == \"CPython\"", "hypothesis", "mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\"", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\" and python_version < \"3.13\"", "pytest-xdist[psutil]"]
+docs = ["cogapp", "furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-towncrier", "towncrier (<24.7)"]
+tests = ["cloudpickle ; platform_python_implementation == \"CPython\"", "hypothesis", "mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\"", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\" and python_version < \"3.13\"", "pytest-xdist[psutil]"]
+tests-mypy = ["mypy (>=1.11.1) ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\"", "pytest-mypy-plugins ; platform_python_implementation == \"CPython\" and python_version >= \"3.9\" and python_version < \"3.13\""]
 
 [[package]]
 name = "babel"
@@ -3616,20 +3650,20 @@ test = ["cython (>=3.0)", "defusedxml (>=0.7.1)", "pytest (>=8.0)", "pytest-xdis
 
 [[package]]
 name = "sphinx-autoapi"
-version = "3.6.0"
+version = "3.6.1"
 description = "Sphinx API documentation generator"
 optional = false
 python-versions = ">=3.9"
 groups = ["doc"]
 files = [
-    {file = "sphinx_autoapi-3.6.0-py3-none-any.whl", hash = "sha256:f3b66714493cab140b0e896d33ce7137654a16ac1edb6563edcbd47bf975f711"},
-    {file = "sphinx_autoapi-3.6.0.tar.gz", hash = "sha256:c685f274e41d0842ae7e199460c322c4bd7fec816ccc2da8d806094b4f64af06"},
+    {file = "sphinx_autoapi-3.6.1-py3-none-any.whl", hash = "sha256:6b7af0d5650f6eac1f4b85c1eb9f9a4911160ec7138bdc4451c77a5e94d5832c"},
+    {file = "sphinx_autoapi-3.6.1.tar.gz", hash = "sha256:1ff2992b7d5e39ccf92413098a376e0f91e7b4ca532c4f3e71298dbc8a4a9900"},
 ]
 
 [package.dependencies]
 astroid = [
-    {version = ">=2.7", markers = "python_version < \"3.12\""},
-    {version = ">=3", markers = "python_version >= \"3.12\""},
+    {version = ">=3.0,<4.0", markers = "python_version < \"3.12\""},
+    {version = ">=4.0,<5.0", markers = "python_version >= \"3.12\""},
 ]
 Jinja2 = "*"
 PyYAML = "*"
