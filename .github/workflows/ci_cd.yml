@@ -170,8 +170,9 @@ jobs:
         uses: ansys/actions/doc-build@c2fa7c93f6883114e0e643599431b33d29f0b13f  # v10.1.4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          group-dependencies-name: "doc"
           optional-dependencies-name: ""
+          group-dependencies-name: "doc"
+          sphinxopts: -j auto --keep-going
 
   build:
     name: Build library

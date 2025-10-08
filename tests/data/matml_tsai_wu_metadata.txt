@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Tsai-Wu Constants</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Coupling Coefficient XY</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Coupling Coefficient XZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Coupling Coefficient YZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Unitless/>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

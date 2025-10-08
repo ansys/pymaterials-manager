@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Fabric Fiber Angle</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Units>
+      <Unit>
+        <Name>degree</Name>
+      </Unit>
+    </Units>
+    <Name>Fabric Fiber Angle</Name>
+  </ParameterDetails>
+</Metadata>

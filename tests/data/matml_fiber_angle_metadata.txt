@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Fiber Angle</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Material Property</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Fiber Angle</Name>
+  </ParameterDetails>
+</Metadata>

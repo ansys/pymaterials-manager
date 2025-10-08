@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Orthotropic Test Material</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Behavior">Orthotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="string">
+        <Data>Interpolation Options</Data>
+        <Qualifier name="AlgorithmType">Linear Multivariate</Qualifier>
+        <Qualifier name="Cached">True</Qualifier>
+        <Qualifier name="Normalized">True</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>1000000</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>1500000</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>2000000</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa4" format="float">
+        <Data>0.3</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa5" format="float">
+        <Data>0.4</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa6" format="float">
+        <Data>0.2</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa7" format="float">
+        <Data>2000000</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa8" format="float">
+        <Data>3000000</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa9" format="float">
+        <Data>1000000</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa10" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
+        <Qualifier name="Upper Limit">1.18329135783152E-30</Qualifier>
+        <Qualifier name="Lower Limit">3.94430452610506E-31</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

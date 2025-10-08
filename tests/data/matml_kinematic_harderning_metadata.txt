@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Kinematic Hardening</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Yield Stress</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Material Constant γ1</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Units>
+      <Unit>
+        <Name>Pa</Name>
+      </Unit>
+    </Units>
+    <Name>Material Constant C1</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

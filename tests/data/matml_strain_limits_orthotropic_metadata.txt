@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Strain Limits</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Tensile X direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Tensile Y direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Tensile Z direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Unitless/>
+    <Name>Compressive X direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa4">
+    <Unitless/>
+    <Name>Compressive Y direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa5">
+    <Unitless/>
+    <Name>Compressive Z direction</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa6">
+    <Unitless/>
+    <Name>Shear XY</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa7">
+    <Unitless/>
+    <Name>Shear XZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa8">
+    <Unitless/>
+    <Name>Shear YZ</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa9">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

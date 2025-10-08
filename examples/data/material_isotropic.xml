@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EngineeringData version="20.2.0.189" versiondate="4/20/2020 2:38:00 PM">
+  <Notes>
+  </Notes>
+  <Materials>
+    <MatML_Doc>
+      <Material>
+        <BulkDetails>
+          <Name>Isotropic Test Material</Name>
+          <PropertyData property="pr0">
+            <Data format="string">-</Data>
+            <ParameterValue parameter="pa0" format="float">
+              <Data>182</Data>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
+            </ParameterValue>
+            <ParameterValue parameter="pa1" format="float">
+              <Data>229</Data>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
+            </ParameterValue>
+            <ParameterValue parameter="pa2" format="float">
+              <Data>228</Data>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
+            </ParameterValue>
+            <ParameterValue parameter="pa3" format="string">
+              <Data>Appearance</Data>
+            </ParameterValue>
+          </PropertyData>
+          <PropertyData property="pr1">
+            <Data format="string">-</Data>
+            <Qualifier name="Behavior">Isotropic</Qualifier>
+            <Qualifier name="Derive from">Young's Modulus and Poisson's Ratio</Qualifier>
+            <Qualifier name="Field Variable Compatible">Temperature</Qualifier>
+            <ParameterValue parameter="pa5" format="string">
+              <Data>Interpolation Options</Data>
+              <Qualifier name="AlgorithmType">Linear Multivariate</Qualifier>
+              <Qualifier name="Normalized">True</Qualifier>
+              <Qualifier name="Cached">True</Qualifier>
+            </ParameterValue>
+            <ParameterValue parameter="pa4" format="float">
+              <Data>1000000</Data>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
+            </ParameterValue>
+            <ParameterValue parameter="pa5" format="float">
+              <Data>0.3</Data>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
+            </ParameterValue>
+            <ParameterValue parameter="pa6" format="float">
+              <Data>833333.333333333</Data>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
+            </ParameterValue>
+            <ParameterValue parameter="pa7" format="float">
+              <Data>384615.384615385</Data>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
+            </ParameterValue>
+            <ParameterValue parameter="pa8" format="float">
+              <Data>7.88860905221012e-31</Data>
+              <Qualifier name="Variable Type">Independent</Qualifier>
+              <Qualifier name="Field Variable">Temperature</Qualifier>
+              <Qualifier name="Default Data">22</Qualifier>
+              <Qualifier name="Upper Limit">1.18329135783152E-30</Qualifier>
+              <Qualifier name="Lower Limit">3.94430452610506E-31</Qualifier>
+              <Qualifier name="Field Units">C</Qualifier>
+            </ParameterValue>
+          </PropertyData>
+        </BulkDetails>
+      </Material>
+      <Metadata>
+        <ParameterDetails id="pa0">
+          <Name>Red</Name>
+          <Unitless />
+        </ParameterDetails>
+        <ParameterDetails id="pa1">
+          <Name>Green</Name>
+          <Unitless />
+        </ParameterDetails>
+        <ParameterDetails id="pa2">
+          <Name>Blue</Name>
+          <Unitless />
+        </ParameterDetails>
+        <ParameterDetails id="pa3">
+          <Name>Material Property</Name>
+          <Unitless />
+        </ParameterDetails>
+        <ParameterDetails id="pa4">
+          <Name>Young's Modulus</Name>
+          <Units name="Stress">
+            <Unit>
+              <Name>Pa</Name>
+            </Unit>
+          </Units>
+        </ParameterDetails>
+        <ParameterDetails id="pa5">
+          <Name>Poisson's Ratio</Name>
+          <Unitless />
+        </ParameterDetails>
+        <ParameterDetails id="pa6">
+          <Name>Bulk Modulus</Name>
+          <Units name="Stress">
+            <Unit>
+              <Name>Pa</Name>
+            </Unit>
+          </Units>
+        </ParameterDetails>
+        <ParameterDetails id="pa7">
+          <Name>Shear Modulus</Name>
+          <Units name="Stress">
+            <Unit>
+              <Name>Pa</Name>
+            </Unit>
+          </Units>
+        </ParameterDetails>
+        <ParameterDetails id="pa8">
+          <Name>Temperature</Name>
+          <Units name="Temperature">
+            <Unit>
+              <Name>C</Name>
+            </Unit>
+          </Units>
+        </ParameterDetails>
+        <PropertyDetails id="pr0">
+          <Unitless />
+          <Name>Color</Name>
+        </PropertyDetails>
+        <PropertyDetails id="pr1">
+          <Unitless />
+          <Name>Elasticity</Name>
+        </PropertyDetails>
+      </Metadata>
+    </MatML_Doc>
+  </Materials>
+  <ANSYSWBTransferData>
+    <Materials>
+      <Material>
+        <Name>Isotropic Test Material</Name>
+        <DataTransferID></DataTransferID>
+      </Material>
+    </Materials>
+  </ANSYSWBTransferData>
+</EngineeringData>

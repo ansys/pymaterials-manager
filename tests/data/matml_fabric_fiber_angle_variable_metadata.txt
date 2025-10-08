@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Fabric Fiber Angle</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Options Variable</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit>
+        <Name>degree</Name>
+      </Unit>
+    </Units>
+    <Name>Fabric Fiber Angle</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Units>
+      <Unit>
+        <Name>radian</Name>
+      </Unit>
+    </Units>
+    <Name>Shear Angle</Name>
+  </ParameterDetails>
+</Metadata>

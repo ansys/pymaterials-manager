@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>material with variable tsai-wu</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>-1.0, -1.0, -1.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>-1.0, -1.0, -1.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>-1.0, -1.0, -1.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>22.0, 50.0, 70.0</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

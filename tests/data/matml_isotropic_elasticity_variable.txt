@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Variable Isotropic Test Material</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Behavior">Isotropic</Qualifier>
+      <ParameterValue parameter="pa0" format="string">
+        <Data>Interpolation Options</Data>
+        <Qualifier name="AlgorithmType">Linear Multivariate</Qualifier>
+        <Qualifier name="Cached">True</Qualifier>
+        <Qualifier name="Normalized">True</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>2000000, 1000000</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>0.35, 0.3</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>12.0, 21.0</Data>
+        <Qualifier name="Variable Type">Independent,Independent</Qualifier>
+        <Qualifier name="Default Data">22.0</Qualifier>
+        <Qualifier name="Upper Limit">1.18329135783152E-30</Qualifier>
+        <Qualifier name="Lower Limit">3.94430452610506E-31</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

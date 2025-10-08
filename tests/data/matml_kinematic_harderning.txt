@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>SFRP</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Definition">Chaboche</Qualifier>
+      <Qualifier name="Number of Kinematic Models">1</Qualifier>
+      <Qualifier name="source">ANSYS</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>12.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>1.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>45.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa3" format="float">
+        <Data>7.88860905221012e-31</Data>
+        <Qualifier name="Variable Type">Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

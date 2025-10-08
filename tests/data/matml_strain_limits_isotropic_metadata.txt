@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Strain Limits</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Von Mises </Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
+</Metadata>

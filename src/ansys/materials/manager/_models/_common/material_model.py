@@ -1,0 +1,107 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import abc
+
+from pydantic import BaseModel, Field
+from pyparsing import Any
+
+from ._packages import SupportedPackage  # noqa: F401
+from .common import ParameterField, validate_parameters
+from .independent_parameter import IndependentParameter
+from .interpolation_options import InterpolationOptions
+from .model_qualifier import ModelQualifier
+
+
+class MaterialModel(BaseModel, abc.ABC):
+    """A base class for representing a material models."""
+
+    name: str = Field(default="", title="Name", description="The name of the material model.")
+    supported_packages: list[SupportedPackage] = Field(
+        default=[],
+        title="Supported Packages",
+        description="The supported packages for this material model. Currently, only PyMAPDL and PyFluent are supported.",  # noqa: E501
+        frozen=True,
+    )
+    independent_parameters: list[IndependentParameter] | None = Field(
+        default=None,
+        title="Independent Parameters",
+        description="List of independent parameters for the model.",
+    )
+    interpolation_options: InterpolationOptions | None = Field(
+        default=None,
+        title="Interpolation Options",
+        description="Options for interpolation of the material model data.",
+    )
+    material_property: str | None = ParameterField(
+        default=None,
+        description="The material property for the material model.",
+        matml_name="Material Property",
+    )
+    model_qualifiers: list[ModelQualifier] = Field(
+        default=[],
+        title="Model Qualifier",
+        description="List of qualifiers for the model. This is used to determine the type of model and its applicability.",  # noqa: E501
+        frozen=True,
+    )
+
+    @classmethod
+    def load(cls, value: dict | None):
+        """
+        Load a material model from a dictionary.
+
+        Parameters
+        ----------
+        value: dict | None
+            Dictionary containing the material model data. If `None`, returns `None`.
+        """
+        return cls(**value)
+
+    def validate_model(self) -> None:
+        """
+        Perform pre-flight validation of the model setup.
+
+        This method should not perform any calls to other processes.
+        """
+        model = self.model_dump()
+        for field_name, field_value in model.items():
+            if field_name not in MaterialModel.model_fields.keys():
+                if field_value is None:
+                    raise Exception(f"the value of {field_name} cannot be None, please update it.")
+                validate_parameters(field_name, field_value["value"], self.independent_parameters)
+
+    @abc.abstractmethod
+    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
+        """
+        Write the model to the given PyAnsys session.
+
+        This method should make some effort to validate the model state before writing.
+
+        Parameters
+        ----------
+        material: Material
+            Material object to associate this model with.
+        pyansys_session: Any
+            Supported PyAnsys product session. Only PyMAPDL and PyFluent are
+            supported currently.
+        """
+        ...

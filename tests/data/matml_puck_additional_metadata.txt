@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Metadata>
+  <PropertyDetails id="pr0">
+    <Unitless/>
+    <Name>Additional Puck Constants</Name>
+  </PropertyDetails>
+  <ParameterDetails id="pa0">
+    <Unitless/>
+    <Name>Material Property</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa1">
+    <Unitless/>
+    <Name>Interface Weakening Factor</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Unitless/>
+    <Name>Degradation Parameter s</Name>
+  </ParameterDetails>
+  <ParameterDetails id="pa3">
+    <Unitless/>
+    <Name>Degradation Parameter M</Name>
+  </ParameterDetails>
+</Metadata>

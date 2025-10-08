@@ -22,11 +22,24 @@
 
 """Provides a function to convert MatML entries into Material objects."""
 
+from pydoc import locate
 from typing import Dict, Sequence
 
-from ansys.materials.manager._models import Constant
-from ansys.materials.manager.material import Material
-from ansys.materials.manager.util.matml.matml_property_map import MATML_PROPERTY_MAP
+from ansys.units import Quantity
+
+from ansys.materials.manager._models._common import (
+    IndependentParameter,
+    InterpolationOptions,
+    ModelQualifier,
+    UserParameter,
+)
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.common import convert_to_float_or_keep
+
+from .matml_parser import BEHAVIOR_KEY
+from .utils import get_data_and_unit, parse_property_set_name
+
+MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
 
 
 def convert_matml_materials(
@@ -50,53 +63,97 @@ def convert_matml_materials(
     global_material_index = 1 + index_offset
     # loop over the materials
     for mat_id, material_data in materials_dict.items():
-
         models = []
         # loop over the defined property sets
         for propset_name, property_set in material_data.items():
+            cls_name = MODEL_NAMESPACE + parse_property_set_name(propset_name)
+            property_map = []
+            arguments = {}
+            qualifiers = []
+            for qualifier in property_set.qualifiers.keys():
+                if qualifier == BEHAVIOR_KEY:
+                    cls_name += property_set.qualifiers[qualifier].replace(" ", "")
+                qualifiers.append(
+                    ModelQualifier(name=qualifier, value=property_set.qualifiers[qualifier])
+                )
+            cls = locate(cls_name)
+            if cls:
+                property_map += list(cls.model_fields.keys())
+                titles = {
+                    name: field_info.matml_name
+                    for name, field_info in cls.__fields__.items()
+                    if hasattr(field_info, "matml_name")  # noqa: E501
+                }
+                independent_parameters = []
+                for name in property_map:
+                    if name == "independent_parameters":
+                        for param_value in property_set.parameters.values():
+                            ind_param = param_value.qualifiers.get("Variable Type")
+                            if ind_param and ind_param.split(",")[0] == "Independent":
+                                data, units = get_data_and_unit(param_value)
+                                independent_param = IndependentParameter(
+                                    name=param_value.name,
+                                    values=Quantity(value=data, units=units),
+                                    default_value=convert_to_float_or_keep(
+                                        param_value.qualifiers.get("Default Data", None)
+                                    ),
+                                    upper_limit=convert_to_float_or_keep(
+                                        param_value.qualifiers.get("Upper Limit", None)
+                                    ),
+                                    lower_limit=convert_to_float_or_keep(
+                                        param_value.qualifiers.get("Lower Limit", None)
+                                    ),
+                                )
+                                independent_parameters.append(independent_param)
+                    if name in titles.keys() and cls.__class__.__name__ != "ModelCoefficients":
+                        param_name = titles[name]
+                        if param_name in property_set.parameters.keys():
+                            param = property_set.parameters[param_name]
+                            if name not in ["red", "green", "blue", "material_property"]:
+                                data, units = get_data_and_unit(param)
+                                arguments[name] = Quantity(value=data, units=units)
+                            else:
+                                data = param.data
+                                if isinstance(data, float):
+                                    data = int(data)
+                                arguments[name] = data
 
-            if "Behavior" in property_set.qualifiers.keys():
-                propset_name += "::" + property_set.qualifiers["Behavior"]
+                    if name == "model_qualifiers":
+                        arguments["model_qualifiers"] = qualifiers
 
-            if "Definition" in property_set.qualifiers.keys() and propset_name.startswith(
-                "Coefficient of Thermal Expansion"
-            ):
-                propset_name += "::" + property_set.qualifiers["Definition"]
-
-            # check if the Material object supports this property set
-            if propset_name in MATML_PROPERTY_MAP.keys():
-                parameter_map = MATML_PROPERTY_MAP[propset_name]
-
-                for property_name in parameter_map["properties"]:
-                    param = property_set.parameters[property_name]
-                    value = param.data
-                    if isinstance(value, Sequence):
-                        if len(value) > 1:
-                            raise RuntimeError(
-                                f"Only constant material properties are supported ATM. "
-                                f"Value of `{property_name}` is `{value}`"
+                arguments["independent_parameters"] = independent_parameters
+                if "Options Variable" in property_set.parameters.keys():
+                    variable_options = property_set.parameters["Options Variable"].qualifiers
+                    interpolation_options = InterpolationOptions(
+                        algorithm_type=variable_options.get("AlgorithmType", ""),
+                        normalized=variable_options.get("Normalized", True),
+                        cached=variable_options.get("Cached", True),
+                        quantized=variable_options.get("Quantized", None),
+                        extrapolation_type=variable_options.get("ExtrapolationType", "None"),
+                    )
+                    arguments["interpolation_options"] = interpolation_options
+                if cls_name.split(".")[-1] == "ModelCoefficients":
+                    user_parameters = []
+                    for key_param, value_param in property_set.parameters.items():
+                        if value_param.qualifiers.get("UserMat Constant", None):
+                            data, units = get_data_and_unit(value_param)
+                            user_param = UserParameter(
+                                name=key_param,
+                                values=Quantity(value=data, units=units),
+                                user_mat_constant=value_param.qualifiers["UserMat Constant"],
                             )
-                        value = value[0]
-                    models.append(Constant(property_name, value))
-                for matml_key, mapped_properties in parameter_map["mappings"].items():
-                    param = property_set.parameters[matml_key]
-                    value = param.data
-                    if isinstance(value, Sequence):
-                        if len(value) > 1:
-                            raise RuntimeError(
-                                f"Only constant material properties are supported ATM. "
-                                f"Value of `{matml_key}` is `{value}`"
-                            )
-                        value = value[0]
-                    for mapped_property in mapped_properties:
-                        models.append(Constant(mapped_property, value))
+                            user_parameters.append(user_param)
+                    arguments["user_parameters"] = user_parameters
 
-        mapdl_material = Material(
-            material_name=mat_id, material_id=global_material_index, models=models
-        )
+                obj = cls.load(arguments)
+                models.append(obj)
+            else:
+                print(f"Could not find a material model for: {cls_name.split('.')[-1]}")
+
+        mapdl_material = Material(name=mat_id, material_id=global_material_index, models=models)
 
         if mat_id in transfer_ids.keys():
-            mapdl_material.uuid = transfer_ids[mat_id]
+            mapdl_material.guid = transfer_ids[mat_id]
 
         materials.append(mapdl_material)
 
