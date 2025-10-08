@@ -1,0 +1,462 @@
+
+
+
+
+
+
+The ``mapdl_snippets_strings.py`` module
+========================================
+
+.. py:module:: ansys.materials.manager.util.mapdl.mapdl_snippets_strings
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: mapdl_snippets_strings
+.. tab-set::
+
+
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~PREDIFINED_TB_FIELDS`
+            - 
+
+
+          * - :py:obj:`~PREDIFINED_TB_FIELDS`
+            - 
+
+
+          * - :py:obj:`~INTERPOLATION_ALGORITHM_MAP`
+            - 
+
+
+          * - :py:obj:`~EXTRAPOLATION_TYPE_MAP`
+            - 
+
+
+          * - :py:obj:`~USER_DEFINED_TB_FIELDS`
+            - 
+
+
+          * - :py:obj:`~CONSTANT_MP_PROPERTY`
+            - 
+
+
+          * - :py:obj:`~TEMPERATURE_REFERENCE`
+            - 
+
+
+          * - :py:obj:`~MP_DATA`
+            - 
+
+
+          * - :py:obj:`~MP_TEMP`
+            - 
+
+
+          * - :py:obj:`~TB`
+            - 
+
+
+          * - :py:obj:`~TB_FIELD`
+            - 
+
+
+          * - :py:obj:`~TB_DATA`
+            - 
+
+
+          * - :py:obj:`~TB_TEMP`
+            - 
+
+
+          * - :py:obj:`~TBPT`
+            - 
+
+
+          * - :py:obj:`~TBIN_SCALE`
+            - 
+
+
+          * - :py:obj:`~TBIN_ALGO`
+            - 
+
+
+          * - :py:obj:`~TBIN_DEFA`
+            - 
+
+
+          * - :py:obj:`~TBIN_BNDS`
+            - 
+
+
+          * - :py:obj:`~TBIN_NORM`
+            - 
+
+
+          * - :py:obj:`~TBIN_CACH`
+            - 
+
+
+          * - :py:obj:`~TBIN_EXTR`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: PREDIFINED_TB_FIELDS
+
+.. py:data:: PREDIFINED_TB_FIELDS
+
+.. py:data:: INTERPOLATION_ALGORITHM_MAP
+
+.. py:data:: EXTRAPOLATION_TYPE_MAP
+
+.. py:data:: USER_DEFINED_TB_FIELDS
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """{name} = 'UF{idx:02d}' ! {unit}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: CONSTANT_MP_PROPERTY
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """MP,{lab},{matid},{c0},{c1},{c2},{c3},{c4} ! {unit}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TEMPERATURE_REFERENCE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """MP,REFT,{matid},{temp},
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: MP_DATA
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """MPDATA,{lab},{matid},{sloc},{c1},{c2},{c3},{c4},{c5},{c6} ! {unit}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: MP_TEMP
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """MPTEMP,{sloc},{t1},{t2},{t3},{t4},{t5},{t6}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TB
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TB,{lab},{matid},,,{tbopt}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TB_FIELD
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBFIELD,{type},{value}, ! {unit}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TB_DATA
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBDATA,{stloc},{c1},{c2},{c3},{c4},{c5},{c6}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TB_TEMP
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBTEMP,{temp}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TBPT
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBPT,{oper},{x},{y}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TBIN_SCALE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBIN,SCALE,{par1},{par2},{par3},{par4}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TBIN_ALGO
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBIN,ALGO,{par1}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TBIN_DEFA
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBIN,DEFA,{par1},{par2}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TBIN_BNDS
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBIN,BNDS,{par1},{par2},{par3}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TBIN_NORM
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBIN,NORM,{par1},{par2}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TBIN_CACH
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBIN,CACH,{par1},{par2}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: TBIN_EXTR
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """TBIN,EXTR,{par1},{par2}
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+
+
