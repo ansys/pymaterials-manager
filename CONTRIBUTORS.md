@@ -17,4 +17,5 @@
 * [Mohamed Koubaa](https://github.com/koubaa)
 * [René Roos](https://github.com/roosre)
 * [Revathy Venugopal](https://github.com/Revathyvenugopal162)
+* [Riccardo Manno](https://github.com/rmanno91)
 * [Roberto Pastor Muela](https://github.com/RobPasMue)
