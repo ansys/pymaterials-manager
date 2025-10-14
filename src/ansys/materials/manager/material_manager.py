@@ -29,6 +29,7 @@ from typing import Any
 from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.common_writer import get_writer
 from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
 from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.materials.manager.util.matml.matml_parser import MatmlReader
@@ -130,7 +131,7 @@ class MaterialManager:
                 )
         self._materials |= material_dic
 
-    def write_material(self, material_name: str, material_id: int | None = None) -> None:
+    def write_material(self, material_name: str, material_id: int | None = None, **kwargs) -> None:
         """Write material to the pyansys session."""
         material = self._materials.get(material_name, None)
         if not material:
@@ -141,9 +142,10 @@ class MaterialManager:
         if not self.client:
             print("The pyansys session has not been defined.")
             return
-        material.write_material(self._client, material_id)
-
-        material.write_material(self._client, material_id)
+        writer = get_writer(self.client)
+        writer.write_material(
+            material=material, material_id=material_id, client=self.client, **kwargs
+        )
 
     def read_from_client_session(self) -> None:
         """Read material from the pyansys client session."""

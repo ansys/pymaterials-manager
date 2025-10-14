@@ -19,6 +19,39 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from .mapdl_snippets_strings import *
-from .mapdl_writer import write_constant_property, write_interpolation_options, write_table_values
-from .writer_mapdl import WriterMapdl
+
+from typing import Protocol, Type
+
+from pyparsing import Any
+
+from ansys.materials.manager._models.material import Material
+
+
+class Writer(Protocol):
+    """Protocol of the Writer."""
+
+    def write_material(self, material: Material, material_id: int, client: Any, **kwargs):
+        """Abstract write material method."""
+        ...
+
+
+WRITER_REGISTRY: dict[str, Type[Writer]] = {}
+
+
+def register_writer(name: str):
+    """Decorate the dynamic registration of the writer registry."""
+
+    def decorator(cls: Type[Writer]):
+        WRITER_REGISTRY[name] = cls
+        return cls
+
+    return decorator
+
+
+def get_writer(client: Any):
+    """Get the appropriate writer instance."""
+    try:
+        cls = WRITER_REGISTRY[client.__class__.__name__]
+        return cls()
+    except:
+        raise Exception("Writer not found.")

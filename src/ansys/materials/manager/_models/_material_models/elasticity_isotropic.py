@@ -31,18 +31,7 @@ from ansys.materials.manager._models._common import (
     MaterialModel,
     ParameterField,
     QualifierType,
-    _MapdlCore,
     validate_and_initialize_model_qualifiers,
-)
-from ansys.materials.manager.util.mapdl import (
-    write_constant_property,
-    write_interpolation_options,
-    write_table_values,
-)
-from ansys.materials.manager.util.mapdl.mapdl_writer import (
-    write_constant_properties,
-    write_temperature_reference_value,
-    write_temperature_table_values,
 )
 
 
@@ -54,11 +43,13 @@ class ElasticityIsotropic(MaterialModel):
         default=None,
         description="The Young's modulus of the material.",
         matml_name="Young's Modulus",
+        mapdl_name="EX",
     )
     poissons_ratio: Quantity | None = ParameterField(
         default=None,
         description="The Poisson's ratio of the material.",
         matml_name="Poisson's Ratio",
+        mapdl_name="PRXY",
     )
 
     @model_validator(mode="before")
@@ -69,80 +60,6 @@ class ElasticityIsotropic(MaterialModel):
         )
         return values
 
-    def _write_mapdl(self, material_id: int, reference_temperature: float | None) -> str:
-        material_string = ""
-        if reference_temperature:
-            material_string += write_temperature_reference_value(material_id, reference_temperature)
-        if not self.independent_parameters:
-            material_string += write_constant_property(
-                label="EX",
-                property=self.youngs_modulus.value,
-                material_id=material_id,
-                unit=self.youngs_modulus.unit,
-            )
-            material_string += write_constant_property(
-                label="PRXY",
-                property=self.poissons_ratio.value,
-                material_id=material_id,
-                unit=self.poissons_ratio.unit,
-            )
-            return material_string
-        else:
-            if (
-                len(self.independent_parameters) == 1
-                and self.independent_parameters[0].name == "Temperature"
-            ):
-                if len(self.independent_parameters[0].values.value) == 1:
-                    material_string += write_constant_properties(
-                        labels=[
-                            "EX",
-                            "PRXY",
-                        ],
-                        properties=[self.youngs_modulus.value, self.poissons_ratio.value],
-                        property_units=[self.youngs_modulus.unit, self.poissons_ratio.unit],
-                        material_id=material_id,
-                    )
-                    return material_string
-                else:
-                    material_string += write_temperature_table_values(
-                        labels=["EX"],
-                        dependent_parameters=[self.youngs_modulus.value],
-                        dependent_parameters_unit=[self.youngs_modulus.unit],
-                        material_id=material_id,
-                        temperature_parameter=self.independent_parameters[0],
-                    )
-                    material_string += write_temperature_table_values(
-                        labels=["PRXY"],
-                        dependent_parameters=[self.poissons_ratio.value],
-                        dependent_parameters_unit=[self.poissons_ratio.unit],
-                        material_id=material_id,
-                        temperature_parameter=self.independent_parameters[0],
-                    )
-                    return material_string
-            else:
-                parameters_str, table_str = write_table_values(
-                    label="ELASTIC",
-                    dependent_parameters=[self.youngs_modulus.value, self.poissons_ratio.value],
-                    material_id=material_id,
-                    independent_parameters=self.independent_parameters,
-                    tb_opt="ISOT",
-                )
-                material_string += parameters_str + "\n" + table_str
-
-                if self.interpolation_options:
-                    interpolation_string += write_interpolation_options(
-                        interpolation_options=self.interpolation_options,
-                        independent_parameters=self.independent_parameters,
-                    )
-                    material_string += "\n" + interpolation_string
-        return material_string
-
     def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> str:
         """Write this model to the specified session."""
-        self.validate_model()
-        if isinstance(pyansys_session, _MapdlCore):
-            reference_temperature = kwargs.get("reference_temperature", None)
-            material_string = self._write_mapdl(material_id, reference_temperature)
-        else:
-            raise Exception("The session is not supported.")
-        return material_string
+        ...
