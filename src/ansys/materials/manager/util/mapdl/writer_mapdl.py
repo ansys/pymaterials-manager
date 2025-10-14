@@ -36,7 +36,7 @@ from ansys.materials.manager._models._material_models.zero_thermal_strain_refere
 )
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.common_writer import register_writer
-from ansys.materials.manager.util.mapdl.mapdl_writer import (
+from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
     write_constant_properties,
     write_interpolation_options,
     write_table_dep_values,

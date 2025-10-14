@@ -20,32 +20,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Literal
-
-from ansys.units import Quantity
-from pydantic import Field
-
-from ansys.materials.manager._models._common import (
-    MaterialModel,
-    ParameterField,
-    SupportedPackage,
-)
-
-
-class Density(MaterialModel):
-    """Represents an isotropic density material model."""
-
-    name: Literal["Density"] = Field(default="Density", repr=False, frozen=True)
-    density: Quantity | None = ParameterField(
-        default=None,
-        description="The density of the material.",
-        matml_name="Density",
-        mapdl_name="DENS",
-        fluent_name="density",
-    )
-    supported_packages: list[SupportedPackage] = Field(
-        default=[SupportedPackage.MAPDL, SupportedPackage.FLUENT],
-        title="Supported Packages",
-        description="The list of supported packages.",
-        frozen=True,
-    )
+from .writer_fluent import WriterFluent
