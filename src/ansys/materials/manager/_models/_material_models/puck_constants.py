@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field
@@ -52,11 +52,3 @@ class PuckConstants(MaterialModel):
         description="The tensile inclination in the YZ plane for the Puck constants model.",
         matml_name="Tensile Inclination YZ",
     )
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write this model to the specified session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        pass

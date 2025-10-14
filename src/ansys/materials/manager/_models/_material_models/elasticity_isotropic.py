@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
@@ -59,7 +59,3 @@ class ElasticityIsotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> str:
-        """Write this model to the specified session."""
-        ...

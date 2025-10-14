@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
@@ -30,7 +30,6 @@ from ansys.materials.manager._models._common import (
     MaterialModel,
     ParameterField,
     QualifierType,
-    _MapdlCore,
     validate_and_initialize_model_qualifiers,
 )
 
@@ -60,15 +59,3 @@ class ZeroThermalStrainReferenceTemperatureOrthotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def _write_mapdl(self, material_id: int):
-        return f"MPAMOD,{material_id},{self.zero_thermal_strain_reference_temperature.value[0]}\n"
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write this model to the specified session."""
-        self.validate_model()
-        if isinstance(pyansys_session, _MapdlCore):
-            material_string = self._write_mapdl(material_id)
-        else:
-            raise Exception("The session is not supported.")
-        return material_string

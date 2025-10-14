@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field
@@ -40,11 +40,3 @@ class FabricFiberAngle(MaterialModel):
         description="The fabric fiber angle values for the fabric fiber angle model.",
         matml_name="Fabric Fiber Angle",
     )
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write this model to the specified session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        pass

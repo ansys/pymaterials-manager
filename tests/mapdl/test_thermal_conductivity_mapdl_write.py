@@ -21,11 +21,9 @@
 # SOFTWARE.
 
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
@@ -33,6 +31,7 @@ from ansys.materials.manager._models._material_models.thermal_conductivity_isotr
 from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
     ThermalConductivityOrthotropic,
 )
+from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
 
 DIR_PATH = Path(__file__).resolve().parent
 THERMAL_CONDUCTIVITY_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(
@@ -62,8 +61,7 @@ def test_thermal_conductivity_isotropic_constant():
     thermal_conductivity = ThermalConductivityIsotropic(
         thermal_conductivity=Quantity(value=[10.0], units="W m^-1 C^-1")
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(thermal_conductivity, 2)
     with open(THERMAL_CONDUCTIVITY_ISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
@@ -73,9 +71,8 @@ def test_thermal_conductivity_isotropic_constant_temperature():
     thermal_conductivity = ThermalConductivityIsotropic(
         thermal_conductivity=Quantity(value=[10.0], units="W m^-1 C^-1"),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(
-        material_id=3, pyansys_session=mock_mapdl, reference_temperature=22.0
+    material_string = WriterMapdl()._write_material_model(
+        thermal_conductivity, 3, reference_temperature=22.0
     )
     with open(THERMAL_CONDUCTIVITY_ISOTROPIC_CONSTANT_REFERENCE_TEMPERATURE, "r") as file:
         data = file.read()
@@ -93,10 +90,8 @@ def test_thermal_conductivity_isotropic_variable():
             )
         ],
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(
-        material_id=1, pyansys_session=mock_mapdl, reference_temperature=22.0
+    material_string = WriterMapdl()._write_material_model(
+        thermal_conductivity, 1, reference_temperature=22.0
     )
     with open(THERMAL_CONDUCTIVITY_ISOTROPIC_VARIABLE_TEMP, "r") as file:
         data = file.read()
@@ -109,9 +104,7 @@ def test_thermal_conductivity_orthotropic_constant():
         thermal_conductivity_y=Quantity(value=[20.0], units="W m^-1 C^-1"),
         thermal_conductivity_z=Quantity(value=[30.0], units="W m^-1 C^-1"),
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(material_id=4, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(thermal_conductivity, 4)
     with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
@@ -131,9 +124,8 @@ def test_thermal_conductivity_orthotropic_constant_reference_temperature():
         ],
     )
 
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(
-        material_id=5, pyansys_session=mock_mapdl, reference_temperature=22.0
+    material_string = WriterMapdl()._write_material_model(
+        thermal_conductivity, 5, reference_temperature=22.0
     )
     with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC_CONSTANT_REFERENCE_TEMPERATURE, "r") as file:
         data = file.read()
@@ -153,10 +145,8 @@ def test_thermal_conductivity_orthotropic_variable_temperature():
             )
         ],
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(
-        material_id=6, pyansys_session=mock_mapdl, reference_temperature=22.0
+    material_string = WriterMapdl()._write_material_model(
+        thermal_conductivity, 6, reference_temperature=22.0
     )
     with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC_VARIABLE_TEMP, "r") as file:
         data = file.read()
@@ -257,9 +247,7 @@ def test_thermal_conductivity_orthotropic_variable_a11_a22():
             ),
         ],
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(material_id=7, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(thermal_conductivity, 7)
     with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC_VARIABLE_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string

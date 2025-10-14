@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Dict, Literal
+from typing import Dict, Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
@@ -56,7 +56,3 @@ class CoefficientofThermalExpansionIsotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> str:
-        """Write the model to the pyansys session."""
-        ...

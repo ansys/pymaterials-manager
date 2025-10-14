@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from pydantic import Field
 
@@ -46,10 +46,6 @@ class Color(MaterialModel):
         matml_name="Material Property",
         frozen=True,
     )
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write the anisotropic elasticity model to the pyansys session."""
-        pass
 
     def validate_model(self) -> tuple[bool, list[str]]:
         """Validate the anisotropic elasticity model."""

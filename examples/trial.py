@@ -9,6 +9,7 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
 )
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.material_manager import MaterialManager
+from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
 
 mapdl_client = launch_mapdl(
     version=252,
@@ -18,6 +19,7 @@ mapdl_client = launch_mapdl(
 model_1 = ElasticityIsotropic(
     youngs_modulus=Quantity(value=[5], units="Pa"), poissons_ratio=Quantity(value=[0.1], units="")
 )
+writer = WriterMapdl()._write_material_model(model_1, 1)
 model_2 = CoefficientofThermalExpansionIsotropic(
     coefficient_of_thermal_expansion=Quantity(value=[1e-6], units="C^-1")
 )

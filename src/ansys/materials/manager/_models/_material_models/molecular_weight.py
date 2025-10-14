@@ -29,7 +29,6 @@ from ansys.materials.manager._models._common import (
     MaterialModel,
     ParameterField,
     SupportedPackage,
-    _FluentCore,
 )
 
 
@@ -60,10 +59,3 @@ class MolecularWeight(MaterialModel):
                 ),
             }
         }
-
-    def write_model(self, material_id, pyansys_session, **kwargs: dict):
-        """Write molecular weight model."""
-        self.validate_model()
-        if isinstance(pyansys_session, _FluentCore):
-            molecular_weight = self._write_fluent()
-            return molecular_weight

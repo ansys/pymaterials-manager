@@ -21,10 +21,10 @@
 # SOFTWARE.
 
 from collections import Counter
-from typing import Any, List
+from typing import List
 import uuid
 
-from ansys.materials.manager._models._common import MaterialModel, _MapdlCore
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class Material:
@@ -125,12 +125,3 @@ class Material:
             if model_name.lower() == mat_model.name.lower():
                 model = mat_model
         return model
-
-    def write_material(self, pyansys_session: Any, material_id: int, **kwargs: dict):
-        """Write material to the pyansys session."""
-        for model in self.models:
-            model = model.write_model(material_id, pyansys_session, **kwargs)
-            if model:
-                if isinstance(pyansys_session, _MapdlCore):
-                    pyansys_session.prep7()
-                    pyansys_session.input_strings(model)

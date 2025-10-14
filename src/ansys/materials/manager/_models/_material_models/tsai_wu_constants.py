@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field
@@ -47,11 +47,3 @@ class TsaiWuConstants(MaterialModel):
         description="The coupling coefficient in the YZ plane.",
         matml_name="Coupling Coefficient YZ",
     )
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write the anisotropic elasticity model to the pyansys session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the anisotropic elasticity model."""
-        pass

@@ -24,7 +24,6 @@ from typing import Dict, Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
-from pyparsing import Any
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
@@ -60,6 +59,34 @@ class ElasticityOrthotropic(MaterialModel):
         mapdl_name="EZ",
     )
 
+    shear_modulus_xy: Quantity | None = ParameterField(
+        default=None,
+        description="The shear modulus xy of the material.",
+        matml_name="Shear Modulus XY",
+        mapdl_name="GXY",
+    )
+
+    shear_modulus_yz: Quantity | None = ParameterField(
+        default=None,
+        description="The shear modulus yz of the material.",
+        matml_name="Shear Modulus YZ",
+        mapdl_name="GYZ",
+    )
+
+    shear_modulus_xz: Quantity | None = ParameterField(
+        default=None,
+        description="The shear modulus xz of the material.",
+        matml_name="Shear Modulus XZ",
+        mapdl_name="GXZ",
+    )
+
+    poissons_ratio_xy: Quantity | None = ParameterField(
+        default=None,
+        description="The Poisson's ratio xy of the material.",
+        matml_name="Poisson's Ratio XY",
+        mapdl_name="PRXY",
+    )
+
     poissons_ratio_yz: Quantity | None = ParameterField(
         default=None,
         description="The Poisson's ratio yz of the material.",
@@ -74,31 +101,6 @@ class ElasticityOrthotropic(MaterialModel):
         mapdl_name="PRXZ",
     )
 
-    poissons_ratio_xy: Quantity | None = ParameterField(
-        default=None,
-        description="The Poisson's ratio xy of the material.",
-        matml_name="Poisson's Ratio XY",
-        mapdl_name="PRXY",
-    )
-
-    shear_modulus_yz: Quantity | None = ParameterField(
-        default=None,
-        description="The shear modulus yz of the material.",
-        matml_name="GYZ",
-    )
-
-    shear_modulus_xz: Quantity | None = ParameterField(
-        default=None,
-        description="The shear modulus xz of the material.",
-        matml_name="GXZ",
-    )
-
-    shear_modulus_xy: Quantity | None = ParameterField(
-        default=None,
-        description="The shear modulus xy of the material.",
-        matml_name="GXY",
-    )
-
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
         expected_qualifiers = {"Behavior": ["Orthotropic", QualifierType.STRICT]}
@@ -106,7 +108,3 @@ class ElasticityOrthotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> str:
-        """Write this model to the specified session."""
-        ...

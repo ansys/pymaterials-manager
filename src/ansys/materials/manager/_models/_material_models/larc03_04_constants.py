@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field
@@ -54,11 +54,3 @@ class LaRc0304Constants(MaterialModel):
         description="The angle of fracture under compression.",
         matml_name="Fracture Angle Under Compression",
     )
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write the anisotropic elasticity model to the pyansys session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the anisotropic elasticity model."""
-        pass
