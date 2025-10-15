@@ -335,10 +335,11 @@ class WriterMapdl:
             material_string += "\n" + interpolation_string
         return material_string
 
-    def write_material(
-        self, material: Material, material_id: int, client: _MapdlCore, **kwargs
-    ) -> str:
+    def write_material(self, material: Material, material_id: int, **kwargs) -> str:
         """Write the material into Mapdl."""
+        client = kwargs.get("client", None)
+        if not client or not isinstance(client, _MapdlCore):
+            raise Exception("client not provided correctly")
         reference_temperature = kwargs.get("reference_temperature", None)
         for model in material.models:
             model.validate_model()

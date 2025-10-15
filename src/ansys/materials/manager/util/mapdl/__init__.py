@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from .mapdl_snippets_strings import *
-from .writer_mapdl import WriterMapdl
 from .writer_mapdl_utils import (
     write_constant_property,
     write_interpolation_options,

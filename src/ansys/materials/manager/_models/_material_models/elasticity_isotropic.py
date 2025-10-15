@@ -44,12 +44,14 @@ class ElasticityIsotropic(MaterialModel):
         description="The Young's modulus of the material.",
         matml_name="Young's Modulus",
         mapdl_name="EX",
+        lsdyna_name="e",
     )
     poissons_ratio: Quantity | None = ParameterField(
         default=None,
         description="The Poisson's ratio of the material.",
         matml_name="Poisson's Ratio",
         mapdl_name="PRXY",
+        lsdyna_name="pr",
     )
 
     @model_validator(mode="before")

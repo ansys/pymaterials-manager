@@ -30,7 +30,7 @@ from ansys.materials.manager._models.material import Material
 class Writer(Protocol):
     """Protocol of the Writer."""
 
-    def write_material(self, material: Material, material_id: int, client: Any, **kwargs):
+    def write_material(self, material: Material, material_id: int, **kwargs):
         """Abstract write material method."""
         ...
 

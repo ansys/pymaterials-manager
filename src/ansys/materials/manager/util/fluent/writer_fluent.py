@@ -49,7 +49,7 @@ class WriterFluent:
             dependent_parameters.append(value.tolist() if isinstance(value, Sequence) else value)
         return {label[0]: {"option": "constant", "value": dependent_parameters[0]}}
 
-    def write_material(self, material: Material, material_id: int, client, **kwargs) -> str:
+    def write_material(self, material: Material, material_id: int, **kwargs) -> str:
         """Write the material into Fluent."""
         material_model = {}
         for model in material.models:
