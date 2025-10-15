@@ -298,12 +298,12 @@ def test_write_constant_elastic_orthotropic_material():
                     youngs_modulus_x=Quantity(value=[1000000], units="Pa"),
                     youngs_modulus_y=Quantity(value=[1500000], units="Pa"),
                     youngs_modulus_z=Quantity(value=[2000000], units="Pa"),
-                    poissons_ratio_xy=Quantity(value=[0.2], units=""),
-                    poissons_ratio_yz=Quantity(value=[0.3], units=""),
-                    poissons_ratio_xz=Quantity(value=[0.4], units=""),
                     shear_modulus_xy=Quantity(value=[1000000], units="Pa"),
                     shear_modulus_yz=Quantity(value=[2000000], units="Pa"),
                     shear_modulus_xz=Quantity(value=[3000000], units="Pa"),
+                    poissons_ratio_xy=Quantity(value=[0.2], units=""),
+                    poissons_ratio_yz=Quantity(value=[0.3], units=""),
+                    poissons_ratio_xz=Quantity(value=[0.4], units=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
@@ -454,12 +454,12 @@ def test_write_variable_elastic_orthotropic_material():
                     youngs_modulus_x=Quantity(value=[1000000, 11000000], units="Pa"),
                     youngs_modulus_y=Quantity(value=[1500000, 15100000], units="Pa"),
                     youngs_modulus_z=Quantity(value=[2000000, 21000000], units="Pa"),
-                    poissons_ratio_xy=Quantity(value=[0.2, 0.21], units=""),
-                    poissons_ratio_yz=Quantity(value=[0.3, 0.31], units=""),
-                    poissons_ratio_xz=Quantity(value=[0.4, 0.41], units=""),
                     shear_modulus_xy=Quantity(value=[1000000, 1100000], units="Pa"),
                     shear_modulus_yz=Quantity(value=[2000000, 2100000], units="Pa"),
                     shear_modulus_xz=Quantity(value=[3000000, 3100000], units="Pa"),
+                    poissons_ratio_xy=Quantity(value=[0.2, 0.21], units=""),
+                    poissons_ratio_yz=Quantity(value=[0.3, 0.31], units=""),
+                    poissons_ratio_xz=Quantity(value=[0.4, 0.41], units=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
