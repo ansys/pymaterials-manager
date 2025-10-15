@@ -341,6 +341,7 @@ class WriterMapdl:
         if not client or not isinstance(client, _MapdlCore):
             raise Exception("client not provided correctly")
         reference_temperature = kwargs.get("reference_temperature", None)
+        material_model_string = ""
         for model in material.models:
             model.validate_model()
             material_model_string += self._write_material_model(
