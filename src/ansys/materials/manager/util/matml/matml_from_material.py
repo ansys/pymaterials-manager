@@ -312,12 +312,17 @@ class MatmlWriter:
         # add the WB transfer IDs to the XML tree
         wb_transfer_element = ET.SubElement(root, WBTRANSFER_KEY)
         materials_element = ET.SubElement(wb_transfer_element, MATERIALS_ELEMENT_KEY)
+        any_uuid = False
         for mat in self._materials:
-            mat_element = ET.SubElement(materials_element, "Material")
-            name_element = ET.SubElement(mat_element, "Name")
-            name_element.text = mat.name
-            transfer_element = ET.SubElement(mat_element, "DataTransferID")
-            transfer_element.text = mat.guid
+            if mat.guid is not None:
+                mat_element = ET.SubElement(materials_element, "Material")
+                name_element = ET.SubElement(mat_element, "Name")
+                name_element.text = mat.name
+                transfer_element = ET.SubElement(mat_element, "DataTransferID")
+                transfer_element.text = mat.guid
+                any_uuid = True
+        if not any_uuid:
+            root.remove(wb_transfer_element)
 
     def _to_etree(self) -> ET.ElementTree:
         root = ET.Element(ROOT_ELEMENT)
