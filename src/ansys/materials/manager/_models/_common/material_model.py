@@ -25,7 +25,7 @@ import abc
 from pydantic import BaseModel, Field
 
 from ._packages import SupportedPackage  # noqa: F401
-from .common import ParameterField
+from .common import ParameterField, validate_parameters
 from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
@@ -86,3 +86,4 @@ class MaterialModel(BaseModel, abc.ABC):
             if field_name not in MaterialModel.model_fields.keys():
                 if field_value is None:
                     raise Exception(f"the value of {field_name} cannot be None, please update it.")
+                validate_parameters(field_name, field_value["value"], self.independent_parameters)
