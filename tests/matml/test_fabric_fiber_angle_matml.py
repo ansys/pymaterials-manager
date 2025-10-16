@@ -33,7 +33,7 @@ from ansys.materials.manager._models._common import (
 from ansys.materials.manager._models._material_models.fabric_fiber_angle import FabricFiberAngle
 from ansys.materials.manager._models._material_models.ply_type import PlyType
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_fabric_fiber_angle.xml")
@@ -169,7 +169,7 @@ def test_write_constant_fabric_fiber_angle_0_deg():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(FABRIC_FIBER_ANGLE, "r") as file:
@@ -220,7 +220,7 @@ def test_write_variable_fabric_fiber_angle():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(FABRIC_FIBER_ANGLE_VARIABLE, "r") as file:
@@ -245,7 +245,7 @@ def test_write_ply_type():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(PLY_TYPE, "r") as file:

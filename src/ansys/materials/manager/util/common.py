@@ -81,40 +81,6 @@ def _chunk_data(data: Iterable) -> Generator[List, None, None]:
         piece = list(islice(data_iterator, 6))
 
 
-def _chunk_lower_triangular_matrix(
-    matrix: np.ndarray,
-) -> Generator[Iterable[float], None, None]:
-    """
-    Convert a lower-triangular square matrix into a chunked vector.
-
-    This is intended for use with symmetric matrices, where the upper half can be ignored.
-
-    Parameters
-    ----------
-    matrix : np.ndarray
-        Input square matrix.
-
-    Returns
-    -------
-    Generator[Iterable[float]]
-        Chunked vector with coefficients in the lower half-matrix. E.g. D11, D12, D22, etc.
-
-    Notes
-    -----
-    If the input matrix is non-symmetric then the upper half-matrix will be lost.
-    """
-    vals = []
-    if np.ndim(matrix) != 2:
-        raise ValueError("Input matrix must be two dimensional.")
-    size = matrix.shape
-    if size[0] != size[1]:
-        raise ValueError("Input matrix must be square.")
-    for col_index in range(0, matrix.shape[1]):
-        for row_index in range(col_index, matrix.shape[0]):
-            vals.append(matrix[row_index][col_index])
-    return _chunk_data(vals)
-
-
 def fill_upper_triangular_matrix(vector: List[float]) -> np.ndarray:
     """
     Convert a vector of coefficients into a full matrix.

@@ -35,7 +35,7 @@ from ansys.materials.manager._models._material_models.stress_limits_orthotropic 
     StressLimitsOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_puck_for_woven.xml")
@@ -174,7 +174,7 @@ def test_write_fiber_angle():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(FIBER_ANGLE, "r") as file:
@@ -208,7 +208,7 @@ def test_write_puck_constants():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(PUCK, "r") as file:
@@ -241,7 +241,7 @@ def test_write_puck_additional_constants():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(PUCK_ADDITIONAL, "r") as file:
@@ -272,7 +272,7 @@ def test_write_stress_limits():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRESS_LIMITS_ORTHOTROPIC, "r") as file:

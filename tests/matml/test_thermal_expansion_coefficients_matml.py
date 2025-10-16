@@ -39,7 +39,7 @@ from ansys.materials.manager._models._material_models.zero_thermal_strain_refere
     ZeroThermalStrainReferenceTemperatureOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 INSTANTANEOUS_XML_FILE_PATH = DIR_PATH.joinpath(
@@ -328,7 +328,7 @@ def test_write_constant_cte_isotropic():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(CTE_ISOTROPIC, "r") as file:
@@ -370,7 +370,7 @@ def test_write_constant_cte_orthotropic():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(CTE_ORTHOTROPIC, "r") as file:
@@ -410,7 +410,7 @@ def test_write_variable_cte_isotropic():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(CTE_ISOTROPIC_VARIABLE, "r") as file:
@@ -458,7 +458,7 @@ def test_write_variable_cte_orthotropic():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(CTE_ORTHOTROPIC_VARIABLE, "r") as file:

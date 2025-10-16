@@ -29,11 +29,11 @@ from typing import Any
 from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.common_writer import get_writer
 from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.materials.manager.util.matml.matml_parser import MatmlReader
 from ansys.materials.manager.util.matml.matml_to_material import convert_matml_materials
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.writer import get_writer
 
 
 class MaterialManager:
@@ -108,7 +108,7 @@ class MaterialManager:
 
     def write_to_matml(self, path: str | Path) -> None:
         """Write the materials in the library to a MatML file."""
-        writer = MatmlWriter(self.materials.values())
+        writer = WriterMatml(self.materials.values())
         writer.export(str(path), indent=True)
         print(f"{len(self.materials)} materials written to {path}.")
 

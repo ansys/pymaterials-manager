@@ -51,7 +51,10 @@ def register_writer(name: str):
 def get_writer(client: Any):
     """Get the appropriate writer instance."""
     try:
-        cls = WRITER_REGISTRY[client.__class__.__name__]
+        if isinstance(client, str):
+            cls = WRITER_REGISTRY[client]
+        else:
+            cls = WRITER_REGISTRY[client.__class__.__name__]
         return cls()
     except:
         raise Exception("Writer not found.")

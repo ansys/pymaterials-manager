@@ -36,7 +36,7 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
     ElasticityOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_elasticity.xml")
@@ -278,7 +278,7 @@ def test_write_constant_elastic_isotropic_material():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_ELASTICITY, "r") as file:
@@ -323,7 +323,7 @@ def test_write_constant_elastic_orthotropic_material():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ORTHOTROPIC_ELASTICITY, "r") as file:
@@ -396,7 +396,7 @@ def test_write_constant_elastic_anisotropic_material():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ANISOTROPIC_ELASTICITY, "r") as file:
@@ -434,7 +434,7 @@ def test_write_variable_elastic_isotropic_material():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_ELASTICITY_VARIABLE, "r") as file:
@@ -478,7 +478,7 @@ def test_write_variable_elastic_orthotropic_material():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ORTHOTROPIC_ELASTICITY_VARIABLE, "r") as file:

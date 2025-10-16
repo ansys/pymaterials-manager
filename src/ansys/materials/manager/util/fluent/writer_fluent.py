@@ -24,7 +24,7 @@ from typing import Sequence
 
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.common_writer import register_writer
+from ansys.materials.manager.util.writer import register_writer
 
 
 @register_writer("Solver")

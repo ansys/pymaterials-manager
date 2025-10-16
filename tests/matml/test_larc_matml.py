@@ -28,7 +28,7 @@ from utilities import get_material_and_metadata_from_xml, read_specific_material
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.larc03_04_constants import LaRc0304Constants
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_larc.xml")
@@ -94,7 +94,7 @@ def test_write_constant_larc():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(LARC, "r") as file:
@@ -125,7 +125,7 @@ def test_write_variable_larc():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(LARC_VARIABLE, "r") as file:

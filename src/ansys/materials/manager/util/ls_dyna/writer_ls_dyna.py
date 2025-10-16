@@ -29,7 +29,7 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
     ElasticityIsotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.common_writer import register_writer
+from ansys.materials.manager.util.writer import register_writer
 
 
 def normalize_key(classes: tuple[type]) -> tuple[type]:

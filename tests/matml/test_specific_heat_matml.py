@@ -28,7 +28,7 @@ from utilities import get_material_and_metadata_from_xml, read_specific_material
 from ansys.materials.manager._models._common import IndependentParameter, ModelQualifier
 from ansys.materials.manager._models._material_models.specific_heat import SpecificHeat
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_specific_heat.xml")
@@ -167,7 +167,7 @@ def test_write_constant_specific_heat_volume():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(SPECIFIC_HEAT_VOLUME, "r", encoding="utf8") as file:
@@ -204,7 +204,7 @@ def test_write_variable_specific_heat_volume():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(SPECIFIC_HEAT_VOLUME_VARIABLE, "r", encoding="utf8") as file:
@@ -241,7 +241,7 @@ def test_write_constant_specific_heat_pressure():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(SPECIFIC_HEAT_PRESSURE, "r", encoding="utf8") as file:
@@ -278,7 +278,7 @@ def test_write_variable_specific_heat_pressure():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(SPECIFIC_HEAT_PRESSURE_VARIABLE, "r", encoding="utf8") as file:

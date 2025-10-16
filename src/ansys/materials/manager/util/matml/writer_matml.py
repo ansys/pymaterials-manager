@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Provides the ``MatmlWriter`` class."""
+"""Provides the ``WriterMatml`` class."""
 
 import os
 from typing import BinaryIO, Dict, Optional, Sequence, Union
@@ -60,13 +60,13 @@ VERSION = "18.0.0.60"
 VERSION_DATE = "29.08.2016 15:02:00"
 
 
-class MatmlWriter:
+class WriterMatml:
     """
     Exports a list of MAPDL materials to an engineering data XML file.
 
     Examples
     --------
-    > writer = MatmlWriter(materials)
+    > writer = WriterMatml(materials)
     > writer.export('engineering_data.xml')
     """
 
@@ -83,6 +83,15 @@ class MatmlWriter:
         self._metadata_parameters = {}
         self._metadata_parameters_units = {}
         self._metadata_property_sets_units = {}
+
+    @property
+    def materials(self) -> Sequence[Material]:
+        """Expose the private field _materials."""
+        return self._materials
+
+    @materials.setter
+    def materials(self, value: Sequence[Material]) -> None:
+        self._materials = value
 
     def _add_dependent_parameters(
         self, property_element: ET.Element, models: Dict, parameters: Dict

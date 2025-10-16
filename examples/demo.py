@@ -8,8 +8,8 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
     ElasticityIsotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.materials.manager.util.matml.matml_parser import MatmlReader
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 # Create a linear elastic material model in pyMaterials-Manager
 linear_elastic_material = Material(
@@ -39,7 +39,7 @@ print("MAPDL string:")
 print(material_string)
 
 # Write a MATML file using pyMaterials-Manager
-writer = MatmlWriter([linear_elastic_material])
+writer = WriterMatml([linear_elastic_material])
 writer.export("linear_elastic_material.xml", indent=True)
 
 # Read a MATML file using pyMaterials-Manager

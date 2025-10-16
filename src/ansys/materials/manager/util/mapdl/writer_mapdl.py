@@ -35,7 +35,6 @@ from ansys.materials.manager._models._material_models.zero_thermal_strain_refere
     ZeroThermalStrainReferenceTemperatureOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.common_writer import register_writer
 from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
     write_constant_properties,
     write_interpolation_options,
@@ -46,6 +45,7 @@ from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
     write_temperature_reference_value,
     write_temperature_table_values,
 )
+from ansys.materials.manager.util.writer import register_writer
 
 TABLE_LABELS = {
     "ElasticityIsotropic": "ELASTIC",
