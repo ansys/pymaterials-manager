@@ -25,8 +25,14 @@ from ansys.dyna.core.lib.keyword_base import KeywordBase
 
 from ansys.materials.manager._models._common.material_model import MaterialModel  # noqa: E501
 from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+    ElasticityAnisotropic,
+)
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (  # noqa: E501
     ElasticityIsotropic,
+)
+from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
+    ElasticityOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.writer import register_writer
@@ -41,6 +47,10 @@ def normalize_key(classes: tuple[type]) -> tuple[type]:
 MAT_CARD_REGISTRY = {
     normalize_key((Density, ElasticityIsotropic)): kwd.Mat001,
     normalize_key((ElasticityIsotropic,)): kwd.Mat001,
+    normalize_key((Density, ElasticityOrthotropic)): kwd.Mat002,
+    normalize_key((ElasticityOrthotropic,)): kwd.Mat002,
+    normalize_key((Density, ElasticityAnisotropic)): kwd.Mat002Anis,
+    normalize_key((ElasticityAnisotropic,)): kwd.Mat002Anis,
 }
 
 
