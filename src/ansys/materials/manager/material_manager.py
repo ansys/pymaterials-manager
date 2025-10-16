@@ -24,7 +24,7 @@
 """Provides the ``MaterialManager`` class."""
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
@@ -106,9 +106,13 @@ class MaterialManager:
             self._add_library(material_dic)
         print("The materials were correctly read from the provided xml file.")
 
-    def write_to_matml(self, path: str | Path) -> None:
+    def write_to_matml(self, path: str | Path, materials: Sequence[Material] | None = None) -> None:
         """Write the materials in the library to a MatML file."""
-        writer = WriterMatml(self.materials.values())
+        if not materials:
+            materials = list(self.materials.values())
+        writer = get_writer("Matml")
+        writer.materials = materials
+        assert isinstance(writer, WriterMatml)
         writer.export(str(path), indent=True)
         print(f"{len(self.materials)} materials written to {path}.")
 

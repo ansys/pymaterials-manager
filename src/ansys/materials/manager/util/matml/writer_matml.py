@@ -40,6 +40,7 @@ from ansys.materials.manager.util.matml.utils import (
     create_xml_string_value,
     unit_to_xml,
 )
+from ansys.materials.manager.util.writer import register_writer
 
 from .matml_parser import (
     BULKDATA_KEY,
@@ -60,6 +61,7 @@ VERSION = "18.0.0.60"
 VERSION_DATE = "29.08.2016 15:02:00"
 
 
+@register_writer("Matml")
 class WriterMatml:
     """
     Exports a list of MAPDL materials to an engineering data XML file.
@@ -76,7 +78,7 @@ class WriterMatml:
     _metadata_parameters_units: Dict
     _metadata_property_sets_units: Dict
 
-    def __init__(self, materials: Sequence[Material]):
+    def __init__(self, materials: Sequence[Material] = []):
         """Construct a Matml writer."""
         self._materials = materials
         self._metadata_property_sets = {}
@@ -411,3 +413,29 @@ class WriterMatml:
         if indent:
             self._indent(tree)
         tree.write(path, xml_declaration=xml_declaration)
+
+    def write_material(self, material: Material, material_id: int, **kwargs):
+        """
+        Write a MatML (engineering data XML format) representation of a material to file.
+
+        Parameters
+        ----------
+        material: Material
+            the materoal to be written.
+        material_id: int
+            the material identification number
+        path:
+            File path.
+        indent : Optional[bool]
+            Whether to add an indent to format the XML output.
+            Defaults to ``false``.
+        xml_declaration: Optional[bool]
+            Whether to add the XML declaration to the output.
+        """
+        path = kwargs("path", None)
+        if not path:
+            raise Exception("The path was not provided.")
+        indent = kwargs.get("indent", False)
+        xml_declaration = kwargs.get("xml_declaration", False)
+        self._materials = [material]
+        self.export(path, indent, xml_declaration)

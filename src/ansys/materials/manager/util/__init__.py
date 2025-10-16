@@ -22,3 +22,4 @@
 from .fluent.writer_fluent import WriterFluent
 from .ls_dyna.writer_ls_dyna import WriterLsDyna
 from .mapdl.writer_mapdl import WriterMapdl
+from .matml.writer_matml import WriterMatml
