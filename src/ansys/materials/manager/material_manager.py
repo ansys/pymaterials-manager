@@ -147,9 +147,7 @@ class MaterialManager:
             print("The pyansys session has not been defined.")
             return
         writer = get_writer(self.client)
-        writer.write_material(
-            material=material, material_id=material_id, client=self.client, **kwargs
-        )
+        writer.write_material(material=material, material_id=material_id, **kwargs)
 
     def read_from_client_session(self) -> None:
         """Read material from the pyansys client session."""

@@ -20,58 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.dyna.core import keywords as kwd
+from typing import Sequence
+
 from ansys.dyna.core.lib.keyword_base import KeywordBase
 
-from ansys.materials.manager._models._common.material_model import MaterialModel  # noqa: E501
-from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
 )
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (  # noqa: E501
-    ElasticityIsotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
-    ElasticityOrthotropic,
-)
 from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.util.ls_dyna.writer_ls_dyna_utils import (
+    MAT_CARD_REGISTRY,
+    get_anisotropic_attributes_values,
+    get_attributes_values,
+)
 from ansys.materials.manager.util.writer import register_writer
-
-
-def normalize_key(classes: tuple[type]) -> tuple[type]:
-    """Normalize the mat card registry key."""
-    return tuple(sorted(classes, key=lambda cls: cls.__name__))
-
-
-# most complete needs to go before
-MAT_CARD_REGISTRY = {
-    normalize_key((Density, ElasticityIsotropic)): kwd.Mat001,
-    normalize_key((ElasticityIsotropic,)): kwd.Mat001,
-    normalize_key((Density, ElasticityOrthotropic)): kwd.Mat002,
-    normalize_key((ElasticityOrthotropic,)): kwd.Mat002,
-    normalize_key((Density, ElasticityAnisotropic)): kwd.Mat002Anis,
-    normalize_key((ElasticityAnisotropic,)): kwd.Mat002Anis,
-}
-
-
-def get_attributes_values(model: MaterialModel) -> dict:
-    """Get the attribute to the dyna model and values."""
-    labels = [
-        field.lsdyna_name
-        for field in model.__class__.model_fields.values()
-        if hasattr(field, "lsdyna_name") and field.lsdyna_name
-    ]
-    dependant_parameter_names = [
-        model_name
-        for model_name, field in model.__class__.model_fields.items()
-        if hasattr(field, "lsdyna_name") and field.lsdyna_name
-    ]
-    dict_model = model.model_dump()
-    dependent_parameters = []
-    for name in dependant_parameter_names:
-        value = dict_model[name]["value"]
-        dependent_parameters.append(value.tolist())
-    return dict(zip(labels, dependent_parameters))
 
 
 @register_writer("Deck")
@@ -96,10 +58,14 @@ class WriterLsDyna:
                     instance = class_to_instance.get(required_cls)
                     if instance is None:
                         break
-                    args.update(get_attributes_values(instance))
+                    if isinstance(instance, ElasticityAnisotropic):
+                        args.update(get_anisotropic_attributes_values(instance))
+                    else:
+                        args.update(get_attributes_values(instance))
                 material_class = target_cls(mid=material_id)
+
                 for key, value in args.items():
-                    setattr(material_class, key, value[0])
+                    setattr(material_class, key, value[0] if isinstance(value, Sequence) else value)
                 instanciated_models.append(material_class)
                 instanciated_models_name.append(material_class.__class__.__name__.lower())
         return instanciated_models

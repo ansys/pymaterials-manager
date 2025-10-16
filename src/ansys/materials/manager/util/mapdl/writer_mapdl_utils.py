@@ -26,6 +26,12 @@ import math
 import numpy as np
 
 from ansys.materials.manager._models._common import IndependentParameter, InterpolationOptions
+from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+    ElasticityAnisotropic,
+)
+from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
 
 from .mapdl_snippets_strings import (
     CONSTANT_MP_PROPERTY,
@@ -48,6 +54,31 @@ from .mapdl_snippets_strings import (
     TEMPERATURE_REFERENCE,
     USER_DEFINED_TB_FIELDS,
 )
+
+TABLE_LABELS = {
+    "ElasticityIsotropic": "ELASTIC",
+    "ElasticityOrthotropic": "ELASTIC",
+    "ElasticityAnisotropic": "ELASTIC",
+    "CoefficientofThermalExpansionIsotropic": "CTE",
+    "CoefficientofThermalExpansionOrthotropic": "CTE",
+    "Density": "DENS",
+    "ThermalConductivityIsotropic": "THERM",
+    "ThermalConductivityOrthotropic": "THERM",
+    "IsotropicHardening": "PLASTIC",
+    "HillYieldCriterion": "HILL",
+}
+
+TABLE_TBOPT = {
+    "ElasticityIsotropic": "ISOT",
+    "ElasticityOrthotropic": "OELM",
+    "ElasticityAnisotropic": "AELS",
+    "CoefficientofThermalExpansionIsotropic": None,
+    "CoefficientofThermalExpansionOrthotropic": None,
+    "Density": None,
+    "ThermalConductivityIsotropic": "COND",
+    "ThermalConductivityOrthotropic": "COND",
+    "IsotropicHardening": "MISO",
+}
 
 
 def _get_table_constants(idx, values):
@@ -457,3 +488,183 @@ def write_temperature_reference_value(material_id: int, temperature: float) -> s
     MP,REFT,1,21,
     """
     return TEMPERATURE_REFERENCE.format(matid=material_id, temp=temperature)
+
+
+def get_table_label(self, model_name: str) -> str | None:
+    """Get table label string."""
+    return TABLE_LABELS.get(model_name, None)
+
+
+def get_tbopt(self, model_name: str) -> str | None:
+    """Get table tbopt string."""
+    return TABLE_TBOPT.get(model_name, None)
+
+
+def get_labels(self, model: MaterialModel) -> list[str]:
+    """Get mapdl property label string."""
+    if model.name == "Coefficient of Thermal Expansion":
+        for qualfier in model.model_qualifiers:
+            if qualfier.name == "Definition":
+                if qualfier.value == "Instantaneous":
+                    labels = [
+                        field.mapdl_name[0]
+                        for field in model.__class__.model_fields.values()
+                        if hasattr(field, "mapdl_name") and field.mapdl_name
+                    ]
+                else:
+                    labels = [
+                        field.mapdl_name[1]
+                        for field in model.__class__.model_fields.values()
+                        if hasattr(field, "mapdl_name") and field.mapdl_name
+                    ]
+    else:
+        labels = [
+            field.mapdl_name
+            for field in model.__class__.model_fields.values()
+            if hasattr(field, "mapdl_name") and field.mapdl_name
+        ]
+    return labels
+
+
+def write_anisotropic_elasticity(self, model: ElasticityAnisotropic, material_id: int):
+    """Write anisotropic elasticity."""
+    d = np.column_stack(
+        (
+            model.column_1.value,
+            model.column_2.value,
+            model.column_3.value,
+            model.column_4.value,
+            model.column_5.value,
+            model.column_6.value,
+        )
+    )
+    # extract the lower triangular elements column-wise
+    dependent_values = []
+    for j in range(6):
+        dependent_values.extend(d[j:, j])
+
+    material_string = write_table_dep_values(
+        material_id=material_id,
+        label=TABLE_LABELS[model.__class__.__name__],
+        dependent_values=dependent_values,
+        tb_opt=TABLE_TBOPT[model.__class__.__name__],
+    )
+    return material_string
+
+
+def write_isotropic_hardening(self, model: IsotropicHardening, material_id: int):
+    """Write isotropic hardening."""
+    plastic_strain = [
+        ind_param.values.value.tolist()
+        for ind_param in model.independent_parameters
+        if ind_param.name == "Plastic Strain"
+    ][0]
+    temperature = [
+        ind_param.values.value.tolist()
+        for ind_param in model.independent_parameters
+        if ind_param.name == "Temperature"
+    ]
+    table_parameters = [
+        plastic_strain,
+        model.stress.value.tolist(),
+    ]
+    table_label = TABLE_LABELS[model.__class__.__name__]
+    table_tbopt = TABLE_TBOPT[model.__class__.__name__]
+    if len(model.independent_parameters) == 1:
+        temperature_parameter = len(table_parameters[0]) * [0]
+        material_string = write_tb_points_for_temperature(
+            label=table_label,
+            table_parameters=table_parameters,
+            material_id=material_id,
+            temperature_parameter=temperature_parameter,
+            tb_opt=table_tbopt,
+        )
+
+    elif len(model.independent_parameters) == 2 and len(temperature) == 1:
+        material_string = write_tb_points_for_temperature(
+            label=table_label,
+            table_parameters=table_parameters,
+            material_id=material_id,
+            temperature_parameter=temperature[0],
+            tb_opt=table_tbopt,
+        )
+    else:
+        raise Exception("Only variable supported at the moment is temperature")
+    return material_string
+
+
+def write_hill_yield(self, model: HillYieldCriterion, material_id: int):
+    """Write Hill yield."""
+    label = TABLE_LABELS[model.__class__.__name__]
+    for qualifier in model.model_qualifiers:
+        if qualifier.name == "Separated Hill Potentials for Plasticity and Creep":
+            creep = True if qualifier.value == "Yes" else False
+
+    if not creep:
+        dependent_values = [
+            model.yield_stress_ratio_x.value,
+            model.yield_stress_ratio_y.value,
+            model.yield_stress_ratio_z.value,
+            model.yield_stress_ratio_xy.value,
+            model.yield_stress_ratio_yz.value,
+            model.yield_stress_ratio_xz.value,
+        ]
+        tb_opt = ""
+    else:
+        dependent_values = [
+            model.yield_stress_ratio_x_for_plasticity.value,
+            model.yield_stress_ratio_y_for_plasticity.value,
+            model.yield_stress_ratio_z_for_plasticity.value,
+            model.yield_stress_ratio_xy_for_plasticity.value,
+            model.yield_stress_ratio_yz_for_plasticity.value,
+            model.yield_stress_ratio_xz_for_plasticity.value,
+            model.yield_stress_ratio_x_for_creep.value,
+            model.yield_stress_ratio_y_for_creep.value,
+            model.yield_stress_ratio_z_for_creep.value,
+            model.yield_stress_ratio_xy_for_creep.value,
+            model.yield_stress_ratio_yz_for_creep.value,
+            model.yield_stress_ratio_xz_for_creep.value,
+        ]
+        tb_opt = "PC"
+
+    if not model.independent_parameters:
+        dependent_values = [
+            dep_val[0] for dep_val in dependent_values if isinstance(dep_val, np.ndarray)
+        ]
+        material_string = write_table_dep_values(
+            material_id=material_id,
+            label=label,
+            dependent_values=dependent_values,
+            tb_opt=tb_opt,
+        )
+        return material_string
+    elif (
+        len(model.independent_parameters) == 1
+        and model.independent_parameters[0].name == "Temperature"
+    ):
+        if len(model.independent_parameters[0].values.value) == 1:
+            material_string = write_table_dep_values(
+                material_id=material_id,
+                label=label,
+                dependent_values=dependent_values,
+                tb_opt=tb_opt,
+            )
+        else:
+            material_string = write_table_value_per_temperature(
+                label=label,
+                material_id=material_id,
+                dependent_parameters=dependent_values,
+                temperature_parameter=model.independent_parameters[0],
+                tb_opt=tb_opt,
+            )
+        return material_string
+    else:
+        parameters_str, table_str = write_table_values(
+            label=label,
+            dependent_parameters=dependent_values,
+            material_id=material_id,
+            independent_parameters=model.independent_parameters,
+            tb_opt=tb_opt,
+        )
+        material_string = parameters_str + "\n" + table_str
+        return material_string

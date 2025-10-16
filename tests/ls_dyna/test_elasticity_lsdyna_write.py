@@ -21,8 +21,12 @@
 # SOFTWARE.
 
 from ansys.units import Quantity
+import numpy as np
 
 from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+    ElasticityAnisotropic,
+)
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
@@ -133,3 +137,194 @@ def test_write_constant_elasticity_orthotropic_with_density():
     assert lsdyna_material[0].prcb == elasticity.poissons_ratio_yz.value[0]
     assert lsdyna_material[0].prca == elasticity.poissons_ratio_xz.value[0]
     assert lsdyna_material[0].mid == material_id
+
+
+def test_write_constant_elasticity_anisotropic():
+    elasticity = ElasticityAnisotropic(
+        column_1=Quantity(
+            value=[100000000, 1000000, 2000000, 3000000, 4000000, 5000000], units="Pa"
+        ),
+        column_2=Quantity(
+            value=[7.88860905221012e-31, 150000000, 6000000, 7000000, 8000000, 9000000],
+            units="Pa",
+        ),
+        column_3=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                200000000,
+                10000000,
+                11000000,
+                12000000,
+            ],
+            units="Pa",
+        ),
+        column_4=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                50000000,
+                13000000,
+                14000000,
+            ],
+            units="Pa",
+        ),
+        column_5=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                60000000,
+                15000000,
+            ],
+            units="Pa",
+        ),
+        column_6=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                70000000,
+            ],
+            units="Pa",
+        ),
+    )
+
+    material = Material(name="Anisotropic Elastic", models=[elasticity])
+
+    material_id = 5
+    lsdyna_material = WriterLsDyna().write_material(material, material_id)
+    d = np.column_stack(
+        (
+            elasticity.column_1.value,
+            elasticity.column_2.value,
+            elasticity.column_3.value,
+            elasticity.column_4.value,
+            elasticity.column_5.value,
+            elasticity.column_6.value,
+        )
+    ).tolist()
+
+    lsdyna_material[0].c11 == d[0][0]
+    lsdyna_material[0].c12 == d[0][1]
+    lsdyna_material[0].c22 == d[1][1]
+    lsdyna_material[0].c13 == d[0][2]
+    lsdyna_material[0].c23 == d[1][2]
+    lsdyna_material[0].c33 == d[2][2]
+    lsdyna_material[0].c14 == d[0][3]
+    lsdyna_material[0].c24 == d[1][3]
+    lsdyna_material[0].c34 == d[2][3]
+    lsdyna_material[0].c44 == d[3][3]
+    lsdyna_material[0].c15 == d[0][4]
+    lsdyna_material[0].c25 == d[1][4]
+    lsdyna_material[0].c35 == d[2][4]
+    lsdyna_material[0].c45 == d[3][4]
+    lsdyna_material[0].c55 == d[4][4]
+    lsdyna_material[0].c16 == d[0][5]
+    lsdyna_material[0].c26 == d[1][5]
+    lsdyna_material[0].c36 == d[2][5]
+    lsdyna_material[0].c46 == d[3][5]
+    lsdyna_material[0].c56 == d[4][5]
+    lsdyna_material[0].c66 == d[5][5]
+
+
+def test_write_constant_elasticity_anisotropic_with_density():
+
+    density = Density(
+        density=Quantity(value=[1.34], units="kg m^-3"),
+    )
+
+    elasticity = ElasticityAnisotropic(
+        column_1=Quantity(
+            value=[100000000, 1000000, 2000000, 3000000, 4000000, 5000000], units="Pa"
+        ),
+        column_2=Quantity(
+            value=[7.88860905221012e-31, 150000000, 6000000, 7000000, 8000000, 9000000],
+            units="Pa",
+        ),
+        column_3=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                200000000,
+                10000000,
+                11000000,
+                12000000,
+            ],
+            units="Pa",
+        ),
+        column_4=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                50000000,
+                13000000,
+                14000000,
+            ],
+            units="Pa",
+        ),
+        column_5=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                60000000,
+                15000000,
+            ],
+            units="Pa",
+        ),
+        column_6=Quantity(
+            value=[
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                7.88860905221012e-31,
+                70000000,
+            ],
+            units="Pa",
+        ),
+    )
+
+    material = Material(name="Anisotropic Elastic", models=[elasticity, density])
+
+    material_id = 5
+    lsdyna_material = WriterLsDyna().write_material(material, material_id)
+    d = np.column_stack(
+        (
+            elasticity.column_1.value,
+            elasticity.column_2.value,
+            elasticity.column_3.value,
+            elasticity.column_4.value,
+            elasticity.column_5.value,
+            elasticity.column_6.value,
+        )
+    ).tolist()
+    assert lsdyna_material[0].ro == density.density.value[0]
+    assert lsdyna_material[0].c11 == d[0][0]
+    assert lsdyna_material[0].c12 == d[0][1]
+    assert lsdyna_material[0].c22 == d[1][1]
+    assert lsdyna_material[0].c13 == d[0][2]
+    assert lsdyna_material[0].c23 == d[1][2]
+    assert lsdyna_material[0].c33 == d[2][2]
+    assert lsdyna_material[0].c14 == d[0][3]
+    assert lsdyna_material[0].c24 == d[1][3]
+    assert lsdyna_material[0].c34 == d[2][3]
+    assert lsdyna_material[0].c44 == d[3][3]
+    assert lsdyna_material[0].c15 == d[0][4]
+    assert lsdyna_material[0].c25 == d[1][4]
+    assert lsdyna_material[0].c35 == d[2][4]
+    assert lsdyna_material[0].c45 == d[3][4]
+    assert lsdyna_material[0].c55 == d[4][4]
+    assert lsdyna_material[0].c16 == d[0][5]
+    assert lsdyna_material[0].c26 == d[1][5]
+    assert lsdyna_material[0].c36 == d[2][5]
+    assert lsdyna_material[0].c46 == d[3][5]
+    assert lsdyna_material[0].c56 == d[4][5]
+    assert lsdyna_material[0].c66 == d[5][5]
