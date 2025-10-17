@@ -526,7 +526,7 @@ def get_labels(model: MaterialModel) -> list[str]:
     return labels
 
 
-def write_anisotropic_elasticity(self, model: ElasticityAnisotropic, material_id: int):
+def write_anisotropic_elasticity(model: ElasticityAnisotropic, material_id: int):
     """Write anisotropic elasticity."""
     d = np.column_stack(
         (
@@ -552,7 +552,7 @@ def write_anisotropic_elasticity(self, model: ElasticityAnisotropic, material_id
     return material_string
 
 
-def write_isotropic_hardening(self, model: IsotropicHardening, material_id: int):
+def write_isotropic_hardening(model: IsotropicHardening, material_id: int):
     """Write isotropic hardening."""
     plastic_strain = [
         ind_param.values.value.tolist()
@@ -593,7 +593,7 @@ def write_isotropic_hardening(self, model: IsotropicHardening, material_id: int)
     return material_string
 
 
-def write_hill_yield(self, model: HillYieldCriterion, material_id: int):
+def write_hill_yield(model: HillYieldCriterion, material_id: int):
     """Write Hill yield."""
     label = TABLE_LABELS[model.__class__.__name__]
     for qualifier in model.model_qualifiers:
