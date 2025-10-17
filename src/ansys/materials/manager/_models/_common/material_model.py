@@ -81,9 +81,14 @@ class MaterialModel(BaseModel, abc.ABC):
 
         This method should not perform any calls to other processes.
         """
-        model = self.model_dump()
-        for field_name, field_value in model.items():
-            if field_name not in MaterialModel.model_fields.keys():
-                if field_value is None:
-                    raise Exception(f"the value of {field_name} cannot be None, please update it.")
-                validate_parameters(field_name, field_value["value"], self.independent_parameters)
+        if not self.__class__.__name__ == "Color":
+            model = self.model_dump()
+            for field_name, field_value in model.items():
+                if field_name not in MaterialModel.model_fields.keys():
+                    if field_value is None:
+                        raise Exception(
+                            f"the value of {field_name} cannot be None, please update it."
+                        )
+                    validate_parameters(
+                        field_name, field_value["value"], self.independent_parameters
+                    )
