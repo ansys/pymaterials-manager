@@ -21,14 +21,12 @@
 # SOFTWARE.
 
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from ansys.units import Quantity
 
 from ansys.materials.manager._models._common import (
     IndependentParameter,
     InterpolationOptions,
-    _MapdlCore,
 )
 from ansys.materials.manager._models._material_models import ElasticityIsotropic
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
@@ -37,6 +35,7 @@ from ansys.materials.manager._models._material_models.elasticity_anisotropic imp
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
+from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
 
 DIR_PATH = Path(__file__).resolve().parent
 ELASTICITY_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(
@@ -73,8 +72,7 @@ def test_elasticity_isotropic_constant():
         youngs_modulus=Quantity(value=[1000000], units="Pa"),
         poissons_ratio=Quantity(value=[0.3], units=""),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(elasticity, 2)
     with open(ELASTICITY_ISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
@@ -85,10 +83,7 @@ def test_elasticity_isotropic_constant_temperature():
         youngs_modulus=Quantity(value=[1000000], units="Pa"),
         poissons_ratio=Quantity(value=[0.3], units=""),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(
-        material_id=2, pyansys_session=mock_mapdl, reference_temperature=22.0
-    )
+    material_string = WriterMapdl()._write_material_model(elasticity, 2, 22.0)
     with open(ELASTICITY_ISOTROPIC_CONSTANT_REFERENCE_TEMPERATURE, "r") as file:
         data = file.read()
     assert data == material_string
@@ -105,8 +100,7 @@ def test_elasticity_isotropic_variable():
             )
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=3, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(elasticity, 3)
     with open(ELASTICITY_ISOTROPIC_VARIABLE_TEMP, "r") as file:
         data = file.read()
         assert data == material_string
@@ -123,10 +117,7 @@ def test_elasticity_isotropic_variable_reference_temperature():
             )
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(
-        material_id=3, pyansys_session=mock_mapdl, reference_temperature=35.0
-    )
+    material_string = WriterMapdl()._write_material_model(elasticity, 3, 35.0)
     print(material_string)
     with open(ELASTICITY_ISOTROPIC_VARIABLE_TEMP_REFERENCE_TEMP, "r") as file:
         data = file.read()
@@ -145,8 +136,7 @@ def test_elasticity_orthotropic_constant():
         shear_modulus_yz=Quantity(value=[2000000], units="Pa"),
         shear_modulus_xz=Quantity(value=[3000000], units="Pa"),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=1, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(elasticity, 1)
     with open(ELASTICITY_ORTHOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
@@ -170,8 +160,7 @@ def test_elasticity_orthotropic_variable_temp():
             )
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=1, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(elasticity, 1)
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string
@@ -385,10 +374,7 @@ def test_elasticity_orthotropic_variable_temp_a11_a22():
             extrapolation_type="Projection to the Convex Hull",
         ),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(
-        material_id=1, pyansys_session=mock_mapdl, reference_temperature=22.0
-    )
+    material_string = WriterMapdl()._write_material_model(elasticity, 1, 22.0)
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE_TEMP_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string
@@ -429,9 +415,7 @@ def test_elasticity_orthotropic_variable_a11_a22():
             ),
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=1, pyansys_session=mock_mapdl)
-    print(material_string)
+    material_string = WriterMapdl()._write_material_model(elasticity, 1)
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string
@@ -492,8 +476,7 @@ def test_elasticity_anisotropic_constant():
         ),
     )
 
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = elasticity.write_model(material_id=1, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(elasticity, 1)
     with open(ELASTICITY_ANISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string

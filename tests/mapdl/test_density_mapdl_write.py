@@ -21,14 +21,13 @@
 # SOFTWARE.
 
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
 
 DIR_PATH = Path(__file__).resolve().parent
 CONSTANT_DENSITY = DIR_PATH.joinpath("..", "data", "mapdl_density_constant.cdb")
@@ -45,8 +44,8 @@ def test_density_constant_no_temp():
     density = Density(
         density=Quantity(value=[1.34], units="kg m^-3"),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = density.write_model(material_id=1, pyansys_session=mock_mapdl)
+
+    material_string = WriterMapdl()._write_material_model(density, 1)
     with open(CONSTANT_DENSITY, "r") as file:
         data = file.read()
         assert data == material_string
@@ -59,8 +58,7 @@ def test_density_single_temp():
             IndependentParameter(name="Temperature", values=Quantity(value=[22], units="C"))
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = density.write_model(material_id=1, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(density, 1)
     with open(CONSTANT_DENSITY, "r") as file:
         data = file.read()
         assert data == material_string
@@ -73,8 +71,7 @@ def test_density_temp_1():
             IndependentParameter(name="Temperature", values=Quantity(value=[22, 40], units="C"))
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = density.write_model(material_id=1, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(density, 1)
     with open(VARIABLE_DENSITY_TEMP_1, "r") as file:
         data = file.read()
         assert data == material_string
@@ -89,8 +86,8 @@ def test_density_temp_2():
             )
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = density.write_model(material_id=1, pyansys_session=mock_mapdl)
+
+    material_string = WriterMapdl()._write_material_model(density, 1)
     with open(VARIABLE_DENSITY_TEMP_2, "r") as file:
         data = file.read()
         assert data == material_string
@@ -110,8 +107,8 @@ def test_density_a11_a22():
             ),
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = density.write_model(material_id=1, pyansys_session=mock_mapdl)
+
+    material_string = WriterMapdl()._write_material_model(density, 1)
     with open(VARIABLE_DENSITY_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string
@@ -165,8 +162,8 @@ def test_density_temp_a11_a22():
             ),
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = density.write_model(material_id=1, pyansys_session=mock_mapdl)
+
+    material_string = WriterMapdl()._write_material_model(density, 1)
     with open(VARIABLE_DENSITY_TEMP_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string
@@ -235,8 +232,8 @@ def test_temp_a11_a22_interpolation():
             cached=False,
         ),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = density.write_model(material_id=1, pyansys_session=mock_mapdl)
+
+    material_string = WriterMapdl()._write_material_model(density, 1)
     with open(VARIABLE_DENSITY_TEMP_A11_A22_INTERP, "r") as file:
         data = file.read()
         assert data == material_string

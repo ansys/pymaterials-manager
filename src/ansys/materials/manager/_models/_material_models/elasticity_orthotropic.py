@@ -24,21 +24,12 @@ from typing import Dict, Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
-from pyparsing import Any
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
     ParameterField,
     QualifierType,
-    _MapdlCore,
     validate_and_initialize_model_qualifiers,
-)
-from ansys.materials.manager.util.mapdl.mapdl_writer import (
-    write_constant_properties,
-    write_interpolation_options,
-    write_table_values,
-    write_temperature_reference_value,
-    write_temperature_table_values,
 )
 
 
@@ -51,54 +42,72 @@ class ElasticityOrthotropic(MaterialModel):
         default=None,
         description="The Young's modulus of the material in the x direction.",
         matml_name="Young's Modulus X direction",
+        mapdl_name="EX",
+        lsdyna_name="ea",
     )
 
     youngs_modulus_y: Quantity | None = ParameterField(
         default=None,
         description="The Young's modulus of the material in the y direction.",
         matml_name="Young's Modulus Y direction",
+        mapdl_name="EY",
+        lsdyna_name="eb",
     )
 
     youngs_modulus_z: Quantity | None = ParameterField(
         default=None,
         description="The Young's modulus of the material in the z direction.",
         matml_name="Young's Modulus Z direction",
-    )
-
-    poissons_ratio_yz: Quantity | None = ParameterField(
-        default=None,
-        description="The Poisson's ratio yz of the material.",
-        matml_name="Poisson's Ratio YZ",
-    )
-
-    poissons_ratio_xz: Quantity | None = ParameterField(
-        default=None,
-        description="The Poisson's ratio xz of the material.",
-        matml_name="Poisson's Ratio XZ",
-    )
-
-    poissons_ratio_xy: Quantity | None = ParameterField(
-        default=None,
-        description="The Poisson's ratio xy of the material.",
-        matml_name="Poisson's Ratio XY",
-    )
-
-    shear_modulus_yz: Quantity | None = ParameterField(
-        default=None,
-        description="The shear modulus yz of the material.",
-        matml_name="Shear Modulus YZ",
-    )
-
-    shear_modulus_xz: Quantity | None = ParameterField(
-        default=None,
-        description="The shear modulus xz of the material.",
-        matml_name="Shear Modulus XZ",
+        mapdl_name="EZ",
+        lsdyna_name="ec",
     )
 
     shear_modulus_xy: Quantity | None = ParameterField(
         default=None,
         description="The shear modulus xy of the material.",
         matml_name="Shear Modulus XY",
+        mapdl_name="GXY",
+        lsdyna_name="gab",
+    )
+
+    shear_modulus_yz: Quantity | None = ParameterField(
+        default=None,
+        description="The shear modulus yz of the material.",
+        matml_name="Shear Modulus YZ",
+        mapdl_name="GYZ",
+        lsdyna_name="gbc",
+    )
+
+    shear_modulus_xz: Quantity | None = ParameterField(
+        default=None,
+        description="The shear modulus xz of the material.",
+        matml_name="Shear Modulus XZ",
+        mapdl_name="GXZ",
+        lsdyna_name="gca",
+    )
+
+    poissons_ratio_xy: Quantity | None = ParameterField(
+        default=None,
+        description="The Poisson's ratio xy of the material.",
+        matml_name="Poisson's Ratio XY",
+        mapdl_name="PRXY",
+        lsdyna_name="prba",
+    )
+
+    poissons_ratio_yz: Quantity | None = ParameterField(
+        default=None,
+        description="The Poisson's ratio yz of the material.",
+        matml_name="Poisson's Ratio YZ",
+        mapdl_name="PRYZ",
+        lsdyna_name="prcb",
+    )
+
+    poissons_ratio_xz: Quantity | None = ParameterField(
+        default=None,
+        description="The Poisson's ratio xz of the material.",
+        matml_name="Poisson's Ratio XZ",
+        mapdl_name="PRXZ",
+        lsdyna_name="prca",
     )
 
     @model_validator(mode="before")
@@ -108,89 +117,3 @@ class ElasticityOrthotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def _write_mapdl(self, material_id: int, reference_temperature: float | None) -> str:
-        material_string = ""
-        if reference_temperature:
-            material_string += write_temperature_reference_value(material_id, reference_temperature)
-
-        dependent_parameters = [
-            self.youngs_modulus_x.value,
-            self.youngs_modulus_y.value,
-            self.youngs_modulus_z.value,
-            self.shear_modulus_xy.value,
-            self.shear_modulus_yz.value,
-            self.shear_modulus_xz.value,
-            self.poissons_ratio_xy.value,
-            self.poissons_ratio_yz.value,
-            self.poissons_ratio_xz.value,
-        ]
-        dependent_parameters_units = [
-            self.youngs_modulus_x.unit,
-            self.youngs_modulus_y.unit,
-            self.youngs_modulus_z.unit,
-            self.shear_modulus_xy.unit,
-            self.shear_modulus_yz.unit,
-            self.shear_modulus_xz.unit,
-            self.poissons_ratio_xy.unit,
-            self.poissons_ratio_yz.unit,
-            self.poissons_ratio_xz.unit,
-        ]
-        if not self.independent_parameters:
-            material_string += write_constant_properties(
-                labels=["EX", "EY", "EZ", "GXY", "GYZ", "GXZ", "PRXY", "PRYZ", "PRXZ"],
-                properties=dependent_parameters,
-                property_units=dependent_parameters_units,
-                material_id=material_id,
-            )
-            return material_string
-
-        else:
-            if (
-                len(self.independent_parameters) == 1
-                and self.independent_parameters[0].name == "Temperature"
-            ):
-                if len(self.independent_parameters[0].values.value) == 1:
-                    material_string += write_constant_properties(
-                        labels=["EX", "EY", "EZ", "GXY", "GYZ", "GXZ", "PRXY", "PRYZ", "PRXZ"],
-                        properties=dependent_parameters,
-                        property_units=dependent_parameters_units,
-                        material_id=material_id,
-                    )
-                    return material_string
-                else:
-                    material_string += write_temperature_table_values(
-                        labels=["EX", "EY", "EZ", "GXY", "GYZ", "GXZ", "PRXY", "PRYZ", "PRXZ"],
-                        dependent_parameters=dependent_parameters,
-                        dependent_parameters_unit=dependent_parameters_units,
-                        material_id=material_id,
-                        temperature_parameter=self.independent_parameters[0],
-                    )
-                    return material_string
-            else:
-                parameters_str, table_str = write_table_values(
-                    label="ELASTIC",
-                    dependent_parameters=dependent_parameters,
-                    material_id=material_id,
-                    independent_parameters=self.independent_parameters,
-                    tb_opt="OELM",
-                )
-                material_string += parameters_str + "\n" + table_str
-
-                if self.interpolation_options:
-                    interpolation_string = write_interpolation_options(
-                        interpolation_options=self.interpolation_options,
-                        independent_parameters=self.independent_parameters,
-                    )
-                    material_string += "\n" + interpolation_string
-        return material_string
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> str:
-        """Write this model to the specified session."""
-        self.validate_model()
-        if isinstance(pyansys_session, _MapdlCore):
-            reference_temperature = kwargs.get("reference_temperature", None)
-            material_string = self._write_mapdl(material_id, reference_temperature)
-        else:
-            raise Exception("The session is not supported.")
-        return material_string
