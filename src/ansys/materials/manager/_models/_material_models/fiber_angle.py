@@ -31,7 +31,3 @@ class FiberAngle(MaterialModel):
     """Represents a fiber angle material model."""
 
     name: Literal["Fiber Angle"] = Field(default="Fiber Angle", repr=False, frozen=True)
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        pass

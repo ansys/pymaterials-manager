@@ -75,7 +75,3 @@ class IsotropicHardeningVoceLaw(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the isotropic hardening model."""
-        pass

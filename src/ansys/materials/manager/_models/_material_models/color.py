@@ -46,7 +46,3 @@ class Color(MaterialModel):
         matml_name="Material Property",
         frozen=True,
     )
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the anisotropic elasticity model."""
-        pass
