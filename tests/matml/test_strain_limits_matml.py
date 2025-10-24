@@ -33,7 +33,7 @@ from ansys.materials.manager._models._material_models.strain_limits_orthotropic 
     StrainLimitsOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_strain_limit.xml")
@@ -202,7 +202,7 @@ def test_write_constant_strain_limits_orthotropic():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_LIMITS_ORTHOTROPIC, "r", encoding="utf8") as file:
@@ -230,7 +230,7 @@ def test_write_constant_strain_limits_isotropic():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_LIMITS_ISOTROPIC, "r", encoding="utf8") as file:
@@ -257,7 +257,7 @@ def test_write_variable_strain_limits_isotropic():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_LIMITS_ISOTROPIC_VARIABLE, "r", encoding="utf8") as file:
@@ -297,7 +297,7 @@ def test_write_variable_strain_limits_orthotropic():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_LIMITS_ORTHOTROPIC_VARIABLE, "r", encoding="utf8") as file:
@@ -308,7 +308,7 @@ def test_write_variable_strain_limits_orthotropic():
         assert data == metadata_string
 
 
-# writer = MatmlWriter(materials)
+# writer = WriterMatml(materials)
 # tree = writer._to_etree()
 # material_string, metadata_string = get_material_and_metadata_from_xml(tree)
 # path = r"D:\AnsysDev\pymaterials-manager\tests\data"

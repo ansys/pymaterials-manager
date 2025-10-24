@@ -21,13 +21,12 @@
 # SOFTWARE.
 
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models import IsotropicHardening
+from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
 
 DIR_PATH = Path(__file__).resolve().parent
 ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT = DIR_PATH.joinpath(
@@ -119,8 +118,7 @@ def test_isotropic_hardening_multilinear_constant():
         ],
     )
 
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = isotropic_hardening.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(isotropic_hardening, 2)
     with open(ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
@@ -519,8 +517,7 @@ def test_isotropic_hardening_multilinear_variable():
         ],
     )
 
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = isotropic_hardening.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(isotropic_hardening, 2)
     with open(ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_string

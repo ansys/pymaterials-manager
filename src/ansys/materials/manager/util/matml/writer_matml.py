@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Provides the ``MatmlWriter`` class."""
+"""Provides the ``WriterMatml`` class."""
 
 import os
 from typing import BinaryIO, Dict, Optional, Sequence, Union
@@ -40,6 +40,7 @@ from ansys.materials.manager.util.matml.utils import (
     create_xml_string_value,
     unit_to_xml,
 )
+from ansys.materials.manager.util.writer import register_writer
 
 from .matml_parser import (
     BULKDATA_KEY,
@@ -60,13 +61,14 @@ VERSION = "18.0.0.60"
 VERSION_DATE = "29.08.2016 15:02:00"
 
 
-class MatmlWriter:
+@register_writer("Matml")
+class WriterMatml:
     """
     Exports a list of MAPDL materials to an engineering data XML file.
 
     Examples
     --------
-    > writer = MatmlWriter(materials)
+    > writer = WriterMatml(materials)
     > writer.export('engineering_data.xml')
     """
 
@@ -76,13 +78,22 @@ class MatmlWriter:
     _metadata_parameters_units: Dict
     _metadata_property_sets_units: Dict
 
-    def __init__(self, materials: Sequence[Material]):
+    def __init__(self, materials: Sequence[Material] = []):
         """Construct a Matml writer."""
         self._materials = materials
         self._metadata_property_sets = {}
         self._metadata_parameters = {}
         self._metadata_parameters_units = {}
         self._metadata_property_sets_units = {}
+
+    @property
+    def materials(self) -> Sequence[Material]:
+        """Expose the private field _materials."""
+        return self._materials
+
+    @materials.setter
+    def materials(self, value: Sequence[Material]) -> None:
+        self._materials = value
 
     def _add_dependent_parameters(
         self, property_element: ET.Element, models: Dict, parameters: Dict
@@ -312,12 +323,17 @@ class MatmlWriter:
         # add the WB transfer IDs to the XML tree
         wb_transfer_element = ET.SubElement(root, WBTRANSFER_KEY)
         materials_element = ET.SubElement(wb_transfer_element, MATERIALS_ELEMENT_KEY)
+        any_uuid = False
         for mat in self._materials:
-            mat_element = ET.SubElement(materials_element, "Material")
-            name_element = ET.SubElement(mat_element, "Name")
-            name_element.text = mat.name
-            transfer_element = ET.SubElement(mat_element, "DataTransferID")
-            transfer_element.text = mat.guid
+            if mat.guid is not None:
+                mat_element = ET.SubElement(materials_element, "Material")
+                name_element = ET.SubElement(mat_element, "Name")
+                name_element.text = mat.name
+                transfer_element = ET.SubElement(mat_element, "DataTransferID")
+                transfer_element.text = mat.guid
+                any_uuid = True
+        if not any_uuid:
+            root.remove(wb_transfer_element)
 
     def _to_etree(self) -> ET.ElementTree:
         root = ET.Element(ROOT_ELEMENT)
@@ -397,3 +413,29 @@ class MatmlWriter:
         if indent:
             self._indent(tree)
         tree.write(path, xml_declaration=xml_declaration)
+
+    def write_material(self, material: Material, material_id: int, **kwargs):
+        """
+        Write a MatML (engineering data XML format) representation of a material to file.
+
+        Parameters
+        ----------
+        material: Material
+            the materoal to be written.
+        material_id: int
+            the material identification number
+        path:
+            File path.
+        indent : Optional[bool]
+            Whether to add an indent to format the XML output.
+            Defaults to ``false``.
+        xml_declaration: Optional[bool]
+            Whether to add the XML declaration to the output.
+        """
+        path = kwargs("path", None)
+        if not path:
+            raise Exception("The path was not provided.")
+        indent = kwargs.get("indent", False)
+        xml_declaration = kwargs.get("xml_declaration", False)
+        self._materials = [material]
+        self.export(path, indent, xml_declaration)

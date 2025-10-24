@@ -14,5 +14,6 @@ mapdl_client = launch_mapdl(
 
 material_manager = MaterialManager(client=mapdl_client)
 material_manager.read_from_matml(matml_file_path)
+material_manager.write_to_matml("trial.xml")
 material_manager.write_material("Isotropic Test Material", 1)
 mapdl_client.exit()

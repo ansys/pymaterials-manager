@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 
-from typing import Any, Dict, Literal
+from typing import Dict, Literal
 
 from ansys.units import Quantity
 import numpy as np
@@ -31,12 +31,7 @@ from ansys.materials.manager._models._common import (
     MaterialModel,
     ParameterField,
     QualifierType,
-    _MapdlCore,
     validate_and_initialize_model_qualifiers,
-)
-from ansys.materials.manager.util.mapdl.mapdl_writer import (
-    write_table_dep_values,
-    write_temperature_reference_value,
 )
 
 
@@ -70,43 +65,6 @@ class ElasticityAnisotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def _write_mapdl(self, material_id: int, reference_temperature: float | None) -> str:
-        material_string = ""
-        if reference_temperature:
-            material_string += write_temperature_reference_value(material_id, reference_temperature)
-        d = np.column_stack(
-            (
-                self.column_1.value,
-                self.column_2.value,
-                self.column_3.value,
-                self.column_4.value,
-                self.column_5.value,
-                self.column_6.value,
-            )
-        )
-        # extract the lower triangular elements column-wise
-        dependent_values = []
-        for j in range(6):
-            dependent_values.extend(d[j:, j])
-
-        material_string += write_table_dep_values(
-            material_id=material_id,
-            label="ELASTIC",
-            dependent_values=dependent_values,
-            tb_opt="AELS",
-        )
-        return material_string
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write the anisotropic elasticity model to the pyansys session."""
-        self.validate_model()
-        if isinstance(pyansys_session, _MapdlCore):
-            reference_temperature = kwargs.get("reference_temperature", None)
-            material_string = self._write_mapdl(material_id, reference_temperature)
-        else:
-            raise Exception("The session is not supported.")
-        return material_string
 
     def validate_model(self) -> None:
         """Validate anisotropic elasticity."""
