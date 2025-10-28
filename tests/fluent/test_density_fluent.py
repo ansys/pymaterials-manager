@@ -26,12 +26,13 @@ from ansys.units import Quantity
 
 from ansys.materials.manager._models._common import _FluentCore
 from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager.util.fluent.writer_fluent import WriterFluent
 
 
 def test_density_write_fluent():
     mock_fluent = MagicMock(spec=_FluentCore)
     density = Density(density=Quantity(value=1.225, units="kg m^-3"))
-    model = density.write_model(1, mock_fluent)
+    model = WriterFluent()._write_material_model(density)
     mock_fluent.settings.setup.materials.fluid["air"] = model
     mock_fluent.settings.setup.materials.fluid.__setitem__.assert_called_once()
     args = mock_fluent.settings.setup.materials.fluid.__setitem__.call_args

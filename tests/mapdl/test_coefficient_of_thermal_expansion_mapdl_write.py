@@ -21,11 +21,9 @@
 # SOFTWARE.
 
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
@@ -34,6 +32,7 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
 from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
     CoefficientofThermalExpansionOrthotropic,
 )
+from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
 
 DIR_PATH = Path(__file__).resolve().parent
 COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(
@@ -71,26 +70,23 @@ COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_VARIABLE_A11_A22 = DIR_PATH.
 
 
 def test_coefficient_of_thermal_expansion_coefficient_isotropic_secant_constant():
-    thermal_conductivity = CoefficientofThermalExpansionIsotropic(
+    thermal_expansion = CoefficientofThermalExpansionIsotropic(
         model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
         coefficient_of_thermal_expansion=Quantity(value=[1.0], units="C^-1"),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(material_id=1, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(thermal_expansion, 1)
     with open(COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
 
 
 def test_coefficient_of_thermal_expansion_coefficient_isotropic_secant_ref_temperature():
-    thermal_conductivity = CoefficientofThermalExpansionIsotropic(
+    thermal_expansion = CoefficientofThermalExpansionIsotropic(
         model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
         coefficient_of_thermal_expansion=Quantity(value=[1.0], units="C^-1"),
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(
-        material_id=2, pyansys_session=mock_mapdl, reference_temperature=22.0
+    material_string = WriterMapdl()._write_material_model(
+        thermal_expansion, 2, reference_temperature=22.0
     )
     with open(COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_CONSTANT_REF_TEMP, "r") as file:
         data = file.read()
@@ -98,7 +94,7 @@ def test_coefficient_of_thermal_expansion_coefficient_isotropic_secant_ref_tempe
 
 
 def test_coefficient_of_thermal_expansion_coefficient_isotropic_secant_variable():
-    thermal_conductivity = CoefficientofThermalExpansionIsotropic(
+    thermal_expansion = CoefficientofThermalExpansionIsotropic(
         model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
         coefficient_of_thermal_expansion=Quantity(value=[1.0, 1.1, 1.2], units="C^-1"),
         independent_parameters=[
@@ -109,10 +105,8 @@ def test_coefficient_of_thermal_expansion_coefficient_isotropic_secant_variable(
             )
         ],
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(
-        material_id=3, pyansys_session=mock_mapdl, reference_temperature=22.0
+    material_string = WriterMapdl()._write_material_model(
+        thermal_expansion, 3, reference_temperature=22.0
     )
     with open(COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_VARIABLE, "r") as file:
         data = file.read()
@@ -120,7 +114,7 @@ def test_coefficient_of_thermal_expansion_coefficient_isotropic_secant_variable(
 
 
 def test_coefficient_of_thermal_expansion_coefficient_isotropic_secant_variable_a11_a22():
-    thermal_conductivity = CoefficientofThermalExpansionIsotropic(
+    thermal_expansion = CoefficientofThermalExpansionIsotropic(
         model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
         coefficient_of_thermal_expansion=Quantity(
             value=[
@@ -168,38 +162,34 @@ def test_coefficient_of_thermal_expansion_coefficient_isotropic_secant_variable_
             ),
         ],
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(material_id=4, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(thermal_expansion, 4)
     with open(COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_VARIABLE_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string
 
 
 def test_coefficient_of_thermal_expansion_coefficient_orthotropic_secant_constant():
-    thermal_conductivity = CoefficientofThermalExpansionOrthotropic(
+    thermal_expansion = CoefficientofThermalExpansionOrthotropic(
         model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
         coefficient_of_thermal_expansion_x=Quantity(value=[1.0], units="C^-1"),
         coefficient_of_thermal_expansion_y=Quantity(value=[2.0], units="C^-1"),
         coefficient_of_thermal_expansion_z=Quantity(value=[3.0], units="C^-1"),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(material_id=5, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(thermal_expansion, 5)
     with open(COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
 
 
 def test_coefficient_of_thermal_expansion_coefficient_orthotropic_secant_constant_ref_temp():
-    thermal_conductivity = CoefficientofThermalExpansionOrthotropic(
+    thermal_expansion = CoefficientofThermalExpansionOrthotropic(
         model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
         coefficient_of_thermal_expansion_x=Quantity(value=[1.0], units="C^-1"),
         coefficient_of_thermal_expansion_y=Quantity(value=[2.0], units="C^-1"),
         coefficient_of_thermal_expansion_z=Quantity(value=[3.0], units="C^-1"),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(
-        material_id=6, pyansys_session=mock_mapdl, reference_temperature=22.0
+    material_string = WriterMapdl()._write_material_model(
+        thermal_expansion, 6, reference_temperature=22.0
     )
     with open(COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_CONSTANT_REF_TEMP, "r") as file:
         data = file.read()
@@ -207,7 +197,7 @@ def test_coefficient_of_thermal_expansion_coefficient_orthotropic_secant_constan
 
 
 def test_coefficient_of_thermal_expansion_coefficient_orthotropic_secant_variable():
-    thermal_conductivity = CoefficientofThermalExpansionOrthotropic(
+    thermal_expansion = CoefficientofThermalExpansionOrthotropic(
         model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
         coefficient_of_thermal_expansion_x=Quantity(value=[1.0, 1.1, 1.2], units="C^-1"),
         coefficient_of_thermal_expansion_y=Quantity(value=[2.0, 2.1, 2.2], units="C^-1"),
@@ -220,9 +210,8 @@ def test_coefficient_of_thermal_expansion_coefficient_orthotropic_secant_variabl
             )
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(
-        material_id=7, pyansys_session=mock_mapdl, reference_temperature=22.0
+    material_string = WriterMapdl()._write_material_model(
+        thermal_expansion, 7, reference_temperature=22.0
     )
     with open(COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_VARIABLE, "r") as file:
         data = file.read()
@@ -230,7 +219,7 @@ def test_coefficient_of_thermal_expansion_coefficient_orthotropic_secant_variabl
 
 
 def test_coefficient_of_thermal_expansion_coefficient_orthotropic_secant_variable_a11_a22():
-    thermal_conductivity = CoefficientofThermalExpansionOrthotropic(
+    thermal_expansion = CoefficientofThermalExpansionOrthotropic(
         model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
         coefficient_of_thermal_expansion_x=Quantity(
             value=[
@@ -324,8 +313,7 @@ def test_coefficient_of_thermal_expansion_coefficient_orthotropic_secant_variabl
             ),
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = thermal_conductivity.write_model(material_id=7, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(thermal_expansion, 7)
     with open(COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ORTHOTROPIC_VARIABLE_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string

@@ -26,12 +26,13 @@ from ansys.units import Quantity
 
 from ansys.materials.manager._models._common import _FluentCore
 from ansys.materials.manager._models._material_models.molecular_weight import MolecularWeight
+from ansys.materials.manager.util.fluent.writer_fluent import WriterFluent
 
 
 def test_molecular_weight_write_fluent():
     mock_fluent = MagicMock(spec=_FluentCore)
-    density = MolecularWeight(molecular_weight=Quantity(value=28.966, units="kg kmol^-1"))
-    model = density.write_model(1, mock_fluent)
+    molecular_weight = MolecularWeight(molecular_weight=Quantity(value=28.966, units="kg kmol^-1"))
+    model = WriterFluent()._write_material_model(molecular_weight)
     mock_fluent.settings.setup.materials.fluid["air"] = model
     mock_fluent.settings.setup.materials.fluid.__setitem__.assert_called_once()
     args = mock_fluent.settings.setup.materials.fluid.__setitem__.call_args

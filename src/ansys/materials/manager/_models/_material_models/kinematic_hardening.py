@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 from ast import Dict
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
@@ -107,11 +107,3 @@ class KinematicHardening(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write this model to the specified session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        pass

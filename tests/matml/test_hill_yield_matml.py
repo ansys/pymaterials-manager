@@ -34,7 +34,7 @@ from ansys.materials.manager._models._material_models.hill_yield_criterion impor
 from ansys.materials.manager._models._material_models.kinematic_hardening import KinematicHardening
 from ansys.materials.manager._models._material_models.strain_hardening import StrainHardening
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 NO_CREEP_XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_hill_yield.xml")
@@ -388,7 +388,7 @@ def test_write_constant_hill_yield_no_creep():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(HILL_YIELD, "r") as file:
@@ -429,7 +429,7 @@ def test_write_variable_hill_yield_no_creep():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(HILL_YIELD_VARIABLE, "r") as file:
@@ -482,7 +482,7 @@ def test_write_constant_hill_yield_creep():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(HILL_YIELD_CREEP, "r") as file:
@@ -513,7 +513,7 @@ def test_write_kinematic_hardening():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(KINEMATIC_HARDENING, "r") as file:
@@ -551,7 +551,7 @@ def test_write_strain_hardening():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_HARDENING, "r") as file:
