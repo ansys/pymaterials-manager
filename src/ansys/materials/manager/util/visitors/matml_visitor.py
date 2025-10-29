@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from typing import Optional
 import xml.etree.ElementTree as ET
 
 from ansys.units import Quantity
@@ -32,65 +33,42 @@ from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
+from ansys.materials.manager.util.matml.matml_parser import _PATH_TYPE
 from ansys.materials.manager.util.matml.utils import (
     convert_to_float_string,
     create_xml_string_value,
+    unit_to_xml,
 )
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
+from ansys.materials.manager.util.visitors.common import ModelInfo
 
-# matml material property keys
-ELASTICITY = "Elasticity"
+from . import matml_strings as matml_strings
 
-# matml material parameter keys
-DENSITY = "Density"
-YOUNGS_MODULUS = "Young's Modulus"
-POISSONS_RATIO = "Poisson's Ratio"
-
-###################
-PROPERTY_ID = "pr"
-PARAMETER_ID = "pa"
-PROPERTY_DATA_KEY = "PropertyData"
-DATA_KEY = "Data"
-PROPERTY_KEY = "property"
-FORMAT_KEY = "format"
-STRING_KEY = "string"
-DASH_KEY = "-"
-QUALIFIER_KEY = "Qualifier"
-NAME_KEY = "name"
-OPTIONS_VARIABLE_KEY = "Options Variable"
-PARAMETER_VALUE_KEY = "ParameterValue"
-PARAMETER_KEY = "parameter"
-INTERPOLATION_OPTIONS_KEY = "Interpolation Options"
-ALGORITTHM_TYPE_KEY = "AlgorithmType"
-CACHED_KEY = "Cached"
-NORMALIZED_KEY = "Normalized"
-EXTRAPOLATION_TYPE_KEY = "ExtrapolationType"
-UNITLESS_KEY = "Unitless"
-FLOAT_KEY = "float"
-INDEPENDENT_KEY = "Independent"
-VARIABLE_TYPE_KEY = "Variable Type"
-DEFAULT_DATA_KEY = "Default Data"
-UPPER_LIMIT_KEY = "Upper Limit"
-LOWER_LIMIT_KEY = "Lower Limit"
+MATERIAL_MODEL_MAP = {
+    Density: ModelInfo(labels=["Density"], attributes=["density"]),
+    ElasticityIsotropic: ModelInfo(
+        labels=["Young's Modulus", "Poisson's Ratio"],
+        attributes=["youngs_modulus", "poissons_ratio"],
+    ),
+}
 
 
 class MatmlVisitor(BaseVisitor):
     """MatmlVisitor."""
 
-    _material_models: list[ET.Element]
     _metadata_property_sets: dict
     _metadata_parameters: dict
     _metadata_parameters_units: dict
     _metadata_property_sets_units: dict
 
-    def __init__(self):
+    def __init__(self, materials):
         """Initialize the class."""
-        super().__init__()
-        self._material_models = []
+        super().__init__(materials=materials)
         self._metadata_parameters = {}
         self._metadata_property_sets = {}
         self._metadata_parameters_units = {}
         self._metadata_property_sets_units = {}
+        self.visit_materials()
 
     def _get_property_id(self, property_name: str) -> str:
         """Get property id."""
@@ -98,7 +76,8 @@ class MatmlVisitor(BaseVisitor):
             property_id = self._metadata_property_sets[property_name]
         else:
             index = len(self._metadata_property_sets)
-            property_id = PROPERTY_ID + str(index)
+            property_id = matml_strings.PROPERTY_ID + str(index)
+            self._metadata_property_sets[property_name] = property_id
         return property_id
 
     def _get_parameter_id(self, parameter_name: str, unit: str | None = None) -> str:
@@ -107,16 +86,19 @@ class MatmlVisitor(BaseVisitor):
             parameter_id = self._metadata_parameters[parameter_name]
         else:
             index = len(self._metadata_parameters)
-            parameter_id = PARAMETER_ID + str(index)
+            parameter_id = matml_strings.PARAMETER_ID + str(index)
+            self._metadata_parameters[parameter_name] = parameter_id
             if unit:
                 if unit == "":
-                    unit = UNITLESS_KEY
+                    unit = matml_strings.UNITLESS_KEY
                 self._metadata_parameters_units[parameter_name] = unit
         return parameter_id
 
     def _add_qualifier(self, data_element: ET.Element, qualifier_key: str, qualifier_value: str):
         """Add qualifier."""
-        qualifier_element = ET.SubElement(data_element, QUALIFIER_KEY, {NAME_KEY: qualifier_key})
+        qualifier_element = ET.SubElement(
+            data_element, matml_strings.QUALIFIER_KEY, {matml_strings.NAME_KEY: qualifier_key}
+        )
         qualifier_element.text = qualifier_value
 
     def _add_model_qualifiers(
@@ -125,37 +107,46 @@ class MatmlVisitor(BaseVisitor):
         """Add model qualifiers."""
         if len(model_qualifiers) > 0:
             for model_qualifier in model_qualifiers:
-                self._add_qualifier(property_data_element, model_qualifier)
+                self._add_qualifier(
+                    property_data_element, model_qualifier.name, model_qualifier.value
+                )
 
     def _add_interpolation_options(
         self, property_data_element: ET.Element, interpolation_options: InterpolationOptions | None
     ) -> None:
         """Add interpolation options."""
         if interpolation_options:
-            parameter_id = self._get_property_id(OPTIONS_VARIABLE_KEY)
+            parameter_id = self._get_property_id(matml_strings.OPTIONS_VARIABLE_KEY)
             parameter_element = ET.SubElement(
                 property_data_element,
-                PARAMETER_VALUE_KEY,
-                {PARAMETER_KEY: parameter_id, FORMAT_KEY: STRING_KEY},
+                matml_strings.PARAMETER_VALUE_KEY,
+                {
+                    matml_strings.PARAMETER_KEY: parameter_id,
+                    matml_strings.FORMAT_KEY: matml_strings.STRING_KEY,
+                },
             )
-            data_element = ET.SubElement(parameter_element, DATA_KEY)
-            data_element.text = INTERPOLATION_OPTIONS_KEY
+            data_element = ET.SubElement(parameter_element, matml_strings.DATA_KEY)
+            data_element.text = matml_strings.INTERPOLATION_OPTIONS_KEY
             if interpolation_options.algorithm_type:
                 self._add_qualifier(
-                    parameter_element, ALGORITTHM_TYPE_KEY, interpolation_options.algorithm_type
+                    parameter_element,
+                    matml_strings.ALGORITTHM_TYPE_KEY,
+                    interpolation_options.algorithm_type,
                 )
             if interpolation_options.cached:
                 self._add_qualifier(
-                    parameter_element, CACHED_KEY, str(interpolation_options.cached)
+                    parameter_element, matml_strings.CACHED_KEY, str(interpolation_options.cached)
                 )
             if interpolation_options.normalized:
                 self._add_qualifier(
-                    parameter_element, NORMALIZED_KEY, str(interpolation_options.normalized)
+                    parameter_element,
+                    matml_strings.NORMALIZED_KEY,
+                    str(interpolation_options.normalized),
                 )
             if interpolation_options.extrapolation_type:
                 self._add_qualifier(
                     parameter_element,
-                    EXTRAPOLATION_TYPE_KEY,
+                    matml_strings.EXTRAPOLATION_TYPE_KEY,
                     interpolation_options.extrapolation_type,
                 )
 
@@ -172,86 +163,200 @@ class MatmlVisitor(BaseVisitor):
                 )
                 parameter_element = ET.SubElement(
                     property_data_element,
-                    PARAMETER_VALUE_KEY,
-                    {PARAMETER_KEY: parameter_id, FORMAT_KEY: FLOAT_KEY},
+                    matml_strings.PARAMETER_VALUE_KEY,
+                    {
+                        matml_strings.PARAMETER_KEY: parameter_id,
+                        matml_strings.FORMAT_KEY: matml_strings.FLOAT_KEY,
+                    },
                 )
-                data_element = ET.SubElement(parameter_element, DATA_KEY)
+                data_element = ET.SubElement(parameter_element, matml_strings.DATA_KEY)
                 values = independent_parameter.values
                 if isinstance(values, Quantity):
                     values = values.value
                 values = ", ".join(f"{v}" for v in values)
                 data_element.text = values
-                qualifier_value = ",".join([INDEPENDENT_KEY] * len(values.split(",")))
-                self._add_qualifier(parameter_element, VARIABLE_TYPE_KEY, qualifier_value)
+                qualifier_value = ",".join([matml_strings.INDEPENDENT_KEY] * len(values.split(",")))
+                self._add_qualifier(
+                    parameter_element, matml_strings.VARIABLE_TYPE_KEY, qualifier_value
+                )
                 if independent_parameter.default_value:
                     qualifier_value = convert_to_float_string(independent_parameter.default_value)
-                    self._add_qualifier(parameter_element, DEFAULT_DATA_KEY, qualifier_value)
+                    self._add_qualifier(
+                        parameter_element, matml_strings.DEFAULT_DATA_KEY, qualifier_value
+                    )
                 if independent_parameter.upper_limit:
                     qualifier_value = convert_to_float_string(independent_parameter.upper_limit)
-                    self._add_qualifier(parameter_element, UPPER_LIMIT_KEY, qualifier_value)
+                    self._add_qualifier(
+                        parameter_element, matml_strings.UPPER_LIMIT_KEY, qualifier_value
+                    )
                 if independent_parameter.lower_limit:
                     qualifier_value = convert_to_float_string(independent_parameter.lower_limit)
-                    self._add_qualifier(parameter_element, LOWER_LIMIT_KEY, qualifier_value)
+                    self._add_qualifier(
+                        parameter_element, matml_strings.LOWER_LIMIT_KEY, qualifier_value
+                    )
 
-    def _populate_dependent_parameters(
-        self, dependent_names: list[str], material_model: MaterialModel
-    ) -> dict[str, Quantity]:
+    def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict[str, Quantity]:
         """Populate dependent parameters."""
-        material_dict = material_model.model_dump()
-        dependent_parameters = {}
-        for key, value in material_dict.items():
-            for dependent_name in dependent_names:
-                if dependent_name == key:
-                    dependent_parameters[key] = value
-        return
+        if material_model.__class__ in MATERIAL_MODEL_MAP.keys():
+            mapping = MATERIAL_MODEL_MAP[material_model.__class__]
+            labels = mapping.labels
+            model_dict = material_model.model_dump()
+            quantities = [model_dict[label] for label in mapping.attributes]
+            return dict(zip(labels, quantities))
 
     def _add_dependent_parameters(
         self, property_data_element: ET.Element, dependent_parameters: dict[str, Quantity]
     ):
         """Add dependent parameters."""
         for key in dependent_parameters.keys():
-            unit = UNITLESS_KEY
-            if not isinstance(dependent_parameters[key], (str | float | int)):
-                unit = dependent_parameters[key].get("units", UNITLESS_KEY)
-            self._get_parameter_id(key, unit)
-            parameter_element = ET.SubElement(property_data_element)
-            data_element = ET.SubElement(parameter_element, DATA_KEY)
-            if isinstance(dependent_parameters[key], dict):
-                if "value" in dependent_parameters[key].keys():
-                    values = create_xml_string_value(dependent_parameters[key]["value"])
-            else:
-                if isinstance(dependent_parameters[key], str):
-                    values = dependent_parameters[key]
+            if dependent_parameters[key]:
+                unit = matml_strings.UNITLESS_KEY
+                if not isinstance(dependent_parameters[key], (str | float | int)):
+                    unit = dependent_parameters[key].get("units", matml_strings.UNITLESS_KEY)
+                parameter_id = self._get_parameter_id(key, unit)
+                parameter_element = ET.SubElement(
+                    property_data_element,
+                    matml_strings.PARAMETER_VALUE_KEY,
+                    {
+                        matml_strings.PARAMETER_KEY: parameter_id,
+                        matml_strings.FORMAT_KEY: matml_strings.STRING_KEY,
+                    },
+                )
+                data_element = ET.SubElement(parameter_element, matml_strings.DATA_KEY)
+                if isinstance(dependent_parameters[key], dict):
+                    if "value" in dependent_parameters[key].keys():
+                        values = create_xml_string_value(dependent_parameters[key]["value"])
                 else:
-                    values = create_xml_string_value(dependent_parameters[key])
-            data_element.text = values
-            qualifier_value = ",".join(["Dependent"] * len(values.split(",")))
-            self._add_qualifier(parameter_element, VARIABLE_TYPE_KEY, qualifier_value)
+                    if isinstance(dependent_parameters[key], str):
+                        values = dependent_parameters[key]
+                    else:
+                        values = create_xml_string_value(dependent_parameters[key])
+                data_element.text = values
+                qualifier_value = ",".join([matml_strings.DEPENDENT_KEY] * len(values.split(",")))
+                self._add_qualifier(
+                    parameter_element, matml_strings.VARIABLE_TYPE_KEY, qualifier_value
+                )
 
-    def _visit_material_model(
-        self, property_id: str, dependent_names: list[str], material_model: MaterialModel
-    ):
+    def _visit_model(self, property_id: str, material_model: MaterialModel) -> ET.Element:
         """Visit material model."""
-        property_data_element = ET.Element(PROPERTY_DATA_KEY, {PROPERTY_KEY: property_id})
-        data_element = ET.SubElement(property_data_element, DATA_KEY, {FORMAT_KEY: STRING_KEY})
-        data_element.text = DASH_KEY
+        property_data_element = ET.Element(
+            matml_strings.PROPERTY_DATA_KEY, {matml_strings.PROPERTY_KEY: property_id}
+        )
+        data_element = ET.SubElement(
+            property_data_element,
+            matml_strings.DATA_KEY,
+            {matml_strings.FORMAT_KEY: matml_strings.STRING_KEY},
+        )
+        data_element.text = matml_strings.DASH_KEY
         self._add_model_qualifiers(property_data_element, material_model.model_qualifiers)
         self._add_interpolation_options(property_data_element, material_model.interpolation_options)
+        dependent_parameters = self._populate_dependent_parameters(material_model)
+        self._add_dependent_parameters(property_data_element, dependent_parameters)
         self._add_independent_parameters(
             property_data_element, material_model.independent_parameters
         )
-        dependent_parameters = self._populate_dependent_parameters(dependent_names, material_model)
-        self._add_dependent_parameters(property_data_element, dependent_parameters)
-        self._material_models.append(property_data_element)
 
-    def visit_density(self, material_model: Density):
-        """Visit density."""
-        property_id = self._get_property_id(DENSITY)
-        depenent_names = [DENSITY]
-        self._visit_material_model(property_id)
+        return property_data_element
 
-    def visit_elasticity(self, material_model: ElasticityIsotropic):
-        """Visit elasticity."""
-        property_id = self._get_property_id(ELASTICITY)
-        dependent_names = [YOUNGS_MODULUS, POISSONS_RATIO]
-        self._visit_material_model(property_id, dependent_names, material_model)
+    def _add_metadata(self, metadata_element: ET.Element) -> None:
+        """Add the metadata to the XML tree."""
+        for key, value in self._metadata_property_sets.items():
+            prop_element = ET.SubElement(
+                metadata_element, matml_strings.PROPERTY_DETAILS_KEY, {matml_strings.ID_KEY: value}
+            )
+            ET.SubElement(prop_element, matml_strings.UNITLESS_KEY)
+            name_element = ET.SubElement(prop_element, matml_strings.NAME_KEY.capitalize())
+            name_element.text = key
+        for key, value in self._metadata_parameters.items():
+            prop_element = ET.SubElement(
+                metadata_element, matml_strings.PARAMETER_DETAILS_KEY, {matml_strings.ID_KEY: value}
+            )
+            units = self._metadata_parameters_units.get(key, None)
+            if units:
+                prop_element.append(unit_to_xml(units))
+            else:
+                ET.SubElement(prop_element, matml_strings.UNITLESS_KEY)
+            name_element = ET.SubElement(prop_element, matml_strings.NAME_KEY.capitalize())
+            name_element.text = key
+
+    def _add_transfer_ids(self, root: ET.Element) -> None:
+        """Add the WB transfer IDs to the XML tree."""
+        wb_transfer_element = ET.SubElement(root, matml_strings.WBTRANSFER_KEY)
+        materials_element = ET.SubElement(wb_transfer_element, matml_strings.MATERIALS_ELEMENT_KEY)
+        any_uuid = False
+        for mat in self._materials:
+            if mat.guid is not None:
+                mat_element = ET.SubElement(
+                    materials_element, matml_strings.MATERIAL_KEY.capitalize()
+                )
+                name_element = ET.SubElement(mat_element, matml_strings.NAME_KEY.capitalize())
+                name_element.text = mat.name
+                transfer_element = ET.SubElement(mat_element, matml_strings.DATA_TRANSFER_ID_KEY)
+                transfer_element.text = mat.guid
+                any_uuid = True
+        if not any_uuid:
+            root.remove(wb_transfer_element)
+
+    def _to_etree(self) -> ET.ElementTree:
+        """To element tree."""
+        root = ET.Element(matml_strings.ROOT_ELEMENT)
+        tree = ET.ElementTree(root)
+        root.attrib["version"] = matml_strings.VERSION
+        root.attrib["versiondate"] = matml_strings.VERSION_DATE
+        notes_element = ET.SubElement(root, matml_strings.NOTES_KEY)
+        notes_element.text = matml_strings.NOTES_TEXT
+        materials_element = ET.SubElement(root, matml_strings.MATERIALS_ELEMENT_KEY)
+        matml_doc_element = ET.SubElement(materials_element, matml_strings.MATML_DOC_KEY)
+        for material_name, material in self._material_repr.items():
+            material_element = ET.SubElement(
+                matml_doc_element, matml_strings.MATERIAL_KEY.capitalize()
+            )
+            bulkdata_element = ET.SubElement(material_element, matml_strings.BULK_DETAILS_KEY)
+            name_element = ET.SubElement(bulkdata_element, matml_strings.NAME_KEY.capitalize())
+            name_element.text = material_name
+            for material_model_element in self._material_repr[material_name]:
+                if material_model_element:
+                    bulkdata_element.append(material_model_element)
+        metadata_element = ET.SubElement(matml_doc_element, matml_strings.METADATA_KEY)
+        self._add_metadata(metadata_element)
+        self._add_transfer_ids(root)
+        return tree
+
+    def _indent(self, tree) -> None:
+        """Indent."""
+        if hasattr(ET, "indent"):
+            ET.indent(tree)
+        else:
+            print(f"ElementTree does not have `indent`. Python 3.9+ required!")
+
+    def visit_material_model(self, material_model: MaterialModel) -> ET.Element:
+        """Visit the material model."""
+        material_element = None
+        property_id = self._get_property_id(material_model.name)
+        material_element = self._visit_model(property_id, material_model)
+        return material_element
+
+    def write(
+        self,
+        path: _PATH_TYPE,
+        indent: Optional[bool] = False,
+        xml_declaration: Optional[bool] = False,
+    ) -> None:
+        """
+        Write a MatML (engineering data XML format) representation of materials to file.
+
+        Parameters
+        ----------
+        path:
+            File path.
+        indent : Optional[bool]
+            Whether to add an indent to format the XML output.
+            Defaults to ``false``.
+        xml_declaration: Optional[bool]
+            Whether to add the XML declaration to the output.
+        """
+        tree = self._to_etree()
+        print(f"write xml to {path}")
+        if indent:
+            self._indent(tree)
+        tree.write(path, xml_declaration=xml_declaration)

@@ -20,37 +20,48 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
-    ElasticityAnisotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
-    ElasticityOrthotropic,
-)
+import sys
+
+from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models.material import Material
+
+MATERIAL_MODEL_MAP = {}
 
 
 class BaseVisitor:
     """Base visitor."""
 
-    def visit_material_model(self, material_model):
-        """Visit material model."""
-        if isinstance(material_model, Density):
-            self.visit_density(material_model)
-        if isinstance(material_model, ElasticityIsotropic):
-            self.visit_elasticity_isotropic(material_model)
-        if isinstance(material_model, ElasticityOrthotropic):
-            self.visit_elasticity_orthotropc(material_model)
-        if isinstance(material_model, ElasticityAnisotropic):
-            self.visit_elastic_anisotropic(material_model)
+    def __init__(self, materials: list[Material]):
+        """Initialize the base visitor."""
+        self._materials = materials
+        self._material_repr: dict = {material.name: [] for material in materials}
 
-    def visit_materials(self, materials):
+    def get_material_id(self, material_name) -> int:
+        """Get the material id."""
+        return [material.mat_id for material in self._materials if material.name == material_name][
+            0
+        ]
+
+    def is_supported(self, material_model: MaterialModel) -> bool:
+        """Check if the material model is supported."""
+        module = sys.modules[self.__module__]
+        mapping = getattr(module, "MATERIAL_MODEL_MAP")
+        if material_model.__class__ in mapping.keys():
+            return True
+        else:
+            return False
+
+    def visit_materials(self):
         """Visit materials."""
-        for material in materials:
-            for material_model in material:
-                if not self.is_supported(material):
+        for mat_id, material in enumerate(self._materials, start=1):
+            if material.mat_id == None:
+                material.mat_id = mat_id
+            for material_model in material.models:
+                if not self.is_supported(material_model):
                     print("Material model not supported")
                     continue
-                self.visit_material_model(material_model)
+                self._material_repr[material.name].append(self.visit_material_model(material_model))
+                if hasattr(self, "_material_models_per_material"):
+                    self._material_models_per_material[material.name].append(
+                        material_model.__class__
+                    )

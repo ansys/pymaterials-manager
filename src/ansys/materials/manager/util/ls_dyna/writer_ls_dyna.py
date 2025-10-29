@@ -67,5 +67,5 @@ class WriterLsDyna:
                 for key, value in args.items():
                     setattr(material_class, key, value[0] if isinstance(value, Sequence) else value)
                 instanciated_models.append(material_class)
-                instanciated_models_name.append(material_class.__class__.__name__.lower())
+                instanciated_models_name.append(material_class.__class__)
         return instanciated_models
