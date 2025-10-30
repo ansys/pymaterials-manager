@@ -28,7 +28,6 @@ from ansys.dyna.core import keywords as kwd
 from ansys.dyna.core.lib.keyword_base import KeywordBase
 import numpy as np
 
-from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
@@ -142,14 +141,6 @@ class LsDynaVisitor(BaseVisitor):
         super().__init__(materials=materials)
         self._material_models_per_material: dict = {material.name: [] for material in materials}
         self.visit_materials()
-
-    def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict:
-        """Populate dependent parameters."""
-        if material_model.__class__ in MATERIAL_MODEL_MAP.keys():
-            mapping = MATERIAL_MODEL_MAP[material_model.__class__]
-            labels = mapping.labels
-            quantities = [getattr(material_model, label) for label in mapping.attributes]
-            return dict(zip(labels, quantities))
 
     def visit_material_model(self, material_name, material_model):
         """Visit material model."""

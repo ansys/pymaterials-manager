@@ -76,6 +76,19 @@ class BaseVisitor:
         else:
             return False
 
+    def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict:
+        """Populate dependent parameters."""
+        module = sys.modules[self.__module__]
+        model_map = getattr(module, "MATERIAL_MODEL_MAP")
+        if material_model.__class__ in model_map.keys():
+            mapping = model_map[material_model.__class__]
+            if mapping.method:
+                labels, quantities = mapping.method(material_model)
+            else:
+                labels = mapping.labels
+                quantities = [getattr(material_model, label) for label in mapping.attributes]
+            return dict(zip(labels, quantities))
+
     @abstractmethod
     def visit_material_model(self, material_name: str, material_model: MaterialModel):
         """Abstract implementation of the visit material model."""

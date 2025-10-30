@@ -45,7 +45,9 @@ def get_value(model: MaterialModel, attr_name: str) -> float:
     return value[0] if hasattr(value, "__len__") and len(value) > 0 else value
 
 
-def map_anisotropic_elasticity(material_model: ElasticityAnisotropic) -> list[float]:
+def map_anisotropic_elasticity(
+    material_model: ElasticityAnisotropic,
+) -> tuple[list[str], list[list[float]]]:
     """Map anisotropic elasticity model to dependent values for MAPDL.
 
     Returns the 21 unique elements of the symmetric stiffness matrix
@@ -60,26 +62,28 @@ def map_anisotropic_elasticity(material_model: ElasticityAnisotropic) -> list[fl
     list[float]
         The list of 21 unique stiffness matrix elements.
     """
-    return [
-        get_value(material_model, "c_11"),
-        get_value(material_model, "c_12"),
-        get_value(material_model, "c_13"),
-        get_value(material_model, "c_14"),
-        get_value(material_model, "c_15"),
-        get_value(material_model, "c_16"),
-        get_value(material_model, "c_22"),
-        get_value(material_model, "c_23"),
-        get_value(material_model, "c_24"),
-        get_value(material_model, "c_25"),
-        get_value(material_model, "c_26"),
-        get_value(material_model, "c_33"),
-        get_value(material_model, "c_34"),
-        get_value(material_model, "c_35"),
-        get_value(material_model, "c_36"),
-        get_value(material_model, "c_44"),
-        get_value(material_model, "c_45"),
-        get_value(material_model, "c_46"),
-        get_value(material_model, "c_55"),
-        get_value(material_model, "c_56"),
-        get_value(material_model, "c_66"),
+    return ["lower_triangular"], [
+        [
+            get_value(material_model, "c_11"),
+            get_value(material_model, "c_12"),
+            get_value(material_model, "c_13"),
+            get_value(material_model, "c_14"),
+            get_value(material_model, "c_15"),
+            get_value(material_model, "c_16"),
+            get_value(material_model, "c_22"),
+            get_value(material_model, "c_23"),
+            get_value(material_model, "c_24"),
+            get_value(material_model, "c_25"),
+            get_value(material_model, "c_26"),
+            get_value(material_model, "c_33"),
+            get_value(material_model, "c_34"),
+            get_value(material_model, "c_35"),
+            get_value(material_model, "c_36"),
+            get_value(material_model, "c_44"),
+            get_value(material_model, "c_45"),
+            get_value(material_model, "c_46"),
+            get_value(material_model, "c_55"),
+            get_value(material_model, "c_56"),
+            get_value(material_model, "c_66"),
+        ]
     ]

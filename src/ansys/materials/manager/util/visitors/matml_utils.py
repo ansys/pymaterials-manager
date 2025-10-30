@@ -27,7 +27,9 @@ from ansys.materials.manager._models._material_models.elasticity_anisotropic imp
 )
 
 
-def map_anisotropic_elasticity(material_model: ElasticityAnisotropic) -> list[Quantity]:
+def map_anisotropic_elasticity(
+    material_model: ElasticityAnisotropic,
+) -> tuple[list[str], list[Quantity]]:
     """
     Map anisotropic elasticity model to dependent values for MATML.
 
@@ -107,4 +109,12 @@ def map_anisotropic_elasticity(material_model: ElasticityAnisotropic) -> list[Qu
     quantities.append(Quantity(value=values_column_4, units=material_model.c_14.unit))
     quantities.append(Quantity(value=values_column_5, units=material_model.c_15.unit))
     quantities.append(Quantity(value=values_column_6, units=material_model.c_16.unit))
-    return quantities
+    labels = [
+        "D[*,1]",
+        "D[*,2]",
+        "D[*,3]",
+        "D[*,4]",
+        "D[*,5]",
+        "D[*,6]",
+    ]
+    return labels, quantities

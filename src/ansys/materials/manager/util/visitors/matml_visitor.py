@@ -83,37 +83,6 @@ MATERIAL_MODEL_MAP = {
         ],
     ),
     ElasticityAnisotropic: ModelInfo(
-        labels=[
-            "D[*,1]",
-            "D[*,2]",
-            "D[*,3]",
-            "D[*,4]",
-            "D[*,5]",
-            "D[*,6]",
-        ],
-        attributes=[
-            "c_11",
-            "c_12",
-            "c_13",
-            "c_14",
-            "c_15",
-            "c_16",
-            "c_22",
-            "c_23",
-            "c_24",
-            "c_25",
-            "c_26",
-            "c_33",
-            "c_34",
-            "c_35",
-            "c_36",
-            "c_44",
-            "c_45",
-            "c_46",
-            "c_55",
-            "c_56",
-            "c_66",
-        ],
         method=map_anisotropic_elasticity,
     ),
 }
@@ -262,17 +231,6 @@ class MatmlVisitor(BaseVisitor):
                     self._add_qualifier(
                         parameter_element, matml_strings.LOWER_LIMIT_KEY, qualifier_value
                     )
-
-    def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict[str, Quantity]:
-        """Populate dependent parameters."""
-        if material_model.__class__ in MATERIAL_MODEL_MAP.keys():
-            mapping = MATERIAL_MODEL_MAP[material_model.__class__]
-            labels = mapping.labels
-            if mapping.method:
-                quantities = mapping.method(material_model)
-            else:
-                quantities = [getattr(material_model, label) for label in mapping.attributes]
-            return dict(zip(labels, quantities))
 
     def _add_dependent_parameters(
         self, property_data_element: ET.Element, dependent_parameters: dict[str, Quantity]

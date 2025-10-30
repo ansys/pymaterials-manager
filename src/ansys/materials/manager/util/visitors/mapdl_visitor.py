@@ -46,7 +46,7 @@ from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
     write_temperature_table_values,
 )
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
-from ansys.materials.manager.util.visitors.common import ModelInfo, get_name_idx
+from ansys.materials.manager.util.visitors.common import ModelInfo
 from ansys.materials.manager.util.visitors.mapdl_utils import map_anisotropic_elasticity
 
 MATERIAL_MODEL_MAP = {
@@ -90,35 +90,15 @@ class MapdlVisitor(BaseVisitor):
         super().__init__(materials=materials)
         self.visit_materials()
 
-    def _populate_dependent_parameters(
-        self, material_model: MaterialModel
-    ) -> tuple[list[str], list[list[float]], list[str]]:
-        """Populate dependent parameters."""
-        if material_model.__class__ in MATERIAL_MODEL_MAP.keys():
-            mapping = MATERIAL_MODEL_MAP[material_model.__class__]
-            if mapping.attributes:
-                quantities = [getattr(material_model, label) for label in mapping.attributes]
-                dependent_parameters_labels = mapping.labels
-                if material_model.name == "Coefficient of Thermal Expansion":
-                    idx = get_name_idx(material_model.model_qualifiers)
-                    dependent_parameters_labels[idx]
-                dependent_parameters_values = [quantity.value for quantity in quantities]
-                dependent_parameters_units = [quantity.unit for quantity in quantities]
-            else:
-                dependent_parameters_labels = []
-                dependent_parameters_values = mapping.method(material_model)
-                dependent_parameters_units = []
-            return (
-                dependent_parameters_labels,
-                dependent_parameters_values,
-                dependent_parameters_units,
-            )
-
     def _write_standard(self, material_model: MaterialModel) -> str:
         """Write standard properties."""
-        dependent_parameters_labels, dependent_parameters_value, dependent_parameters_units = (
-            self._populate_dependent_parameters(material_model)
-        )
+        dependent_parameters_dict = self._populate_dependent_parameters(material_model)
+        dependent_parameters_labels = list(dependent_parameters_dict.keys())
+        dependent_parameters_value = []
+        dependent_parameters_units = []
+        for quantity in dependent_parameters_dict.values():
+            dependent_parameters_value.append(quantity.value.tolist())
+            dependent_parameters_units.append(quantity.unit)
         material_string = ""
         if not material_model.independent_parameters:
             material_string += write_constant_properties(
@@ -176,11 +156,11 @@ class MapdlVisitor(BaseVisitor):
 
     def visit_anisotropic(self, material_model: ElasticityAnisotropic) -> str:
         """Visit anisotropic."""
-        _, dependent_parameters_value, _ = self._populate_dependent_parameters(material_model)
+        dependent_parameters_dict = self._populate_dependent_parameters(material_model)
         material_string = write_table_dep_values(
             material_id=None,
             label=TABLE_LABELS[material_model.__class__.__name__],
-            dependent_values=dependent_parameters_value,
+            dependent_values=dependent_parameters_dict["lower_triangular"],
             tb_opt=TABLE_TBOPT[material_model.__class__.__name__],
         )
         return material_string

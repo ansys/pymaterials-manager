@@ -41,14 +41,6 @@ class FluentVisitor(BaseVisitor):
         super().__init__(materials=materials)
         self.visit_materials()
 
-    def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict:
-        """Populate dependent parameters."""
-        if material_model.__class__ in MATERIAL_MODEL_MAP.keys():
-            mapping = MATERIAL_MODEL_MAP[material_model.__class__]
-            labels = mapping.labels
-            quantities = [getattr(material_model, label) for label in mapping.attributes]
-            return dict(zip(labels, quantities))
-
     def _standard_write(self, material_model: MaterialModel) -> dict:
         """Write standard models."""
         dependent_parameters = self._populate_dependent_parameters(material_model)
