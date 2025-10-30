@@ -26,6 +26,7 @@ from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
+from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
     get_table_label,
     get_tbopt,
@@ -49,12 +50,14 @@ MATERIAL_MODEL_MAP = {
 class MapdlVisitor(BaseVisitor):
     """Mapdl visitor."""
 
-    def __init__(self, materials):
+    def __init__(self, materials: list[Material]):
         """Initialize the Mapdl visitor."""
         super().__init__(materials=materials)
         self.visit_materials()
 
-    def _populate_dependent_parameters(self, material_model: MaterialModel):
+    def _populate_dependent_parameters(
+        self, material_model: MaterialModel
+    ) -> tuple[list[str], list[list[float]], list[str]]:
         """Populate dependent parameters."""
         if material_model.__class__ in MATERIAL_MODEL_MAP.keys():
             mapping = MATERIAL_MODEL_MAP[material_model.__class__]
@@ -72,7 +75,7 @@ class MapdlVisitor(BaseVisitor):
                 dependent_parameters_units,
             )
 
-    def _write_standard(self, material_model: MaterialModel):
+    def _write_standard(self, material_model: MaterialModel) -> str:
         """Write standard properties."""
         dependent_parameters_labels, dependent_parameters_value, dependent_parameters_units = (
             self._populate_dependent_parameters(material_model)
@@ -120,12 +123,13 @@ class MapdlVisitor(BaseVisitor):
                 )
                 material_string += parameters_str + "\n" + table_str
 
-    def visit_material_model(self, material_model: MaterialModel):
+    def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
         """Visit material model."""
         if isinstance(material_model, Density | ElasticityIsotropic):
-            return self.visit_standard(material_model)
+            model = self.visit_standard(material_model)
+            self._material_repr[material_name].append(model)
 
-    def visit_standard(self, material_model: Density):
+    def visit_standard(self, material_model: Density) -> str:
         """Visit standard."""
         material_string = ""
         material_string += self._write_standard(material_model)
@@ -144,7 +148,25 @@ class MapdlVisitor(BaseVisitor):
         material_ids: list[int] | None = None,
         reference_temperatures: list[float] | None = None,
     ) -> list[str] | None:
-        """Write the materials."""
+        """
+        Write the materials into MAPDL representation.
+
+        Parameters
+        ----------
+        client : _MapdlCore | None
+            MAPDL client to write to. If None, return the material strings.
+        material_names : list[str] | None
+            List of material names to write. If None, write all materials.
+        material_ids : list[int] | None
+            List of material ids to write. If None, get the ids from the materials.
+        reference_temperatures : list[float] | None
+            List of reference temperatures to write. If None, use default values.
+
+        Returns
+        -------
+        list[str] | None
+            List of material strings if client is None, else None.
+        """
         if material_names is None:
             material_names = []
             for material in self._materials:

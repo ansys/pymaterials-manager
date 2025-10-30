@@ -33,6 +33,10 @@ from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
+from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
+    ElasticityOrthotropic,
+)
+from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_parser import _PATH_TYPE
 from ansys.materials.manager.util.matml.utils import (
     convert_to_float_string,
@@ -50,6 +54,26 @@ MATERIAL_MODEL_MAP = {
         labels=["Young's Modulus", "Poisson's Ratio"],
         attributes=["youngs_modulus", "poissons_ratio"],
     ),
+    ElasticityOrthotropic: ModelInfo(
+        labels=[
+            "Young's Modulus X direction",
+            "Young's Modulus Y direction",
+            "Young's Modulus Z direction",
+            "Shear Modulus XY",
+            "Shear Modulus XZ",
+            "Shear Modulus YZ, Poisson's Ratio XY",
+            "Poisson's Ratio XZ",
+            "Poisson's Ratio YZ",
+        ],
+        attributes=[
+            "youngs_modulus_x",
+            "youngs_modulus_y",
+            "youngs_modulus_z",
+            "shear_modulus_xy",
+            "shear_modulus_xz",
+            "shear_modulus_yz",
+        ],
+    ),
 }
 
 
@@ -61,7 +85,7 @@ class MatmlVisitor(BaseVisitor):
     _metadata_parameters_units: dict
     _metadata_property_sets_units: dict
 
-    def __init__(self, materials):
+    def __init__(self, materials: list[Material]):
         """Initialize the class."""
         super().__init__(materials=materials)
         self._metadata_parameters = {}
@@ -94,7 +118,9 @@ class MatmlVisitor(BaseVisitor):
                 self._metadata_parameters_units[parameter_name] = unit
         return parameter_id
 
-    def _add_qualifier(self, data_element: ET.Element, qualifier_key: str, qualifier_value: str):
+    def _add_qualifier(
+        self, data_element: ET.Element, qualifier_key: str, qualifier_value: str
+    ) -> None:
         """Add qualifier."""
         qualifier_element = ET.SubElement(
             data_element, matml_strings.QUALIFIER_KEY, {matml_strings.NAME_KEY: qualifier_key}
@@ -206,7 +232,7 @@ class MatmlVisitor(BaseVisitor):
 
     def _add_dependent_parameters(
         self, property_data_element: ET.Element, dependent_parameters: dict[str, Quantity]
-    ):
+    ) -> None:
         """Add dependent parameters."""
         for key in dependent_parameters.keys():
             if dependent_parameters[key]:
@@ -322,18 +348,19 @@ class MatmlVisitor(BaseVisitor):
         self._add_transfer_ids(root)
         return tree
 
-    def _indent(self, tree) -> None:
+    def _indent(self, tree: ET.ElementTree) -> None:
         """Indent."""
         if hasattr(ET, "indent"):
             ET.indent(tree)
         else:
             print(f"ElementTree does not have `indent`. Python 3.9+ required!")
 
-    def visit_material_model(self, material_model: MaterialModel) -> ET.Element:
+    def visit_material_model(self, material_name: str, material_model: MaterialModel) -> ET.Element:
         """Visit the material model."""
         material_element = None
         property_id = self._get_property_id(material_model.name)
         material_element = self._visit_model(property_id, material_model)
+        self._material_repr[material_name].append(material_element)
         return material_element
 
     def write(

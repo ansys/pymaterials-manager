@@ -28,6 +28,7 @@ from ansys.dyna.core import keywords as kwd
 from ansys.dyna.core.lib.keyword_base import KeywordBase
 import numpy as np
 
+from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
@@ -38,6 +39,7 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
+from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.ls_dyna.writer_ls_dyna_utils import normalize_key
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
 from ansys.materials.manager.util.visitors.common import ModelInfo, get_model_attributes
@@ -64,16 +66,14 @@ class LsDynaVisitor(BaseVisitor):
     """Ls Dyna visitor."""
 
     _material_models_per_material: dict
-    _instanciated_mat: list
 
-    def __init__(self, materials):
+    def __init__(self, materials: list[Material]):
         """Initialize the ls dyna visitor."""
         super().__init__(materials=materials)
         self._material_models_per_material: dict = {material.name: [] for material in materials}
-        self._instanciated_mat = []
         self.visit_materials()
 
-    def _populate_dependent_parameters(self, material_model):
+    def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict:
         """Populate dependent parameters."""
         if material_model.__class__ in MATERIAL_MODEL_MAP.keys():
             mapping = MATERIAL_MODEL_MAP[material_model.__class__]
@@ -81,12 +81,14 @@ class LsDynaVisitor(BaseVisitor):
             quantities = [getattr(material_model, label) for label in mapping.attributes]
             return dict(zip(labels, quantities))
 
-    def visit_material_model(self, material_model):
+    def visit_material_model(self, material_name, material_model):
         """Visit material model."""
         if isinstance(material_model, (Density, ElasticityIsotropic)):
-            return self._populate_dependent_parameters(material_model)
+            model = self._populate_dependent_parameters(material_model)
+            self._material_repr[material_name].append(model)
+            self._material_models_per_material[material_name].append(material_model.__class__)
 
-    def _to_material_models(self):
+    def _to_material_models(self) -> list[KeywordBase]:
         """Bring to material models."""
         instantiated_materials = []
         for material_name, models in self._material_models_per_material.items():
@@ -106,7 +108,19 @@ class LsDynaVisitor(BaseVisitor):
         return instantiated_materials
 
     def write(self, deck: Deck | None = None) -> list[KeywordBase] | None:
-        """Write models."""
+        """
+        Write models to deck.
+
+        Parameters
+        ----------
+        deck : Deck | None
+            Deck to write to. If None, return the material keywords.
+
+        Returns
+        -------
+        list[KeywordBase] | None
+            List of material keywords if deck is None, else None.
+        """
         mat_kwds = self._to_material_models()
         if deck:
             deck.extend(mat_kwds)
