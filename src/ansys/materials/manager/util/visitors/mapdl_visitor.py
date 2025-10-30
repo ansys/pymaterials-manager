@@ -26,6 +26,9 @@ from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
+from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
+    ElasticityOrthotropic,
+)
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
     get_table_label,
@@ -43,6 +46,30 @@ MATERIAL_MODEL_MAP = {
     Density: ModelInfo(labels=["DENS"], attributes=["density"]),
     ElasticityIsotropic: ModelInfo(
         labels=["EX", "PRXY"], attributes=["youngs_modulus", "poissons_ratio"]
+    ),
+    ElasticityOrthotropic: ModelInfo(
+        labels=[
+            "EX",
+            "EY",
+            "EZ",
+            "GXY",
+            "GYZ",
+            "GXZ",
+            "PRXY",
+            "PRYZ",
+            "PRXZ",
+        ],
+        attributes=[
+            "youngs_modulus_x",
+            "youngs_modulus_y",
+            "youngs_modulus_z",
+            "shear_modulus_xy",
+            "shear_modulus_yz",
+            "shear_modulus_xz",
+            "poissons_ratio_xy",
+            "poissons_ratio_yz",
+            "poissons_ratio_xz",
+        ],
     ),
 }
 
@@ -125,7 +152,7 @@ class MapdlVisitor(BaseVisitor):
 
     def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
         """Visit material model."""
-        if isinstance(material_model, Density | ElasticityIsotropic):
+        if isinstance(material_model, Density | ElasticityIsotropic | ElasticityOrthotropic):
             model = self.visit_standard(material_model)
             self._material_repr[material_name].append(model)
 

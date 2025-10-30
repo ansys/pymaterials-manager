@@ -49,6 +49,30 @@ MATERIAL_MODEL_MAP = {
     ElasticityIsotropic: ModelInfo(
         labels=["e", "pr"], attributes=["youngs_modulus", "poissons_ratio"]
     ),
+    ElasticityOrthotropic: ModelInfo(
+        labels=[
+            "ea",
+            "eb",
+            "ec",
+            "gab",
+            "gbc",
+            "gca",
+            "prba",
+            "prcb",
+            "prca",
+        ],
+        attributes=[
+            "youngs_modulus_x",
+            "youngs_modulus_y",
+            "youngs_modulus_z",
+            "shear_modulus_xy",
+            "shear_modulus_yz",
+            "shear_modulus_xz",
+            "poissons_ratio_xy",
+            "poissons_ratio_yz",
+            "poissons_ratio_xz",
+        ],
+    ),
 }
 
 # most complete needs to go before
@@ -83,7 +107,7 @@ class LsDynaVisitor(BaseVisitor):
 
     def visit_material_model(self, material_name, material_model):
         """Visit material model."""
-        if isinstance(material_model, (Density, ElasticityIsotropic)):
+        if isinstance(material_model, (Density, ElasticityIsotropic, ElasticityOrthotropic)):
             model = self._populate_dependent_parameters(material_model)
             self._material_repr[material_name].append(model)
             self._material_models_per_material[material_name].append(material_model.__class__)
