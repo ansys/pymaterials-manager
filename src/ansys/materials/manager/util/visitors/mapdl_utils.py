@@ -20,8 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ansys.units import Quantity
+
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._material_models import ElasticityAnisotropic
+from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+    CoefficientofThermalExpansionIsotropic,
+)
+from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
+    CoefficientofThermalExpansionOrthotropic,
+)
 
 
 def get_value(model: MaterialModel, attr_name: str) -> float:
@@ -43,6 +52,76 @@ def get_value(model: MaterialModel, attr_name: str) -> float:
     """
     value = getattr(model, attr_name).value
     return value[0] if hasattr(value, "__len__") and len(value) > 0 else value
+
+
+def get_name_idx_for_thermal_expansion_labels(qualifiers: list[ModelQualifier]) -> int:
+    """
+    Get label index.
+
+    Parameters
+    ----------
+    qualifiers : list[ModelQualifier]
+        List of model qualifiers.
+    Returns
+    -------
+    int
+        Index for label selection.
+    """
+    for qualfier in qualifiers:
+        if qualfier.name == "Definition":
+            if qualfier.value == "Instantaneous":
+                return 0
+        else:
+            return 1
+
+
+def map_coefficient_of_thermal_expansion_isotropic(
+    material_model: CoefficientofThermalExpansionIsotropic,
+) -> tuple[list[str], Quantity]:
+    """
+    Map isotropic coefficient of thermal expansion model to dependent values for MAPDL.
+
+    Parameters
+    ----------
+    material_model : CoefficientofThermalExpansionIsotropic
+        The isotropic coefficient of thermal expansion material model.
+
+    Returns
+    -------
+    list[Quantity]
+        The list of coefficient of thermal expansion values.
+    """
+    idx = get_name_idx_for_thermal_expansion_labels(material_model.model_qualifiers)
+    labels = [["CTEX"], ["ALPX"]]
+    return [labels[idx]], [material_model.coefficient_of_thermal_expansion]
+
+
+def map_coefficient_of_thermal_expansion_orthotropic(
+    material_model: CoefficientofThermalExpansionOrthotropic,
+) -> tuple[list[str], list[Quantity]]:
+    """
+    Map orthotropic coefficient of thermal expansion model to dependent values for MAPDL.
+
+    Parameters
+    ----------
+    material_model : CoefficientofThermalExpansionOrthotropic
+        The orthotropic coefficient of thermal expansion material model.
+
+    Returns
+    -------
+    list[Quantity]
+        The list of coefficient of thermal expansion values in X, Y, Z directions.
+    """
+    idx = get_name_idx_for_thermal_expansion_labels(material_model.model_qualifiers)
+    labels = [
+        ["CTEX_X", "CTEX_Y", "CTEX_Z"],
+        ["ALPX", "ALPY", "ALPZ"],
+    ]
+    return [labels[idx]], [
+        material_model.coefficient_of_thermal_expansion_x,
+        material_model.coefficient_of_thermal_expansion_y,
+        material_model.coefficient_of_thermal_expansion_z,
+    ]
 
 
 def map_anisotropic_elasticity(

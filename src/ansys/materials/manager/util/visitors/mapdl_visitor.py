@@ -22,6 +22,12 @@
 
 from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
+from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+    CoefficientofThermalExpansionIsotropic,
+)
+from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
+    CoefficientofThermalExpansionOrthotropic,
+)
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
@@ -47,9 +53,19 @@ from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
 )
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
 from ansys.materials.manager.util.visitors.common import ModelInfo
-from ansys.materials.manager.util.visitors.mapdl_utils import map_anisotropic_elasticity
+from ansys.materials.manager.util.visitors.mapdl_utils import (
+    map_anisotropic_elasticity,
+    map_coefficient_of_thermal_expansion_isotropic,
+    map_coefficient_of_thermal_expansion_orthotropic,
+)
 
 MATERIAL_MODEL_MAP = {
+    CoefficientofThermalExpansionIsotropic: ModelInfo(
+        method=map_coefficient_of_thermal_expansion_isotropic,
+    ),
+    CoefficientofThermalExpansionOrthotropic: ModelInfo(
+        method=map_coefficient_of_thermal_expansion_orthotropic
+    ),
     Density: ModelInfo(labels=["DENS"], attributes=["density"]),
     ElasticityIsotropic: ModelInfo(
         labels=["EX", "PRXY"], attributes=["youngs_modulus", "poissons_ratio"]

@@ -85,6 +85,8 @@ class BaseVisitor:
             if mapping.method:
                 labels, quantities = mapping.method(material_model)
             else:
+                if not mapping.labels and not mapping.attributes:
+                    return {}
                 labels = mapping.labels
                 quantities = [getattr(material_model, label) for label in mapping.attributes]
             return dict(zip(labels, quantities))
