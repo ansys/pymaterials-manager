@@ -30,6 +30,9 @@ from ansys.materials.manager._models._common.interpolation_options import Interp
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+    ElasticityAnisotropic,
+)
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
@@ -45,6 +48,7 @@ from ansys.materials.manager.util.matml.utils import (
 )
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
 from ansys.materials.manager.util.visitors.common import ModelInfo
+from ansys.materials.manager.util.visitors.matml_utils import map_anisotropic_elasticity
 
 from . import matml_strings as matml_strings
 
@@ -77,6 +81,40 @@ MATERIAL_MODEL_MAP = {
             "poissons_ratio_yz",
             "poissons_ratio_xz",
         ],
+    ),
+    ElasticityAnisotropic: ModelInfo(
+        labels=[
+            "D[*,1]",
+            "D[*,2]",
+            "D[*,3]",
+            "D[*,4]",
+            "D[*,5]",
+            "D[*,6]",
+        ],
+        attributes=[
+            "c_11",
+            "c_12",
+            "c_13",
+            "c_14",
+            "c_15",
+            "c_16",
+            "c_22",
+            "c_23",
+            "c_24",
+            "c_25",
+            "c_26",
+            "c_33",
+            "c_34",
+            "c_35",
+            "c_36",
+            "c_44",
+            "c_45",
+            "c_46",
+            "c_55",
+            "c_56",
+            "c_66",
+        ],
+        method=map_anisotropic_elasticity,
     ),
 }
 
@@ -230,8 +268,10 @@ class MatmlVisitor(BaseVisitor):
         if material_model.__class__ in MATERIAL_MODEL_MAP.keys():
             mapping = MATERIAL_MODEL_MAP[material_model.__class__]
             labels = mapping.labels
-            model_dict = material_model.model_dump()
-            quantities = [model_dict[label] for label in mapping.attributes]
+            if mapping.method:
+                quantities = mapping.method(material_model)
+            else:
+                quantities = [getattr(material_model, label) for label in mapping.attributes]
             return dict(zip(labels, quantities))
 
     def _add_dependent_parameters(
@@ -242,20 +282,23 @@ class MatmlVisitor(BaseVisitor):
             if dependent_parameters[key]:
                 unit = matml_strings.UNITLESS_KEY
                 if not isinstance(dependent_parameters[key], (str | float | int)):
-                    unit = dependent_parameters[key].get("units", matml_strings.UNITLESS_KEY)
+                    if hasattr(dependent_parameters[key], "unit"):
+                        unit = dependent_parameters[key].unit
+                    else:
+                        unit = matml_strings.UNITLESS_KEY
                 parameter_id = self._get_parameter_id(key, unit)
                 parameter_element = ET.SubElement(
                     property_data_element,
                     matml_strings.PARAMETER_VALUE_KEY,
                     {
                         matml_strings.PARAMETER_KEY: parameter_id,
-                        matml_strings.FORMAT_KEY: matml_strings.STRING_KEY,
+                        matml_strings.FORMAT_KEY: matml_strings.FLOAT_KEY,
                     },
                 )
                 data_element = ET.SubElement(parameter_element, matml_strings.DATA_KEY)
-                if isinstance(dependent_parameters[key], dict):
-                    if "value" in dependent_parameters[key].keys():
-                        values = create_xml_string_value(dependent_parameters[key]["value"])
+                if isinstance(dependent_parameters[key], Quantity):
+                    if hasattr(dependent_parameters[key], "value"):
+                        values = create_xml_string_value(dependent_parameters[key].value)
                 else:
                     if isinstance(dependent_parameters[key], str):
                         values = dependent_parameters[key]

@@ -73,6 +73,52 @@ MATERIAL_MODEL_MAP = {
             "poissons_ratio_xz",
         ],
     ),
+    ElasticityAnisotropic: ModelInfo(
+        labels=[
+            "c11",
+            "c12",
+            "c13",
+            "c14",
+            "c15",
+            "c16",
+            "c22",
+            "c23",
+            "c24",
+            "c25",
+            "c26",
+            "c33",
+            "c34",
+            "c35",
+            "c44",
+            "c45",
+            "c46",
+            "c55",
+            "c56",
+            "c66",
+        ],
+        attributes=[
+            "c_11",
+            "c_12",
+            "c_13",
+            "c_14",
+            "c_15",
+            "c_16",
+            "c_22",
+            "c_23",
+            "c_24",
+            "c_25",
+            "c_26",
+            "c_33",
+            "c_34",
+            "c_35",
+            "c_44",
+            "c_45",
+            "c_46",
+            "c_55",
+            "c_56",
+            "c_66",
+        ],
+    ),
 }
 
 # most complete needs to go before
@@ -107,7 +153,10 @@ class LsDynaVisitor(BaseVisitor):
 
     def visit_material_model(self, material_name, material_model):
         """Visit material model."""
-        if isinstance(material_model, (Density, ElasticityIsotropic, ElasticityOrthotropic)):
+        if isinstance(
+            material_model,
+            (Density, ElasticityIsotropic, ElasticityOrthotropic, ElasticityAnisotropic),
+        ):
             model = self._populate_dependent_parameters(material_model)
             self._material_repr[material_name].append(model)
             self._material_models_per_material[material_name].append(material_model.__class__)
@@ -118,6 +167,8 @@ class LsDynaVisitor(BaseVisitor):
         for material_name, models in self._material_models_per_material.items():
             nrm_key = normalize_key(tuple(models))
             target_cls = MATERIAL_CARD_MAP.get(nrm_key, None)
+            if target_cls is None:
+                continue
             cls_attributes = get_model_attributes(target_cls)
             mid = self.get_material_id(material_name)
             material_cls = target_cls(mid=mid)

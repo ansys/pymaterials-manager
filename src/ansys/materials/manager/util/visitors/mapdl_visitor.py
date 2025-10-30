@@ -23,6 +23,9 @@
 from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+    ElasticityAnisotropic,
+)
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
@@ -31,16 +34,20 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 )
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
+    TABLE_LABELS,
+    TABLE_TBOPT,
     get_table_label,
     get_tbopt,
     write_constant_properties,
     write_interpolation_options,
+    write_table_dep_values,
     write_table_values,
     write_temperature_reference_value,
     write_temperature_table_values,
 )
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
 from ansys.materials.manager.util.visitors.common import ModelInfo, get_name_idx
+from ansys.materials.manager.util.visitors.mapdl_utils import map_anisotropic_elasticity
 
 MATERIAL_MODEL_MAP = {
     Density: ModelInfo(labels=["DENS"], attributes=["density"]),
@@ -71,6 +78,7 @@ MATERIAL_MODEL_MAP = {
             "poissons_ratio_xz",
         ],
     ),
+    ElasticityAnisotropic: ModelInfo(method=map_anisotropic_elasticity),
 }
 
 
@@ -90,12 +98,16 @@ class MapdlVisitor(BaseVisitor):
             mapping = MATERIAL_MODEL_MAP[material_model.__class__]
             if mapping.attributes:
                 quantities = [getattr(material_model, label) for label in mapping.attributes]
-            dependent_parameters_labels = mapping.labels
-            if material_model.name == "Coefficient of Thermal Expansion":
-                idx = get_name_idx(material_model.model_qualifiers)
-                dependent_parameters_labels[idx]
-            dependent_parameters_values = [quantity.value for quantity in quantities]
-            dependent_parameters_units = [quantity.unit for quantity in quantities]
+                dependent_parameters_labels = mapping.labels
+                if material_model.name == "Coefficient of Thermal Expansion":
+                    idx = get_name_idx(material_model.model_qualifiers)
+                    dependent_parameters_labels[idx]
+                dependent_parameters_values = [quantity.value for quantity in quantities]
+                dependent_parameters_units = [quantity.unit for quantity in quantities]
+            else:
+                dependent_parameters_labels = []
+                dependent_parameters_values = mapping.method(material_model)
+                dependent_parameters_units = []
             return (
                 dependent_parameters_labels,
                 dependent_parameters_values,
@@ -150,12 +162,6 @@ class MapdlVisitor(BaseVisitor):
                 )
                 material_string += parameters_str + "\n" + table_str
 
-    def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
-        """Visit material model."""
-        if isinstance(material_model, Density | ElasticityIsotropic | ElasticityOrthotropic):
-            model = self.visit_standard(material_model)
-            self._material_repr[material_name].append(model)
-
     def visit_standard(self, material_model: Density) -> str:
         """Visit standard."""
         material_string = ""
@@ -167,6 +173,27 @@ class MapdlVisitor(BaseVisitor):
             )
             material_string += "\n" + interpolation_string
         return material_string
+
+    def visit_anisotropic(self, material_model: ElasticityAnisotropic) -> str:
+        """Visit anisotropic."""
+        _, dependent_parameters_value, _ = self._populate_dependent_parameters(material_model)
+        material_string = write_table_dep_values(
+            material_id=None,
+            label=TABLE_LABELS[material_model.__class__.__name__],
+            dependent_values=dependent_parameters_value,
+            tb_opt=TABLE_TBOPT[material_model.__class__.__name__],
+        )
+        return material_string
+
+    def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
+        """Visit material model."""
+        if isinstance(material_model, Density | ElasticityIsotropic | ElasticityOrthotropic):
+            model = self.visit_standard(material_model)
+        elif isinstance(material_model, ElasticityAnisotropic):
+            model = self.visit_anisotropic(material_model)
+        else:
+            return
+        self._material_repr[material_name].append(model)
 
     def write(
         self,

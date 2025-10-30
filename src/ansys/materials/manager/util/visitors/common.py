@@ -30,7 +30,7 @@ from ansys.materials.manager._models._common.model_qualifier import ModelQualifi
 class ModelInfo:
     """Model Info class."""
 
-    labels: list[str] | list[list[str]]
+    labels: Optional[list[str] | list[list[str]]] = None
     attributes: Optional[list[str]] = None
     method: Optional[Callable[..., Any]] = None
 
