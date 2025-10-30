@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import numpy as np
+
 from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
@@ -38,64 +40,22 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
+from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
-    TABLE_LABELS,
-    TABLE_TBOPT,
     get_table_label,
     get_tbopt,
     write_constant_properties,
     write_interpolation_options,
     write_table_dep_values,
+    write_table_value_per_temperature,
     write_table_values,
     write_temperature_reference_value,
     write_temperature_table_values,
 )
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
-from ansys.materials.manager.util.visitors.common import ModelInfo
-from ansys.materials.manager.util.visitors.mapdl_utils import (
-    map_anisotropic_elasticity,
-    map_coefficient_of_thermal_expansion_isotropic,
-    map_coefficient_of_thermal_expansion_orthotropic,
-)
 
-MATERIAL_MODEL_MAP = {
-    CoefficientofThermalExpansionIsotropic: ModelInfo(
-        method=map_coefficient_of_thermal_expansion_isotropic,
-    ),
-    CoefficientofThermalExpansionOrthotropic: ModelInfo(
-        method=map_coefficient_of_thermal_expansion_orthotropic
-    ),
-    Density: ModelInfo(labels=["DENS"], attributes=["density"]),
-    ElasticityIsotropic: ModelInfo(
-        labels=["EX", "PRXY"], attributes=["youngs_modulus", "poissons_ratio"]
-    ),
-    ElasticityOrthotropic: ModelInfo(
-        labels=[
-            "EX",
-            "EY",
-            "EZ",
-            "GXY",
-            "GYZ",
-            "GXZ",
-            "PRXY",
-            "PRYZ",
-            "PRXZ",
-        ],
-        attributes=[
-            "youngs_modulus_x",
-            "youngs_modulus_y",
-            "youngs_modulus_z",
-            "shear_modulus_xy",
-            "shear_modulus_yz",
-            "shear_modulus_xz",
-            "poissons_ratio_xy",
-            "poissons_ratio_yz",
-            "poissons_ratio_xz",
-        ],
-    ),
-    ElasticityAnisotropic: ModelInfo(method=map_anisotropic_elasticity),
-}
+from .mapdl_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 
 class MapdlVisitor(BaseVisitor):
@@ -175,18 +135,75 @@ class MapdlVisitor(BaseVisitor):
         dependent_parameters_dict = self._populate_dependent_parameters(material_model)
         material_string = write_table_dep_values(
             material_id=None,
-            label=TABLE_LABELS[material_model.__class__.__name__],
+            label="ELASTIC",
             dependent_values=dependent_parameters_dict["lower_triangular"],
-            tb_opt=TABLE_TBOPT[material_model.__class__.__name__],
+            tb_opt="AELS",
         )
         return material_string
 
+    def visit_hill_yield_criterion(self, material_model: HillYieldCriterion) -> str:
+        """Visit hill yield criterion."""
+        label = "HILL"
+        dependent_parameters_dict = self._populate_dependent_parameters(material_model)
+        dependent_values = list(dependent_parameters_dict.values())[0]
+        tb_opt = list(dependent_parameters_dict.keys())[0]
+        if not material_model.independent_parameters:
+            dependent_values = [
+                dep_val[0] for dep_val in dependent_values if isinstance(dep_val, np.ndarray)
+            ]
+            material_string = write_table_dep_values(
+                material_id=None,
+                label=label,
+                dependent_values=dependent_values,
+                tb_opt=tb_opt,
+            )
+            return material_string
+        elif (
+            len(material_model.independent_parameters) == 1
+            and material_model.independent_parameters[0].name == "Temperature"
+        ):
+            if len(material_model.independent_parameters[0].values.value) == 1:
+                material_string = write_table_dep_values(
+                    material_id=None,
+                    label=label,
+                    dependent_values=dependent_values,
+                    tb_opt=tb_opt,
+                )
+            else:
+                material_string = write_table_value_per_temperature(
+                    label=label,
+                    material_id=None,
+                    dependent_parameters=dependent_values,
+                    temperature_parameter=material_model.independent_parameters[0],
+                    tb_opt=tb_opt,
+                )
+            return material_string
+        else:
+            parameters_str, table_str = write_table_values(
+                label=label,
+                dependent_parameters=dependent_values,
+                material_id=None,
+                independent_parameters=material_model.independent_parameters,
+                tb_opt=tb_opt,
+            )
+            material_string = parameters_str + "\n" + table_str
+            return material_string
+
     def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
         """Visit material model."""
-        if isinstance(material_model, Density | ElasticityIsotropic | ElasticityOrthotropic):
+        standard_models = (
+            Density,
+            ElasticityIsotropic,
+            ElasticityOrthotropic,
+            CoefficientofThermalExpansionIsotropic,
+            CoefficientofThermalExpansionOrthotropic,
+        )
+        if isinstance(material_model, standard_models):
             model = self.visit_standard(material_model)
         elif isinstance(material_model, ElasticityAnisotropic):
             model = self.visit_anisotropic(material_model)
+        elif isinstance(material_model, HillYieldCriterion):
+            model = self.visit_hill_yield_criterion(material_model)
         else:
             return
         self._material_repr[material_name].append(model)

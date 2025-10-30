@@ -25,6 +25,8 @@ from ansys.units import Quantity
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
 )
+from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager.util.visitors.common import get_creep_flag
 
 
 def map_anisotropic_elasticity(
@@ -118,3 +120,63 @@ def map_anisotropic_elasticity(
         "D[*,6]",
     ]
     return labels, quantities
+
+
+def map_hill_yield_criterion(
+    material_model: HillYieldCriterion,
+) -> tuple[list[str], list[Quantity]]:
+    """
+    Map Hill yield criterion model to dependent values for MATML.
+
+    Parameters
+    ----------
+    material_model : HillYieldCriterion
+        The Hill yield criterion material model.
+    Returns
+    -------
+    list[Quantity]
+        The list of yield stress ratio values.
+    """
+    idx = get_creep_flag(material_model.model_qualifiers)
+    labels = [
+        [
+            "Yield stress ratio in X direction",
+            "Yield stress ratio in Y direction",
+            "Yield stress ratio in Z direction",
+            "Yield stress ratio in XY direction",
+            "Yield stress ratio in YZ direction",
+            "Yield stress ratio in XZ direction",
+        ],
+        [
+            "Yield stress ratio in X direction for plasticity",
+            "Yield stress ratio in Y direction for plasticity",
+            "Yield stress ratio in Z direction for plasticity",
+            "Yield stress ratio in XY direction for plasticity",
+            "Yield stress ratio in YZ direction for plasticity",
+            "Yield stress ratio in XZ direction for plasticity",
+            "Yield stress ratio in X direction for creep",
+            "Yield stress ratio in Y direction for creep",
+            "Yield stress ratio in Z direction for creep",
+            "Yield stress ratio in XY direction for creep",
+            "Yield stress ratio in YZ direction for creep",
+            "Yield stress ratio in XZ direction for creep",
+        ],
+    ]
+    yield_attributes = [
+        material_model.yield_stress_ratio_x,
+        material_model.yield_stress_ratio_y,
+        material_model.yield_stress_ratio_z,
+        material_model.yield_stress_ratio_xy,
+        material_model.yield_stress_ratio_yz,
+        material_model.yield_stress_ratio_xz,
+    ]
+    creep_attributes = [
+        material_model.creep_stress_ratio_x,
+        material_model.creep_stress_ratio_y,
+        material_model.creep_stress_ratio_z,
+        material_model.creep_stress_ratio_xy,
+        material_model.creep_stress_ratio_yz,
+        material_model.creep_stress_ratio_xz,
+    ]
+    attributes = [yield_attributes, yield_attributes + creep_attributes]
+    return labels[idx], attributes[idx]

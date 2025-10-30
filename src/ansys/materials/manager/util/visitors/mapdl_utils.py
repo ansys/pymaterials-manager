@@ -31,6 +31,8 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
 from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
     CoefficientofThermalExpansionOrthotropic,
 )
+from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager.util.visitors.common import get_creep_flag
 
 
 def get_value(model: MaterialModel, attr_name: str) -> float:
@@ -54,9 +56,9 @@ def get_value(model: MaterialModel, attr_name: str) -> float:
     return value[0] if hasattr(value, "__len__") and len(value) > 0 else value
 
 
-def get_name_idx_for_thermal_expansion_labels(qualifiers: list[ModelQualifier]) -> int:
+def get_thermal_expansion_flag(qualifiers: list[ModelQualifier]) -> int:
     """
-    Get label index.
+    Get thermal expansion flag.
 
     Parameters
     ----------
@@ -67,9 +69,9 @@ def get_name_idx_for_thermal_expansion_labels(qualifiers: list[ModelQualifier]) 
     int
         Index for label selection.
     """
-    for qualfier in qualifiers:
-        if qualfier.name == "Definition":
-            if qualfier.value == "Instantaneous":
+    for qualifier in qualifiers:
+        if qualifier.name == "Definition":
+            if qualifier.value == "Instantaneous":
                 return 0
         else:
             return 1
@@ -91,9 +93,9 @@ def map_coefficient_of_thermal_expansion_isotropic(
     list[Quantity]
         The list of coefficient of thermal expansion values.
     """
-    idx = get_name_idx_for_thermal_expansion_labels(material_model.model_qualifiers)
+    idx = get_thermal_expansion_flag(material_model.model_qualifiers)
     labels = [["CTEX"], ["ALPX"]]
-    return [labels[idx]], [material_model.coefficient_of_thermal_expansion]
+    return labels[idx], [material_model.coefficient_of_thermal_expansion]
 
 
 def map_coefficient_of_thermal_expansion_orthotropic(
@@ -112,12 +114,12 @@ def map_coefficient_of_thermal_expansion_orthotropic(
     list[Quantity]
         The list of coefficient of thermal expansion values in X, Y, Z directions.
     """
-    idx = get_name_idx_for_thermal_expansion_labels(material_model.model_qualifiers)
+    idx = get_thermal_expansion_flag(material_model.model_qualifiers)
     labels = [
         ["CTEX_X", "CTEX_Y", "CTEX_Z"],
         ["ALPX", "ALPY", "ALPZ"],
     ]
-    return [labels[idx]], [
+    return labels[idx], [
         material_model.coefficient_of_thermal_expansion_x,
         material_model.coefficient_of_thermal_expansion_y,
         material_model.coefficient_of_thermal_expansion_z,
@@ -166,3 +168,43 @@ def map_anisotropic_elasticity(
             get_value(material_model, "c_66"),
         ]
     ]
+
+
+def map_hill_yield_criterion(
+    material_model: HillYieldCriterion,
+) -> tuple[list[str], list[list[float]]]:
+    """
+    Map Hill yield criterion model to dependent values for MAPDL.
+
+    Parameters
+    ----------
+    material_model : HillYieldCriterion
+        The Hill yield criterion material model.
+    Returns
+    -------
+    tuple[list[str], list[list[float]]]
+        The list of labels and the list of yield stress ratio values.
+    """
+    idx = get_creep_flag(material_model.model_qualifiers)
+    yield_stress = [
+        material_model.yield_stress_ratio_x.value,
+        material_model.yield_stress_ratio_y.value,
+        material_model.yield_stress_ratio_z.value,
+        material_model.yield_stress_ratio_xy.value,
+        material_model.yield_stress_ratio_xz.value,
+        material_model.yield_stress_ratio_yz.value,
+    ]
+    tb_opt = ""
+
+    if idx == 1:
+        yield_stress += [
+            material_model.creep_stress_ratio_x.value,
+            material_model.creep_stress_ratio_y.value,
+            material_model.creep_stress_ratio_z.value,
+            material_model.creep_stress_ratio_xy.value,
+            material_model.creep_stress_ratio_xz.value,
+            material_model.creep_stress_ratio_yz.value,
+        ]
+        tb_opt = "PC"
+
+    return [tb_opt], [yield_stress]

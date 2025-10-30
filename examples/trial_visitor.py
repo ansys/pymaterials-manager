@@ -1,5 +1,12 @@
 from ansys.units import Quantity
 
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+    CoefficientofThermalExpansionIsotropic,
+)
+from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
+    CoefficientofThermalExpansionOrthotropic,
+)
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
@@ -10,6 +17,8 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
+from ansys.materials.manager._models._material_models.fabric_fiber_angle import FabricFiberAngle
+from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.visitors.fluent_visitor import FluentVisitor
 from ansys.materials.manager.util.visitors.lsdyna_visitor import LsDynaVisitor
@@ -21,9 +30,24 @@ material_1 = Material(
     material_id=1,
     models=[
         Density(density=Quantity(value=[3.0], units="kg m^-3")),
+        FabricFiberAngle(
+            fabric_fiber_angle=Quantity(value=[0.0], units="degree"),
+        ),
         ElasticityIsotropic(
             youngs_modulus=Quantity(value=[1000000], units="Pa"),
             poissons_ratio=Quantity(value=[0.3], units=""),
+        ),
+        CoefficientofThermalExpansionIsotropic(
+            model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
+            coefficient_of_thermal_expansion=Quantity(value=[1.0], units="C^-1"),
+        ),
+        HillYieldCriterion(
+            yield_stress_ratio_x=Quantity(value=[1.2], units=""),
+            yield_stress_ratio_xy=Quantity(value=[0.12], units=""),
+            yield_stress_ratio_xz=Quantity(value=[0.23], units=""),
+            yield_stress_ratio_y=Quantity(value=[0.8], units=""),
+            yield_stress_ratio_yz=Quantity(value=[0.23], units=""),
+            yield_stress_ratio_z=Quantity(value=[0.5], units=""),
         ),
     ],
 )
@@ -42,7 +66,32 @@ material_2 = Material(
             poissons_ratio_xy=Quantity(value=[0.2], units=""),
             poissons_ratio_yz=Quantity(value=[0.3], units=""),
             poissons_ratio_xz=Quantity(value=[0.4], units=""),
-        )
+        ),
+        CoefficientofThermalExpansionOrthotropic(
+            model_qualifiers=[ModelQualifier(name="Definition", value="Secant")],
+            coefficient_of_thermal_expansion_x=Quantity(value=[1.0], units="C^-1"),
+            coefficient_of_thermal_expansion_y=Quantity(value=[2.0], units="C^-1"),
+            coefficient_of_thermal_expansion_z=Quantity(value=[3.0], units="C^-1"),
+        ),
+        HillYieldCriterion(
+            yield_stress_ratio_x=Quantity(value=[1.0], units=""),
+            yield_stress_ratio_y=Quantity(value=[1.0], units=""),
+            yield_stress_ratio_z=Quantity(value=[1.0], units=""),
+            yield_stress_ratio_xy=Quantity(value=[1.0], units=""),
+            yield_stress_ratio_xz=Quantity(value=[1.0], units=""),
+            yield_stress_ratio_yz=Quantity(value=[1.0], units=""),
+            creep_stress_ratio_x=Quantity(value=[2.0], units=""),
+            creep_stress_ratio_y=Quantity(value=[2.0], units=""),
+            creep_stress_ratio_z=Quantity(value=[2.0], units=""),
+            creep_stress_ratio_xy=Quantity(value=[2.0], units=""),
+            creep_stress_ratio_xz=Quantity(value=[2.0], units=""),
+            creep_stress_ratio_yz=Quantity(value=[2.0], units=""),
+            model_qualifiers=[
+                ModelQualifier(
+                    name="Separated Hill Potentials for Plasticity and Creep", value="Yes"
+                )
+            ],
+        ),
     ],
 )
 

@@ -29,24 +29,6 @@ from ansys.materials.manager._models._common.independent_parameter import Indepe
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
-    CoefficientofThermalExpansionIsotropic,
-)
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
-    CoefficientofThermalExpansionOrthotropic,
-)
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
-    ElasticityAnisotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
-    ElasticityOrthotropic,
-)
-from ansys.materials.manager._models._material_models.fabric_fiber_angle import FabricFiberAngle
-from ansys.materials.manager._models._material_models.fiber_angle import FiberAngle
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.matml.matml_parser import _PATH_TYPE
 from ansys.materials.manager.util.matml.utils import (
@@ -55,66 +37,9 @@ from ansys.materials.manager.util.matml.utils import (
     unit_to_xml,
 )
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
-from ansys.materials.manager.util.visitors.common import ModelInfo
-from ansys.materials.manager.util.visitors.matml_utils import map_anisotropic_elasticity
 
 from . import matml_strings as matml_strings
-
-MATERIAL_MODEL_MAP = {
-    CoefficientofThermalExpansionIsotropic: ModelInfo(
-        labels=["Coefficient of Thermal Expansion"],
-        attributes=["coefficient_of_thermal_expansion"],
-    ),
-    CoefficientofThermalExpansionOrthotropic: ModelInfo(
-        labels=[
-            "Coefficient of Thermal Expansion X direction",
-            "Coefficient of Thermal Expansion Y direction",
-            "Coefficient of Thermal Expansion Z direction",
-        ],
-        attributes=[
-            "coefficient_of_thermal_expansion_x",
-            "coefficient_of_thermal_expansion_y",
-            "coefficient_of_thermal_expansion_z",
-        ],
-    ),
-    Density: ModelInfo(labels=["Density"], attributes=["density"]),
-    ElasticityIsotropic: ModelInfo(
-        labels=["Young's Modulus", "Poisson's Ratio"],
-        attributes=["youngs_modulus", "poissons_ratio"],
-    ),
-    ElasticityOrthotropic: ModelInfo(
-        labels=[
-            "Young's Modulus X direction",
-            "Young's Modulus Y direction",
-            "Young's Modulus Z direction",
-            "Shear Modulus XY",
-            "Shear Modulus YZ",
-            "Shear Modulus XZ",
-            "Poisson's Ratio XY",
-            "Poisson's Ratio YZ",
-            "Poisson's Ratio XZ",
-        ],
-        attributes=[
-            "youngs_modulus_x",
-            "youngs_modulus_y",
-            "youngs_modulus_z",
-            "shear_modulus_xy",
-            "shear_modulus_yz",
-            "shear_modulus_xz",
-            "poissons_ratio_xy",
-            "poissons_ratio_yz",
-            "poissons_ratio_xz",
-        ],
-    ),
-    ElasticityAnisotropic: ModelInfo(
-        method=map_anisotropic_elasticity,
-    ),
-    FabricFiberAngle: ModelInfo(
-        labels=["Fabric Fiber Angle"],
-        attributes=["fabric_fiber_angle"],
-    ),
-    FiberAngle: ModelInfo(),
-}
+from .matml_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 
 class MatmlVisitor(BaseVisitor):

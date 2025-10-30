@@ -41,84 +41,9 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.ls_dyna.writer_ls_dyna_utils import normalize_key
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
-from ansys.materials.manager.util.visitors.common import ModelInfo, get_model_attributes
+from ansys.materials.manager.util.visitors.common import get_model_attributes
 
-MATERIAL_MODEL_MAP = {
-    Density: ModelInfo(labels=["ro"], attributes=["density"]),
-    ElasticityIsotropic: ModelInfo(
-        labels=["e", "pr"], attributes=["youngs_modulus", "poissons_ratio"]
-    ),
-    ElasticityOrthotropic: ModelInfo(
-        labels=[
-            "ea",
-            "eb",
-            "ec",
-            "gab",
-            "gbc",
-            "gca",
-            "prba",
-            "prcb",
-            "prca",
-        ],
-        attributes=[
-            "youngs_modulus_x",
-            "youngs_modulus_y",
-            "youngs_modulus_z",
-            "shear_modulus_xy",
-            "shear_modulus_yz",
-            "shear_modulus_xz",
-            "poissons_ratio_xy",
-            "poissons_ratio_yz",
-            "poissons_ratio_xz",
-        ],
-    ),
-    ElasticityAnisotropic: ModelInfo(
-        labels=[
-            "c11",
-            "c12",
-            "c13",
-            "c14",
-            "c15",
-            "c16",
-            "c22",
-            "c23",
-            "c24",
-            "c25",
-            "c26",
-            "c33",
-            "c34",
-            "c35",
-            "c44",
-            "c45",
-            "c46",
-            "c55",
-            "c56",
-            "c66",
-        ],
-        attributes=[
-            "c_11",
-            "c_12",
-            "c_13",
-            "c_14",
-            "c_15",
-            "c_16",
-            "c_22",
-            "c_23",
-            "c_24",
-            "c_25",
-            "c_26",
-            "c_33",
-            "c_34",
-            "c_35",
-            "c_44",
-            "c_45",
-            "c_46",
-            "c_55",
-            "c_56",
-            "c_66",
-        ],
-    ),
-}
+from .ls_dyna_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 # most complete needs to go before
 MATERIAL_CARD_MAP = {

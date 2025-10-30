@@ -69,6 +69,31 @@ class HillYieldCriterion(MaterialModel):
         description="The yield stress ratio in the yz direction.",
         matml_name="Yield stress ratio in YZ direction",
     )
+    creep_stress_ratio_x: Quantity | None = ParameterField(
+        default=None,
+        description="The creep stress ratio in the x direction.",
+    )
+    creep_stress_ratio_y: Quantity | None = ParameterField(
+        default=None,
+        description="The creep stress ratio in the y direction.",
+    )
+    creep_stress_ratio_z: Quantity | None = ParameterField(
+        default=None,
+        description="The creep stress ratio in the z direction.",
+    )
+    creep_stress_ratio_xy: Quantity | None = ParameterField(
+        default=None,
+        description="The creep stress ratio in the xy direction.",
+    )
+    creep_stress_ratio_xz: Quantity | None = ParameterField(
+        default=None,
+        description="The creep stress ratio in the xz direction.",
+    )
+    creep_stress_ratio_yz: Quantity | None = ParameterField(
+        default=None,
+        description="The creep stress ratio in the yz direction.",
+    )
+
     yield_stress_ratio_x_for_plasticity: Quantity | None = ParameterField(
         default=None,
         description="The yield stress ratio in the x direction for plasticity.",

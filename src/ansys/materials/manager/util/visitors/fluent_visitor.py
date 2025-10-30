@@ -25,12 +25,8 @@ from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.molecular_weight import MolecularWeight
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
-from ansys.materials.manager.util.visitors.common import ModelInfo
 
-MATERIAL_MODEL_MAP = {
-    Density: ModelInfo(labels=["density"], attributes=["density"]),
-    MolecularWeight: ModelInfo(labels=["molecular_weight"], attributes=["molecular_weight"]),
-}
+from .fluent_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 
 class FluentVisitor(BaseVisitor):

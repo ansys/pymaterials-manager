@@ -49,11 +49,22 @@ def get_model_attributes(model):
     ]
 
 
-def get_name_idx(qualifiers: list[ModelQualifier]) -> int:
-    """Get name index."""
-    for qualfier in qualifiers:
-        if qualfier.name == "Definition":
-            if qualfier.value == "Instantaneous":
+def get_creep_flag(qualifiers: list[ModelQualifier]) -> int:
+    """
+    Get creep flag.
+
+    Parameters
+    ----------
+    qualifiers : list[ModelQualifier]
+        List of model qualifiers.
+    Returns
+    -------
+    int
+        Index for label selection.
+    """
+    for qualifier in qualifiers:
+        if qualifier.name == "Separated Hill Potentials for Plasticity and Creep":
+            if qualifier.value == "No":
                 return 0
-        else:
-            return 1
+            else:
+                return 1
