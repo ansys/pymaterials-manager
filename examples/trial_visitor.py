@@ -20,10 +20,6 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 from ansys.materials.manager._models._material_models.fabric_fiber_angle import FabricFiberAngle
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.fluent_visitor import FluentVisitor
-from ansys.materials.manager.util.visitors.lsdyna_visitor import LsDynaVisitor
-from ansys.materials.manager.util.visitors.mapdl_visitor import MapdlVisitor
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
 
 material_1 = Material(
     name="Isotropic Test Material",
@@ -128,7 +124,7 @@ material_3 = Material(
 materials = [material_1, material_2, material_3]
 visitor_matml = MatmlWriter(materials=materials)
 visitor_matml.write("trial.xml", True)
-visitor_mapdl = MapdlVisitor(materials=materials)
+visitor_mapdl = MapdlWriter(materials=materials)
 mapdl = visitor_mapdl.write()
 print(mapdl)
 visitor_dyna = LsDynaVisitor(materials=materials)

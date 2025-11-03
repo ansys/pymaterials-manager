@@ -29,11 +29,11 @@ from ansys.materials.manager.parsers.base_visitor import BaseVisitor
 from ._fluent_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 
-class FluentVisitor(BaseVisitor):
-    """Fluent visitor."""
+class FluentWriter(BaseVisitor):
+    """Fluent writer."""
 
     def __init__(self, materials: list[Material]):
-        """Initialize the fluent visitor."""
+        """Initialize the fluent writer."""
         super().__init__(materials=materials)
         self.visit_materials()
 

@@ -58,8 +58,8 @@ from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
 from ._mapdl_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 
-class MapdlVisitor(BaseVisitor):
-    """Mapdl visitor."""
+class MapdlWriter(BaseVisitor):
+    """Mapdl writer."""
 
     def __init__(self, materials: list[Material]):
         """Initialize the Mapdl visitor."""

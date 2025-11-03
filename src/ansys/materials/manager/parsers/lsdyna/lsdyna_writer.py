@@ -55,13 +55,13 @@ MATERIAL_CARD_MAP = {
 }
 
 
-class LsDynaVisitor(BaseVisitor):
-    """Ls Dyna visitor."""
+class LsDynaWriter(BaseVisitor):
+    """Ls Dyna writer."""
 
     _material_models_per_material: dict
 
     def __init__(self, materials: list[Material]):
-        """Initialize the ls dyna visitor."""
+        """Initialize the ls dyna writer."""
         super().__init__(materials=materials)
         self._material_models_per_material: dict = {material.name: [] for material in materials}
         self.visit_materials()
