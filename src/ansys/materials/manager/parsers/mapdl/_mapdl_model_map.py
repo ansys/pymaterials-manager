@@ -105,9 +105,9 @@ MATERIAL_MODEL_MAP = {
             "KZZ",
         ],
         attributes=[
-            "thermal_conductivity_x_direction",
-            "thermal_conductivity_y_direction",
-            "thermal_conductivity_z_direction",
+            "thermal_conductivity_x",
+            "thermal_conductivity_y",
+            "thermal_conductivity_z",
         ],
     ),
 }

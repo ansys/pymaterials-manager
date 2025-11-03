@@ -42,6 +42,12 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
+from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
+    ThermalConductivityIsotropic,
+)
+from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
+    ThermalConductivityOrthotropic,
+)
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.parsers.base_visitor import BaseVisitor
 from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
@@ -257,6 +263,8 @@ class MapdlWriter(BaseVisitor):
             ElasticityOrthotropic,
             CoefficientofThermalExpansionIsotropic,
             CoefficientofThermalExpansionOrthotropic,
+            ThermalConductivityIsotropic,
+            ThermalConductivityOrthotropic,
         )
         if isinstance(material_model, standard_models):
             model = self.visit_standard(material_model)
