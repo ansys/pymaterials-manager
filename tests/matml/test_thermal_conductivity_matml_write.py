@@ -33,7 +33,7 @@ from ansys.materials.manager._models._material_models.thermal_conductivity_ortho
     ThermalConductivityOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 THERMAL_CONDUCTIVITY_ISOTROPIC = DIR_PATH.joinpath(
@@ -71,7 +71,7 @@ def test_write_thermal_conductivity_isotropic():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(THERMAL_CONDUCTIVITY_ISOTROPIC, "r") as file:
@@ -102,7 +102,7 @@ def test_write_thermal_conductivity_orthotropic():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC, "r") as file:

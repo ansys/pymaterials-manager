@@ -43,8 +43,8 @@ from . import _matml_strings as _matml_strings
 from ._matml_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 
-class MatmlVisitor(BaseVisitor):
-    """MatmlVisitor."""
+class MatmlWriter(BaseVisitor):
+    """MatmlWriter."""
 
     _metadata_property_sets: dict
     _metadata_parameters: dict

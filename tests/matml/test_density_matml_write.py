@@ -28,7 +28,7 @@ from utilities import get_material_and_metadata_from_xml
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models import Density
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 DENSITY = DIR_PATH.joinpath("..", "data", "matml_density.txt")
@@ -54,7 +54,7 @@ def test_write_material_with_constant_density():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     print(metadata_string)
@@ -83,7 +83,7 @@ def test_write_model_with_variable_density():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(DENSITY_VARIABLE, "r") as file:

@@ -33,7 +33,7 @@ from ansys.materials.manager._models._material_models.strain_limits_orthotropic 
     StrainLimitsOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 STRAIN_LIMITS_ORTHOTROPIC = DIR_PATH.joinpath("..", "data", "matml_strain_limits_orthotropic.txt")
@@ -81,7 +81,7 @@ def test_write_constant_strain_limits_orthotropic():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_LIMITS_ORTHOTROPIC, "r", encoding="utf8") as file:
@@ -109,7 +109,7 @@ def test_write_constant_strain_limits_isotropic():
             ],
         )
     ]
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_LIMITS_ISOTROPIC, "r", encoding="utf8") as file:
@@ -136,7 +136,7 @@ def test_write_variable_strain_limits_isotropic():
             ],
         )
     ]
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_LIMITS_ISOTROPIC_VARIABLE, "r", encoding="utf8") as file:
@@ -176,7 +176,7 @@ def test_write_variable_strain_limits_orthotropic():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRAIN_LIMITS_ORTHOTROPIC_VARIABLE, "r", encoding="utf8") as file:

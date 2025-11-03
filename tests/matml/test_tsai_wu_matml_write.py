@@ -28,7 +28,7 @@ from utilities import get_material_and_metadata_from_xml
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.tsai_wu_constants import TsaiWuConstants
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 TSAI_WU = DIR_PATH.joinpath("..", "data", "matml_tsai_wu.txt")
@@ -56,7 +56,7 @@ def test_write_constant_tsai_wu():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(TSAI_WU, "r") as file:
@@ -87,7 +87,7 @@ def test_write_variable_tsai_wu():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(TSAI_WU_VARIABLE, "r") as file:

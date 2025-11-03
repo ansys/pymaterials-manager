@@ -31,7 +31,7 @@ from ansys.materials.manager._models._material_models.isotropic_hardening_voce_l
     IsotropicHardeningVoceLaw,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 
@@ -180,7 +180,7 @@ def test_write_constant_multilinear_isotropic_hardening():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_HARDENING_MULTILINEAR, "r") as file:
@@ -243,7 +243,7 @@ def test_write_variable_mutilinear_isotropic_hardening():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE, "r") as file:
@@ -275,7 +275,7 @@ def test_write_constant_voce_isotropic_hardening():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_HARDENING_VOCE, "r") as file:
@@ -312,7 +312,7 @@ def test_read_variable_voce_isotropic_hardening():
         )
     ]
 
-    writer = MatmlVisitor(materials)
+    writer = MatmlWriter(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_HARDENING_VOCE_VARIABLE, "r") as file:

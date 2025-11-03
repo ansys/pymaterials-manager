@@ -30,7 +30,7 @@ from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.parsers.matml.matml_reader import MatmlReader
-from ansys.materials.manager.parsers.matml.matml_visitor import MatmlVisitor
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
 
 
@@ -103,7 +103,7 @@ class MaterialManager:
         """Write the materials in the library to a MatML file."""
         if not materials:
             materials = list(self.materials.values())
-        matml_reader = MatmlVisitor(materials)
+        matml_reader = MatmlWriter(materials)
         matml_reader.write(path, indent=True)
 
     def get_material(self, material_name) -> Material | None:
