@@ -28,7 +28,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -41,28 +40,24 @@ class IsotropicHardeningVoceLaw(MaterialModel):
         default="Isotropic Hardening", repr=False, frozen=True
     )
 
-    initial_yield_stress: Quantity | None = ParameterField(
+    initial_yield_stress: Quantity | None = Field(
         default=None,
         description="Initial yield stress values for the material.",
-        matml_name="Initial Yield Stress",
     )
 
-    linear_coefficient: Quantity | None = ParameterField(
+    linear_coefficient: Quantity | None = Field(
         default=None,
         description="Linear coefficient values for the material.",
-        matml_name="Linear Coefficient",
     )
 
-    exponential_coefficient: Quantity | None = ParameterField(
+    exponential_coefficient: Quantity | None = Field(
         default=None,
         description="Exponential coefficient values for the material.",
-        matml_name="Exponential Coefficient",
     )
 
-    exponential_saturation_parameter: Quantity | None = ParameterField(
+    exponential_saturation_parameter: Quantity | None = Field(
         default=None,
         description="Exponential saturation parameter values for the material.",
-        matml_name="Exponential Saturation Parameter",
     )
 
     @model_validator(mode="before")

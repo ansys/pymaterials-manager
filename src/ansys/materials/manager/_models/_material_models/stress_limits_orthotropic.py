@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -37,50 +36,41 @@ class StressLimitsOrthotropic(MaterialModel):
     """Represents a stress limits orthotropic material model."""
 
     name: Literal["Stress Limit"] = Field(default="Stress Limits", repr=False, frozen=True)
-    tensile_x_direction: Quantity | None = ParameterField(
+    tensile_x_direction: Quantity | None = Field(
         default=Quantity,
         description="The tensile stress limits in the X direction for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Tensile X direction",
     )
-    tensile_y_direction: Quantity | None = ParameterField(
+    tensile_y_direction: Quantity | None = Field(
         default=None,
         description="The tensile stress limits in the Y direction for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Tensile Y direction",
     )
-    tensile_z_direction: Quantity | None = ParameterField(
+    tensile_z_direction: Quantity | None = Field(
         default=None,
         description="The tensile stress limits in the Z direction for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Tensile Z direction",
     )
-    compressive_x_direction: Quantity | None = ParameterField(
+    compressive_x_direction: Quantity | None = Field(
         default=None,
         description="The compressive stress limits in the X direction for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Compressive X direction",
     )
-    compressive_y_direction: Quantity | None = ParameterField(
+    compressive_y_direction: Quantity | None = Field(
         default=None,
         description="The compressive stress limits in the Y direction for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Compressive Y direction",
     )
-    compressive_z_direction: Quantity | None = ParameterField(
+    compressive_z_direction: Quantity | None = Field(
         default=None,
         description="The compressive stress limits in the Z direction for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Compressive Z direction",
     )
-    shear_xy: Quantity | None = ParameterField(
+    shear_xy: Quantity | None = Field(
         default=None,
         description="The shear stress limits in the XY plane for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Shear XY",
     )
-    shear_xz: Quantity | None = ParameterField(
+    shear_xz: Quantity | None = Field(
         default=None,
         description="The shear stress limits in the XZ plane for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Shear XZ",
     )
-    shear_yz: Quantity | None = ParameterField(
+    shear_yz: Quantity | None = Field(
         default=None,
         description="The shear stress limits in the YZ plane for the stress limits orthotropic model.",  # noqa: E501
-        matml_name="Shear YZ",
     )
 
     @model_validator(mode="before")

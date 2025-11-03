@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -38,10 +37,9 @@ class SpecificHeat(MaterialModel):
 
     name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
 
-    specific_heat: Quantity | None = ParameterField(
+    specific_heat: Quantity | None = Field(
         default=None,
         description="The specific heat of the material.",
-        matml_name="Specific Heat",
     )
 
     @model_validator(mode="before")

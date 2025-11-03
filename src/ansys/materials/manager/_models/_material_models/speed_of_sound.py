@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -37,10 +36,9 @@ class SpeedofSound(MaterialModel):
     """Represents a speed of sound material model."""
 
     name: Literal["Speed of Sound"] = Field(default="Speed of Sound", repr=False, frozen=True)
-    speed_of_sound: Quantity | None = ParameterField(
+    speed_of_sound: Quantity | None = Field(
         default=None,
         description="The speed of sound.",
-        matml_name="Speed of Sound",
     )
 
     @model_validator(mode="before")

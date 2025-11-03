@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -37,10 +36,9 @@ class Viscosity(MaterialModel):
     """Represents a Viscosity material model."""
 
     name: Literal["Viscosity"] = Field(default="Viscosity", repr=False, frozen=True)
-    viscosity: Quantity | None = ParameterField(
+    viscosity: Quantity | None = Field(
         default=None,
         description="The viscosity of the material.",
-        matml_name="Viscosity",
     )
 
     @model_validator(mode="before")

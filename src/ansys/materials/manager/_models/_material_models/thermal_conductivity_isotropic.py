@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -39,11 +38,9 @@ class ThermalConductivityIsotropic(MaterialModel):
     name: Literal["Thermal Conductivity"] = Field(
         default="Thermal Conductivity", repr=False, frozen=True
     )
-    thermal_conductivity: Quantity | None = ParameterField(
+    thermal_conductivity: Quantity | None = Field(
         default=None,
         description="The thermal conductivity of the material.",
-        matml_name="Thermal Conductivity",
-        mapdl_name="KXX",
     )
 
     @model_validator(mode="before")

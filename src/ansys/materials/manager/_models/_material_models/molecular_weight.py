@@ -27,7 +27,6 @@ from pydantic import Field
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     SupportedPackage,
 )
 
@@ -36,11 +35,9 @@ class MolecularWeight(MaterialModel):
     """Represents a molecular weight material model."""
 
     name: Literal["Molecular Weight"] = Field(default="Molecular Weight", repr=False, frozen=True)
-    molecular_weight: Quantity | None = ParameterField(
+    molecular_weight: Quantity | None = Field(
         default=None,
         description="The molecular weight of the material.",
-        matml_name="Molecular Weight",
-        fluent_name="molecular_weight",
     )
     supported_packages: list[SupportedPackage] = Field(
         default=[SupportedPackage.FLUENT],

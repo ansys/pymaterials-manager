@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -38,76 +37,49 @@ class ElasticityOrthotropic(MaterialModel):
 
     name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
 
-    youngs_modulus_x: Quantity | None = ParameterField(
+    youngs_modulus_x: Quantity | None = Field(
         default=None,
         description="The Young's modulus of the material in the x direction.",
-        matml_name="Young's Modulus X direction",
-        mapdl_name="EX",
-        lsdyna_name="ea",
     )
 
-    youngs_modulus_y: Quantity | None = ParameterField(
+    youngs_modulus_y: Quantity | None = Field(
         default=None,
         description="The Young's modulus of the material in the y direction.",
-        matml_name="Young's Modulus Y direction",
-        mapdl_name="EY",
-        lsdyna_name="eb",
     )
 
-    youngs_modulus_z: Quantity | None = ParameterField(
+    youngs_modulus_z: Quantity | None = Field(
         default=None,
         description="The Young's modulus of the material in the z direction.",
-        matml_name="Young's Modulus Z direction",
-        mapdl_name="EZ",
-        lsdyna_name="ec",
     )
 
-    shear_modulus_xy: Quantity | None = ParameterField(
+    shear_modulus_xy: Quantity | None = Field(
         default=None,
         description="The shear modulus xy of the material.",
-        matml_name="Shear Modulus XY",
-        mapdl_name="GXY",
-        lsdyna_name="gab",
     )
 
-    shear_modulus_yz: Quantity | None = ParameterField(
+    shear_modulus_yz: Quantity | None = Field(
         default=None,
         description="The shear modulus yz of the material.",
-        matml_name="Shear Modulus YZ",
-        mapdl_name="GYZ",
-        lsdyna_name="gbc",
     )
 
-    shear_modulus_xz: Quantity | None = ParameterField(
+    shear_modulus_xz: Quantity | None = Field(
         default=None,
         description="The shear modulus xz of the material.",
-        matml_name="Shear Modulus XZ",
-        mapdl_name="GXZ",
-        lsdyna_name="gca",
     )
 
-    poissons_ratio_xy: Quantity | None = ParameterField(
+    poissons_ratio_xy: Quantity | None = Field(
         default=None,
         description="The Poisson's ratio xy of the material.",
-        matml_name="Poisson's Ratio XY",
-        mapdl_name="PRXY",
-        lsdyna_name="prba",
     )
 
-    poissons_ratio_yz: Quantity | None = ParameterField(
+    poissons_ratio_yz: Quantity | None = Field(
         default=None,
         description="The Poisson's ratio yz of the material.",
-        matml_name="Poisson's Ratio YZ",
-        mapdl_name="PRYZ",
-        lsdyna_name="prcb",
     )
 
-    poissons_ratio_xz: Quantity | None = ParameterField(
+    poissons_ratio_xz: Quantity | None = Field(
         default=None,
         description="The Poisson's ratio xz of the material.",
-        matml_name="Poisson's Ratio XZ",
-        mapdl_name="PRXZ",
-        lsdyna_name="prca",
     )
 
     @model_validator(mode="before")

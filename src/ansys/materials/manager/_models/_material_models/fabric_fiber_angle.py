@@ -25,7 +25,7 @@ from typing import Literal
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class FabricFiberAngle(MaterialModel):
@@ -35,8 +35,7 @@ class FabricFiberAngle(MaterialModel):
         default="Fabric Fiber Angle", repr=False, frozen=True
     )
 
-    fabric_fiber_angle: Quantity | None = ParameterField(
+    fabric_fiber_angle: Quantity | None = Field(
         default=None,
         description="The fabric fiber angle values for the fabric fiber angle model.",
-        matml_name="Fabric Fiber Angle",
     )

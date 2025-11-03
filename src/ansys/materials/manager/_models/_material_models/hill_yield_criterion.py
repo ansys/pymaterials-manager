@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -39,57 +38,51 @@ class HillYieldCriterion(MaterialModel):
     name: Literal["Hill Yield Criterion"] = Field(
         default="Hill Yield Criterion", repr=False, frozen=True
     )
-    yield_stress_ratio_x: Quantity | None = ParameterField(
+    yield_stress_ratio_x: Quantity | None = Field(
         default=None,
         description="The yield stress ratio in the x direction.",
-        matml_name="Yield stress ratio in X direction",
     )
-    yield_stress_ratio_y: Quantity | None = ParameterField(
+    yield_stress_ratio_y: Quantity | None = Field(
         default=None,
         description="The yield stress ratio in the y direction.",
-        matml_name="Yield stress ratio in Y direction",
     )
-    yield_stress_ratio_z: Quantity | None = ParameterField(
+    yield_stress_ratio_z: Quantity | None = Field(
         default=None,
         description="The yield stress ratio in the z direction.",
-        matml_name="Yield stress ratio in Z direction",
     )
-    yield_stress_ratio_xy: Quantity | None = ParameterField(
+    yield_stress_ratio_xy: Quantity | None = Field(
         default=None,
         description="The yield stress ratio in the xy direction.",
-        matml_name="Yield stress ratio in XY direction",
     )
-    yield_stress_ratio_xz: Quantity | None = ParameterField(
+    yield_stress_ratio_xz: Quantity | None = Field(
         default=None,
         description="The yield stress ratio in the xz direction.",
-        matml_name="Yield stress ratio in XZ direction",
     )
-    yield_stress_ratio_yz: Quantity | None = ParameterField(
+    yield_stress_ratio_yz: Quantity | None = Field(
         default=None,
         description="The yield stress ratio in the yz direction.",
-        matml_name="Yield stress ratio in YZ direction",
     )
-    creep_stress_ratio_x: Quantity | None = ParameterField(
+    creep_stress_ratio_x: Quantity | None = Field(
         default=None,
         description="The creep stress ratio in the x direction.",
     )
-    creep_stress_ratio_y: Quantity | None = ParameterField(
+    creep_stress_ratio_y: Quantity | None = Field(
         default=None,
         description="The creep stress ratio in the y direction.",
     )
-    creep_stress_ratio_z: Quantity | None = ParameterField(
+    creep_stress_ratio_z: Quantity | None = Field(
         default=None,
         description="The creep stress ratio in the z direction.",
     )
-    creep_stress_ratio_xy: Quantity | None = ParameterField(
+    creep_stress_ratio_xy: Quantity | None = Field(
         default=None,
         description="The creep stress ratio in the xy direction.",
     )
-    creep_stress_ratio_xz: Quantity | None = ParameterField(
+    creep_stress_ratio_xz: Quantity | None = Field(
         default=None,
         description="The creep stress ratio in the xz direction.",
     )
-    creep_stress_ratio_yz: Quantity | None = ParameterField(
+    creep_stress_ratio_yz: Quantity | None = Field(
         default=None,
         description="The creep stress ratio in the yz direction.",
     )

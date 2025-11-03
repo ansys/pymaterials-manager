@@ -25,30 +25,26 @@ from typing import Literal
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class StrainHardening(MaterialModel):
     """Represents a strain hardening material model."""
 
     name: Literal["Strain Hardening"] = Field(default="Strain Hardening", repr=False, frozen=True)
-    creep_constant_1: Quantity | None = ParameterField(
+    creep_constant_1: Quantity | None = Field(
         default=None,
         description="The first creep constant for the strain hardening model.",
-        matml_name="Creep Constant 1",
     )
-    creep_constant_2: Quantity | None = ParameterField(
+    creep_constant_2: Quantity | None = Field(
         default=None,
         description="The second creep constant for the strain hardening model.",
-        matml_name="Creep Constant 2",
     )
-    creep_constant_3: Quantity | None = ParameterField(
+    creep_constant_3: Quantity | None = Field(
         default=None,
         description="The third creep constant for the strain hardening model.",
-        matml_name="Creep Constant 3",
     )
-    creep_constant_4: Quantity | None = ParameterField(
+    creep_constant_4: Quantity | None = Field(
         default=None,
         description="The fourth creep constant for the strain hardening model.",
-        matml_name="Creep Constant 4",
     )

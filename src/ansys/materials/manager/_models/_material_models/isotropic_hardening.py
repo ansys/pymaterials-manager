@@ -28,7 +28,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -41,10 +40,9 @@ class IsotropicHardening(MaterialModel):
         default="Isotropic Hardening", repr=False, frozen=True
     )
 
-    stress: Quantity | None = ParameterField(
+    stress: Quantity | None = Field(
         default=None,
         description="Stress values for the material.",
-        matml_name="Stress",
     )
 
     @model_validator(mode="before")

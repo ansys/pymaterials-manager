@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -39,23 +38,17 @@ class CoefficientofThermalExpansionOrthotropic(MaterialModel):
     name: Literal["Coefficient of Thermal Expansion"] = Field(
         default="Coefficient of Thermal Expansion", repr=False, frozen=True
     )
-    coefficient_of_thermal_expansion_x: Quantity | None = ParameterField(
+    coefficient_of_thermal_expansion_x: Quantity | None = Field(
         default=None,
         description="The coefficient of thermal expansion in X direction  for the material.",
-        matml_name="Coefficient of Thermal Expansion X direction",
-        mapdl_name=["CTEX", "ALPX"],
     )
-    coefficient_of_thermal_expansion_y: Quantity | None = ParameterField(
+    coefficient_of_thermal_expansion_y: Quantity | None = Field(
         default=None,
         description="The coefficient of thermal expansion in Y direction for the material.",
-        matml_name="Coefficient of Thermal Expansion Y direction",
-        mapdl_name=["CTEY", "ALPY"],
     )
-    coefficient_of_thermal_expansion_z: Quantity | None = ParameterField(
+    coefficient_of_thermal_expansion_z: Quantity | None = Field(
         default=None,
         description="The coefficient of thermal expansion in Z direction for the material.",
-        matml_name="Coefficient of Thermal Expansion Z direction",
-        mapdl_name=["CTEZ", "ALPZ"],
     )
 
     @model_validator(mode="before")

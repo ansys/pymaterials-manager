@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -39,16 +38,9 @@ class ZeroThermalStrainReferenceTemperatureIsotropic(MaterialModel):
     name: Literal["Zero-Thermal-Strain Reference Temperature"] = Field(
         default="Zero-Thermal-Strain Reference Temperature", repr=False, frozen=True
     )
-    zero_thermal_strain_reference_temperature: Quantity | None = ParameterField(
+    zero_thermal_strain_reference_temperature: Quantity | None = Field(
         default=None,
         description="The reference temperature for zero thermal strain.",
-        matml_name="Zero-Thermal-Strain Reference Temperature",
-    )
-    material_property: Literal["Coefficient of Thermal Expansion"] = ParameterField(
-        default="Coefficient of Thermal Expansion",
-        description="The material property for zero thermal strain reference temperature.",
-        matml_name="Material Property",
-        frozen=True,
     )
 
     @model_validator(mode="before")

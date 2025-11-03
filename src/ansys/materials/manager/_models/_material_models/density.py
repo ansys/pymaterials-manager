@@ -25,20 +25,16 @@ from typing import Literal
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField, SupportedPackage
+from ansys.materials.manager._models._common import MaterialModel, SupportedPackage
 
 
 class Density(MaterialModel):
     """Represents an isotropic density material model."""
 
     name: Literal["Density"] = Field(default="Density", repr=False, frozen=True)
-    density: Quantity | None = ParameterField(
+    density: Quantity | None = Field(
         default=None,
         description="The density of the material.",
-        matml_name="Density",
-        mapdl_name="DENS",
-        fluent_name="density",
-        lsdyna_name="ro",
     )
     supported_packages: list[SupportedPackage] = Field(
         default=[SupportedPackage.MAPDL, SupportedPackage.FLUENT],

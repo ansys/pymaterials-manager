@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -39,11 +38,9 @@ class CoefficientofThermalExpansionIsotropic(MaterialModel):
     name: Literal["Coefficient of Thermal Expansion"] = Field(
         default="Coefficient of Thermal Expansion", repr=False, frozen=True
     )
-    coefficient_of_thermal_expansion: Quantity | None = ParameterField(
+    coefficient_of_thermal_expansion: Quantity | None = Field(
         default=None,
         description="The coefficient of thermal expansion for the material.",
-        matml_name="Coefficient of Thermal Expansion",
-        mapdl_name=["CTEX", "ALPX"],
     )
 
     @model_validator(mode="before")

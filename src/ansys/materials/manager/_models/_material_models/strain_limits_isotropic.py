@@ -27,7 +27,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -37,10 +36,9 @@ class StrainLimitsIsotropic(MaterialModel):
     """Represents a strain limits isotropic material model."""
 
     name: Literal["Strain Limits"] = Field(default="Strain Limits", repr=False, frozen=True)
-    von_mises: Quantity | None = ParameterField(
+    von_mises: Quantity | None = Field(
         default=None,
         description="The von Mises stress values for the strain limits isotropic model.",
-        matml_name="Von Mises ",  # bug from eng data, there is space in name
     )
 
     @model_validator(mode="before")

@@ -28,7 +28,6 @@ from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -40,60 +39,49 @@ class KinematicHardening(MaterialModel):
     name: Literal["Kinematic Hardening"] = Field(
         default="Kinematic Hardening", repr=False, frozen=True
     )
-    yield_stress: Quantity | None = ParameterField(
+    yield_stress: Quantity | None = Field(
         default=None,
         description="The yield stress values for the kinematic hardening model.",
-        matml_name="Yield Stress",
     )
-    material_constant_gamma_1: Quantity | None = ParameterField(
+    material_constant_gamma_1: Quantity | None = Field(
         default=None,
         description="The first material constant γ1 for the kinematic hardening model.",
-        matml_name="Material Constant γ1",
     )
-    material_constant_c_1: Quantity | None = ParameterField(
+    material_constant_c_1: Quantity | None = Field(
         default=None,
         description="The first material constant C1 for the kinematic hardening model.",
-        matml_name="Material Constant C1",
     )
-    material_constant_gamma_2: Quantity | None = ParameterField(
+    material_constant_gamma_2: Quantity | None = Field(
         default=None,
         description="The second material constant γ2 for the kinematic hardening model.",
-        matml_name="Material Constant γ2",
     )
-    material_constant_c_2: Quantity | None = ParameterField(
+    material_constant_c_2: Quantity | None = Field(
         default=None,
         description="The second material constant C2 for the kinematic hardening model.",
-        matml_name="Material Constant C2",
     )
-    material_constant_gamma_3: Quantity | None = ParameterField(
+    material_constant_gamma_3: Quantity | None = Field(
         default=None,
         description="The third material constant γ3 for the kinematic hardening model.",
-        matml_name="Material Constant γ3",
     )
-    material_constant_c_3: Quantity | None = ParameterField(
+    material_constant_c_3: Quantity | None = Field(
         default=None,
         description="The third material constant C3 for the kinematic hardening model.",
-        matml_name="Material Constant C3",
     )
-    material_constant_gamma_4: Quantity | None = ParameterField(
+    material_constant_gamma_4: Quantity | None = Field(
         default=None,
         description="The fourth material constant γ4 for the kinematic hardening model.",
-        matml_name="Material Constant γ4",
     )
-    material_constant_c_4: Quantity | None = ParameterField(
+    material_constant_c_4: Quantity | None = Field(
         default=None,
         description="The fourth material constant C4 for the kinematic hardening model.",
-        matml_name="Material Constant C4",
     )
-    material_constant_gamma_5: Quantity | None = ParameterField(
+    material_constant_gamma_5: Quantity | None = Field(
         default=None,
         description="The fifth material constant γ5 for the kinematic hardening model.",
-        matml_name="Material Constant γ5",
     )
-    material_constant_c_5: Quantity | None = ParameterField(
+    material_constant_c_5: Quantity | None = Field(
         default=None,
         description="The fifth material constant C5 for the kinematic hardening model.",
-        matml_name="Material Constant C5",
     )
 
     @model_validator(mode="before")

@@ -29,7 +29,6 @@ from pyparsing import Dict
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -39,19 +38,13 @@ class ElasticityIsotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
     name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
-    youngs_modulus: Quantity | None = ParameterField(
+    youngs_modulus: Quantity | None = Field(
         default=None,
         description="The Young's modulus of the material.",
-        matml_name="Young's Modulus",
-        mapdl_name="EX",
-        lsdyna_name="e",
     )
-    poissons_ratio: Quantity | None = ParameterField(
+    poissons_ratio: Quantity | None = Field(
         default=None,
         description="The Poisson's ratio of the material.",
-        matml_name="Poisson's Ratio",
-        mapdl_name="PRXY",
-        lsdyna_name="pr",
     )
 
     @model_validator(mode="before")
