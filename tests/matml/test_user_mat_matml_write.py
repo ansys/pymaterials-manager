@@ -23,59 +23,18 @@
 from pathlib import Path
 
 from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
+from utilities import get_material_and_metadata_from_xml
 
 from ansys.materials.manager._models._common import IndependentParameter, UserParameter
 from ansys.materials.manager._models._material_models.usermat import ModelCoefficients
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
 
 DIR_PATH = Path(__file__).resolve().parent
-XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_usermat.xml")
 USER_MAT = DIR_PATH.joinpath("..", "data", "matml_user_mat.txt")
 USER_MAT_METADATA = DIR_PATH.joinpath("..", "data", "matml_user_mat_metadata.txt")
 USER_MAT_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_user_mat_variable.txt")
 USER_MAT_VARIABLE_METADATA = DIR_PATH.joinpath("..", "data", "matml_user_mat_variable_metadata.txt")
-
-
-def test_read_usermat():
-    material = read_specific_material(XML_FILE_PATH, "usermat")
-    assert len(material.models) == 4
-    usermat = material.models[3]
-    assert usermat.name == "Model Coefficients"
-    assert usermat.model_qualifiers[0].name == "UserMat"
-    assert usermat.model_qualifiers[0].value == "USER"
-    assert usermat.model_qualifiers[1].name == "Custom Qualifier"
-    assert usermat.model_qualifiers[1].value == "Custom Qualifier Value"
-    assert usermat.material_property == "UserDefinedPropertySet"
-    assert usermat.independent_parameters[0].name == "Temperature"
-    assert usermat.independent_parameters[0].values.value == [7.88860905221012e-31]
-    assert usermat.independent_parameters[0].values.unit == "C"
-    assert usermat.user_parameters[0].name == "y"
-    assert usermat.user_parameters[0].values.value == [0.0]
-    assert usermat.user_parameters[0].values.unit == ""
-    assert usermat.user_parameters[0].user_mat_constant == 1
-
-
-def test_variable_user_mat():
-    material = read_specific_material(XML_FILE_PATH, "variable usermat")
-    assert len(material.models) == 4
-    usermat = material.models[3]
-    assert usermat.name == "Model Coefficients"
-    assert usermat.model_qualifiers[0].name == "UserMat"
-    assert usermat.model_qualifiers[0].value == "USER"
-    assert usermat.material_property == "CustomPset"
-    assert usermat.independent_parameters[0].name == "Temperature"
-    assert usermat.independent_parameters[0].values.value.tolist() == [10.0, 20.0]
-    assert usermat.independent_parameters[0].values.unit == "C"
-    assert usermat.user_parameters[0].name == "alpha"
-    assert usermat.user_parameters[0].values.value.tolist() == [0.1, 0.4]
-    assert usermat.user_parameters[0].values.unit == ""
-    assert usermat.user_parameters[0].user_mat_constant == 1
-    assert usermat.user_parameters[1].name == "beta"
-    assert usermat.user_parameters[1].values.value.tolist() == [0.2, 0.8]
-    assert usermat.user_parameters[0].values.unit == ""
-    assert usermat.user_parameters[1].user_mat_constant == 2
 
 
 def test_write_constant_usermat():
@@ -97,13 +56,12 @@ def test_write_constant_usermat():
                             values=Quantity(value=[7.88860905221012e-31], units="C"),
                         )
                     ],
-                    material_property="UserDefinedPropertySet",
                 ),
             ],
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(USER_MAT, "r", encoding="utf8") as file:
@@ -137,13 +95,12 @@ def test_write_variable_usermat():
                             name="Temperature", values=Quantity(value=[10.0, 20.0], units="C")
                         )
                     ],
-                    material_property="CustomPset",
                 ),
             ],
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(USER_MAT_VARIABLE, "r") as file:

@@ -111,27 +111,27 @@
             <Data format="string">-</Data>
             <Qualifier name="Behavior">Anisotropic</Qualifier>
             <ParameterValue parameter="pa12" format="float">
-              <Data>100000000,1000000,2000000,3000000,4000000,5000000</Data>
+              <Data>100000000,1000000,2000000,0,0,0</Data>
               <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
             </ParameterValue>
             <ParameterValue parameter="pa13" format="float">
-              <Data>7.88860905221012e-31,150000000,6000000,7000000,8000000,9000000</Data>
+              <Data>1000000,150000000,3000000,0,0,0</Data>
               <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
             </ParameterValue>
             <ParameterValue parameter="pa21" format="float">
-              <Data>7.88860905221012e-31,7.88860905221012e-31,200000000,10000000,11000000,12000000</Data>
+              <Data>2000000,3000000,200000000,0,0,0</Data>
               <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
             </ParameterValue>
             <ParameterValue parameter="pa22" format="float">
-              <Data>7.88860905221012e-31,7.88860905221012e-31,7.88860905221012e-31,50000000,13000000,14000000</Data>
+              <Data>0,0,0,50000000,0,0</Data>
               <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
             </ParameterValue>
             <ParameterValue parameter="pa23" format="float">
-              <Data>7.88860905221012e-31,7.88860905221012e-31,7.88860905221012e-31,7.88860905221012e-31,60000000,15000000</Data>
+              <Data>0,0,0,0,60000000,0</Data>
               <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
             </ParameterValue>
             <ParameterValue parameter="pa24" format="float">
-              <Data>7.88860905221012e-31,7.88860905221012e-31,7.88860905221012e-31,7.88860905221012e-31,7.88860905221012e-31,70000000</Data>
+              <Data>0,0,0,0,0,70000000</Data>
               <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
             </ParameterValue>
           </PropertyData>

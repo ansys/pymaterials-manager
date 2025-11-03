@@ -23,7 +23,7 @@
 from pathlib import Path
 
 from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
+from utilities import get_material_and_metadata_from_xml
 
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
@@ -31,13 +31,10 @@ from ansys.materials.manager._models._material_models.isotropic_hardening_voce_l
     IsotropicHardeningVoceLaw,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
 
 DIR_PATH = Path(__file__).resolve().parent
-VOCE_XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_voce_isotropic_hardening.xml")
-MULTILINEAR_XML_FILE_PATH = DIR_PATH.joinpath(
-    "..", "data", "matml_unittest_multilinear_isotropic_hardening.xml"
-)
+
 ISOTROPIC_HARDENING_MULTILINEAR = DIR_PATH.joinpath(
     "..", "data", "matml_isotropic_hardening_multilinear.txt"
 )
@@ -54,340 +51,6 @@ ISOTROPIC_HARDENING_VOCE_METADATA = DIR_PATH.joinpath(
 ISOTROPIC_HARDENING_VOCE_VARIABLE = DIR_PATH.joinpath(
     "..", "data", "matml_isotropic_hardening_voce_variable.txt"
 )
-
-
-def test_read_constant_voce_isotropic_hardening_material():
-    material = read_specific_material(VOCE_XML_FILE_PATH, "SFRP")
-    assert len(material.models) == 2
-    isotropic_hardening = material.models[1]
-    assert isotropic_hardening.name == "Isotropic Hardening"
-    assert isotropic_hardening.model_qualifiers[0].name == "Definition"
-    assert isotropic_hardening.model_qualifiers[0].value == "Nonlinear"
-    assert isotropic_hardening.model_qualifiers[1].name == "Behavior"
-    assert isotropic_hardening.model_qualifiers[1].value == "Voce Law"
-    assert isotropic_hardening.model_qualifiers[2].name == "Field Variable Compatible"
-    assert isotropic_hardening.model_qualifiers[2].value == "Temperature"
-    assert isotropic_hardening.initial_yield_stress.value == [28264641]
-    assert isotropic_hardening.initial_yield_stress.unit == "Pa"
-    assert isotropic_hardening.linear_coefficient.value == [526886855]
-    assert isotropic_hardening.linear_coefficient.unit == "Pa"
-    assert isotropic_hardening.exponential_coefficient.value == [18328164]
-    assert isotropic_hardening.exponential_coefficient.unit == "Pa"
-    assert isotropic_hardening.exponential_saturation_parameter.value == [406.479025]
-    assert isotropic_hardening.exponential_saturation_parameter.unit == ""
-    assert isotropic_hardening.independent_parameters[0].name == "Temperature"
-    assert isotropic_hardening.independent_parameters[0].values.value == [7.88860905221012e-31]
-    assert isotropic_hardening.independent_parameters[0].values.unit == "C"
-
-
-def test_read_variable_voce_isotropic_hardening_material():
-    material = read_specific_material(VOCE_XML_FILE_PATH, "SFRP Temp Dependent")
-    assert len(material.models) == 2
-    isotropic_hardening = material.models[1]
-    assert isotropic_hardening.name == "Isotropic Hardening"
-    assert isotropic_hardening.model_qualifiers[0].name == "Definition"
-    assert isotropic_hardening.model_qualifiers[0].value == "Nonlinear"
-    assert isotropic_hardening.model_qualifiers[1].name == "Behavior"
-    assert isotropic_hardening.model_qualifiers[1].value == "Voce Law"
-    assert isotropic_hardening.model_qualifiers[2].name == "Field Variable Compatible"
-    assert isotropic_hardening.model_qualifiers[2].value == "Temperature"
-    assert isotropic_hardening.initial_yield_stress.value.tolist() == [28264641, 34264641, 39264641]
-    assert isotropic_hardening.initial_yield_stress.unit == "Pa"
-    assert isotropic_hardening.linear_coefficient.value.tolist() == [
-        526886855,
-        670000000,
-        870000000,
-    ]
-    assert isotropic_hardening.linear_coefficient.unit == "Pa"
-    assert isotropic_hardening.exponential_coefficient.value.tolist() == [
-        18328164,
-        15000000,
-        15347000,
-    ]
-    assert isotropic_hardening.exponential_coefficient.unit == "Pa"
-    assert isotropic_hardening.exponential_saturation_parameter.value.tolist() == [
-        406.479025,
-        387,
-        387,
-    ]
-    assert isotropic_hardening.exponential_saturation_parameter.unit == ""
-    assert isotropic_hardening.independent_parameters[0].name == "Temperature"
-    assert isotropic_hardening.independent_parameters[0].values.value.tolist() == [22, 112.4, 267]
-    assert isotropic_hardening.independent_parameters[0].values.unit == "C"
-
-
-def test_read_constant_multilinear_isotropic_hardening_material():
-    material = read_specific_material(MULTILINEAR_XML_FILE_PATH, "SFRP")
-    assert len(material.models) == 2
-    isotropic_hardening = material.models[1]
-    assert isotropic_hardening.name == "Isotropic Hardening"
-    assert isotropic_hardening.model_qualifiers[0].name == "Definition"
-    assert isotropic_hardening.model_qualifiers[0].value == "Multilinear"
-    assert isotropic_hardening.stress.value.tolist() == [
-        29.52801806,
-        30.93946596,
-        31.56895322,
-        32.83324607,
-        34.28804632,
-        35.45779394,
-        36.7206105,
-        37.86550163,
-        38.9800331,
-        40.37409873,
-        41.70507301,
-        42.87224516,
-        43.84021506,
-        44.94150614,
-        45.83281545,
-        46.81708774,
-        47.66814815,
-        48.32197593,
-        49.03683773,
-        49.69403185,
-        50.38934957,
-        50.9180887,
-        51.42733217,
-        52.07041013,
-        52.53035234,
-        52.99417352,
-        53.42471716,
-        54.00033621,
-        54.36001955,
-        54.71963936,
-        55.13624926,
-    ]
-    assert isotropic_hardening.stress.unit == "Pa"
-    assert isotropic_hardening.independent_parameters[0].name == "Plastic Strain"
-    assert isotropic_hardening.independent_parameters[0].values.value.tolist() == [
-        0,
-        0.000175189,
-        0.000257223,
-        0.00043005,
-        0.000643825,
-        0.000828966,
-        0.00104416,
-        0.001255108,
-        0.001477263,
-        0.00178269,
-        0.002108789,
-        0.002428809,
-        0.002723618,
-        0.003098638,
-        0.003439709,
-        0.003864545,
-        0.004281943,
-        0.004640923,
-        0.00507901,
-        0.005531357,
-        0.006070993,
-        0.006529747,
-        0.007015966,
-        0.007698042,
-        0.008235242,
-        0.008819543,
-        0.009399517,
-        0.010228087,
-        0.010773853,
-        0.011338467,
-        0.01201311,
-    ]
-    assert isotropic_hardening.independent_parameters[0].values.unit == "m m^-1"
-    assert isotropic_hardening.independent_parameters[1].name == "Temperature"
-    assert isotropic_hardening.independent_parameters[1].values.value.tolist() == [
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-        7.88860905221012e-31,
-    ]
-    isotropic_hardening.independent_parameters[1].values.unit == "C"
-
-
-def test_read_variable_multilinear_isotropic_hardening_material():
-    material = read_specific_material(MULTILINEAR_XML_FILE_PATH, "SFRP Temp Dependent")
-    assert len(material.models) == 2
-    isotropic_hardening = material.models[1]
-    assert isotropic_hardening.name == "Isotropic Hardening"
-    assert isotropic_hardening.model_qualifiers[0].name == "Definition"
-    assert isotropic_hardening.model_qualifiers[0].value == "Multilinear"
-    assert isotropic_hardening.stress.value.tolist() == [
-        29.52801806,
-        30.93946596,
-        31.56895322,
-        32.83324607,
-        34.28804632,
-        35.45779394,
-        36.7206105,
-        37.86550163,
-        38.9800331,
-        40.37409873,
-        41.70507301,
-        42.87224516,
-        43.84021506,
-        44.94150614,
-        45.83281545,
-        46.81708774,
-        47.66814815,
-        48.32197593,
-        49.03683773,
-        49.69403185,
-        50.38934957,
-        50.9180887,
-        51.42733217,
-        52.07041013,
-        52.53035234,
-        52.99417352,
-        53.42471716,
-        54.00033621,
-        54.36001955,
-        54.71963936,
-        55.13624926,
-        43.48448168,
-        45.56305263,
-        46.49006801,
-        48.35193084,
-        50.4943447,
-        52.21697535,
-        54.07666411,
-        55.76268982,
-        57.40400632,
-        59.45697923,
-        61.41704058,
-        63.13587846,
-        64.56136083,
-        66.18317886,
-        67.4957669,
-        68.94525701,
-    ]
-    assert isotropic_hardening.stress.unit == "Pa"
-    assert isotropic_hardening.independent_parameters[0].name == "Plastic Strain"
-    assert isotropic_hardening.independent_parameters[0].values.value.tolist() == [
-        0,
-        0.000175189,
-        0.000257223,
-        0.00043005,
-        0.000643825,
-        0.000828966,
-        0.00104416,
-        0.001255108,
-        0.001477263,
-        0.00178269,
-        0.002108789,
-        0.002428809,
-        0.002723618,
-        0.003098638,
-        0.003439709,
-        0.003864545,
-        0.004281943,
-        0.004640923,
-        0.00507901,
-        0.005531357,
-        0.006070993,
-        0.006529747,
-        0.007015966,
-        0.007698042,
-        0.008235242,
-        0.008819543,
-        0.009399517,
-        0.010228087,
-        0.010773853,
-        0.011338467,
-        0.01201311,
-        0,
-        0.000175189,
-        0.000257223,
-        0.00043005,
-        0.000643825,
-        0.000828966,
-        0.00104416,
-        0.001255108,
-        0.001477263,
-        0.00178269,
-        0.002108789,
-        0.002428809,
-        0.002723618,
-        0.003098638,
-        0.003439709,
-        0.003864545,
-    ]
-    isotropic_hardening.independent_parameters[0].values.unit == "m m^-1"
-    assert isotropic_hardening.independent_parameters[1].name == "Temperature"
-    assert isotropic_hardening.independent_parameters[1].values.value.tolist() == [
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        22,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-        45,
-    ]
-    isotropic_hardening.independent_parameters[1].values.unit == "C"
 
 
 def test_write_constant_multilinear_isotropic_hardening():
@@ -517,7 +180,7 @@ def test_write_constant_multilinear_isotropic_hardening():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_HARDENING_MULTILINEAR, "r") as file:
@@ -580,7 +243,7 @@ def test_write_variable_mutilinear_isotropic_hardening():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE, "r") as file:
@@ -612,7 +275,7 @@ def test_write_constant_voce_isotropic_hardening():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_HARDENING_VOCE, "r") as file:
@@ -649,7 +312,7 @@ def test_read_variable_voce_isotropic_hardening():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_HARDENING_VOCE_VARIABLE, "r") as file:

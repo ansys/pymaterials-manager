@@ -94,67 +94,6 @@ class HillYieldCriterion(MaterialModel):
         description="The creep stress ratio in the yz direction.",
     )
 
-    yield_stress_ratio_x_for_plasticity: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the x direction for plasticity.",
-        matml_name="Yield stress ratio in X direction for plasticity",
-    )
-    yield_stress_ratio_y_for_plasticity: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the y direction for plasticity.",
-        matml_name="Yield stress ratio in Y direction for plasticity",
-    )
-    yield_stress_ratio_z_for_plasticity: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the z direction for plasticity.",
-        matml_name="Yield stress ratio in Z direction for plasticity",
-    )
-    yield_stress_ratio_xy_for_plasticity: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the xy direction for plasticity.",
-        matml_name="Yield stress ratio in XY direction for plasticity",
-    )
-    yield_stress_ratio_xz_for_plasticity: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the xz direction for plasticity.",
-        matml_name="Yield stress ratio in XZ direction for plasticity",
-    )
-    yield_stress_ratio_yz_for_plasticity: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the yz direction for plasticity.",
-        matml_name="Yield stress ratio in YZ direction for plasticity",
-    )
-    yield_stress_ratio_x_for_creep: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the x direction for creep.",
-        matml_name="Yield stress ratio in X direction for creep",
-    )
-    yield_stress_ratio_y_for_creep: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the y direction for creep.",
-        matml_name="Yield stress ratio in Y direction for creep",
-    )
-    yield_stress_ratio_z_for_creep: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the z direction for creep.",
-        matml_name="Yield stress ratio in Z direction for creep",
-    )
-    yield_stress_ratio_xy_for_creep: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the xy direction for creep.",
-        matml_name="Yield stress ratio in XY direction for creep",
-    )
-    yield_stress_ratio_xz_for_creep: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the xz direction for creep.",
-        matml_name="Yield stress ratio in XZ direction for creep",
-    )
-    yield_stress_ratio_yz_for_creep: Quantity | None = ParameterField(
-        default=None,
-        description="The yield stress ratio in the yz direction for creep.",
-        matml_name="Yield stress ratio in YZ direction for creep",
-    )
-
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
         expected_qualifiers = {

@@ -22,18 +22,7 @@
 
 from pathlib import Path
 
-from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
-
-from ansys.materials.manager._models._common import IndependentParameter
-from ansys.materials.manager._models._material_models.strain_limits_isotropic import (
-    StrainLimitsIsotropic,
-)
-from ansys.materials.manager._models._material_models.strain_limits_orthotropic import (
-    StrainLimitsOrthotropic,
-)
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_reader import MatmlReader
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_strain_limit.xml")
@@ -54,9 +43,11 @@ STRAIN_LIMITS_ORTHOTROPIC_VARIABLE = DIR_PATH.joinpath(
 
 
 def test_read_constant_strain_limit_isotropic():
-    material = read_specific_material(XML_FILE_PATH, "isotropic material with strain limit")
-    assert len(material.models) == 2
-    isotropic_strain_limits = material.models[1]
+    matml_reader = MatmlReader(XML_FILE_PATH)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["isotropic material with strain limit"]
+    assert len(material.models) == 1
+    isotropic_strain_limits = material.models[0]
     assert isotropic_strain_limits.name == "Strain Limits"
     assert isotropic_strain_limits.model_qualifiers[0].name == "Behavior"
     assert isotropic_strain_limits.model_qualifiers[0].value == "Isotropic"
@@ -70,11 +61,11 @@ def test_read_constant_strain_limit_isotropic():
 
 
 def test_read_variable_strain_limit_isotropic():
-    material = read_specific_material(
-        XML_FILE_PATH, "isotropic material with variable strain limit"
-    )
-    assert len(material.models) == 2
-    isotropic_strain_limits = material.models[1]
+    matml_reader = MatmlReader(XML_FILE_PATH)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["isotropic material with variable strain limit"]
+    assert len(material.models) == 1
+    isotropic_strain_limits = material.models[0]
     assert isotropic_strain_limits.name == "Strain Limits"
     assert isotropic_strain_limits.model_qualifiers[0].name == "Behavior"
     assert isotropic_strain_limits.model_qualifiers[0].value == "Isotropic"
@@ -86,9 +77,11 @@ def test_read_variable_strain_limit_isotropic():
 
 
 def test_read_constant_strain_limit_orthotropic():
-    material = read_specific_material(XML_FILE_PATH, "orthotropic material with strain limit")
-    assert len(material.models) == 2
-    orthotropic_strain_limits = material.models[1]
+    matml_reader = MatmlReader(XML_FILE_PATH)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["orthotropic material with strain limit"]
+    assert len(material.models) == 1
+    orthotropic_strain_limits = material.models[0]
     assert orthotropic_strain_limits.name == "Strain Limits"
     assert orthotropic_strain_limits.model_qualifiers[0].name == "Behavior"
     assert orthotropic_strain_limits.model_qualifiers[0].value == "Orthotropic"
@@ -126,11 +119,11 @@ def test_read_constant_strain_limit_orthotropic():
 
 
 def test_read_variable_strain_limit_orthotropic():
-    material = read_specific_material(
-        XML_FILE_PATH, "orthotropic material with variable strain limit"
-    )
-    assert len(material.models) == 2
-    orthotropic_strain_limits = material.models[1]
+    matml_reader = MatmlReader(XML_FILE_PATH)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["orthotropic material with variable strain limit"]
+    assert len(material.models) == 1
+    orthotropic_strain_limits = material.models[0]
     assert orthotropic_strain_limits.name == "Strain Limits"
     assert orthotropic_strain_limits.model_qualifiers[0].name == "Behavior"
     assert orthotropic_strain_limits.model_qualifiers[0].value == "Orthotropic"
@@ -171,149 +164,3 @@ def test_read_variable_strain_limit_orthotropic():
     assert orthotropic_strain_limits.independent_parameters[0].upper_limit == "Program Controlled"
     assert orthotropic_strain_limits.independent_parameters[0].lower_limit == "Program Controlled"
     assert orthotropic_strain_limits.independent_parameters[0].default_value == 22.0
-
-
-def test_write_constant_strain_limits_orthotropic():
-    materials = [
-        Material(
-            name="orthotropic material with strain limit",
-            models=[
-                StrainLimitsOrthotropic(
-                    compressive_x_direction=Quantity(value=[-132.0], units=""),
-                    compressive_y_direction=Quantity(value=[-13.0], units=""),
-                    compressive_z_direction=Quantity(value=[-13.0], units=""),
-                    tensile_x_direction=Quantity(value=[311.0], units=""),
-                    tensile_y_direction=Quantity(value=[213.0], units=""),
-                    tensile_z_direction=Quantity(value=[13.0], units=""),
-                    shear_xy=Quantity(value=[24.0], units=""),
-                    shear_xz=Quantity(value=[12.0], units=""),
-                    shear_yz=Quantity(value=[232.0], units=""),
-                    independent_parameters=[
-                        IndependentParameter(
-                            name="Temperature",
-                            values=Quantity(value=[7.88860905221012e-31], units="C"),
-                            upper_limit="Program Controlled",
-                            lower_limit="Program Controlled",
-                            default_value=22.0,
-                        )
-                    ],
-                ),
-            ],
-        )
-    ]
-
-    writer = WriterMatml(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(STRAIN_LIMITS_ORTHOTROPIC, "r", encoding="utf8") as file:
-        data = file.read()
-        assert data == material_string
-    with open(STRAIN_LIMITS_ORTHOTROPIC_METADATA, "r") as file:
-        data = file.read()
-        assert data == metadata_string
-
-
-def test_write_constant_strain_limits_isotropic():
-    materials = [
-        Material(
-            name="isotropic material with strain limit",
-            models=[
-                StrainLimitsIsotropic(
-                    von_mises=Quantity(value=[213], units=""),
-                    independent_parameters=[
-                        IndependentParameter(
-                            name="Temperature",
-                            values=Quantity(value=[7.88860905221012e-31], units="C"),
-                        )
-                    ],
-                ),
-            ],
-        )
-    ]
-    writer = WriterMatml(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(STRAIN_LIMITS_ISOTROPIC, "r", encoding="utf8") as file:
-        data = file.read()
-        assert data == material_string
-    with open(STRAIN_LIMITS_ISOTROPIC_METADATA, "r") as file:
-        data = file.read()
-        assert data == metadata_string
-
-
-def test_write_variable_strain_limits_isotropic():
-    materials = [
-        Material(
-            name="isotropic material with variable strain limit",
-            models=[
-                StrainLimitsIsotropic(
-                    von_mises=Quantity(value=[2333, 2324, 2432], units=""),
-                    independent_parameters=[
-                        IndependentParameter(
-                            name="Temperature", values=Quantity(value=[23, 25, 27], units="C")
-                        )
-                    ],
-                ),
-            ],
-        )
-    ]
-    writer = WriterMatml(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(STRAIN_LIMITS_ISOTROPIC_VARIABLE, "r", encoding="utf8") as file:
-        data = file.read()
-        assert data == material_string
-    with open(STRAIN_LIMITS_ISOTROPIC_METADATA, "r") as file:
-        data = file.read()
-        assert data == metadata_string
-
-
-def test_write_variable_strain_limits_orthotropic():
-    materials = [
-        Material(
-            name="orthotropic material with variable strain limit",
-            models=[
-                StrainLimitsOrthotropic(
-                    tensile_x_direction=Quantity(value=[324.0, 311.0, 312.0], units=""),
-                    tensile_y_direction=Quantity(value=[236.0, 213.0, 234.0], units=""),
-                    tensile_z_direction=Quantity(value=[15.0, 13.0, 14.0], units=""),
-                    compressive_x_direction=Quantity(value=[-110.0, -132.0, -120.0], units=""),
-                    compressive_y_direction=Quantity(value=[-11.0, -13.0, -12.0], units=""),
-                    compressive_z_direction=Quantity(value=[-9.0, -13.0, -11.0], units=""),
-                    shear_xy=Quantity(value=[26.0, 24.0, 25.0], units=""),
-                    shear_xz=Quantity(value=[16.0, 12.0, 14.0], units=""),
-                    shear_yz=Quantity(value=[255.0, 232.0, 244.0], units=""),
-                    independent_parameters=[
-                        IndependentParameter(
-                            name="Temperature",
-                            values=Quantity(value=[13.0, 21.0, 23.0], units="C"),
-                            upper_limit="Program Controlled",
-                            lower_limit="Program Controlled",
-                            default_value=22.0,
-                        )
-                    ],
-                ),
-            ],
-        )
-    ]
-
-    writer = WriterMatml(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(STRAIN_LIMITS_ORTHOTROPIC_VARIABLE, "r", encoding="utf8") as file:
-        data = file.read()
-        assert data == material_string
-    with open(STRAIN_LIMITS_ORTHOTROPIC_METADATA, "r") as file:
-        data = file.read()
-        assert data == metadata_string
-
-
-# writer = WriterMatml(materials)
-# tree = writer._to_etree()
-# material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-# path = r"D:\AnsysDev\pymaterials-manager\tests\data"
-# writer.export("trial.xml", indent=True)
-# with open(path + "\\strain_limit_orthotropic_variable.txt", 'w') as file:
-#   file.write(material_string)
-# with open(path + "\\strain_limit_isotropic_metadata.txt", 'w') as file:
-#   file.write(metadata_string)

@@ -225,6 +225,7 @@ class WriterMatml:
                 if unit == "":
                     unit = UNITLESS_KEY
                 self._metadata_parameters_units[user_parameter.name] = unit
+
             param_element = ET.SubElement(
                 property_element, PARAMETER_VALUE_KEY, {"parameter": para_key, "format": "float"}
             )

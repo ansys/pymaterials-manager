@@ -43,20 +43,20 @@ from ansys.materials.manager._models._material_models.thermal_conductivity_isotr
 from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
     ThermalConductivityOrthotropic,
 )
-from ansys.materials.manager.util.mapdl.writer_mapdl_utils import map_anisotropic_elasticity
-from ansys.materials.manager.util.visitors.common import ModelInfo
-from ansys.materials.manager.util.visitors.mapdl_utils import (
+from ansys.materials.manager.util.mapdl.writer_mapdl_utils import map_from_anisotropic_elasticity
+from ansys.materials.manager.util.visitors._common import ModelInfo
+from ansys.materials.manager.util.visitors._mapdl_utils import (
     map_coefficient_of_thermal_expansion_isotropic,
     map_coefficient_of_thermal_expansion_orthotropic,
-    map_hill_yield_criterion,
+    map_from_hill_yield_criterion,
 )
 
 MATERIAL_MODEL_MAP = {
     CoefficientofThermalExpansionIsotropic: ModelInfo(
-        method=map_coefficient_of_thermal_expansion_isotropic,
+        method_write=map_coefficient_of_thermal_expansion_isotropic,
     ),
     CoefficientofThermalExpansionOrthotropic: ModelInfo(
-        method=map_coefficient_of_thermal_expansion_orthotropic
+        method_write=map_coefficient_of_thermal_expansion_orthotropic
     ),
     Density: ModelInfo(labels=["DENS"], attributes=["density"]),
     ElasticityIsotropic: ModelInfo(
@@ -86,9 +86,9 @@ MATERIAL_MODEL_MAP = {
             "poissons_ratio_xz",
         ],
     ),
-    ElasticityAnisotropic: ModelInfo(method=map_anisotropic_elasticity),
+    ElasticityAnisotropic: ModelInfo(method_write=map_from_anisotropic_elasticity),
     HillYieldCriterion: ModelInfo(
-        method=map_hill_yield_criterion,
+        method_write=map_from_hill_yield_criterion,
     ),
     ThermalConductivityIsotropic: ModelInfo(
         labels=["KXX"],

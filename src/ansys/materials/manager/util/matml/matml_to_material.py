@@ -39,8 +39,6 @@ from ansys.materials.manager.util.common import convert_to_float_or_keep
 from .matml_parser import BEHAVIOR_KEY
 from .utils import get_data_and_unit, parse_property_set_name
 
-MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
-
 
 def convert_matml_materials(
     materials_dict: Dict, transfer_ids: Dict, index_offset: int

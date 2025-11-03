@@ -40,10 +40,10 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 )
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.ls_dyna.writer_ls_dyna_utils import normalize_key
+from ansys.materials.manager.util.visitors._common import get_model_attributes
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
-from ansys.materials.manager.util.visitors.common import get_model_attributes
 
-from .ls_dyna_model_map import MATERIAL_MODEL_MAP  # noqa: F401
+from ._ls_dyna_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 # most complete needs to go before
 MATERIAL_CARD_MAP = {

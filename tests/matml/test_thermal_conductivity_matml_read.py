@@ -22,18 +22,7 @@
 
 from pathlib import Path
 
-from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
-
-from ansys.materials.manager._models._common import IndependentParameter
-from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
-    ThermalConductivityIsotropic,
-)
-from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
-    ThermalConductivityOrthotropic,
-)
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_reader import MatmlReader
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_thermal_conductivity.xml")
@@ -52,9 +41,11 @@ THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA = DIR_PATH.joinpath(
 
 
 def test_read_thermal_conductivity_isotropic_material():
-    material = read_specific_material(XML_FILE_PATH, "Isotropic Convection Test Material")
-    assert len(material.models) == 2
-    isotropic_conductivity = material.models[1]
+    matml_reader = MatmlReader(XML_FILE_PATH)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["Isotropic Convection Test Material"]
+    assert len(material.models) == 1
+    isotropic_conductivity = material.models[0]
     assert isotropic_conductivity.name == "Thermal Conductivity"
     assert isotropic_conductivity.model_qualifiers[0].name == "Behavior"
     assert isotropic_conductivity.model_qualifiers[0].value == "Isotropic"
@@ -71,9 +62,11 @@ def test_read_thermal_conductivity_isotropic_material():
 
 
 def test_read_thermal_conductivity_orthotropic_material():
-    material = read_specific_material(XML_FILE_PATH, "Orthotropic Convection Test Material")
-    assert len(material.models) == 2
-    orthotropic_conductivity = material.models[1]
+    matml_reader = MatmlReader(XML_FILE_PATH)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["Orthotropic Convection Test Material"]
+    assert len(material.models) == 1
+    orthotropic_conductivity = material.models[0]
     assert orthotropic_conductivity.name == "Thermal Conductivity"
     assert orthotropic_conductivity.model_qualifiers[0].name == "Behavior"
     assert orthotropic_conductivity.model_qualifiers[0].value == "Orthotropic"
@@ -86,66 +79,3 @@ def test_read_thermal_conductivity_orthotropic_material():
     assert orthotropic_conductivity.independent_parameters[0].name == "Temperature"
     assert orthotropic_conductivity.independent_parameters[0].values.value == [7.88860905221012e-31]
     assert orthotropic_conductivity.independent_parameters[0].values.unit == "C"
-
-
-def test_write_thermal_conductivity_isotropic():
-    materials = [
-        Material(
-            name="Isotropic Convection Test Material",
-            models=[
-                ThermalConductivityIsotropic(
-                    thermal_conductivity=Quantity(value=[10.0], units="W m^-1 C^-1"),
-                    independent_parameters=[
-                        IndependentParameter(
-                            name="Temperature",
-                            values=Quantity(value=[7.88860905221012e-31], units="C"),
-                            default_value=22.0,
-                            upper_limit="Program Controlled",
-                            lower_limit="Program Controlled",
-                        ),
-                    ],
-                ),
-            ],
-        )
-    ]
-
-    writer = WriterMatml(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(THERMAL_CONDUCTIVITY_ISOTROPIC, "r") as file:
-        data = file.read()
-        assert data == material_string
-    with open(THERMAL_CONDUCTIVITY_ISOTROPIC_METADATA, "r") as file:
-        data = file.read()
-        assert data == metadata_string
-
-
-def test_write_thermal_conductivity_orthotropic():
-    materials = [
-        Material(
-            name="Orthotropic Convection Test Material",
-            models=[
-                ThermalConductivityOrthotropic(
-                    thermal_conductivity_x=Quantity(value=[10.0], units="W m^-1 C^-1"),
-                    thermal_conductivity_y=Quantity(value=[15.0], units="W m^-1 C^-1"),
-                    thermal_conductivity_z=Quantity(value=[20.0], units="W m^-1 C^-1"),
-                    independent_parameters=[
-                        IndependentParameter(
-                            name="Temperature",
-                            values=Quantity(value=[7.88860905221012e-31], units="C"),
-                        ),
-                    ],
-                ),
-            ],
-        )
-    ]
-
-    writer = WriterMatml(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC, "r") as file:
-        data = file.read()
-        assert data == material_string
-    with open(THERMAL_CONDUCTIVITY_ORTHOTROPIC_METADATA, "r") as file:
-        data = file.read()
-        assert data == metadata_string

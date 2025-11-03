@@ -22,25 +22,18 @@
 
 from pathlib import Path
 
-from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
-
-from ansys.materials.manager._models._common import IndependentParameter
-from ansys.materials.manager._models._material_models.viscosity import Viscosity
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_reader import MatmlReader
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_viscosity.xml")
-VISCOSITY = DIR_PATH.joinpath("..", "data", "matml_viscosity.txt")
-VISCOSITY_METADATA = DIR_PATH.joinpath("..", "data", "matml_viscosity_metadata.txt")
-VISCOSITY_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_viscosity_variable.txt")
 
 
 def test_read_constant_viscosity():
-    material = read_specific_material(XML_FILE_PATH, "material with viscosity")
-    assert len(material.models) == 2
-    viscosity = material.models[1]
+    matml_reader = MatmlReader(XML_FILE_PATH)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["material with viscosity"]
+    assert len(material.models) == 1
+    viscosity = material.models[0]
     assert viscosity.name == "Viscosity"
     assert viscosity.model_qualifiers[0].name == "BETA"
     assert viscosity.model_qualifiers[0].value == "Mechanical.ModalAcoustics"
@@ -57,9 +50,11 @@ def test_read_constant_viscosity():
 
 
 def test_read_variable_viscosity():
-    material = read_specific_material(XML_FILE_PATH, "material with variable viscosity")
-    assert len(material.models) == 2
-    viscosity = material.models[1]
+    matml_reader = MatmlReader(XML_FILE_PATH)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["material with variable viscosity"]
+    assert len(material.models) == 1
+    viscosity = material.models[0]
     assert viscosity.name == "Viscosity"
     assert viscosity.model_qualifiers[0].name == "BETA"
     assert viscosity.model_qualifiers[0].value == "Mechanical.ModalAcoustics"
@@ -73,61 +68,3 @@ def test_read_variable_viscosity():
     assert viscosity.independent_parameters[0].upper_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].lower_limit == "Program Controlled"
     assert viscosity.independent_parameters[0].default_value == 22.0
-
-
-def test_write_constant_viscosity():
-    materials = [
-        Material(
-            name="material with viscosity",
-            models=[
-                Viscosity(
-                    viscosity=Quantity(value=[1.0], units="Pa s"),
-                    independent_parameters=[
-                        IndependentParameter(
-                            name="Temperature",
-                            values=Quantity(value=[22.0], units="C"),
-                        ),
-                    ],
-                ),
-            ],
-        )
-    ]
-
-    writer = WriterMatml(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(VISCOSITY, "r") as file:
-        data = file.read()
-        assert data == material_string
-    with open(VISCOSITY_METADATA, "r") as file:
-        data = file.read()
-        assert data == metadata_string
-
-
-def test_write_variable_viscosity():
-    materials = [
-        Material(
-            name="material with variable viscosity",
-            models=[
-                Viscosity(
-                    viscosity=Quantity(value=[2.0, 3.0, 4.0], units="Pa s"),
-                    independent_parameters=[
-                        IndependentParameter(
-                            name="Temperature",
-                            values=Quantity(value=[22.0, 50.0, 70.0], units="C"),
-                        ),
-                    ],
-                ),
-            ],
-        )
-    ]
-
-    writer = WriterMatml(materials)
-    tree = writer._to_etree()
-    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
-    with open(VISCOSITY_VARIABLE, "r") as file:
-        data = file.read()
-        assert data == material_string
-    with open(VISCOSITY_METADATA, "r") as file:
-        data = file.read()
-        assert data == metadata_string

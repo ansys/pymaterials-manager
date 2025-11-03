@@ -60,6 +60,9 @@ from ansys.materials.manager._models._material_models.strain_limits_isotropic im
 from ansys.materials.manager._models._material_models.strain_limits_orthotropic import (
     StrainLimitsOrthotropic,
 )
+from ansys.materials.manager._models._material_models.stress_limits_orthotropic import (
+    StressLimitsOrthotropic,
+)
 from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
@@ -75,10 +78,13 @@ from ansys.materials.manager._models._material_models.zero_thermal_strain_refere
 from ansys.materials.manager._models._material_models.zero_thermal_strain_reference_temperature_orthotropic import (  # noqa: E501
     ZeroThermalStrainReferenceTemperatureOrthotropic,
 )
-from ansys.materials.manager.util.visitors.common import ModelInfo
-from ansys.materials.manager.util.visitors.matml_utils import (
-    map_anisotropic_elasticity,
-    map_hill_yield_criterion,
+from ansys.materials.manager.util.visitors._common import ModelInfo
+from ansys.materials.manager.util.visitors._matml_utils import (
+    map_from_anisotropic_elasticity,
+    map_from_hill_yield_criterion,
+    map_to_anisotropic_elasticity,
+    map_to_hill_yield_criterion,
+    map_to_model_coefficients,
 )
 
 MATERIAL_MODEL_MAP = {
@@ -128,7 +134,8 @@ MATERIAL_MODEL_MAP = {
         ],
     ),
     ElasticityAnisotropic: ModelInfo(
-        method=map_anisotropic_elasticity,
+        method_write=map_from_anisotropic_elasticity,
+        method_read=map_to_anisotropic_elasticity,
     ),
     FabricFiberAngle: ModelInfo(
         labels=["Fabric Fiber Angle"],
@@ -136,7 +143,8 @@ MATERIAL_MODEL_MAP = {
     ),
     FiberAngle: ModelInfo(),
     HillYieldCriterion: ModelInfo(
-        method=map_hill_yield_criterion,
+        method_write=map_from_hill_yield_criterion,
+        method_read=map_to_hill_yield_criterion,
     ),
     IsotropicHardeningVoceLaw: ModelInfo(
         labels=[
@@ -171,7 +179,8 @@ MATERIAL_MODEL_MAP = {
             "Material Constant C5",
         ],
         attributes=[
-            "yield_stress" "material_constant_gamma_1",
+            "yield_stress",
+            "material_constant_gamma_1",
             "material_constant_c_1",
             "material_constant_gamma_2",
             "material_constant_c_2",
@@ -196,6 +205,9 @@ MATERIAL_MODEL_MAP = {
             "transverse_friction_coefficient",
             "fracture_angle_under_compression",
         ],
+    ),
+    ModelCoefficients: ModelInfo(
+        method_read=map_to_model_coefficients,
     ),
     MolecularWeight: ModelInfo(
         labels=["Molecular Weight"],
@@ -268,6 +280,30 @@ MATERIAL_MODEL_MAP = {
             "shear_yz",
         ],
     ),
+    StressLimitsOrthotropic: ModelInfo(
+        labels=[
+            "Tensile X direction",
+            "Tensile Y direction",
+            "Tensile Z direction",
+            "Compressive X direction",
+            "Compressive Y direction",
+            "Compressive Z direction",
+            "Shear XY",
+            "Shear YZ",
+            "Shear XZ",
+        ],
+        attributes=[
+            "tensile_x_direction",
+            "tensile_y_direction",
+            "tensile_z_direction",
+            "compressive_x_direction",
+            "compressive_y_direction",
+            "compressive_z_direction",
+            "shear_xy",
+            "shear_yz",
+            "shear_xz",
+        ],
+    ),
     ThermalConductivityIsotropic: ModelInfo(
         labels=["Thermal Conductivity"],
         attributes=["thermal_conductivity"],
@@ -279,9 +315,9 @@ MATERIAL_MODEL_MAP = {
             "Thermal Conductivity Z direction",
         ],
         attributes=[
-            "thermal_conductivity_x_direction",
-            "thermal_conductivity_y_direction",
-            "thermal_conductivity_z_direction",
+            "thermal_conductivity_x",
+            "thermal_conductivity_y",
+            "thermal_conductivity_z",
         ],
     ),
     TsaiWuConstants: ModelInfo(
@@ -296,17 +332,16 @@ MATERIAL_MODEL_MAP = {
             "coupling_coefficient_yz",
         ],
     ),
-    ModelCoefficients: ModelInfo(),
     Viscosity: ModelInfo(
         labels=["Viscosity"],
         attributes=["viscosity"],
     ),
     ZeroThermalStrainReferenceTemperatureIsotropic: ModelInfo(
-        labels=["Zero-Thermal Strain Reference Temperature", "Material Property"],
-        attributes=["zero_thermal_strain_reference_temperature", "material_property"],
+        labels=["Zero-Thermal-Strain Reference Temperature"],
+        attributes=["zero_thermal_strain_reference_temperature"],
     ),
     ZeroThermalStrainReferenceTemperatureOrthotropic: ModelInfo(
-        labels=["Zero-Thermal Strain Reference Temperature", "Material Property"],
-        attributes=["zero_thermal_strain_reference_temperature", "material_property"],
+        labels=["Zero-Thermal-Strain Reference Temperature"],
+        attributes=["zero_thermal_strain_reference_temperature"],
     ),
 }

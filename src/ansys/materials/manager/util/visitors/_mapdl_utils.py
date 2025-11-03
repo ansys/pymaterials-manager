@@ -32,7 +32,7 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
     CoefficientofThermalExpansionOrthotropic,
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager.util.visitors.common import get_creep_flag
+from ansys.materials.manager.util.visitors._common import get_creep_flag
 
 
 def get_value(model: MaterialModel, attr_name: str) -> float:
@@ -126,7 +126,7 @@ def map_coefficient_of_thermal_expansion_orthotropic(
     ]
 
 
-def map_anisotropic_elasticity(
+def map_from_anisotropic_elasticity(
     material_model: ElasticityAnisotropic,
 ) -> tuple[list[str], list[list[float]]]:
     """Map anisotropic elasticity model to dependent values for MAPDL.
@@ -170,7 +170,7 @@ def map_anisotropic_elasticity(
     ]
 
 
-def map_hill_yield_criterion(
+def map_from_hill_yield_criterion(
     material_model: HillYieldCriterion,
 ) -> tuple[list[str], list[list[float]]]:
     """
@@ -191,8 +191,8 @@ def map_hill_yield_criterion(
         material_model.yield_stress_ratio_y.value,
         material_model.yield_stress_ratio_z.value,
         material_model.yield_stress_ratio_xy.value,
-        material_model.yield_stress_ratio_xz.value,
         material_model.yield_stress_ratio_yz.value,
+        material_model.creep_stress_ratio_xz.value,
     ]
     tb_opt = ""
 
@@ -202,8 +202,8 @@ def map_hill_yield_criterion(
             material_model.creep_stress_ratio_y.value,
             material_model.creep_stress_ratio_z.value,
             material_model.creep_stress_ratio_xy.value,
-            material_model.creep_stress_ratio_xz.value,
             material_model.creep_stress_ratio_yz.value,
+            material_model.creep_stress_ratio_xz.value,
         ]
         tb_opt = "PC"
 

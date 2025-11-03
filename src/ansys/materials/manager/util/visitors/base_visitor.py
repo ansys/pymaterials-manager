@@ -82,8 +82,8 @@ class BaseVisitor:
         model_map = getattr(module, "MATERIAL_MODEL_MAP")
         if material_model.__class__ in model_map.keys():
             mapping = model_map[material_model.__class__]
-            if mapping.method:
-                labels, quantities = mapping.method(material_model)
+            if mapping.method_write:
+                labels, quantities = mapping.method_write(material_model)
             else:
                 if not mapping.labels and not mapping.attributes:
                     return {}

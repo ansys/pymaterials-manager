@@ -55,7 +55,7 @@ from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
 )
 from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
 
-from .mapdl_model_map import MATERIAL_MODEL_MAP  # noqa: F401
+from ._mapdl_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 
 class MapdlVisitor(BaseVisitor):

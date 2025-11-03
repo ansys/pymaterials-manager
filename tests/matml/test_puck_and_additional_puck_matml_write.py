@@ -23,7 +23,7 @@
 from pathlib import Path
 
 from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
+from utilities import get_material_and_metadata_from_xml
 
 from ansys.materials.manager._models._common import IndependentParameter, ModelQualifier
 from ansys.materials.manager._models._material_models.fiber_angle import FiberAngle
@@ -35,10 +35,9 @@ from ansys.materials.manager._models._material_models.stress_limits_orthotropic 
     StressLimitsOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
 
 DIR_PATH = Path(__file__).resolve().parent
-XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_puck_for_woven.xml")
 FIBER_ANGLE = DIR_PATH.joinpath("..", "data", "matml_fiber_angle.txt")
 FIBER_ANGLE_METADATA = DIR_PATH.joinpath("..", "data", "matml_fiber_angle_metadata.txt")
 PUCK = DIR_PATH.joinpath("..", "data", "matml_puck.txt")
@@ -49,106 +48,6 @@ STRESS_LIMITS_ORTHOTROPIC = DIR_PATH.joinpath("..", "data", "matml_stress_limits
 STRESS_LIMITS_ORTHOTROPIC_METADATA = DIR_PATH.joinpath(
     "..", "data", "matml_stress_limits_orthotropic_metadata.txt"
 )
-
-
-def test_read_fiber_angle():
-    material = read_specific_material(XML_FILE_PATH, "material with puck for woven")
-    assert len(material.models) == 5
-    fiber_angle = material.models[1]
-    assert fiber_angle.name == "Fiber Angle"
-    assert fiber_angle.independent_parameters[0].name == "Fiber Angle"
-    assert fiber_angle.independent_parameters[0].values.value == [90.0]
-    assert fiber_angle.independent_parameters[0].values.unit == ""
-    assert fiber_angle.model_qualifiers[0].name == "Data Set"
-    assert fiber_angle.model_qualifiers[0].value == "2"
-    assert fiber_angle.model_qualifiers[1].name == "Data Set Information"
-    assert (
-        fiber_angle.model_qualifiers[1].value
-        == "minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional"
-    )
-
-
-def test_read_puck_constants():
-    material = read_specific_material(XML_FILE_PATH, "material with puck for woven")
-    assert len(material.models) == 5
-    puck_constants = material.models[3]
-    assert puck_constants.name == "Puck Constants"
-    assert puck_constants.independent_parameters == []
-    assert puck_constants.model_qualifiers[0].name == "Data Set"
-    assert puck_constants.model_qualifiers[0].value == "2"
-    assert puck_constants.model_qualifiers[1].name == "Data Set Information"
-    assert (
-        puck_constants.model_qualifiers[1].value
-        == "minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional"
-    )
-    assert puck_constants.model_qualifiers[2].name == "Material Classification"
-    assert puck_constants.model_qualifiers[2].value == "Material Specific"
-    assert puck_constants.compressive_inclination_xz.value == [0.0]
-    assert puck_constants.compressive_inclination_xz.unit == ""
-    assert puck_constants.compressive_inclination_yz.value == [0.0]
-    assert puck_constants.compressive_inclination_yz.unit == ""
-    assert puck_constants.tensile_inclination_xz.value == [0.0]
-    assert puck_constants.tensile_inclination_xz.unit == ""
-    assert puck_constants.tensile_inclination_yz.value == [0.0]
-    assert puck_constants.tensile_inclination_yz.unit == ""
-    assert puck_constants.material_property == "Woven Specification for Puck"
-
-
-def test_read_puck_additional_constants():
-    material = read_specific_material(XML_FILE_PATH, "material with puck for woven")
-    assert len(material.models) == 5
-    puck_additional_constants = material.models[4]
-    assert puck_additional_constants.name == "Additional Puck Constants"
-    assert puck_additional_constants.independent_parameters == []
-    assert puck_additional_constants.model_qualifiers[0].name == "Data Set"
-    assert puck_additional_constants.model_qualifiers[0].value == "2"
-    assert puck_additional_constants.model_qualifiers[1].name == "Data Set Information"
-    assert (
-        puck_additional_constants.model_qualifiers[1].value
-        == "minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional"
-    )
-    assert puck_additional_constants.degradation_parameter_s.value == [0.5]
-    assert puck_additional_constants.degradation_parameter_s.unit == ""
-    assert puck_additional_constants.degradation_parameter_m.value == [0.5]
-    assert puck_additional_constants.degradation_parameter_m.unit == ""
-    assert puck_additional_constants.interface_weakening_factor.value == [0.8]
-    assert puck_additional_constants.interface_weakening_factor.unit == ""
-    assert puck_additional_constants.material_property == "Woven Specification for Puck"
-
-
-def test_read_stress_limits_orthotropic():
-    material = read_specific_material(XML_FILE_PATH, "material with puck for woven")
-    assert len(material.models) == 5
-    stress_limits_orthotropic = material.models[2]
-    assert stress_limits_orthotropic.name == "Stress Limits"
-    assert stress_limits_orthotropic.independent_parameters == []
-    assert stress_limits_orthotropic.model_qualifiers[0].name == "Behavior"
-    assert stress_limits_orthotropic.model_qualifiers[0].value == "Orthotropic"
-    assert stress_limits_orthotropic.model_qualifiers[1].name == "Data Set"
-    assert stress_limits_orthotropic.model_qualifiers[1].value == "2"
-    assert stress_limits_orthotropic.model_qualifiers[2].name == "Data Set Information"
-    assert (
-        stress_limits_orthotropic.model_qualifiers[2].value
-        == "minOccurrences::2$$maxOccurrences::2$$Name::Unidirectional"
-    )
-    assert stress_limits_orthotropic.compressive_x_direction.value == [-100.0]
-    assert stress_limits_orthotropic.compressive_x_direction.unit == "Pa"
-    assert stress_limits_orthotropic.compressive_y_direction.value == [-101.0]
-    assert stress_limits_orthotropic.compressive_y_direction.unit == "Pa"
-    assert stress_limits_orthotropic.compressive_z_direction.value == [-102.0]
-    assert stress_limits_orthotropic.compressive_z_direction.unit == "Pa"
-    assert stress_limits_orthotropic.tensile_x_direction.value == [100.0]
-    assert stress_limits_orthotropic.tensile_x_direction.unit == "Pa"
-    assert stress_limits_orthotropic.tensile_y_direction.value == [101.0]
-    assert stress_limits_orthotropic.tensile_y_direction.unit == "Pa"
-    assert stress_limits_orthotropic.tensile_z_direction.value == [102.0]
-    assert stress_limits_orthotropic.tensile_z_direction.unit == "Pa"
-    assert stress_limits_orthotropic.shear_xy.value == [10.0]
-    assert stress_limits_orthotropic.shear_xy.unit == "Pa"
-    assert stress_limits_orthotropic.shear_xz.value == [14.0]
-    assert stress_limits_orthotropic.shear_xz.unit == "Pa"
-    assert stress_limits_orthotropic.shear_yz.value == [12.0]
-    assert stress_limits_orthotropic.shear_yz.unit == "Pa"
 
 
 def test_write_fiber_angle():
@@ -174,7 +73,7 @@ def test_write_fiber_angle():
             ],
         )
     ]
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(FIBER_ANGLE, "r") as file:
@@ -208,7 +107,7 @@ def test_write_puck_constants():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(PUCK, "r") as file:
@@ -241,7 +140,7 @@ def test_write_puck_additional_constants():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(PUCK_ADDITIONAL, "r") as file:
@@ -272,7 +171,7 @@ def test_write_stress_limits():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(STRESS_LIMITS_ORTHOTROPIC, "r") as file:

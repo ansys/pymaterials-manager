@@ -11,10 +11,6 @@
         <Qualifier name="UserMat Constant">1</Qualifier>
       </ParameterValue>
       <ParameterValue parameter="pa1" format="float">
-        <Data>UserDefinedPropertySet</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa2" format="float">
         <Data>7.88860905221012e-31</Data>
         <Qualifier name="Variable Type">Independent</Qualifier>
       </ParameterValue>

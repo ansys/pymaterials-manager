@@ -526,7 +526,7 @@ def get_labels(self, model: MaterialModel) -> list[str]:
     return labels
 
 
-def map_anisotropic_elasticity(material_model: ElasticityAnisotropic) -> list[float]:
+def map_from_anisotropic_elasticity(material_model: ElasticityAnisotropic) -> list[float]:
     """Map anisotropic elasticity model to dependent values for MAPDL."""
     d = np.zeros((6, 6))
     d[0, 0] = material_model.c_11.value[0]

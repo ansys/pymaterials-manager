@@ -23,54 +23,17 @@
 from pathlib import Path
 
 from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
+from utilities import get_material_and_metadata_from_xml
 
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.larc03_04_constants import LaRc0304Constants
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
 
 DIR_PATH = Path(__file__).resolve().parent
-XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_larc.xml")
 LARC = DIR_PATH.joinpath("..", "data", "matml_larc.txt")
 LARC_METADATA = DIR_PATH.joinpath("..", "data", "matml_larc_metadata.txt")
 LARC_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_larc_variable.txt")
-
-
-def test_read_constant_larc():
-    material = read_specific_material(XML_FILE_PATH, "material with larc")
-    assert len(material.models) == 2
-    larc = material.models[1]
-    assert larc.name == "LaRc03/04 Constants"
-    assert larc.fracture_toughness_ratio.value == [1.0]
-    assert larc.fracture_toughness_ratio.unit == ""
-    assert larc.longitudinal_friction_coefficient.value == [2.0]
-    assert larc.longitudinal_friction_coefficient.unit == ""
-    assert larc.transverse_friction_coefficient.value == [3.0]
-    assert larc.transverse_friction_coefficient.unit == ""
-    assert larc.fracture_angle_under_compression.value == [4.0]
-    assert larc.fracture_angle_under_compression.unit == ""
-    assert larc.independent_parameters[0].name == "Temperature"
-    assert larc.independent_parameters[0].values.value == [7.88860905221012e-31]
-    assert larc.independent_parameters[0].values.unit == "C"
-
-
-def test_read_variable_larc():
-    material = read_specific_material(XML_FILE_PATH, "material with variable larc")
-    assert len(material.models) == 2
-    larc = material.models[1]
-    assert larc.name == "LaRc03/04 Constants"
-    assert larc.fracture_toughness_ratio.value.tolist() == [5.0, 9.0, 13.0]
-    assert larc.fracture_toughness_ratio.unit == ""
-    assert larc.longitudinal_friction_coefficient.value.tolist() == [6.0, 10.0, 14.0]
-    assert larc.longitudinal_friction_coefficient.unit == ""
-    assert larc.transverse_friction_coefficient.value.tolist() == [7.0, 11.0, 15.0]
-    assert larc.transverse_friction_coefficient.unit == ""
-    assert larc.fracture_angle_under_compression.value.tolist() == [8.0, 12.0, 16.0]
-    assert larc.fracture_angle_under_compression.unit == ""
-    assert larc.independent_parameters[0].name == "Temperature"
-    assert larc.independent_parameters[0].values.value.tolist() == [22.0, 50.0, 70.0]
-    assert larc.independent_parameters[0].values.unit == "C"
 
 
 def test_write_constant_larc():
@@ -94,7 +57,7 @@ def test_write_constant_larc():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(LARC, "r") as file:
@@ -125,7 +88,7 @@ def test_write_variable_larc():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(LARC_VARIABLE, "r") as file:

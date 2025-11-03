@@ -22,7 +22,7 @@
 
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.molecular_weight import MolecularWeight
-from ansys.materials.manager.util.visitors.common import ModelInfo
+from ansys.materials.manager.util.visitors._common import ModelInfo
 
 MATERIAL_MODEL_MAP = {
     Density: ModelInfo(labels=["density"], attributes=["density"]),

@@ -23,50 +23,17 @@
 from pathlib import Path
 
 from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
+from utilities import get_material_and_metadata_from_xml
 
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models import Density
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
 
 DIR_PATH = Path(__file__).resolve().parent
-XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_density.xml")
 DENSITY = DIR_PATH.joinpath("..", "data", "matml_density.txt")
 DENSITY_METADATA = DIR_PATH.joinpath("..", "data", "matml_density_metadata.txt")
 DENSITY_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_density_variable.txt")
-
-
-def test_read_material_with_constant_density():
-    constant_density_material = read_specific_material(XML_FILE_PATH, "material with density")
-    assert len(constant_density_material.models) == 2
-    density = constant_density_material.models[1]
-    assert density.name == "Density"
-    assert density.density.value == [1.34]
-    assert density.density.unit == "kg m^-3"
-    assert len(density.independent_parameters) == 1
-    assert density.independent_parameters[0].name == "Temperature"
-    assert density.independent_parameters[0].values.value == [7.88860905221012e-31]
-    assert density.independent_parameters[0].values.unit == "C"
-
-
-def test_read_model_with_variable_density():
-    variable_density_material = read_specific_material(
-        XML_FILE_PATH, "material with variable density"
-    )
-    assert len(variable_density_material.models) == 2
-    density = variable_density_material.models[1]
-    assert density.name == "Density"
-    assert density.density.value.tolist() == [12.0, 32.0, 38.0]
-    assert density.density.unit == "kg m^-3"
-    assert len(density.independent_parameters) == 1
-    assert density.independent_parameters[0].name == "Temperature"
-    assert density.independent_parameters[0].values.value.tolist() == [
-        20.0,
-        21.0,
-        23.0,
-    ]
-    assert density.independent_parameters[0].values.unit == "C"
 
 
 def test_write_material_with_constant_density():
@@ -87,7 +54,7 @@ def test_write_material_with_constant_density():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     print(metadata_string)
@@ -116,7 +83,7 @@ def test_write_model_with_variable_density():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(DENSITY_VARIABLE, "r") as file:

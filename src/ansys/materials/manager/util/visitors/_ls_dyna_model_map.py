@@ -30,7 +30,7 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
-from ansys.materials.manager.util.visitors.common import ModelInfo
+from ansys.materials.manager.util.visitors._common import ModelInfo
 
 MATERIAL_MODEL_MAP = {
     Density: ModelInfo(labels=["ro"], attributes=["density"]),

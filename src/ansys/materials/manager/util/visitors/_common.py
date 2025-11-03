@@ -32,7 +32,8 @@ class ModelInfo:
 
     labels: Optional[list[str] | list[list[str]]] = None
     attributes: Optional[list[str]] = None
-    method: Optional[Callable[..., Any]] = None
+    method_write: Optional[Callable[..., Any]] = None
+    method_read: Optional[Callable[..., Any]] = None
 
 
 def normalize_key(classes: tuple[type]) -> tuple[type]:

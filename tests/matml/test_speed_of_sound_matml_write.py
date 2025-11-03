@@ -23,56 +23,17 @@
 from pathlib import Path
 
 from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
+from utilities import get_material_and_metadata_from_xml
 
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.speed_of_sound import SpeedofSound
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
 
 DIR_PATH = Path(__file__).resolve().parent
-XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_speed_of_sound.xml")
 SPEED_OF_SOUND = DIR_PATH.joinpath("..", "data", "matml_speed_of_sound.txt")
 SPEED_OF_SOUND_METADATA = DIR_PATH.joinpath("..", "data", "matml_speed_of_sound_metadata.txt")
 SPEED_OF_SOUND_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_speed_of_sound_variable.txt")
-
-
-def test_read_constant_speed_of_sound():
-    material = read_specific_material(XML_FILE_PATH, "material with speed of sound")
-    assert len(material.models) == 2
-    speed_of_sound = material.models[1]
-    assert speed_of_sound.name == "Speed of Sound"
-    assert speed_of_sound.model_qualifiers[0].name == "BETA"
-    assert speed_of_sound.model_qualifiers[0].value == "Mechanical.ModalAcoustics"
-    assert speed_of_sound.model_qualifiers[1].name == "Field Variable Compatible"
-    assert speed_of_sound.model_qualifiers[1].value == "Temperature"
-    assert speed_of_sound.independent_parameters[0].name == "Temperature"
-    assert speed_of_sound.independent_parameters[0].values.value == [7.88860905221012e-31]
-    assert speed_of_sound.independent_parameters[0].values.unit == "C"
-    assert speed_of_sound.independent_parameters[0].upper_limit == "Program Controlled"
-    assert speed_of_sound.independent_parameters[0].lower_limit == "Program Controlled"
-    assert speed_of_sound.independent_parameters[0].default_value == 22.0
-    assert speed_of_sound.speed_of_sound.value == [100.0]
-    assert speed_of_sound.speed_of_sound.unit == "m s^-1"
-
-
-def test_read_variable_speed_of_sound():
-    material = read_specific_material(XML_FILE_PATH, "material with variable speed of sound")
-    assert len(material.models) == 2
-    speed_of_sound = material.models[1]
-    assert speed_of_sound.name == "Speed of Sound"
-    assert speed_of_sound.model_qualifiers[0].name == "BETA"
-    assert speed_of_sound.model_qualifiers[0].value == "Mechanical.ModalAcoustics"
-    assert speed_of_sound.model_qualifiers[1].name == "Field Variable Compatible"
-    assert speed_of_sound.model_qualifiers[1].value == "Temperature"
-    assert speed_of_sound.independent_parameters[0].name == "Temperature"
-    assert speed_of_sound.independent_parameters[0].values.value.tolist() == [22.0, 40.0, 60.0]
-    assert speed_of_sound.independent_parameters[0].values.unit == "C"
-    assert speed_of_sound.independent_parameters[0].upper_limit == "Program Controlled"
-    assert speed_of_sound.independent_parameters[0].lower_limit == "Program Controlled"
-    assert speed_of_sound.independent_parameters[0].default_value == 22.0
-    assert speed_of_sound.speed_of_sound.value.tolist() == [200.0, 300.0, 350.0]
-    assert speed_of_sound.speed_of_sound.unit == "m s^-1"
 
 
 def test_write_constant_speed_of_sound():
@@ -96,7 +57,7 @@ def test_write_constant_speed_of_sound():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(SPEED_OF_SOUND, "r", encoding="utf8") as file:
@@ -128,7 +89,7 @@ def test_write_variable_speed_of_sound():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(SPEED_OF_SOUND_VARIABLE, "r", encoding="utf8") as file:

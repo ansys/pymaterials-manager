@@ -23,50 +23,17 @@
 from pathlib import Path
 
 from ansys.units import Quantity
-from utilities import get_material_and_metadata_from_xml, read_specific_material
+from utilities import get_material_and_metadata_from_xml
 
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.tsai_wu_constants import TsaiWuConstants
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.visitors.matml_visitor import MatmlVisitor
 
 DIR_PATH = Path(__file__).resolve().parent
-XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_tsai_wu.xml")
 TSAI_WU = DIR_PATH.joinpath("..", "data", "matml_tsai_wu.txt")
 TSAI_WU_METADATA = DIR_PATH.joinpath("..", "data", "matml_tsai_wu_metadata.txt")
 TSAI_WU_VARIABLE = DIR_PATH.joinpath("..", "data", "matml_tsai_wu_variable.txt")
-
-
-def test_read_constant_tsai_wu():
-    material = read_specific_material(XML_FILE_PATH, "material with tsai-wu")
-    assert len(material.models) == 2
-    tsai_wu = material.models[1]
-    assert tsai_wu.name == "Tsai-Wu Constants"
-    assert tsai_wu.coupling_coefficient_xy.value == [-1.0]
-    assert tsai_wu.coupling_coefficient_xy.unit == ""
-    assert tsai_wu.coupling_coefficient_xz.value == [-1.0]
-    assert tsai_wu.coupling_coefficient_xz.unit == ""
-    assert tsai_wu.coupling_coefficient_yz.value == [-1.0]
-    assert tsai_wu.coupling_coefficient_yz.unit == ""
-    assert tsai_wu.independent_parameters[0].name == "Temperature"
-    assert tsai_wu.independent_parameters[0].values.value == [7.88860905221012e-31]
-    assert tsai_wu.independent_parameters[0].values.unit == "C"
-
-
-def test_read_variable_tsai_wu():
-    material = read_specific_material(XML_FILE_PATH, "material with variable tsai-wu")
-    assert len(material.models) == 2
-    tsai_wu = material.models[1]
-    assert tsai_wu.name == "Tsai-Wu Constants"
-    assert tsai_wu.coupling_coefficient_xy.value.tolist() == [-1.0, -1.0, -1.0]
-    assert tsai_wu.coupling_coefficient_xy.unit == ""
-    assert tsai_wu.coupling_coefficient_xz.value.tolist() == [-1.0, -1.0, -1.0]
-    assert tsai_wu.coupling_coefficient_xz.unit == ""
-    assert tsai_wu.coupling_coefficient_yz.value.tolist() == [-1.0, -1.0, -1.0]
-    assert tsai_wu.coupling_coefficient_yz.unit == ""
-    assert tsai_wu.independent_parameters[0].name == "Temperature"
-    assert tsai_wu.independent_parameters[0].values.value.tolist() == [22.0, 50.0, 70.0]
-    assert tsai_wu.independent_parameters[0].values.unit == "C"
 
 
 def test_write_constant_tsai_wu():
@@ -89,7 +56,7 @@ def test_write_constant_tsai_wu():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(TSAI_WU, "r") as file:
@@ -120,7 +87,7 @@ def test_write_variable_tsai_wu():
         )
     ]
 
-    writer = WriterMatml(materials)
+    writer = MatmlVisitor(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(TSAI_WU_VARIABLE, "r") as file:

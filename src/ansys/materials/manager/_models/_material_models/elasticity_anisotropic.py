@@ -24,12 +24,10 @@
 from typing import Dict, Literal
 
 from ansys.units import Quantity
-import numpy as np
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -39,24 +37,6 @@ class ElasticityAnisotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
     name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
-    column_1: Quantity | None = ParameterField(
-        default=None, description="The first column of the elasticity matrix.", matml_name="D[*,1]"
-    )
-    column_2: Quantity | None = ParameterField(
-        default=None, description="The second column of the elasticity matrix.", matml_name="D[*,2]"
-    )
-    column_3: Quantity | None = ParameterField(
-        default=None, description="The third column of the elasticity matrix.", matml_name="D[*,3]"
-    )
-    column_4: Quantity | None = ParameterField(
-        default=None, description="The fourth column of the elasticity matrix.", matml_name="D[*,4]"
-    )
-    column_5: Quantity | None = ParameterField(
-        default=None, description="The fifth column of the elasticity matrix.", matml_name="D[*,5]"
-    )
-    column_6: Quantity | None = ParameterField(
-        default=None, description="The sixth column of the elasticity matrix.", matml_name="D[*,6]"
-    )
 
     c_11: Quantity | None = Field(
         default=None,
@@ -150,30 +130,3 @@ class ElasticityAnisotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def validate_model(self) -> None:
-        """Validate anisotropic elasticity."""
-        if self.independent_parameters:
-            raise Exception("Variable anisotropic elasticity is currently not supported.")
-        if not all(
-            [
-                isinstance(self.column_1.value, np.ndarray),
-                isinstance(self.column_2.value, np.ndarray),
-                isinstance(self.column_3.value, np.ndarray),
-                isinstance(self.column_4.value, np.ndarray),
-                isinstance(self.column_5.value, np.ndarray),
-                isinstance(self.column_6.value, np.ndarray),
-            ]
-        ):
-            raise Exception("At least one of the columns is not defined as an array")
-        if not all(
-            [
-                len(self.column_1.value) == 6,
-                len(self.column_2.value) == 6,
-                len(self.column_3.value) == 6,
-                len(self.column_4.value) == 6,
-                len(self.column_5.value) == 6,
-                len(self.column_6.value) == 6,
-            ]
-        ):
-            raise Exception("At least one of the columns has not length equal 6")
