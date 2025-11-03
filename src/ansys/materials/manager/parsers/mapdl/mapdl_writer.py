@@ -41,9 +41,12 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
     ElasticityOrthotropic,
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.parsers.base_visitor import BaseVisitor
 from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
+    TABLE_LABELS,
+    TABLE_TBOPT,
     get_table_label,
     get_tbopt,
     write_constant_properties,
@@ -51,6 +54,7 @@ from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
     write_table_dep_values,
     write_table_value_per_temperature,
     write_table_values,
+    write_tb_points_for_temperature,
     write_temperature_reference_value,
     write_temperature_table_values,
 )
@@ -117,11 +121,11 @@ class MapdlWriter(BaseVisitor):
                     tb_opt=tb_opt,
                 )
                 material_string += parameters_str + "\n" + table_str
+                return material_string
 
     def visit_standard(self, material_model: Density) -> str:
         """Visit standard."""
-        material_string = ""
-        material_string += self._write_standard(material_model)
+        material_string = self._write_standard(material_model)
         if material_model.interpolation_options:
             interpolation_string = write_interpolation_options(
                 interpolation_options=material_model.interpolation_options,
@@ -187,7 +191,63 @@ class MapdlWriter(BaseVisitor):
                 tb_opt=tb_opt,
             )
             material_string = parameters_str + "\n" + table_str
-            return material_string
+
+        if material_model.interpolation_options:
+            interpolation_string = write_interpolation_options(
+                interpolation_options=material_model.interpolation_options,
+                independent_parameters=material_model.independent_parameters,
+            )
+            material_string += "\n" + interpolation_string
+
+        return material_string
+
+    def visit_isotropic_harderning(self, material_model: IsotropicHardening) -> str:
+        """Write isotropic hardening."""
+        plastic_strain = [
+            ind_param.values.value.tolist()
+            for ind_param in material_model.independent_parameters
+            if ind_param.name == "Plastic Strain"
+        ][0]
+        temperature = [
+            ind_param.values.value.tolist()
+            for ind_param in material_model.independent_parameters
+            if ind_param.name == "Temperature"
+        ]
+        table_parameters = [
+            plastic_strain,
+            material_model.stress.value.tolist(),
+        ]
+        table_label = TABLE_LABELS[material_model.__class__.__name__]
+        table_tbopt = TABLE_TBOPT[material_model.__class__.__name__]
+        if len(material_model.independent_parameters) == 1:
+            temperature_parameter = len(table_parameters[0]) * [0]
+            material_string = write_tb_points_for_temperature(
+                label=table_label,
+                table_parameters=table_parameters,
+                material_id=None,
+                temperature_parameter=temperature_parameter,
+                tb_opt=table_tbopt,
+            )
+
+        elif len(material_model.independent_parameters) == 2 and len(temperature) == 1:
+            material_string = write_tb_points_for_temperature(
+                label=table_label,
+                table_parameters=table_parameters,
+                material_id=None,
+                temperature_parameter=temperature[0],
+                tb_opt=table_tbopt,
+            )
+        else:
+            raise Exception("Only variable supported at the moment is temperature")
+
+        if material_model.interpolation_options:
+            interpolation_string = write_interpolation_options(
+                interpolation_options=material_model.interpolation_options,
+                independent_parameters=material_model.independent_parameters,
+            )
+            material_string += "\n" + interpolation_string
+
+        return material_string
 
     def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
         """Visit material model."""
@@ -204,6 +264,8 @@ class MapdlWriter(BaseVisitor):
             model = self.visit_anisotropic(material_model)
         elif isinstance(material_model, HillYieldCriterion):
             model = self.visit_hill_yield_criterion(material_model)
+        elif isinstance(material_model, IsotropicHardening):
+            model = self.visit_isotropic_harderning(material_model)
         else:
             return
         self._material_repr[material_name].append(model)
@@ -245,12 +307,17 @@ class MapdlWriter(BaseVisitor):
 
         materials = []
         for idx, material_name in enumerate(material_names):
+            ref_temp_string = None
             if reference_temperatures:
-                material_string += write_temperature_reference_value(
+                ref_temp_string = write_temperature_reference_value(
                     material_ids[idx], reference_temperatures[idx]
                 )
-            models = self._material_repr[material_name]
-            merged_models = " ".join(s.replace("None", str(material_ids[idx])) for s in models)
+            if ref_temp_string is None:
+                models = self._material_repr[material_name]
+            else:
+                models = [ref_temp_string] + self._material_repr[material_name]
+
+            merged_models = "".join(s.replace("None", str(material_ids[idx])) for s in models)
             materials.append(merged_models)
 
         if client is None:

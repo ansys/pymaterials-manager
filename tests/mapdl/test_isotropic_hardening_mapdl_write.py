@@ -26,7 +26,8 @@ from ansys.units import Quantity
 
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models import IsotropicHardening
-from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT = DIR_PATH.joinpath(
@@ -118,10 +119,17 @@ def test_isotropic_hardening_multilinear_constant():
         ],
     )
 
-    material_string = WriterMapdl()._write_material_model(isotropic_hardening, 2)
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[isotropic_hardening],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
     with open(ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT, "r") as file:
         data = file.read()
-        assert data == material_string
+    assert data == material_strings[0]
 
 
 def test_isotropic_hardening_multilinear_variable():
@@ -517,7 +525,15 @@ def test_isotropic_hardening_multilinear_variable():
         ],
     )
 
-    material_string = WriterMapdl()._write_material_model(isotropic_hardening, 2)
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[isotropic_hardening],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
     with open(ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]

@@ -28,7 +28,8 @@ from ansys.materials.manager._models._common.independent_parameter import Indepe
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._material_models import HillYieldCriterion
-from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 HILL_CONSTANT = DIR_PATH.joinpath("..", "data", "mapdl_hill_constant.cdb")
@@ -47,10 +48,19 @@ def test_hill_constant():
         yield_stress_ratio_yz=Quantity(value=[0.23], units=""),
         yield_stress_ratio_z=Quantity(value=[0.5], units=""),
     )
-    material_string = WriterMapdl()._write_material_model(hill, 2)
+
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[hill],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
     with open(HILL_CONSTANT, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_hill_variable_temp():
@@ -67,10 +77,19 @@ def test_hill_variable_temp():
             )
         ],
     )
-    material_string = WriterMapdl()._write_material_model(hill, 2)
+
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[hill],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
     with open(HILL_VARIABLE_TEMP, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_hill_variable_a11_a22():
@@ -141,10 +160,17 @@ def test_hill_variable_a11_a22():
         ],
         interpolation_options=InterpolationOptions(algorithm_type="Linear Multivariate"),
     )
-    material_string = WriterMapdl()._write_material_model(hill, 2)
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[hill],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
     with open(HILL_VARIABLE_A11_A22, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def hill_creep_constant():
@@ -152,23 +178,31 @@ def hill_creep_constant():
         model_qualifiers=[
             ModelQualifier(name="Separated Hill Potentials for Plasticity and Creep", value="Yes")
         ],
-        yield_stress_ratio_x_for_plasticity=Quantity(value=[1.0], units=""),
-        yield_stress_ratio_xy_for_plasticity=Quantity(value=[0.12], units=""),
-        yield_stress_ratio_xz_for_plasticity=Quantity(value=[0.23], units=""),
-        yield_stress_ratio_y_for_plasticity=Quantity(value=[0.8], units=""),
-        yield_stress_ratio_yz_for_plasticity=Quantity(value=[0.23], units=""),
-        yield_stress_ratio_z_for_plasticity=Quantity(value=[0.5], units=""),
-        yield_stress_ratio_x_for_creep=Quantity(value=[2], units=""),
-        yield_stress_ratio_xy_for_creep=Quantity(value=[2.1], units=""),
-        yield_stress_ratio_xz_for_creep=Quantity(value=[2.3], units=""),
-        yield_stress_ratio_y_for_creep=Quantity(value=[2.8], units=""),
-        yield_stress_ratio_yz_for_creep=Quantity(value=[2.4], units=""),
-        yield_stress_ratio_z_for_creep=Quantity(value=[2.5], units=""),
+        yield_stress_ratio_x=Quantity(value=[1.0], units=""),
+        yield_stress_ratio_xy=Quantity(value=[0.12], units=""),
+        yield_stress_ratio_xz=Quantity(value=[0.23], units=""),
+        yield_stress_ratio_y=Quantity(value=[0.8], units=""),
+        yield_stress_ratio_yz=Quantity(value=[0.23], units=""),
+        yield_stress_ratio_z=Quantity(value=[0.5], units=""),
+        creep_stress_ratio_x=Quantity(value=[2], units=""),
+        creep_stress_ratio_xy=Quantity(value=[2.1], units=""),
+        creep_stress_ratio_xz=Quantity(value=[2.3], units=""),
+        creep_stress_ratio_y=Quantity(value=[2.8], units=""),
+        creep_stress_ratio_yz=Quantity(value=[2.4], units=""),
+        creep_stress_ratio_z=Quantity(value=[2.5], units=""),
     )
-    material_string = WriterMapdl()._write_material_model(hill, 2)
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[hill],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
     with open(HILL_CREEP_CONSTANT, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_hill_creep_variable_temp():
@@ -176,23 +210,30 @@ def test_hill_creep_variable_temp():
         model_qualifiers=[
             ModelQualifier(name="Separated Hill Potentials for Plasticity and Creep", value="Yes")
         ],
-        yield_stress_ratio_x_for_plasticity=Quantity(value=[1.0, 1.1], units=""),
-        yield_stress_ratio_xy_for_plasticity=Quantity(value=[0.12, 0.13], units=""),
-        yield_stress_ratio_xz_for_plasticity=Quantity(value=[0.23, 0.24], units=""),
-        yield_stress_ratio_y_for_plasticity=Quantity(value=[0.8, 0.9], units=""),
-        yield_stress_ratio_yz_for_plasticity=Quantity(value=[0.23, 0.24], units=""),
-        yield_stress_ratio_z_for_plasticity=Quantity(value=[0.5, 0.51], units=""),
-        yield_stress_ratio_x_for_creep=Quantity(value=[2, 2.1], units=""),
-        yield_stress_ratio_xy_for_creep=Quantity(value=[2.1, 2.2], units=""),
-        yield_stress_ratio_xz_for_creep=Quantity(value=[2.3, 2.4], units=""),
-        yield_stress_ratio_y_for_creep=Quantity(value=[2.8, 2.9], units=""),
-        yield_stress_ratio_yz_for_creep=Quantity(value=[2.4, 2.5], units=""),
-        yield_stress_ratio_z_for_creep=Quantity(value=[2.5, 2.6], units=""),
+        yield_stress_ratio_x=Quantity(value=[1.0, 1.1], units=""),
+        yield_stress_ratio_xy=Quantity(value=[0.12, 0.13], units=""),
+        yield_stress_ratio_xz=Quantity(value=[0.23, 0.24], units=""),
+        yield_stress_ratio_y=Quantity(value=[0.8, 0.9], units=""),
+        yield_stress_ratio_yz=Quantity(value=[0.23, 0.24], units=""),
+        yield_stress_ratio_z=Quantity(value=[0.5, 0.51], units=""),
+        creep_stress_ratio_x=Quantity(value=[2, 2.1], units=""),
+        creep_stress_ratio_xy=Quantity(value=[2.1, 2.2], units=""),
+        creep_stress_ratio_xz=Quantity(value=[2.3, 2.4], units=""),
+        creep_stress_ratio_y=Quantity(value=[2.8, 2.9], units=""),
+        creep_stress_ratio_yz=Quantity(value=[2.4, 2.5], units=""),
+        creep_stress_ratio_z=Quantity(value=[2.5, 2.6], units=""),
         independent_parameters=[
             IndependentParameter(name="Temperature", values=Quantity(value=[34, 78], units="C"))
         ],
     )
-    material_string = WriterMapdl()._write_material_model(hill, 2)
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[hill],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
     with open(HILL_CREEP_VARIABLE_TEMP, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]

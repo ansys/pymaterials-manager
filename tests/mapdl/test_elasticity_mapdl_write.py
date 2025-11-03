@@ -35,7 +35,8 @@ from ansys.materials.manager._models._material_models.elasticity_anisotropic imp
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
-from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 ELASTICITY_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(
@@ -72,10 +73,18 @@ def test_elasticity_isotropic_constant():
         youngs_modulus=Quantity(value=[1000000], units="Pa"),
         poissons_ratio=Quantity(value=[0.3], units=""),
     )
-    material_string = WriterMapdl()._write_material_model(elasticity, 2)
+
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[elasticity],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
     with open(ELASTICITY_ISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_elasticity_isotropic_constant_temperature():
@@ -83,10 +92,17 @@ def test_elasticity_isotropic_constant_temperature():
         youngs_modulus=Quantity(value=[1000000], units="Pa"),
         poissons_ratio=Quantity(value=[0.3], units=""),
     )
-    material_string = WriterMapdl()._write_material_model(elasticity, 2, 22.0)
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[elasticity],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write(reference_temperatures=[22.0])
     with open(ELASTICITY_ISOTROPIC_CONSTANT_REFERENCE_TEMPERATURE, "r") as file:
         data = file.read()
-    assert data == material_string
+    assert data == material_strings[0]
 
 
 def test_elasticity_isotropic_variable():
@@ -100,10 +116,18 @@ def test_elasticity_isotropic_variable():
             )
         ],
     )
-    material_string = WriterMapdl()._write_material_model(elasticity, 3)
+
+    material = Material(
+        name="Material 3",
+        material_id=3,
+        models=[elasticity],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
     with open(ELASTICITY_ISOTROPIC_VARIABLE_TEMP, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_elasticity_isotropic_variable_reference_temperature():
@@ -117,11 +141,18 @@ def test_elasticity_isotropic_variable_reference_temperature():
             )
         ],
     )
-    material_string = WriterMapdl()._write_material_model(elasticity, 3, 35.0)
-    print(material_string)
+
+    material = Material(
+        name="Material 3",
+        material_id=3,
+        models=[elasticity],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write(reference_temperatures=[35.0])
     with open(ELASTICITY_ISOTROPIC_VARIABLE_TEMP_REFERENCE_TEMP, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_elasticity_orthotropic_constant():
@@ -136,10 +167,19 @@ def test_elasticity_orthotropic_constant():
         shear_modulus_yz=Quantity(value=[2000000], units="Pa"),
         shear_modulus_xz=Quantity(value=[3000000], units="Pa"),
     )
-    material_string = WriterMapdl()._write_material_model(elasticity, 1)
+
+    material = Material(
+        name="Material 1",
+        material_id=1,
+        models=[elasticity],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
     with open(ELASTICITY_ORTHOTROPIC_CONSTANT, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_elasticity_orthotropic_variable_temp():
@@ -160,10 +200,18 @@ def test_elasticity_orthotropic_variable_temp():
             )
         ],
     )
-    material_string = WriterMapdl()._write_material_model(elasticity, 1)
+
+    material = Material(
+        name="Material 1",
+        material_id=1,
+        models=[elasticity],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_elasticity_orthotropic_variable_temp_a11_a22():
@@ -374,10 +422,17 @@ def test_elasticity_orthotropic_variable_temp_a11_a22():
             extrapolation_type="Projection to the Convex Hull",
         ),
     )
-    material_string = WriterMapdl()._write_material_model(elasticity, 1, 22.0)
+    material = Material(
+        name="Material 1",
+        material_id=1,
+        models=[elasticity],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write(reference_temperatures=[22.0])
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE_TEMP_A11_A22, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_elasticity_orthotropic_variable_a11_a22():
@@ -415,68 +470,53 @@ def test_elasticity_orthotropic_variable_a11_a22():
             ),
         ],
     )
-    material_string = WriterMapdl()._write_material_model(elasticity, 1)
+
+    material = Material(
+        name="Material 1",
+        material_id=1,
+        models=[elasticity],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
     with open(ELASTICITY_ORTHOTROPIC_VARIABLE_A11_A22, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]
 
 
 def test_elasticity_anisotropic_constant():
     elasticity = ElasticityAnisotropic(
-        column_1=Quantity(
-            value=[100000000, 1000000, 2000000, 3000000, 4000000, 5000000], units="Pa"
-        ),
-        column_2=Quantity(
-            value=[7.88860905221012e-31, 150000000, 6000000, 7000000, 8000000, 9000000],
-            units="Pa",
-        ),
-        column_3=Quantity(
-            value=[
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                200000000,
-                10000000,
-                11000000,
-                12000000,
-            ],
-            units="Pa",
-        ),
-        column_4=Quantity(
-            value=[
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                50000000,
-                13000000,
-                14000000,
-            ],
-            units="Pa",
-        ),
-        column_5=Quantity(
-            value=[
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                60000000,
-                15000000,
-            ],
-            units="Pa",
-        ),
-        column_6=Quantity(
-            value=[
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                7.88860905221012e-31,
-                70000000,
-            ],
-            units="Pa",
-        ),
+        c_11=Quantity(value=[100000000.0], units="Pa"),
+        c_12=Quantity(value=[1000000.0], units="Pa"),
+        c_13=Quantity(value=[2000000.0], units="Pa"),
+        c_14=Quantity(value=[0.0], units="Pa"),
+        c_15=Quantity(value=[0.0], units="Pa"),
+        c_16=Quantity(value=[0.0], units="Pa"),
+        c_22=Quantity(value=[150000000.0], units="Pa"),
+        c_23=Quantity(value=[3000000.0], units="Pa"),
+        c_24=Quantity(value=[0.0], units="Pa"),
+        c_25=Quantity(value=[0.0], units="Pa"),
+        c_26=Quantity(value=[0.0], units="Pa"),
+        c_33=Quantity(value=[200000000.0], units="Pa"),
+        c_34=Quantity(value=[0.0], units="Pa"),
+        c_35=Quantity(value=[0.0], units="Pa"),
+        c_36=Quantity(value=[0.0], units="Pa"),
+        c_44=Quantity(value=[50000000.0], units="Pa"),
+        c_45=Quantity(value=[0.0], units="Pa"),
+        c_46=Quantity(value=[0.0], units="Pa"),
+        c_55=Quantity(value=[60000000.0], units="Pa"),
+        c_56=Quantity(value=[0.0], units="Pa"),
+        c_66=Quantity(value=[70000000.0], units="Pa"),
+    )
+    material = Material(
+        name="Material 1",
+        material_id=1,
+        models=[elasticity],
     )
 
-    material_string = WriterMapdl()._write_material_model(elasticity, 1)
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
     with open(ELASTICITY_ANISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
-        assert data == material_string
+        assert data == material_strings[0]

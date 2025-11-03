@@ -192,7 +192,7 @@ def map_from_hill_yield_criterion(
         material_model.yield_stress_ratio_z.value,
         material_model.yield_stress_ratio_xy.value,
         material_model.yield_stress_ratio_yz.value,
-        material_model.creep_stress_ratio_xz.value,
+        material_model.yield_stress_ratio_xz.value,
     ]
     tb_opt = ""
 

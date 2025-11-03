@@ -489,17 +489,17 @@ def write_temperature_reference_value(material_id: int, temperature: float) -> s
     return TEMPERATURE_REFERENCE.format(matid=material_id, temp=temperature)
 
 
-def get_table_label(self, model_name: str) -> str | None:
+def get_table_label(model_name: str) -> str | None:
     """Get table label string."""
     return TABLE_LABELS.get(model_name, None)
 
 
-def get_tbopt(self, model_name: str) -> str | None:
+def get_tbopt(model_name: str) -> str | None:
     """Get table tbopt string."""
     return TABLE_TBOPT.get(model_name, None)
 
 
-def write_anisotropic_elasticity(self, model: ElasticityAnisotropic, material_id: int):
+def write_anisotropic_elasticity(model: ElasticityAnisotropic, material_id: int):
     """Write anisotropic elasticity."""
     d = np.column_stack(
         (

@@ -37,6 +37,7 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
     ElasticityOrthotropic,
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
 from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
@@ -89,6 +90,9 @@ MATERIAL_MODEL_MAP = {
     ElasticityAnisotropic: ModelInfo(method_write=map_from_anisotropic_elasticity),
     HillYieldCriterion: ModelInfo(
         method_write=map_from_hill_yield_criterion,
+    ),
+    IsotropicHardening: ModelInfo(
+        attributes=["stress"],
     ),
     ThermalConductivityIsotropic: ModelInfo(
         labels=["KXX"],
