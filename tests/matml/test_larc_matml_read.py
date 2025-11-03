@@ -22,7 +22,7 @@
 
 from pathlib import Path
 
-from ansys.materials.manager.util.visitors.matml_reader import MatmlReader
+from ansys.materials.manager.parsers.matml.matml_reader import MatmlReader
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_larc.xml")

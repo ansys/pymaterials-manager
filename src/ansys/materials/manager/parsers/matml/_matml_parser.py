@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 from dataclasses import dataclass
+import re
 from typing import Any, Sequence, Union
 import uuid
 import xml.etree.ElementTree as ET
@@ -30,7 +31,9 @@ from ansys.units import Quantity
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager.util.visitors import _matml_strings as matml_strings
+from ansys.materials.manager.parsers.matml import _matml_strings as matml_strings
+
+MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
 
 
 @dataclass
@@ -324,6 +327,23 @@ def get_data_and_unit(param: dict) -> tuple[list[float | int], str]:
     return data, units
 
 
+def create_xml_string_value(values: float | int | list[float | int]) -> str:
+    """
+    Extract the value for the xml.
+
+    Parameters
+    ----------
+    values : float | int | list[float | int]
+        Value to be parsed.
+
+    Returns
+    -------
+    str
+        Parsed value to add to xml data.
+    """
+    return ", ".join(f"{v}" for v in values)
+
+
 def convert_to_float_or_keep(val: float | str | None) -> float | str | None:
     """
     Attempt to convert a string to float.
@@ -347,7 +367,21 @@ def convert_to_float_or_keep(val: float | str | None) -> float | str | None:
         return val
 
 
-MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
+def convert_to_float_string(value: float | str) -> str:
+    """
+    Convert a float to string or keep it as it is otherwise.
+
+    Parameters
+    ----------
+    value : float | str
+        Value to be parsed.
+
+    Returns
+    -------
+    str
+        Parsed value.
+    """
+    return str(value).replace("e", "E") if type(value) == float else value
 
 
 def get_material_model_name_and_qualifiers(
@@ -428,3 +462,54 @@ def fill_interpolation_options(variable_options: dict) -> InterpolationOptions:
         extrapolation_type=variable_options.get(matml_strings.EXTRAPOLATION_TYPE_KEY, "None"),
     )
     return interpolation_options
+
+
+def parse_unit_string(unit_str: str) -> list[tuple[str, int]]:
+    """Parse a unit string into a list of tuples."""
+    if unit_str.strip().lower() == matml_strings.UNITLESS_KEY.lower():
+        return [(matml_strings.UNITLESS_KEY, 1)]
+
+    pattern = r"([a-zA-Z]+)(?:\^?(-?\d+))?"
+    units = unit_str.split(" ")
+    result = []
+
+    for unit in units:
+        match = re.fullmatch(pattern, unit.strip())
+        if match:
+            name = match.group(1)
+            power = int(match.group(2)) if match.group(2) else 1
+            result.append((name, power))
+        else:
+            raise ValueError(f"Invalid unit format: {unit}")
+
+    return result
+
+
+def unit_to_xml(unit: str) -> ET.Element:
+    """
+    Convert a unit string to an XML element.
+
+    Parameters
+    ----------
+    unit : str
+        The unit string to convert, e.g., "kg*m-3" or "Pa".
+
+    Returns
+    -------
+    ET.Element
+        An XML element representing the units.
+    """
+    unit_list = parse_unit_string(unit)
+
+    if unit_list and unit_list[0][0].lower() == matml_strings.UNITLESS_KEY.lower():
+        return ET.Element(matml_strings.UNITLESS_KEY)
+
+    units = ET.Element(matml_strings.UNITS_KEY)
+
+    for unit_name, power in unit_list:
+        attribs = {matml_strings.POWER_KEY: str(power)} if power != 1 else {}
+        unit_elem = ET.SubElement(units, matml_strings.UNIT_KEY, attrib=attribs)
+        name_elem = ET.SubElement(unit_elem, matml_strings.NAME_KEY.capitalize())
+        name_elem.text = unit_name
+
+    return units

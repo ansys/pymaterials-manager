@@ -78,8 +78,8 @@ from ansys.materials.manager._models._material_models.zero_thermal_strain_refere
 from ansys.materials.manager._models._material_models.zero_thermal_strain_reference_temperature_orthotropic import (  # noqa: E501
     ZeroThermalStrainReferenceTemperatureOrthotropic,
 )
-from ansys.materials.manager.util.visitors._common import ModelInfo
-from ansys.materials.manager.util.visitors._matml_utils import (
+from ansys.materials.manager.parsers._common import ModelInfo
+from ansys.materials.manager.parsers.matml._matml_utils import (
     map_from_anisotropic_elasticity,
     map_from_hill_yield_criterion,
     map_to_anisotropic_elasticity,

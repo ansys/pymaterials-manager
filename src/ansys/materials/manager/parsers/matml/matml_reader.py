@@ -32,9 +32,9 @@ from ansys.units import Quantity
 
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors import _matml_strings as matml_strings
-from ansys.materials.manager.util.visitors._matml_model_map import MATERIAL_MODEL_MAP
-from ansys.materials.manager.util.visitors._matml_parser import (
+from ansys.materials.manager.parsers.matml import _matml_strings as matml_strings
+from ansys.materials.manager.parsers.matml._matml_model_map import MATERIAL_MODEL_MAP
+from ansys.materials.manager.parsers.matml._matml_parser import (
     fill_independent_parameter,
     fill_interpolation_options,
     get_data_and_unit,

@@ -32,7 +32,7 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
     CoefficientofThermalExpansionOrthotropic,
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager.util.visitors._common import get_creep_flag
+from ansys.materials.manager.parsers._common import get_creep_flag
 
 
 def get_value(model: MaterialModel, attr_name: str) -> float:

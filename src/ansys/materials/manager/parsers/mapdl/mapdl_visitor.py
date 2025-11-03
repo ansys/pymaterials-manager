@@ -42,7 +42,8 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
+from ansys.materials.manager.parsers.base_visitor import BaseVisitor
+from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
     get_table_label,
     get_tbopt,
     write_constant_properties,
@@ -53,7 +54,6 @@ from ansys.materials.manager.util.mapdl.writer_mapdl_utils import (
     write_temperature_reference_value,
     write_temperature_table_values,
 )
-from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
 
 from ._mapdl_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 

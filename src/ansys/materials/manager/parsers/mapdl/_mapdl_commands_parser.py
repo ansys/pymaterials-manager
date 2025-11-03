@@ -26,14 +26,13 @@ import math
 import numpy as np
 
 from ansys.materials.manager._models._common import IndependentParameter, InterpolationOptions
-from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
 
-from .mapdl_snippets_strings import (
+from ._mapdl_snippets_strings import (
     CONSTANT_MP_PROPERTY,
     EXTRAPOLATION_TYPE_MAP,
     INTERPOLATION_ALGORITHM_MAP,
@@ -498,80 +497,6 @@ def get_table_label(self, model_name: str) -> str | None:
 def get_tbopt(self, model_name: str) -> str | None:
     """Get table tbopt string."""
     return TABLE_TBOPT.get(model_name, None)
-
-
-def get_labels(self, model: MaterialModel) -> list[str]:
-    """Get mapdl property label string."""
-    if model.name == "Coefficient of Thermal Expansion":
-        for qualfier in model.model_qualifiers:
-            if qualfier.name == "Definition":
-                if qualfier.value == "Instantaneous":
-                    labels = [
-                        field.mapdl_name[0]
-                        for field in model.__class__.model_fields.values()
-                        if hasattr(field, "mapdl_name") and field.mapdl_name
-                    ]
-                else:
-                    labels = [
-                        field.mapdl_name[1]
-                        for field in model.__class__.model_fields.values()
-                        if hasattr(field, "mapdl_name") and field.mapdl_name
-                    ]
-    else:
-        labels = [
-            field.mapdl_name
-            for field in model.__class__.model_fields.values()
-            if hasattr(field, "mapdl_name") and field.mapdl_name
-        ]
-    return labels
-
-
-def map_from_anisotropic_elasticity(material_model: ElasticityAnisotropic) -> list[float]:
-    """Map anisotropic elasticity model to dependent values for MAPDL."""
-    d = np.zeros((6, 6))
-    d[0, 0] = material_model.c_11.value[0]
-    d[0, 1] = material_model.c_12.value[0]
-    d[0, 2] = material_model.c_13.value[0]
-    d[0, 3] = material_model.c_14.value[0]
-    d[0, 4] = material_model.c_15.value[0]
-    d[0, 5] = material_model.c_16.value[0]
-    d[1, 0] = material_model.c_12.value[0]
-    d[1, 1] = material_model.c_22.value[0]
-    d[1, 2] = material_model.c_23.value[0]
-    d[1, 3] = material_model.c_24.value[0]
-    d[1, 4] = material_model.c_25.value[0]
-    d[1, 5] = material_model.c_26.value[0]
-    d[2, 0] = material_model.c_13.value[0]
-    d[2, 1] = material_model.c_23.value[0]
-    d[2, 2] = material_model.c_33.value[0]
-    d[2, 3] = material_model.c_34.value[0]
-    d[2, 4] = material_model.c_35.value[0]
-    d[2, 5] = material_model.c_36.value[0]
-    d[3, 0] = material_model.c_14.value[0]
-    d[3, 1] = material_model.c_24.value[0]
-    d[3, 2] = material_model.c_34.value[0]
-    d[3, 3] = material_model.c_44.value[0]
-    d[3, 4] = material_model.c_45.value[0]
-    d[3, 5] = material_model.c_46.value[0]
-    d[4, 0] = material_model.c_15.value[0]
-    d[4, 1] = material_model.c_25.value[0]
-    d[4, 2] = material_model.c_35.value[0]
-    d[4, 3] = material_model.c_45.value[0]
-    d[4, 4] = material_model.c_55.value[0]
-    d[4, 5] = material_model.c_56.value[0]
-    d[5, 0] = material_model.c_16.value[0]
-    d[5, 1] = material_model.c_26.value[0]
-    d[5, 2] = material_model.c_36.value[0]
-    d[5, 3] = material_model.c_46.value[0]
-    d[5, 4] = material_model.c_56.value[0]
-    d[5, 5] = material_model.c_66.value[0]
-
-    # extract the lower triangular elements column-wise
-    dependent_values = []
-    for j in range(6):
-        dependent_values.extend(d[j:, j])
-
-    return dependent_values
 
 
 def write_anisotropic_elasticity(self, model: ElasticityAnisotropic, material_id: int):

@@ -28,8 +28,8 @@ from ansys.materials.manager._models._material_models.elasticity_anisotropic imp
     ElasticityAnisotropic,
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager.util.matml.utils import get_data_and_unit
-from ansys.materials.manager.util.visitors._common import get_creep_flag
+from ansys.materials.manager.parsers._common import get_creep_flag
+from ansys.materials.manager.parsers.matml._matml_parser import get_data_and_unit
 
 
 def map_from_anisotropic_elasticity(

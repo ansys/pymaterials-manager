@@ -24,7 +24,7 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.molecular_weight import MolecularWeight
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
+from ansys.materials.manager.parsers.base_visitor import BaseVisitor
 
 from ._fluent_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 

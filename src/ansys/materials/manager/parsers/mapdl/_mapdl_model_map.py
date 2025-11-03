@@ -43,11 +43,11 @@ from ansys.materials.manager._models._material_models.thermal_conductivity_isotr
 from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
     ThermalConductivityOrthotropic,
 )
-from ansys.materials.manager.util.mapdl.writer_mapdl_utils import map_from_anisotropic_elasticity
-from ansys.materials.manager.util.visitors._common import ModelInfo
-from ansys.materials.manager.util.visitors._mapdl_utils import (
+from ansys.materials.manager.parsers._common import ModelInfo
+from ansys.materials.manager.parsers.mapdl._mapdl_utils import (
     map_coefficient_of_thermal_expansion_isotropic,
     map_coefficient_of_thermal_expansion_orthotropic,
+    map_from_anisotropic_elasticity,
     map_from_hill_yield_criterion,
 )
 

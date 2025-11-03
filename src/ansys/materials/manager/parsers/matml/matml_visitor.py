@@ -31,13 +31,13 @@ from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._common.user_parameter import UserParameter
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_parser import _PATH_TYPE
-from ansys.materials.manager.util.matml.utils import (
+from ansys.materials.manager.parsers._common import _PATH_TYPE
+from ansys.materials.manager.parsers.base_visitor import BaseVisitor
+from ansys.materials.manager.parsers.matml._matml_parser import (
     convert_to_float_string,
     create_xml_string_value,
     unit_to_xml,
 )
-from ansys.materials.manager.util.visitors.base_visitor import BaseVisitor
 
 from . import _matml_strings as _matml_strings
 from ._matml_model_map import MATERIAL_MODEL_MAP  # noqa: F401
