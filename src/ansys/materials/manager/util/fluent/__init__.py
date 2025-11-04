@@ -19,33 +19,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-from typing import Literal
-
-from ansys.units import Quantity
-from pydantic import Field
-
-from ansys.materials.manager._models._common import MaterialModel, ParameterField
-
-
-class AdditionalPuckConstants(MaterialModel):
-    """Represents additional Puck constants for material modeling."""
-
-    name: Literal["Additional Puck Constants"] = Field(
-        default="Additional Puck Constants", repr=False, frozen=True
-    )
-    interface_weakening_factor: Quantity | None = ParameterField(
-        default=None,
-        description="The interface weakening factor for the additional Puck constants model.",
-        matml_name="Interface Weakening Factor",
-    )
-    degradation_parameter_s: Quantity | None = ParameterField(
-        default=None,
-        description="The degradation parameter s for the additional Puck constants model.",
-        matml_name="Degradation Parameter s",
-    )
-    degradation_parameter_m: Quantity | None = ParameterField(
-        default=None,
-        description="The degradation parameter M for the additional Puck constants model.",
-        matml_name="Degradation Parameter M",
-    )

@@ -20,32 +20,41 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Literal
+from typing import Protocol, Type
 
-from ansys.units import Quantity
-from pydantic import Field
+from pyparsing import Any
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField
+from ansys.materials.manager._models.material import Material
 
 
-class AdditionalPuckConstants(MaterialModel):
-    """Represents additional Puck constants for material modeling."""
+class Writer(Protocol):
+    """Protocol of the Writer."""
 
-    name: Literal["Additional Puck Constants"] = Field(
-        default="Additional Puck Constants", repr=False, frozen=True
-    )
-    interface_weakening_factor: Quantity | None = ParameterField(
-        default=None,
-        description="The interface weakening factor for the additional Puck constants model.",
-        matml_name="Interface Weakening Factor",
-    )
-    degradation_parameter_s: Quantity | None = ParameterField(
-        default=None,
-        description="The degradation parameter s for the additional Puck constants model.",
-        matml_name="Degradation Parameter s",
-    )
-    degradation_parameter_m: Quantity | None = ParameterField(
-        default=None,
-        description="The degradation parameter M for the additional Puck constants model.",
-        matml_name="Degradation Parameter M",
-    )
+    def write_material(self, material: Material, material_id: int, **kwargs):
+        """Abstract write material method."""
+        ...
+
+
+WRITER_REGISTRY: dict[str, Type[Writer]] = {}
+
+
+def register_writer(name: str):
+    """Decorate the dynamic registration of the writer registry."""
+
+    def decorator(cls: Type[Writer]):
+        WRITER_REGISTRY[name] = cls
+        return cls
+
+    return decorator
+
+
+def get_writer(client: Any):
+    """Get the appropriate writer instance."""
+    try:
+        if isinstance(client, str):
+            cls = WRITER_REGISTRY[client]
+        else:
+            cls = WRITER_REGISTRY[client.__class__.__name__]
+        return cls()
+    except:
+        raise Exception("Writer not found.")

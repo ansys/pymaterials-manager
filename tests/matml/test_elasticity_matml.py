@@ -36,7 +36,7 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
     ElasticityOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
 
 DIR_PATH = Path(__file__).resolve().parent
 XML_FILE_PATH = DIR_PATH.joinpath("..", "data", "matml_unittest_elasticity.xml")
@@ -278,7 +278,7 @@ def test_write_constant_elastic_isotropic_material():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_ELASTICITY, "r") as file:
@@ -298,12 +298,12 @@ def test_write_constant_elastic_orthotropic_material():
                     youngs_modulus_x=Quantity(value=[1000000], units="Pa"),
                     youngs_modulus_y=Quantity(value=[1500000], units="Pa"),
                     youngs_modulus_z=Quantity(value=[2000000], units="Pa"),
-                    poissons_ratio_xy=Quantity(value=[0.2], units=""),
-                    poissons_ratio_yz=Quantity(value=[0.3], units=""),
-                    poissons_ratio_xz=Quantity(value=[0.4], units=""),
                     shear_modulus_xy=Quantity(value=[1000000], units="Pa"),
                     shear_modulus_yz=Quantity(value=[2000000], units="Pa"),
                     shear_modulus_xz=Quantity(value=[3000000], units="Pa"),
+                    poissons_ratio_xy=Quantity(value=[0.2], units=""),
+                    poissons_ratio_yz=Quantity(value=[0.3], units=""),
+                    poissons_ratio_xz=Quantity(value=[0.4], units=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
@@ -323,7 +323,7 @@ def test_write_constant_elastic_orthotropic_material():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ORTHOTROPIC_ELASTICITY, "r") as file:
@@ -396,7 +396,7 @@ def test_write_constant_elastic_anisotropic_material():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ANISOTROPIC_ELASTICITY, "r") as file:
@@ -434,7 +434,7 @@ def test_write_variable_elastic_isotropic_material():
         )
     ]
 
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ISOTROPIC_ELASTICITY_VARIABLE, "r") as file:
@@ -454,12 +454,12 @@ def test_write_variable_elastic_orthotropic_material():
                     youngs_modulus_x=Quantity(value=[1000000, 11000000], units="Pa"),
                     youngs_modulus_y=Quantity(value=[1500000, 15100000], units="Pa"),
                     youngs_modulus_z=Quantity(value=[2000000, 21000000], units="Pa"),
-                    poissons_ratio_xy=Quantity(value=[0.2, 0.21], units=""),
-                    poissons_ratio_yz=Quantity(value=[0.3, 0.31], units=""),
-                    poissons_ratio_xz=Quantity(value=[0.4, 0.41], units=""),
                     shear_modulus_xy=Quantity(value=[1000000, 1100000], units="Pa"),
                     shear_modulus_yz=Quantity(value=[2000000, 2100000], units="Pa"),
                     shear_modulus_xz=Quantity(value=[3000000, 3100000], units="Pa"),
+                    poissons_ratio_xy=Quantity(value=[0.2, 0.21], units=""),
+                    poissons_ratio_yz=Quantity(value=[0.3, 0.31], units=""),
+                    poissons_ratio_xz=Quantity(value=[0.4, 0.41], units=""),
                     independent_parameters=[
                         IndependentParameter(
                             name="Temperature",
@@ -478,7 +478,7 @@ def test_write_variable_elastic_orthotropic_material():
             ],
         )
     ]
-    writer = MatmlWriter(materials)
+    writer = WriterMatml(materials)
     tree = writer._to_etree()
     material_string, metadata_string = get_material_and_metadata_from_xml(tree)
     with open(ORTHOTROPIC_ELASTICITY_VARIABLE, "r") as file:

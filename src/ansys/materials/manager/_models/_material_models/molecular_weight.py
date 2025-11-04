@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Literal, Sequence
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field
@@ -29,7 +29,6 @@ from ansys.materials.manager._models._common import (
     MaterialModel,
     ParameterField,
     SupportedPackage,
-    _FluentCore,
 )
 
 
@@ -41,6 +40,7 @@ class MolecularWeight(MaterialModel):
         default=None,
         description="The molecular weight of the material.",
         matml_name="Molecular Weight",
+        fluent_name="molecular_weight",
     )
     supported_packages: list[SupportedPackage] = Field(
         default=[SupportedPackage.FLUENT],
@@ -48,22 +48,3 @@ class MolecularWeight(MaterialModel):
         description="The list of supported packages",
         frozen=True,
     )
-
-    def _write_fluent(self) -> dict:
-        return {
-            "molecular_weight": {
-                "option": "constant",
-                "value": (
-                    self.molecular_weight.value[0]
-                    if isinstance(self.molecular_weight.value, Sequence)
-                    else self.molecular_weight.value
-                ),
-            }
-        }
-
-    def write_model(self, material_id, pyansys_session, **kwargs: dict):
-        """Write molecular weight model."""
-        self.validate_model()
-        if isinstance(pyansys_session, _FluentCore):
-            molecular_weight = self._write_fluent()
-            return molecular_weight

@@ -21,15 +21,14 @@
 # SOFTWARE.
 
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import _MapdlCore
 from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._material_models import HillYieldCriterion
+from ansys.materials.manager.util.mapdl.writer_mapdl import WriterMapdl
 
 DIR_PATH = Path(__file__).resolve().parent
 HILL_CONSTANT = DIR_PATH.joinpath("..", "data", "mapdl_hill_constant.cdb")
@@ -48,9 +47,7 @@ def test_hill_constant():
         yield_stress_ratio_yz=Quantity(value=[0.23], units=""),
         yield_stress_ratio_z=Quantity(value=[0.5], units=""),
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = hill.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(hill, 2)
     with open(HILL_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
@@ -70,8 +67,7 @@ def test_hill_variable_temp():
             )
         ],
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = hill.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(hill, 2)
     with open(HILL_VARIABLE_TEMP, "r") as file:
         data = file.read()
         assert data == material_string
@@ -145,8 +141,7 @@ def test_hill_variable_a11_a22():
         ],
         interpolation_options=InterpolationOptions(algorithm_type="Linear Multivariate"),
     )
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = hill.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(hill, 2)
     with open(HILL_VARIABLE_A11_A22, "r") as file:
         data = file.read()
         assert data == material_string
@@ -170,9 +165,7 @@ def hill_creep_constant():
         yield_stress_ratio_yz_for_creep=Quantity(value=[2.4], units=""),
         yield_stress_ratio_z_for_creep=Quantity(value=[2.5], units=""),
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = hill.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(hill, 2)
     with open(HILL_CREEP_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_string
@@ -199,9 +192,7 @@ def test_hill_creep_variable_temp():
             IndependentParameter(name="Temperature", values=Quantity(value=[34, 78], units="C"))
         ],
     )
-
-    mock_mapdl = MagicMock(spec=_MapdlCore)
-    material_string = hill.write_model(material_id=2, pyansys_session=mock_mapdl)
+    material_string = WriterMapdl()._write_material_model(hill, 2)
     with open(HILL_CREEP_VARIABLE_TEMP, "r") as file:
         data = file.read()
         assert data == material_string

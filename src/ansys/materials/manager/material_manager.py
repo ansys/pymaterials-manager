@@ -24,15 +24,16 @@
 """Provides the ``MaterialManager`` class."""
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
-from ansys.materials.manager.util.matml.matml_from_material import MatmlWriter
 from ansys.materials.manager.util.matml.matml_parser import MatmlReader
 from ansys.materials.manager.util.matml.matml_to_material import convert_matml_materials
+from ansys.materials.manager.util.matml.writer_matml import WriterMatml
+from ansys.materials.manager.util.writer import get_writer
 
 
 class MaterialManager:
@@ -105,9 +106,13 @@ class MaterialManager:
             self._add_library(material_dic)
         print("The materials were correctly read from the provided xml file.")
 
-    def write_to_matml(self, path: str | Path) -> None:
+    def write_to_matml(self, path: str | Path, materials: Sequence[Material] | None = None) -> None:
         """Write the materials in the library to a MatML file."""
-        writer = MatmlWriter(self.materials.values())
+        if not materials:
+            materials = list(self.materials.values())
+        writer = get_writer("Matml")
+        writer.materials = materials
+        assert isinstance(writer, WriterMatml)
         writer.export(str(path), indent=True)
         print(f"{len(self.materials)} materials written to {path}.")
 
@@ -130,7 +135,7 @@ class MaterialManager:
                 )
         self._materials |= material_dic
 
-    def write_material(self, material_name: str, material_id: int | None = None) -> None:
+    def write_material(self, material_name: str, material_id: int | None = None, **kwargs) -> None:
         """Write material to the pyansys session."""
         material = self._materials.get(material_name, None)
         if not material:
@@ -141,9 +146,10 @@ class MaterialManager:
         if not self.client:
             print("The pyansys session has not been defined.")
             return
-        material.write_material(self._client, material_id)
-
-        material.write_material(self._client, material_id)
+        writer = get_writer(self.client)
+        writer.write_material(
+            material=material, material_id=material_id, client=self.client, **kwargs
+        )
 
     def read_from_client_session(self) -> None:
         """Read material from the pyansys client session."""
