@@ -20,21 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from unittest.mock import MagicMock
-
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import _FluentCore
 from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager.util.fluent.writer_fluent import WriterFluent
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.parsers.fluent.fluent_writer import FluentWriter
 
 
-def test_density_write_fluent():
-    mock_fluent = MagicMock(spec=_FluentCore)
-    density = Density(density=Quantity(value=1.225, units="kg m^-3"))
-    model = WriterFluent()._write_material_model(density)
-    mock_fluent.settings.setup.materials.fluid["air"] = model
-    mock_fluent.settings.setup.materials.fluid.__setitem__.assert_called_once()
-    args = mock_fluent.settings.setup.materials.fluid.__setitem__.call_args
-    assert args[0][0] == "air"
-    assert args[0][1] == {"density": {"option": "constant", "value": 1.225}}
+def test_density_write():
+    density = Density(density=Quantity(value=[1.225], units="kg m^-3"))
+    material = Material(
+        name="air",
+        models=[density],
+    )
+    fluent_writer = FluentWriter([material])
+    fluent_materials = fluent_writer.write()
+    assert "air" in fluent_materials.keys()
+    air = fluent_materials["air"][0]
+    assert "density" in air.keys()
+    assert air["density"]["option"] == "constant"
+    assert air["density"]["value"] == 1.225
