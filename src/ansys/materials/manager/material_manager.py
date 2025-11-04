@@ -29,9 +29,9 @@ from typing import Any, Sequence
 from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.parsers.mapdl.mapdl_reader import read_mapdl
 from ansys.materials.manager.parsers.matml.matml_reader import MatmlReader
 from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
-from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
 
 
 class MaterialManager:
