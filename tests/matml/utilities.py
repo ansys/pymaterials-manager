@@ -25,6 +25,7 @@ import xml.etree.ElementTree as ET
 
 
 def get_material_and_metadata_from_xml(tree: ET.ElementTree) -> tuple[str, str]:
+    """Extract material and metadata strings from an XML tree."""
     material = tree._root.find("Materials").find("MatML_Doc").find("Material")
     metadata = tree._root.find("Materials").find("MatML_Doc").find("Metadata")
     material_string = ET.tostring(material, encoding="utf-8").decode("utf-8")
