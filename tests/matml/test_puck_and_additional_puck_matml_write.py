@@ -35,7 +35,7 @@ from ansys.materials.manager._models._material_models.stress_limits_orthotropic 
     StressLimitsOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 FIBER_ANGLE = DIR_PATH.joinpath("..", "data", "matml_fiber_angle.txt")

@@ -33,7 +33,7 @@ from ansys.materials.manager._models._material_models.strain_limits_orthotropic 
     StrainLimitsOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 STRAIN_LIMITS_ORTHOTROPIC = DIR_PATH.joinpath("..", "data", "matml_strain_limits_orthotropic.txt")

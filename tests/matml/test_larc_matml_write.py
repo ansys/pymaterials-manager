@@ -28,7 +28,7 @@ from utilities import get_material_and_metadata_from_xml
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.larc03_04_constants import LaRc0304Constants
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 LARC = DIR_PATH.joinpath("..", "data", "matml_larc.txt")

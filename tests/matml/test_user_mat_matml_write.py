@@ -28,7 +28,7 @@ from utilities import get_material_and_metadata_from_xml
 from ansys.materials.manager._models._common import IndependentParameter, UserParameter
 from ansys.materials.manager._models._material_models.usermat import ModelCoefficients
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 USER_MAT = DIR_PATH.joinpath("..", "data", "matml_user_mat.txt")

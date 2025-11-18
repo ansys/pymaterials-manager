@@ -33,7 +33,7 @@ from ansys.materials.manager._models._common import (
 from ansys.materials.manager._models._material_models.fabric_fiber_angle import FabricFiberAngle
 from ansys.materials.manager._models._material_models.ply_type import PlyType
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 FABRIC_FIBER_ANGLE = DIR_PATH.joinpath("..", "data", "matml_fabric_fiber_angle.txt")

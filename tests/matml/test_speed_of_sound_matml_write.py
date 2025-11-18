@@ -28,7 +28,7 @@ from utilities import get_material_and_metadata_from_xml
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._material_models.speed_of_sound import SpeedofSound
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 SPEED_OF_SOUND = DIR_PATH.joinpath("..", "data", "matml_speed_of_sound.txt")

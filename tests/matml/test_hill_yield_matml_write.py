@@ -34,7 +34,7 @@ from ansys.materials.manager._models._material_models.hill_yield_criterion impor
 from ansys.materials.manager._models._material_models.kinematic_hardening import KinematicHardening
 from ansys.materials.manager._models._material_models.strain_hardening import StrainHardening
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 HILL_YIELD = DIR_PATH.joinpath("..", "data", "matml_hill_yield.txt")

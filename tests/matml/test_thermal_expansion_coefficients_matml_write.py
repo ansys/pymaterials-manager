@@ -39,7 +39,7 @@ from ansys.materials.manager._models._material_models.zero_thermal_strain_refere
     ZeroThermalStrainReferenceTemperatureOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 CTE_ISOTROPIC = DIR_PATH.joinpath("..", "data", "matml_cte_isotropic.txt")
