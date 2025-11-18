@@ -344,6 +344,7 @@ def map_to_isotropic_hardening(property_set: dict) -> tuple[list[str], list[Quan
     ----------
     property_set : dict
         The isotropic hardening property set.
+
     Returns
     -------
     tuple[list[str], list[Quantity]]
