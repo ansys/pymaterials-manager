@@ -195,7 +195,10 @@ def write_interpolation_options(
     if interpolation_options.cached == False:
         par2 = "OFF"
     interpolation_string += TBIN_CACH.format(par1="", par2=par2)
-    if interpolation_options.extrapolation_type:
+    if (
+        interpolation_options.extrapolation_type
+        and interpolation_options.extrapolation_type != "None"
+    ):
         interpolation_string += TBIN_EXTR.format(
             par1="", par2=EXTRAPOLATION_TYPE_MAP[interpolation_options.extrapolation_type]
         )
