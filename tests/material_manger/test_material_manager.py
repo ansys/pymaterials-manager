@@ -45,7 +45,7 @@ def test_read_matml_write_apdl(mapdl):
     material_manager = MaterialManager()
     material_manager.read_from_matml(ELASTICITY_MATML)
     material = material_manager.get_material("Isotropic Test Material")
-    isotropic_elasticity = material.models[1]
+    isotropic_elasticity = material.models[0]
     assert isotropic_elasticity.name == "Elasticity"
     assert isotropic_elasticity.model_qualifiers[0].name == "Behavior"
     assert isotropic_elasticity.model_qualifiers[0].value == "Isotropic"
