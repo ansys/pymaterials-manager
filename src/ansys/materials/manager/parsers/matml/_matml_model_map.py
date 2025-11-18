@@ -82,8 +82,10 @@ from ansys.materials.manager.parsers._common import ModelInfo
 from ansys.materials.manager.parsers.matml._matml_utils import (
     map_from_anisotropic_elasticity,
     map_from_hill_yield_criterion,
+    map_from_isotropic_hardening,
     map_to_anisotropic_elasticity,
     map_to_hill_yield_criterion,
+    map_to_isotropic_hardening,
     map_to_model_coefficients,
 )
 
@@ -161,8 +163,8 @@ MATERIAL_MODEL_MAP = {
         ],
     ),
     IsotropicHardening: ModelInfo(
-        labels=["Stress"],
-        attributes=["stress"],
+        method_write=map_from_isotropic_hardening,
+        method_read=map_to_isotropic_hardening,
     ),
     KinematicHardening: ModelInfo(
         labels=[

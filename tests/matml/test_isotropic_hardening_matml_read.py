@@ -45,6 +45,9 @@ ISOTROPIC_HARDENING_VOCE_METADATA = DIR_PATH.joinpath(
 ISOTROPIC_HARDENING_VOCE_VARIABLE = DIR_PATH.joinpath(
     "..", "data", "matml_isotropic_hardening_voce_variable.txt"
 )
+BILINEAR_HARDENING_XML = DIR_PATH.joinpath(
+    "..", "data", "matml_unittest_isotropic_hardening_bilinear.xml"
+)
 
 
 def test_read_constant_voce_isotropic_hardening_material():
@@ -387,3 +390,8 @@ def test_read_variable_multilinear_isotropic_hardening_material():
         45,
     ]
     isotropic_hardening.independent_parameters[1].values.unit == "C"
+
+
+matml_reader = MatmlReader(BILINEAR_HARDENING_XML)
+materials = matml_reader.convert_matml_materials()
+print(materials)
