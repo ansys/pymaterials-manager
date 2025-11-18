@@ -36,7 +36,7 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
     ElasticityOrthotropic,
 )
 from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.util.visitors.matml_visitor import MatmlWriter
+from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 ISOTROPIC_ELASTICITY = DIR_PATH.joinpath("..", "data", "matml_isotropic_elasticity.txt")
