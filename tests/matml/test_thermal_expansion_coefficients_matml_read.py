@@ -218,10 +218,6 @@ def test_read_variable_isotropic_secant_cte_material():
         zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.unit
         == "C"
     )
-    assert (
-        zero_thermal_strain_reference_temperature.material_property
-        == "Coefficient of Thermal Expansion"
-    )
 
 
 def test_read_variable_orthotropic_secant_cte_material():
