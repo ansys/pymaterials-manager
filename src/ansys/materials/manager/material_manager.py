@@ -26,10 +26,16 @@
 from pathlib import Path
 from typing import Any, Sequence
 
+from ansys.dyna.core import Deck
+from ansys.dyna.core.lib.keyword_base import KeywordBase
+
 from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.parsers.fluent.fluent_writer import FluentWriter
+from ansys.materials.manager.parsers.lsdyna.lsdyna_writer import LsDynaWriter
 from ansys.materials.manager.parsers.mapdl.mapdl_reader import read_mapdl
+from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
 from ansys.materials.manager.parsers.matml.matml_reader import MatmlReader
 from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
@@ -42,11 +48,9 @@ class MaterialManager:
     """
 
     _materials: dict[str, Material]
-    _client: Any | None
 
-    def __init__(self, client: Any | None = None):
+    def __init__(self):
         """Initialize the material manager instance."""
-        self._client = client
         self._materials = {}
 
     @property
@@ -89,22 +93,19 @@ class MaterialManager:
         if material is None:
             print(f"The material with name {material_name} was not found.")
 
-    def read_from_matml(self, path: str | Path) -> None:
-        """Read materials from a MatML file and add them to the library."""
-        matml_reader = MatmlReader(path)
-        material_dic = matml_reader.convert_matml_materials()
-        if not self.materials:
-            self._materials = material_dic
+    def _get_materials_to_write(self, material_names: Sequence[str] | None) -> dict[str, Material]:
+        """Return the materials to be written."""
+        if self.materials is None or len(self.materials) == 0:
+            raise Exception("No materials found in the library.")
+        if not material_names:
+            materials = self.materials
         else:
-            self._add_library(material_dic)
-        print("The materials were correctly read from the provided xml file.")
-
-    def write_to_matml(self, path: str | Path, materials: Sequence[Material] | None = None) -> None:
-        """Write the materials in the library to a MatML file."""
-        if not materials:
-            materials = list(self.materials.values())
-        matml_reader = MatmlWriter(materials)
-        matml_reader.write(path, indent=True)
+            materials = [
+                self.get_material(name)
+                for name in material_names
+                if self.get_material(name) is not None
+            ]
+        return materials
 
     def get_material(self, material_name) -> Material | None:
         """Return a material from the library."""
@@ -125,27 +126,51 @@ class MaterialManager:
                 )
         self._materials |= material_dic
 
-    # def write_material(self,
-    # material_name: str, material_id: int | None = None, **kwargs) -> None:
-    #     """Write material to the pyansys session."""
-    #     material = self._materials.get(material_name, None)
-    #     if not material:
-    #         print(f"Material with name {material_name} has not been found in the library.")
-    #         return
-    #     if material_id is None:
-    #         material_id = material.mat_id
-    #     if not self.client:
-    #         print("The pyansys session has not been defined.")
-    #         return
-    #     writer = get_writer(self.client)
-    #     writer.write_material(material=material, material_id=material_id, **kwargs)
+    def write_to_matml(self, path: str | Path, material_names: list[str] | None = None) -> None:
+        """Write the materials in the library to a MatML file."""
+        materials = self._get_materials_to_write(material_names)
+        writer = MatmlWriter(materials)
+        writer.write(path, indent=True)
 
-    def read_from_client_session(self) -> None:
-        """Read material from the pyansys client session."""
-        if isinstance(self._client, _MapdlCore):
-            materials = read_mapdl(self._client)
-            self._add_library(materials)
-        elif isinstance(self._client, _FluentCore):
-            raise NotImplementedError("The method has not been implemented yet.")
+    def read_from_matml(self, path: str | Path) -> None:
+        """Read materials from a MatML file and add them to the library."""
+        matml_reader = MatmlReader(path)
+        material_dic = matml_reader.convert_matml_materials()
+        if not self.materials:
+            self._materials = material_dic
         else:
-            print("Not valid pyansys session.")
+            self._add_library(material_dic)
+        print("The materials were correctly read from the provided xml file.")
+
+    def write_to_mapdl(
+        self,
+        mapdl_client: _MapdlCore | None = None,
+        material_names: list[str] | None = None,
+        material_ids: list[int] | None = None,
+        reference_temperatures: list[float] | None = None,
+    ) -> list[str] | None:
+        """Write a material to the connected MAPDL session."""
+        materials = self._get_materials_to_write(material_names)
+        writer = MapdlWriter(materials)
+        return writer.write(mapdl_client, material_names, material_ids, reference_temperatures)
+
+    def read_from_mapdl_session(self, mapdl_client: _MapdlCore) -> None:
+        """Read material from the pyansys client session."""
+        materials = read_mapdl(mapdl_client)
+        self._add_library(materials)
+
+    def write_to_ls_dyna(
+        self, deck: Deck | None = None, material_names: list[str] | None = None
+    ) -> list[KeywordBase] | None:
+        """Write the materials in the library to a LS-DYNA keyword file."""
+        materials = self._get_materials_to_write(material_names)
+        writer = LsDynaWriter(materials)
+        return writer.write(deck)
+
+    def write_to_fluent(
+        self, fluent_client: _FluentCore, material_names: list[str] | None = None
+    ) -> list[dict]:
+        """Write a material to the connected Fluent session."""
+        materials = self._get_materials_to_write(material_names)
+        writer = FluentWriter(materials)
+        return writer.write(material_names)
