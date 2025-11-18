@@ -66,9 +66,8 @@ def test_read_matml_write_apdl(mapdl):
     assert isotropic_elasticity.youngs_modulus.unit == "Pa"
     assert isotropic_elasticity.poissons_ratio.value == [0.3]
     assert isotropic_elasticity.poissons_ratio.unit == ""
-    material_manager.materials[0].mat_id = 3
     material_manager.read_from_mapdl_session(mapdl)
-    material = material_manager.get_material("MATERIAL NUMBER 3")
+    material = material_manager.get_material("MATERIAL NUMBER 1")
     isotropic_elasticity = material.models[0]
     assert isotropic_elasticity.name == "Elasticity"
     assert isotropic_elasticity.model_qualifiers[0].name == "Behavior"
