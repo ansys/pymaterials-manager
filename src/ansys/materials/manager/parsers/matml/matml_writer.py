@@ -135,7 +135,10 @@ class MatmlWriter(BaseVisitor):
                     _matml_strings.NORMALIZED_KEY,
                     str(interpolation_options.normalized),
                 )
-            if interpolation_options.extrapolation_type:
+            if (
+                interpolation_options.extrapolation_type
+                and interpolation_options.extrapolation_type != "None"
+            ):
                 self._add_qualifier(
                     parameter_element,
                     _matml_strings.EXTRAPOLATION_TYPE_KEY,
