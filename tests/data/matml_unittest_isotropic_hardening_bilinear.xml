@@ -12,11 +12,11 @@
             <Qualifier name="Definition">Bilinear</Qualifier>
             <ParameterValue parameter="pa1" format="float">
               <Data>225000000</Data>
-              <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
             </ParameterValue>
             <ParameterValue parameter="pa2" format="float">
               <Data>2091000000</Data>
-              <Qualifier name="Variable Type">Dependent,Dependent,Dependent,Dependent,Dependent</Qualifier>
+              <Qualifier name="Variable Type">Dependent</Qualifier>
             </ParameterValue>
           </PropertyData>
         </BulkDetails>
