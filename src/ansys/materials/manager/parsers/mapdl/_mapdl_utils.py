@@ -33,6 +33,7 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
+from ansys.materials.manager._models._material_models.neo_hookean import NeoHookean
 from ansys.materials.manager.parsers._common import get_creep_flag
 
 
@@ -254,3 +255,26 @@ def map_from_isotropic_hardening(
             material_model.stress.value.tolist(),
         ]
         return [tb_opt], [values]
+
+
+def map_from_neo_hookean(
+    material_model: NeoHookean,
+) -> tuple[list[str], list[list[float]]]:
+    """
+    Map Neo-Hookean model to dependent values for MAPDL.
+
+    Parameters
+    ----------
+    material_model : NeoHookean
+        The Neo-Hookean material model.
+
+    Returns
+    -------
+    tuple[list[str], list[list[float]]]
+        The list of labels and the list of values.
+    """
+    values = [
+        material_model.initial_shear_modulus.value.tolist(),
+        material_model.incompressibility_modulus.value.tolist(),
+    ]
+    return ["NEO"], [values]

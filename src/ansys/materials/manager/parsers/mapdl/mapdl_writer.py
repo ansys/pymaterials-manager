@@ -42,6 +42,7 @@ from ansys.materials.manager._models._material_models.elasticity_orthotropic imp
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
+from ansys.materials.manager._models._material_models.neo_hookean import NeoHookean
 from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
@@ -267,6 +268,30 @@ class MapdlWriter(BaseVisitor):
 
         return material_string
 
+    def visit_neo_hookean(self, material_model: NeoHookean) -> str:
+        """Write Neo-Hookean material model."""
+        table_label = TABLE_LABELS[material_model.__class__.__name__]
+        dependent_parameters_dict = self._populate_dependent_parameters(material_model)
+        dependent_values = list(dependent_parameters_dict.values())[0]
+        tbopt = list(dependent_parameters_dict.keys())[0]
+        if not material_model.independent_parameters:
+            material_string = write_table_dep_values(
+                label=table_label,
+                dependent_values=[x for xs in dependent_values for x in xs],
+                material_id=None,
+                tb_opt=tbopt,
+            )
+        else:
+            raise Exception("Only constant Neo-Hookean properties are supported at the moment")
+
+        if material_model.interpolation_options:
+            interpolation_string = write_interpolation_options(
+                interpolation_options=material_model.interpolation_options,
+                independent_parameters=material_model.independent_parameters,
+            )
+            material_string += "\n" + interpolation_string
+        return material_string
+
     def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
         """Visit material model."""
         standard_models = (
@@ -286,6 +311,8 @@ class MapdlWriter(BaseVisitor):
             model = self.visit_hill_yield_criterion(material_model)
         elif isinstance(material_model, IsotropicHardening):
             model = self.visit_isotropic_harderning(material_model)
+        elif isinstance(material_model, NeoHookean):
+            model = self.visit_neo_hookean(material_model)
         else:
             return
         self._material_repr[material_name].append(model)
