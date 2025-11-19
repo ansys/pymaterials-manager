@@ -281,6 +281,16 @@ class MapdlWriter(BaseVisitor):
                 material_id=None,
                 tb_opt=tbopt,
             )
+        elif len(material_model.independent_parameters) == 1 and (
+            material_model.independent_parameters[0].name == "Temperature"
+        ):
+            material_string = write_table_value_per_temperature(
+                label=table_label,
+                material_id=None,
+                dependent_parameters=dependent_values,
+                temperature_parameter=material_model.independent_parameters[0],
+                tb_opt=tbopt,
+            )
         else:
             raise Exception("Only constant Neo-Hookean properties are supported at the moment")
 

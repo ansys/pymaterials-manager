@@ -25,6 +25,7 @@ from pathlib import Path
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml
 
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager._models._material_models.neo_hookean import NeoHookean
 from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
@@ -61,6 +62,12 @@ def test_neo_hookean_variable_matml_write():
     neo_hookean = NeoHookean(
         initial_shear_modulus=Quantity(value=[27104.0, 2700.0, 2600.0], units="Pa"),
         incompressibility_modulus=Quantity(value=[1e-05, 2e-05, 3e-05], units="Pa^-1"),
+        independent_parameters=[
+            IndependentParameter(
+                name="Temperature",
+                values=Quantity(value=[100, 300, 816, 1040, 1150], units="C"),
+            )
+        ],
     )
     material = Material(
         name="Neo Hookean variable",
