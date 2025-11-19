@@ -20,27 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import abc
-
 from pydantic import BaseModel, Field
 
-from ._packages import SupportedPackage  # noqa: F401
 from .common import validate_parameters
 from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
 
 
-class MaterialModel(BaseModel, abc.ABC):
-    """A base class for representing a material models."""
+class MaterialModel(BaseModel):
+    """
+    A base class for representing a material models.
+
+    Parameters
+    ----------
+    name : str
+        The name of the material model.
+    independent_parameters : list[IndependentParameter] | None
+        List of independent parameters for the model.
+    interpolation_options : InterpolationOptions | None
+        Options for interpolation of the material model data.
+    model_qualifiers : list[ModelQualifier]
+        List of qualifiers for the model. This is used to determine
+        the type of model and its applicability.
+    """
 
     name: str = Field(default="", title="Name", description="The name of the material model.")
-    supported_packages: list[SupportedPackage] = Field(
-        default=[],
-        title="Supported Packages",
-        description="The supported packages for this material model. Currently, only PyMAPDL and PyFluent are supported.",  # noqa: E501
-        frozen=True,
-    )
     independent_parameters: list[IndependentParameter] | None = Field(
         default=None,
         title="Independent Parameters",

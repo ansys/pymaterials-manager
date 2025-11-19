@@ -257,3 +257,8 @@ def test_read_variable_orthotropic_secant_cte_material():
         zero_thermal_strain_reference_temperature.zero_thermal_strain_reference_temperature.unit
         == "C"
     )
+
+
+matml_reader = MatmlReader(INSTANTANEOUS_XML_FILE_PATH)
+materials = matml_reader.convert_matml_materials()
+material = materials["Mat with constant isotropic instantaneous CTE"]

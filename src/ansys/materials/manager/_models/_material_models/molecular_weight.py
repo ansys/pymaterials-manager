@@ -25,10 +25,7 @@ from typing import Literal
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import (
-    MaterialModel,
-    SupportedPackage,
-)
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class MolecularWeight(MaterialModel):
@@ -38,10 +35,4 @@ class MolecularWeight(MaterialModel):
     molecular_weight: Quantity | None = Field(
         default=None,
         description="The molecular weight of the material.",
-    )
-    supported_packages: list[SupportedPackage] = Field(
-        default=[SupportedPackage.FLUENT],
-        title="Supported Packages",
-        description="The list of supported packages",
-        frozen=True,
     )

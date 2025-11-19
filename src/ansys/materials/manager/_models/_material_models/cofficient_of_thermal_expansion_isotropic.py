@@ -33,7 +33,22 @@ from ansys.materials.manager._models._common import (
 
 
 class CoefficientofThermalExpansionIsotropic(MaterialModel):
-    """Represents an isotropic coefficient of thermal expansion material model."""
+    """
+    Represents an isotropic coefficient of thermal expansion material model.
+
+    The essential qualifiers for this model are:
+    - Behavior: Isotropic (strict)
+    - Definition: [Instantaneous, Secant] (range)
+
+    if not provided, these qualifiers will be automatically added during model validation
+    as Behavior: Isotropic and Definition: Instantaneous.
+
+    Parameters
+    ----------
+    coefficient_of_thermal_expansion : Quantity | None
+        The coefficient of thermal expansion for the material.
+        Supported by MAPDL and MatML.
+    """
 
     name: Literal["Coefficient of Thermal Expansion"] = Field(
         default="Coefficient of Thermal Expansion", repr=False, frozen=True

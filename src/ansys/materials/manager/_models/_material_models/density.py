@@ -25,7 +25,7 @@ from typing import Literal
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, SupportedPackage
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class Density(MaterialModel):
@@ -35,10 +35,4 @@ class Density(MaterialModel):
     density: Quantity | None = Field(
         default=None,
         description="The density of the material.",
-    )
-    supported_packages: list[SupportedPackage] = Field(
-        default=[SupportedPackage.MAPDL, SupportedPackage.FLUENT],
-        title="Supported Packages",
-        description="The list of supported packages.",
-        frozen=True,
     )
