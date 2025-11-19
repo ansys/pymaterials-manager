@@ -26,6 +26,7 @@ from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml
 
 from ansys.materials.manager._models._common import IndependentParameter
+from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
 from ansys.materials.manager._models._material_models.isotropic_hardening_voce_law import (
     IsotropicHardeningVoceLaw,
@@ -319,5 +320,66 @@ def test_read_variable_voce_isotropic_hardening():
         data = file.read()
         assert data == material_string
     with open(ISOTROPIC_HARDENING_VOCE_METADATA, "r") as file:
+        data = file.read()
+        assert data == metadata_string
+
+
+def test_write_constant_bilinear_isotropic_hardening():
+    isotropic_hardening = IsotropicHardening(
+        model_qualifiers=[ModelQualifier(name="Definition", value="Bilinear")],
+        yield_strength=Quantity(value=[225000000], units="Pa"),
+        tangent_modulus=Quantity(value=[2091000000], units="Pa"),
+    )
+
+    materials = [Material(name="Steel", models=[isotropic_hardening])]
+
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+
+    with open(
+        DIR_PATH.joinpath("..", "data", "matml_isotropic_hardening_bilinear_constant.txt"), "r"
+    ) as file:
+        data = file.read()
+        assert data == material_string
+    with open(
+        DIR_PATH.joinpath("..", "data", "matml_isotropic_hardening_bilinear_constant_metadata.txt"),
+        "r",
+    ) as file:
+        data = file.read()
+        assert data == metadata_string
+
+
+def test_write_variable_bilinear_isotropic_hardening():
+    isotropic_hardening = IsotropicHardening(
+        model_qualifiers=[ModelQualifier(name="Definition", value="Bilinear")],
+        yield_strength=Quantity(
+            value=[225000000, 168000000, 115000000, 31000000, 15000000], units="Pa"
+        ),
+        tangent_modulus=Quantity(
+            value=[2091000000, 1577000000, 708000000, 405000000, 265000000], units="Pa"
+        ),
+        independent_parameters=[
+            IndependentParameter(
+                name="Temperature",
+                values=Quantity(value=[100, 300, 816, 1040, 1150], units="C"),
+            )
+        ],
+    )
+
+    materials = [Material(name="Steel Temp Dependent", models=[isotropic_hardening])]
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, metadata_string = get_material_and_metadata_from_xml(tree)
+
+    with open(
+        DIR_PATH.joinpath("..", "data", "matml_isotropic_hardening_bilinear_variable.txt"), "r"
+    ) as file:
+        data = file.read()
+        assert data == material_string
+    with open(
+        DIR_PATH.joinpath("..", "data", "matml_isotropic_hardening_bilinear_variable_metadata.txt"),
+        "r",
+    ) as file:
         data = file.read()
         assert data == metadata_string
