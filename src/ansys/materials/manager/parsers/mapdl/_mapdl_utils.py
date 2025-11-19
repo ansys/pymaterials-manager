@@ -32,6 +32,7 @@ from ansys.materials.manager._models._material_models.cofficient_of_thermal_expa
     CoefficientofThermalExpansionOrthotropic,
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
 from ansys.materials.manager.parsers._common import get_creep_flag
 
 
@@ -208,3 +209,48 @@ def map_from_hill_yield_criterion(
         tb_opt = "PC"
 
     return [tb_opt], [yield_stress]
+
+
+def map_from_isotropic_hardening(
+    material_model: IsotropicHardening,
+) -> tuple[list[str], list[list[float]]]:
+    """
+    Map isotropic hardening model to dependent values for MAPDL.
+
+    Parameters
+    ----------
+    material_model : IsotropicHardening
+        The isotropic hardening material model.
+
+    Returns
+    -------
+    tuple[list[str], list[list[float]]]
+        The list of labels and the list of values.
+    """
+    tb_opt = ""
+    for qualifier in material_model.model_qualifiers:
+        if qualifier.name == "Definition" and qualifier.value == "Multilinear":
+            tb_opt = "MISO"
+            break
+        elif qualifier.name == "Definition" and qualifier.value == "Bilinear":
+            tb_opt = "BISO"
+            break
+    if tb_opt == "":
+        raise ValueError("IsotropicHardening model requires a valid 'Definition' qualifier.")
+    elif tb_opt == "BISO":
+        values = [
+            material_model.yield_strength.value,
+            material_model.tangent_modulus.value,
+        ]
+        return [tb_opt], [values]
+    else:
+        plastic_strain = [
+            ind_param.values.value.tolist()
+            for ind_param in material_model.independent_parameters
+            if ind_param.name == "Plastic Strain"
+        ][0]
+        values = [
+            plastic_strain,
+            material_model.stress.value.tolist(),
+        ]
+        return [tb_opt], [values]

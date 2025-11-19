@@ -50,6 +50,7 @@ from ansys.materials.manager.parsers.mapdl._mapdl_utils import (
     map_coefficient_of_thermal_expansion_orthotropic,
     map_from_anisotropic_elasticity,
     map_from_hill_yield_criterion,
+    map_from_isotropic_hardening,
 )
 
 MATERIAL_MODEL_MAP = {
@@ -93,6 +94,7 @@ MATERIAL_MODEL_MAP = {
     ),
     IsotropicHardening: ModelInfo(
         attributes=["stress"],
+        method_write=map_from_isotropic_hardening,
     ),
     ThermalConductivityIsotropic: ModelInfo(
         labels=["KXX"],

@@ -52,7 +52,6 @@ from ansys.materials.manager._models.material import Material
 from ansys.materials.manager.parsers.base_visitor import BaseVisitor
 from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
     TABLE_LABELS,
-    TABLE_TBOPT,
     get_table_label,
     get_tbopt,
     write_constant_properties,
@@ -209,39 +208,52 @@ class MapdlWriter(BaseVisitor):
 
     def visit_isotropic_harderning(self, material_model: IsotropicHardening) -> str:
         """Write isotropic hardening."""
-        plastic_strain = [
-            ind_param.values.value.tolist()
-            for ind_param in material_model.independent_parameters
-            if ind_param.name == "Plastic Strain"
-        ][0]
-        temperature = [
-            ind_param.values.value.tolist()
-            for ind_param in material_model.independent_parameters
-            if ind_param.name == "Temperature"
-        ]
-        table_parameters = [
-            plastic_strain,
-            material_model.stress.value.tolist(),
-        ]
+        dependent_parameters_dict = self._populate_dependent_parameters(material_model)
+        dependent_values = list(dependent_parameters_dict.values())[0]
+        tb_opt = list(dependent_parameters_dict.keys())[0]
+
+        if material_model.independent_parameters:
+            temperature = [
+                ind_param.values.value.tolist()
+                for ind_param in material_model.independent_parameters
+                if ind_param.name == "Temperature"
+            ]
+
         table_label = TABLE_LABELS[material_model.__class__.__name__]
-        table_tbopt = TABLE_TBOPT[material_model.__class__.__name__]
-        if len(material_model.independent_parameters) == 1:
-            temperature_parameter = len(table_parameters[0]) * [0]
+
+        if not material_model.independent_parameters:
+            material_string = write_table_dep_values(
+                label=table_label,
+                dependent_values=dependent_values,
+                material_id=None,
+                tb_opt=tb_opt,
+            )
+
+        elif len(material_model.independent_parameters) == 1 and temperature:
+            material_string = write_table_value_per_temperature(
+                label=table_label,
+                material_id=None,
+                dependent_parameters=dependent_values,
+                temperature_parameter=material_model.independent_parameters[0],
+                tb_opt=tb_opt,
+            )
+        elif len(material_model.independent_parameters) == 1:
+            temperature_parameter = len(dependent_values[0]) * [0]
             material_string = write_tb_points_for_temperature(
                 label=table_label,
-                table_parameters=table_parameters,
+                table_parameters=dependent_values,
                 material_id=None,
                 temperature_parameter=temperature_parameter,
-                tb_opt=table_tbopt,
+                tb_opt=tb_opt,
             )
 
         elif len(material_model.independent_parameters) == 2 and len(temperature) == 1:
             material_string = write_tb_points_for_temperature(
                 label=table_label,
-                table_parameters=table_parameters,
+                table_parameters=dependent_values,
                 material_id=None,
                 temperature_parameter=temperature[0],
-                tb_opt=table_tbopt,
+                tb_opt=tb_opt,
             )
         else:
             raise Exception("Only variable supported at the moment is temperature")
