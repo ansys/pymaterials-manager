@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Neo Hookean constant</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>27104.0</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>1e-05</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

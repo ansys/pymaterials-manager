@@ -36,7 +36,7 @@ def test_neo_hookean_constant_matml_read():
     neo_hookean = material.models[0]
     assert neo_hookean.name == "Neo-Hookean"
     assert neo_hookean.initial_shear_modulus.value == [27104.0]
-    assert neo_hookean.initial_shear_modulus.unit == "Pa"
+    assert neo_hookean.initial_shear_modulus.units == "Pa"
     assert neo_hookean.incompressibility_modulus.value == [1e-05]
     assert neo_hookean.incompressibility_modulus.unit == "Pa^-1"
 
