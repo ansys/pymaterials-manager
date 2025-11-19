@@ -12,6 +12,10 @@
         <Data>1e-05, 2e-05, 3e-05</Data>
         <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
       </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>100, 300, 816</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+      </ParameterValue>
     </PropertyData>
   </BulkDetails>
 </Material>

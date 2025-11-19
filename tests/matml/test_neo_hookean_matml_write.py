@@ -65,7 +65,7 @@ def test_neo_hookean_variable_matml_write():
         independent_parameters=[
             IndependentParameter(
                 name="Temperature",
-                values=Quantity(value=[100, 300, 816, 1040, 1150], units="C"),
+                values=Quantity(value=[100, 300, 816], units="C"),
             )
         ],
     )

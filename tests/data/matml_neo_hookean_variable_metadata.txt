@@ -20,4 +20,12 @@
     </Units>
     <Name>Incompressibility Parameter D1</Name>
   </ParameterDetails>
+  <ParameterDetails id="pa2">
+    <Units>
+      <Unit>
+        <Name>C</Name>
+      </Unit>
+    </Units>
+    <Name>Temperature</Name>
+  </ParameterDetails>
 </Metadata>
