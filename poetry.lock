@@ -322,14 +322,14 @@ tests = ["pyfakefs (==5.8.0)", "pytest (==8.4.0)", "pytest-cov (==6.1.1)"]
 
 [[package]]
 name = "ansys-units"
-version = "0.8.1"
+version = "0.9.1"
 description = "Pythonic interface for units, unit systems, and unit conversions."
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "ansys_units-0.8.1-py3-none-any.whl", hash = "sha256:dc74164ad93c6acf32c351af9cd0a3bd0435b90112ab210044351b466d155893"},
-    {file = "ansys_units-0.8.1.tar.gz", hash = "sha256:776bd18ff94187679babb8d52ac002d236a8641fd65e9c7835e902daf287f755"},
+    {file = "ansys_units-0.9.1-py3-none-any.whl", hash = "sha256:5e1722c64b4c9b676271ce1f7ab8e14badc9af71f6a0fa6c8fca85ae675d287a"},
+    {file = "ansys_units-0.9.1.tar.gz", hash = "sha256:ae0669a1fbcd2977bd5fd2ef30e1765967db63ccf00181e925314a7af8321099"},
 ]
 
 [package.dependencies]
@@ -338,7 +338,8 @@ pyyaml = ">=6.0"
 
 [package.extras]
 additional = ["numpy (>=1.24,<3)", "pydantic (>=2.11.7)", "pydantic_core (>=2.33.2)"]
-doc = ["Sphinx (==7.4.7)", "ansys-sphinx-theme (==1.6.1)", "matplotlib (==3.10.6)", "numpydoc (==1.9.0)", "pdf2image (==1.17.0)", "quarto-cli (==1.8.25)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.19.0)", "sphinx-toggleprompt (==0.6.0)"]
+ci-types = ["black (==24.10.0)", "matplotlib (==3.10.7)", "pint (==0.24.4)", "pydantic (>=2.11.7)", "pydantic_core (>=2.33.2)", "pytest (==8.4.2)", "pytest-cov (==7.0.0)", "pytest-mock (==3.15.1)"]
+doc = ["Sphinx (==7.4.7)", "ansys-sphinx-theme (==1.6.3)", "matplotlib (==3.10.7)", "numpydoc (==1.9.0)", "pdf2image (==1.17.0)", "quarto-cli (==1.8.25)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.19.0)", "sphinx-toggleprompt (==0.6.0)"]
 tests = ["numpy (>=1.24,<3)", "pint (==0.24.4)", "pytest (==8.4.2)", "pytest-cov (==7.0.0)", "pytest-mock (==3.15.1)"]
 
 [[package]]
