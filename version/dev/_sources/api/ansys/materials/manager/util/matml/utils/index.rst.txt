@@ -1,0 +1,301 @@
+
+
+
+
+
+
+The ``utils.py`` module
+=======================
+
+.. py:module:: ansys.materials.manager.util.matml.utils
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: utils
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~parse_unit_string`
+            - Parse a unit string into a list of tuples.
+
+
+          * - :py:obj:`~xml_to_unit`
+            - Convert XML element to a unit string.
+
+
+          * - :py:obj:`~unit_to_xml`
+            - Convert a unit string to an XML element.
+
+
+          * - :py:obj:`~parse_property_set_name`
+            - Remove spaces, dashes and backslashes from the property set name.
+
+
+          * - :py:obj:`~get_data_and_unit`
+            - Get data and unit from parameter.
+
+
+          * - :py:obj:`~create_xml_string_value`
+            - Extract the value for the xml.
+
+
+          * - :py:obj:`~convert_to_float_string`
+            - Convert a float to string or keep it as it is otherwise.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: parse_unit_string(unit_str: str) -> list[tuple[str, int]]
+
+   
+   Parse a unit string into a list of tuples.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: xml_to_unit(param: xml.etree.ElementTree.Element) -> tuple[str, dict[str, str]]
+
+   
+   Convert XML element to a unit string.
+
+
+   :Parameters:
+
+       **param** : :obj:`ET.Element`
+           The XML element containing the unit information.
+
+
+
+   :Returns:
+
+       :class:`python:tuple`\[:class:`python:str`, :class:`python:dict`\[:class:`python:str`, :class:`python:str`]]
+           A tuple containing the unit ID and a dictionary with unit details.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: unit_to_xml(unit: str) -> xml.etree.ElementTree.Element
+
+   
+   Convert a unit string to an XML element.
+
+
+   :Parameters:
+
+       **unit** : :class:`python:str`
+           The unit string to convert, e.g., "kg*m-3" or "Pa".
+
+
+
+   :Returns:
+
+       :obj:`ET.Element`
+           An XML element representing the units.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: parse_property_set_name(property_set_name)
+
+   
+   Remove spaces, dashes and backslashes from the property set name.
+
+
+   :Parameters:
+
+       **property_set_name** : :class:`python:str`
+           Property set name.
+
+
+
+   :Returns:
+
+       :class:`python:str`
+           the material model class name.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_data_and_unit(param: Dict) -> tuple[list[float | int], str]
+
+   
+   Get data and unit from parameter.
+
+
+   :Parameters:
+
+       **param** : :obj:`Dict`
+           Parameter to parse.
+
+
+
+   :Returns:
+
+       :class:`python:tuple`\[:class:`python:list`\[:class:`python:float` | :class:`python:int`], :class:`python:str`]
+           Data and units.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: create_xml_string_value(values: float | int | list[float | int]) -> str
+
+   
+   Extract the value for the xml.
+
+
+   :Parameters:
+
+       **values** : :class:`python:float` | :class:`python:int` | :class:`python:list`\[:class:`python:float` | :class:`python:int`]
+           Value to be parsed.
+
+
+
+   :Returns:
+
+       :class:`python:str`
+           Parsed value to add to xml data.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: convert_to_float_string(value: float | str) -> str
+
+   
+   Convert a float to string or keep it as it is otherwise.
+
+
+   :Parameters:
+
+       **value** : :class:`python:float` | :class:`python:str`
+           Value to be parsed.
+
+
+
+   :Returns:
+
+       :class:`python:str`
+           Parsed value.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
