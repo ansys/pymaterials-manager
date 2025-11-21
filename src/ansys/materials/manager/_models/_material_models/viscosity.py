@@ -20,14 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Dict, Literal
+from typing import Dict, Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
@@ -37,10 +36,9 @@ class Viscosity(MaterialModel):
     """Represents a Viscosity material model."""
 
     name: Literal["Viscosity"] = Field(default="Viscosity", repr=False, frozen=True)
-    viscosity: Quantity | None = ParameterField(
+    viscosity: Quantity | None = Field(
         default=None,
         description="The viscosity of the material.",
-        matml_name="Viscosity",
     )
 
     @model_validator(mode="before")
@@ -50,11 +48,3 @@ class Viscosity(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write the anisotropic elasticity model to the pyansys session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the anisotropic elasticity model."""
-        pass

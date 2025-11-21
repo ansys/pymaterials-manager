@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from pydantic import Field
 
@@ -31,11 +31,3 @@ class FiberAngle(MaterialModel):
     """Represents a fiber angle material model."""
 
     name: Literal["Fiber Angle"] = Field(default="Fiber Angle", repr=False, frozen=True)
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write this model to the specified session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        pass

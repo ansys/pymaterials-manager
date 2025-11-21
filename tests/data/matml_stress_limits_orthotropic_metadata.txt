@@ -66,7 +66,7 @@
         <Name>Pa</Name>
       </Unit>
     </Units>
-    <Name>Shear XZ</Name>
+    <Name>Shear YZ</Name>
   </ParameterDetails>
   <ParameterDetails id="pa8">
     <Units>
@@ -74,6 +74,6 @@
         <Name>Pa</Name>
       </Unit>
     </Units>
-    <Name>Shear YZ</Name>
+    <Name>Shear XZ</Name>
   </ParameterDetails>
 </Metadata>

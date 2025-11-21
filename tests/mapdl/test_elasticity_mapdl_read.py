@@ -31,7 +31,7 @@ from ansys.materials.manager._models._material_models.elasticity_isotropic impor
 from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
-from ansys.materials.manager.util.mapdl.mapdl_reader import read_mapdl
+from ansys.materials.manager.parsers.mapdl.mapdl_reader import read_mapdl
 
 DIR_PATH = Path(__file__).resolve().parent
 ELASTICITY_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(

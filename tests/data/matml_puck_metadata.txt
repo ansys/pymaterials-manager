@@ -6,21 +6,17 @@
   </PropertyDetails>
   <ParameterDetails id="pa0">
     <Unitless/>
-    <Name>Material Property</Name>
+    <Name>Compressive Inclination XZ</Name>
   </ParameterDetails>
   <ParameterDetails id="pa1">
     <Unitless/>
-    <Name>Compressive Inclination XZ</Name>
+    <Name>Compressive Inclination YZ</Name>
   </ParameterDetails>
   <ParameterDetails id="pa2">
     <Unitless/>
-    <Name>Compressive Inclination YZ</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
-    <Unitless/>
     <Name>Tensile Inclination XZ</Name>
   </ParameterDetails>
-  <ParameterDetails id="pa4">
+  <ParameterDetails id="pa3">
     <Unitless/>
     <Name>Tensile Inclination YZ</Name>
   </ParameterDetails>

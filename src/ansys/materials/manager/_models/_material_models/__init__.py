@@ -20,16 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._common._exceptions import ModelValidationException
-
 from .cofficient_of_thermal_expansion_isotropic import (
     CoefficientofThermalExpansionIsotropic,
 )
 from .cofficient_of_thermal_expansion_orthotropic import (
     CoefficientofThermalExpansionOrthotropic,
-)
-from .color import (
-    Color,
 )
 from .density import Density
 from .elasticity_anisotropic import (

@@ -7,7 +7,7 @@
       <Qualifier name="Data Set"/>
       <Qualifier name="Data Set Information"/>
       <ParameterValue parameter="pa0" format="float">
-        <Data>Woven Specification for Puck</Data>
+        <Data>0.0</Data>
         <Qualifier name="Variable Type">Dependent</Qualifier>
       </ParameterValue>
       <ParameterValue parameter="pa1" format="float">
@@ -19,10 +19,6 @@
         <Qualifier name="Variable Type">Dependent</Qualifier>
       </ParameterValue>
       <ParameterValue parameter="pa3" format="float">
-        <Data>0.0</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa4" format="float">
         <Data>0.0</Data>
         <Qualifier name="Variable Type">Dependent</Qualifier>
       </ParameterValue>

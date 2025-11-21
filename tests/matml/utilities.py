@@ -23,21 +23,9 @@
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
-from ansys.materials.manager.util.matml.matml_parser import MatmlReader
-from ansys.materials.manager.util.matml.matml_to_material import convert_matml_materials
 
-
-def read_matml_file(file_path):
-    parsed_data = MatmlReader.parse_from_file(file_path)
-    materials = convert_matml_materials(
-        {k: v["material"] for k, v in parsed_data.items()},
-        {k: v["transfer_id"] for k, v in parsed_data.items()},
-        0,
-    )
-    return {material.name: material for material in materials}
-
-
-def get_material_and_metadata_from_xml(tree):
+def get_material_and_metadata_from_xml(tree: ET.ElementTree) -> tuple[str, str]:
+    """Extract material and metadata strings from an XML tree."""
     material = tree._root.find("Materials").find("MatML_Doc").find("Material")
     metadata = tree._root.find("Materials").find("MatML_Doc").find("Metadata")
     material_string = ET.tostring(material, encoding="utf-8").decode("utf-8")
@@ -47,9 +35,3 @@ def get_material_and_metadata_from_xml(tree):
     metadata_string = xml.dom.minidom.parseString(metadata_string)
     metadata_string = metadata_string.toprettyxml(indent="  ").strip()
     return material_string, metadata_string
-
-
-def read_specific_material(file_path, mat_name):
-    material_dic = read_matml_file(file_path)
-    assert mat_name in material_dic.keys()
-    return material_dic[mat_name]

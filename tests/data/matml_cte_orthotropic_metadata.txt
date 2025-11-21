@@ -41,10 +41,6 @@
     <Name>Temperature</Name>
   </ParameterDetails>
   <ParameterDetails id="pa4">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa5">
     <Units>
       <Unit>
         <Name>C</Name>
