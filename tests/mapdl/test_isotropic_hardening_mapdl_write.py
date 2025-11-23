@@ -546,50 +546,52 @@ def test_isotropic_hardening_multilinear_variable():
         assert data == material_strings[0]
 
 
-isotropic_hardening = IsotropicHardening(
-    model_qualifiers=[ModelQualifier(name="Definition", value="Bilinear")],
-    yield_strength=Quantity(value=225000000, units="Pa"),
-    tangent_modulus=Quantity(value=2091000000, units="Pa"),
-)
+def test_isotropic_hardening_bilinear_constant():
+    isotropic_hardening = IsotropicHardening(
+        model_qualifiers=[ModelQualifier(name="Definition", value="Bilinear")],
+        yield_strength=Quantity(value=[225000000], units="Pa"),
+        tangent_modulus=Quantity(value=[2091000000], units="Pa"),
+    )
 
-material = Material(
-    name="Material 5",
-    material_id=5,
-    models=[isotropic_hardening],
-)
+    material = Material(
+        name="Material 5",
+        material_id=5,
+        models=[isotropic_hardening],
+    )
 
-mapdl_writer = MapdlWriter(materials=[material])
-material_strings = mapdl_writer.write()
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
 
-with open(ISOTROPIC_HARDENING_BILINEAR_CONSTANT, "r") as file:
-    data = file.read()
-    assert data == material_strings[0]
-
-isotropic_hardening = IsotropicHardening(
-    model_qualifiers=[ModelQualifier(name="Definition", value="Bilinear")],
-    yield_strength=Quantity(
-        value=[225000000, 168000000, 115000000, 31000000, 15000000], units="Pa"
-    ),
-    tangent_modulus=Quantity(
-        value=[2091000000, 1577000000, 708000000, 405000000, 265000000], units="Pa"
-    ),
-    independent_parameters=[
-        IndependentParameter(
-            name="Temperature",
-            values=Quantity(value=[100, 300, 816, 1040, 1150], units="C"),
-        )
-    ],
-)
+    with open(ISOTROPIC_HARDENING_BILINEAR_CONSTANT, "r") as file:
+        data = file.read()
+        assert data == material_strings[0]
 
 
-material = Material(
-    name="Material 6",
-    material_id=6,
-    models=[isotropic_hardening],
-)
+def test_isotropic_hardening_bilinear_variable():
+    isotropic_hardening = IsotropicHardening(
+        model_qualifiers=[ModelQualifier(name="Definition", value="Bilinear")],
+        yield_strength=Quantity(
+            value=[225000000, 168000000, 115000000, 31000000, 15000000], units="Pa"
+        ),
+        tangent_modulus=Quantity(
+            value=[2091000000, 1577000000, 708000000, 405000000, 265000000], units="Pa"
+        ),
+        independent_parameters=[
+            IndependentParameter(
+                name="Temperature",
+                values=Quantity(value=[100, 300, 816, 1040, 1150], units="C"),
+            )
+        ],
+    )
 
-mapdl_writer = MapdlWriter(materials=[material])
-material_strings = mapdl_writer.write()
-with open(ISOTROPIC_HARDENING_BILINEAR_VARIABLE, "r") as file:
-    data = file.read()
-    assert data == material_strings[0]
+    material = Material(
+        name="Material 6",
+        material_id=6,
+        models=[isotropic_hardening],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+    with open(ISOTROPIC_HARDENING_BILINEAR_VARIABLE, "r") as file:
+        data = file.read()
+        assert data == material_strings[0]

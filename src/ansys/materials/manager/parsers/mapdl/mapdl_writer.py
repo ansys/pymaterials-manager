@@ -225,7 +225,7 @@ class MapdlWriter(BaseVisitor):
         if not material_model.independent_parameters:
             material_string = write_table_dep_values(
                 label=table_label,
-                dependent_values=dependent_values,
+                dependent_values=[x for xs in dependent_values for x in xs],
                 material_id=None,
                 tb_opt=tb_opt,
             )
