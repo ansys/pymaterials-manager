@@ -35,7 +35,6 @@ except ImportError:
 
 from ._packages import SupportedPackage
 from .common import (
-    ParameterField,
     QualifierType,
     validate_and_initialize_model_qualifiers,
     validate_parameters,

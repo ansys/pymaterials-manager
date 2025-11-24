@@ -23,7 +23,6 @@
 from enum import Enum
 
 import numpy as np
-from pydantic.fields import FieldInfo
 
 from .independent_parameter import IndependentParameter
 from .model_qualifier import ModelQualifier
@@ -35,35 +34,6 @@ class QualifierType(str, Enum):
     STRICT = "strict"
     RANGE = "range"
     FREE = "free"
-
-
-class ParameterFieldInfo(FieldInfo):
-    """FieldInfo for dependent parameters in material models."""
-
-    def __init__(
-        self, *, matml_name=None, mapdl_name=None, lsdyna_name=None, fluent_name=None, **kwargs
-    ):
-        """Initialize the ParameterFieldInfo with a matml_name."""
-        super().__init__(**kwargs)
-        if self.title is None:
-            self.title = matml_name
-        self.matml_name = matml_name
-        self.mapdl_name = mapdl_name
-        self.fluent_name = fluent_name
-        self.lsdyna_name = lsdyna_name
-
-
-def ParameterField(
-    *, matml_name=None, mapdl_name=None, lsdyna_name=None, fluent_name=None, **kwargs
-):
-    """Create a ParameterField with a specific matml_name."""
-    return ParameterFieldInfo(
-        matml_name=matml_name,
-        mapdl_name=mapdl_name,
-        lsdyna_name=lsdyna_name,
-        fluent_name=fluent_name,
-        **kwargs,
-    )
 
 
 def validate_and_initialize_model_qualifiers(
