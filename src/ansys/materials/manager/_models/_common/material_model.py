@@ -23,10 +23,9 @@
 import abc
 
 from pydantic import BaseModel, Field
-from pyparsing import Any
 
 from ._packages import SupportedPackage  # noqa: F401
-from .common import ParameterField, validate_parameters
+from .common import validate_parameters
 from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
@@ -51,11 +50,6 @@ class MaterialModel(BaseModel, abc.ABC):
         default=None,
         title="Interpolation Options",
         description="Options for interpolation of the material model data.",
-    )
-    material_property: str | None = ParameterField(
-        default=None,
-        description="The material property for the material model.",
-        matml_name="Material Property",
     )
     model_qualifiers: list[ModelQualifier] = Field(
         default=[],
@@ -88,20 +82,3 @@ class MaterialModel(BaseModel, abc.ABC):
                 if field_value is None:
                     raise Exception(f"the value of {field_name} cannot be None, please update it.")
                 validate_parameters(field_name, field_value["value"], self.independent_parameters)
-
-    @abc.abstractmethod
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """
-        Write the model to the given PyAnsys session.
-
-        This method should make some effort to validate the model state before writing.
-
-        Parameters
-        ----------
-        material: Material
-            Material object to associate this model with.
-        pyansys_session: Any
-            Supported PyAnsys product session. Only PyMAPDL and PyFluent are
-            supported currently.
-        """
-        ...

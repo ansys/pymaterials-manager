@@ -26,11 +26,11 @@
   </ParameterDetails>
   <ParameterDetails id="pa5">
     <Unitless/>
-    <Name>Yield stress ratio in XZ direction for plasticity</Name>
+    <Name>Yield stress ratio in YZ direction for plasticity</Name>
   </ParameterDetails>
   <ParameterDetails id="pa6">
     <Unitless/>
-    <Name>Yield stress ratio in YZ direction for plasticity</Name>
+    <Name>Yield stress ratio in XZ direction for plasticity</Name>
   </ParameterDetails>
   <ParameterDetails id="pa7">
     <Unitless/>
@@ -50,11 +50,11 @@
   </ParameterDetails>
   <ParameterDetails id="pa11">
     <Unitless/>
-    <Name>Yield stress ratio in XZ direction for creep</Name>
+    <Name>Yield stress ratio in YZ direction for creep</Name>
   </ParameterDetails>
   <ParameterDetails id="pa12">
     <Unitless/>
-    <Name>Yield stress ratio in YZ direction for creep</Name>
+    <Name>Yield stress ratio in XZ direction for creep</Name>
   </ParameterDetails>
   <ParameterDetails id="pa13">
     <Units>

@@ -13,10 +13,6 @@
     <Name>beta</Name>
   </ParameterDetails>
   <ParameterDetails id="pa2">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa3">
     <Units>
       <Unit>
         <Name>C</Name>

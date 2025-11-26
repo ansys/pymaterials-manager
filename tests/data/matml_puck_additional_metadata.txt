@@ -6,17 +6,13 @@
   </PropertyDetails>
   <ParameterDetails id="pa0">
     <Unitless/>
-    <Name>Material Property</Name>
+    <Name>Interface Weakening Factor</Name>
   </ParameterDetails>
   <ParameterDetails id="pa1">
     <Unitless/>
-    <Name>Interface Weakening Factor</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
-    <Unitless/>
     <Name>Degradation Parameter s</Name>
   </ParameterDetails>
-  <ParameterDetails id="pa3">
+  <ParameterDetails id="pa2">
     <Unitless/>
     <Name>Degradation Parameter M</Name>
   </ParameterDetails>

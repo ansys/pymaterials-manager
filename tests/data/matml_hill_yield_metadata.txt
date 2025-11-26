@@ -26,11 +26,11 @@
   </ParameterDetails>
   <ParameterDetails id="pa5">
     <Unitless/>
-    <Name>Yield stress ratio in XZ direction</Name>
+    <Name>Yield stress ratio in YZ direction</Name>
   </ParameterDetails>
   <ParameterDetails id="pa6">
     <Unitless/>
-    <Name>Yield stress ratio in YZ direction</Name>
+    <Name>Yield stress ratio in XZ direction</Name>
   </ParameterDetails>
   <ParameterDetails id="pa7">
     <Units>

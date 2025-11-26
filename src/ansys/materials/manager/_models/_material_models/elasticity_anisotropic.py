@@ -21,22 +21,15 @@
 # SOFTWARE.
 
 
-from typing import Any, Dict, Literal
+from typing import Dict, Literal
 
 from ansys.units import Quantity
-import numpy as np
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
-    _MapdlCore,
     validate_and_initialize_model_qualifiers,
-)
-from ansys.materials.manager.util.mapdl.mapdl_writer import (
-    write_table_dep_values,
-    write_temperature_reference_value,
 )
 
 
@@ -44,23 +37,90 @@ class ElasticityAnisotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
     name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
-    column_1: Quantity | None = ParameterField(
-        default=None, description="The first column of the elasticity matrix.", matml_name="D[*,1]"
+
+    c_11: Quantity | None = Field(
+        default=None,
+        description="The C11 component of the elasticity matrix.",
     )
-    column_2: Quantity | None = ParameterField(
-        default=None, description="The second column of the elasticity matrix.", matml_name="D[*,2]"
+    c_12: Quantity | None = Field(
+        default=None,
+        description="The C12 component of the elasticity matrix.",
     )
-    column_3: Quantity | None = ParameterField(
-        default=None, description="The third column of the elasticity matrix.", matml_name="D[*,3]"
+    c_13: Quantity | None = Field(
+        default=None,
+        description="The C13 component of the elasticity matrix.",
     )
-    column_4: Quantity | None = ParameterField(
-        default=None, description="The fourth column of the elasticity matrix.", matml_name="D[*,4]"
+    c_14: Quantity | None = Field(
+        default=None,
+        description="The C14 component of the elasticity matrix.",
     )
-    column_5: Quantity | None = ParameterField(
-        default=None, description="The fifth column of the elasticity matrix.", matml_name="D[*,5]"
+    c_15: Quantity | None = Field(
+        default=None,
+        description="The C15 component of the elasticity matrix.",
     )
-    column_6: Quantity | None = ParameterField(
-        default=None, description="The sixth column of the elasticity matrix.", matml_name="D[*,6]"
+    c_16: Quantity | None = Field(
+        default=None,
+        description="The C16 component of the elasticity matrix.",
+    )
+    c_22: Quantity | None = Field(
+        default=None,
+        description="The C22 component of the elasticity matrix.",
+    )
+    c_23: Quantity | None = Field(
+        default=None,
+        description="The C23 component of the elasticity matrix.",
+    )
+    c_24: Quantity | None = Field(
+        default=None,
+        description="The C24 component of the elasticity matrix.",
+    )
+    c_25: Quantity | None = Field(
+        default=None,
+        description="The C25 component of the elasticity matrix.",
+    )
+    c_26: Quantity | None = Field(
+        default=None,
+        description="The C26 component of the elasticity matrix.",
+    )
+    c_33: Quantity | None = Field(
+        default=None,
+        description="The C33 component of the elasticity matrix.",
+    )
+    c_34: Quantity | None = Field(
+        default=None,
+        description="The C34 component of the elasticity matrix.",
+    )
+    c_35: Quantity | None = Field(
+        default=None,
+        description="The C35 component of the elasticity matrix.",
+    )
+    c_36: Quantity | None = Field(
+        default=None,
+        description="The C36 component of the elasticity matrix.",
+    )
+    c_44: Quantity | None = Field(
+        default=None,
+        description="The C44 component of the elasticity matrix.",
+    )
+    c_45: Quantity | None = Field(
+        default=None,
+        description="The C45 component of the elasticity matrix.",
+    )
+    c_46: Quantity | None = Field(
+        default=None,
+        description="The C46 component of the elasticity matrix.",
+    )
+    c_55: Quantity | None = Field(
+        default=None,
+        description="The C55 component of the elasticity matrix.",
+    )
+    c_56: Quantity | None = Field(
+        default=None,
+        description="The C56 component of the elasticity matrix.",
+    )
+    c_66: Quantity | None = Field(
+        default=None,
+        description="The C66 component of the elasticity matrix.",
     )
 
     @model_validator(mode="before")
@@ -70,67 +130,3 @@ class ElasticityAnisotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def _write_mapdl(self, material_id: int, reference_temperature: float | None) -> str:
-        material_string = ""
-        if reference_temperature:
-            material_string += write_temperature_reference_value(material_id, reference_temperature)
-        d = np.column_stack(
-            (
-                self.column_1.value,
-                self.column_2.value,
-                self.column_3.value,
-                self.column_4.value,
-                self.column_5.value,
-                self.column_6.value,
-            )
-        )
-        # extract the lower triangular elements column-wise
-        dependent_values = []
-        for j in range(6):
-            dependent_values.extend(d[j:, j])
-
-        material_string += write_table_dep_values(
-            material_id=material_id,
-            label="ELASTIC",
-            dependent_values=dependent_values,
-            tb_opt="AELS",
-        )
-        return material_string
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write the anisotropic elasticity model to the pyansys session."""
-        self.validate_model()
-        if isinstance(pyansys_session, _MapdlCore):
-            reference_temperature = kwargs.get("reference_temperature", None)
-            material_string = self._write_mapdl(material_id, reference_temperature)
-        else:
-            raise Exception("The session is not supported.")
-        return material_string
-
-    def validate_model(self) -> None:
-        """Validate anisotropic elasticity."""
-        if self.independent_parameters:
-            raise Exception("Variable anisotropic elasticity is currently not supported.")
-        if not all(
-            [
-                isinstance(self.column_1.value, np.ndarray),
-                isinstance(self.column_2.value, np.ndarray),
-                isinstance(self.column_3.value, np.ndarray),
-                isinstance(self.column_4.value, np.ndarray),
-                isinstance(self.column_5.value, np.ndarray),
-                isinstance(self.column_6.value, np.ndarray),
-            ]
-        ):
-            raise Exception("At least one of the columns is not defined as an array")
-        if not all(
-            [
-                len(self.column_1.value) == 6,
-                len(self.column_2.value) == 6,
-                len(self.column_3.value) == 6,
-                len(self.column_4.value) == 6,
-                len(self.column_5.value) == 6,
-                len(self.column_6.value) == 6,
-            ]
-        ):
-            raise Exception("At least one of the columns has not length equal 6")

@@ -20,43 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class PuckConstants(MaterialModel):
     """Represents a Puck constants material model for composite materials."""
 
     name: Literal["Puck Constants"] = Field(default="Puck Constants", repr=False, frozen=True)
-    compressive_inclination_xz: Quantity | None = ParameterField(
+    compressive_inclination_xz: Quantity | None = Field(
         default=None,
         description="The compressive inclination in the XZ plane for the Puck constants model.",
-        matml_name="Compressive Inclination XZ",
     )
-    compressive_inclination_yz: Quantity | None = ParameterField(
+    compressive_inclination_yz: Quantity | None = Field(
         default=None,
         description="The compressive inclination in the YZ plane for the Puck constants model.",
-        matml_name="Compressive Inclination YZ",
     )
-    tensile_inclination_xz: Quantity | None = ParameterField(
+    tensile_inclination_xz: Quantity | None = Field(
         default=None,
         description="The tensile inclination in the XZ plane for the Puck constants model.",
-        matml_name="Tensile Inclination XZ",
     )
-    tensile_inclination_yz: Quantity | None = ParameterField(
+    tensile_inclination_yz: Quantity | None = Field(
         default=None,
         description="The tensile inclination in the YZ plane for the Puck constants model.",
-        matml_name="Tensile Inclination YZ",
     )
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write this model to the specified session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the model."""
-        pass

@@ -19,21 +19,25 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-from unittest.mock import MagicMock
-
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import _FluentCore
 from ansys.materials.manager._models._material_models.molecular_weight import MolecularWeight
+from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.parsers.fluent.fluent_writer import FluentWriter
 
 
-def test_molecular_weight_write_fluent():
-    mock_fluent = MagicMock(spec=_FluentCore)
-    density = MolecularWeight(molecular_weight=Quantity(value=28.966, units="kg kmol^-1"))
-    model = density.write_model(1, mock_fluent)
-    mock_fluent.settings.setup.materials.fluid["air"] = model
-    mock_fluent.settings.setup.materials.fluid.__setitem__.assert_called_once()
-    args = mock_fluent.settings.setup.materials.fluid.__setitem__.call_args
-    assert args[0][0] == "air"
-    assert args[0][1] == {"molecular_weight": {"option": "constant", "value": 28.966}}
+def test_molecular_weight_write():
+    molecular_weight = MolecularWeight(
+        molecular_weight=Quantity(value=[28.966], units="kg kmol^-1")
+    )
+    material = Material(
+        name="air",
+        models=[molecular_weight],
+    )
+    fluent_writer = FluentWriter([material])
+    fluent_materials = fluent_writer.write()
+    assert "air" in fluent_materials.keys()
+    air = fluent_materials["air"][0]
+    assert "molecular_weight" in air.keys()
+    assert air["molecular_weight"]["option"] == "constant"
+    assert air["molecular_weight"]["value"] == 28.966

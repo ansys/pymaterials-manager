@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager._models._common import MaterialModel, ParameterField
+from ansys.materials.manager._models._common import MaterialModel
 
 
 class LaRc0304Constants(MaterialModel):
@@ -34,31 +34,19 @@ class LaRc0304Constants(MaterialModel):
     name: Literal["LaRc03/04 Constants"] = Field(
         default="LaRc03/04 Constants", repr=False, frozen=True
     )
-    fracture_toughness_ratio: Quantity | None = ParameterField(
+    fracture_toughness_ratio: Quantity | None = Field(
         default=None,
         description="The ratio of fracture toughness.",
-        matml_name="Fracture Toughness Ratio",
     )
-    longitudinal_friction_coefficient: Quantity | None = ParameterField(
+    longitudinal_friction_coefficient: Quantity | None = Field(
         default=None,
         description="The coefficient of friction in the longitudinal direction.",
-        matml_name="Longitudinal Friction Coefficient",
     )
-    transverse_friction_coefficient: Quantity | None = ParameterField(
+    transverse_friction_coefficient: Quantity | None = Field(
         default=None,
         description="The coefficient of friction in the transverse direction.",
-        matml_name="Transverse Friction Coefficient",
     )
-    fracture_angle_under_compression: Quantity | None = ParameterField(
+    fracture_angle_under_compression: Quantity | None = Field(
         default=None,
         description="The angle of fracture under compression.",
-        matml_name="Fracture Angle Under Compression",
     )
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write the anisotropic elasticity model to the pyansys session."""
-        pass
-
-    def validate_model(self) -> tuple[bool, list[str]]:
-        """Validate the anisotropic elasticity model."""
-        pass

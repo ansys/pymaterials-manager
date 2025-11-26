@@ -16,10 +16,6 @@
         <Qualifier name="UserMat Constant">2</Qualifier>
       </ParameterValue>
       <ParameterValue parameter="pa2" format="float">
-        <Data>CustomPset</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
         <Data>10.0, 20.0</Data>
         <Qualifier name="Variable Type">Independent,Independent</Qualifier>
       </ParameterValue>
