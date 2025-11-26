@@ -20,16 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Any, Dict, Literal
+from typing import Dict, Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
-    ParameterField,
     QualifierType,
-    _MapdlCore,
     validate_and_initialize_model_qualifiers,
 )
 
@@ -40,16 +38,9 @@ class ZeroThermalStrainReferenceTemperatureIsotropic(MaterialModel):
     name: Literal["Zero-Thermal-Strain Reference Temperature"] = Field(
         default="Zero-Thermal-Strain Reference Temperature", repr=False, frozen=True
     )
-    zero_thermal_strain_reference_temperature: Quantity | None = ParameterField(
+    zero_thermal_strain_reference_temperature: Quantity | None = Field(
         default=None,
         description="The reference temperature for zero thermal strain.",
-        matml_name="Zero-Thermal-Strain Reference Temperature",
-    )
-    material_property: Literal["Coefficient of Thermal Expansion"] = ParameterField(
-        default="Coefficient of Thermal Expansion",
-        description="The material property for zero thermal strain reference temperature.",
-        matml_name="Material Property",
-        frozen=True,
     )
 
     @model_validator(mode="before")
@@ -59,15 +50,3 @@ class ZeroThermalStrainReferenceTemperatureIsotropic(MaterialModel):
             values, expected_qualifiers
         )
         return values
-
-    def _write_mapdl(self, material_id: int):
-        return f"MPAMOD,{material_id},{self.zero_thermal_strain_reference_temperature.value[0]}\n"
-
-    def write_model(self, material_id: int, pyansys_session: Any, **kwargs: dict) -> None:
-        """Write this model to the specified session."""
-        self.validate_model()
-        if isinstance(pyansys_session, _MapdlCore):
-            material_string = self._write_mapdl(material_id)
-        else:
-            raise Exception("The session is not supported.")
-        return material_string

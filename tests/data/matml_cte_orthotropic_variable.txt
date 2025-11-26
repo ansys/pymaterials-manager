@@ -28,10 +28,6 @@
       <Qualifier name="Definition">Secant</Qualifier>
       <Qualifier name="Behavior">Orthotropic</Qualifier>
       <ParameterValue parameter="pa4" format="float">
-        <Data>Coefficient of Thermal Expansion</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa5" format="float">
         <Data>27.0</Data>
         <Qualifier name="Variable Type">Dependent</Qualifier>
       </ParameterValue>

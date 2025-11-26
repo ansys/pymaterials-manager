@@ -20,10 +20,6 @@
       <Qualifier name="Definition">Secant</Qualifier>
       <Qualifier name="Behavior">Isotropic</Qualifier>
       <ParameterValue parameter="pa2" format="float">
-        <Data>Coefficient of Thermal Expansion</Data>
-        <Qualifier name="Variable Type">Dependent</Qualifier>
-      </ParameterValue>
-      <ParameterValue parameter="pa3" format="float">
         <Data>25.0</Data>
         <Qualifier name="Variable Type">Dependent</Qualifier>
       </ParameterValue>

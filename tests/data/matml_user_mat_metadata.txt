@@ -9,10 +9,6 @@
     <Name>y</Name>
   </ParameterDetails>
   <ParameterDetails id="pa1">
-    <Unitless/>
-    <Name>Material Property</Name>
-  </ParameterDetails>
-  <ParameterDetails id="pa2">
     <Units>
       <Unit>
         <Name>C</Name>
