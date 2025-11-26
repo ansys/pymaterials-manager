@@ -134,8 +134,17 @@ def test_isotropic_hardening_multilinear_constant():
 
     mapdl_writer = MapdlWriter(materials=[material])
     material_strings = mapdl_writer.write()
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[isotropic_hardening],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
     with open(ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT, "r") as file:
         data = file.read()
+    assert data == material_strings[0]
     assert data == material_strings[0]
 
 
@@ -531,6 +540,15 @@ def test_isotropic_hardening_multilinear_variable():
             ),
         ],
     )
+
+    material = Material(
+        name="Material 2",
+        material_id=2,
+        models=[isotropic_hardening],
+    )
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
 
     material = Material(
         name="Material 2",

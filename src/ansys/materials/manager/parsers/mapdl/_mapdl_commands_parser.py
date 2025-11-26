@@ -78,6 +78,7 @@ TABLE_TBOPT = {
     "ThermalConductivityIsotropic": "COND",
     "ThermalConductivityOrthotropic": "COND",
     "NeoHookean": "NEO",
+    "IsotropicHardening": "MISO",
 }
 
 
