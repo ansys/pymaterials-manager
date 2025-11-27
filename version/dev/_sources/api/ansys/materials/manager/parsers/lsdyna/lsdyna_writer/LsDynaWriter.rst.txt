@@ -1,0 +1,133 @@
+
+
+
+
+
+
+:class:`LsDynaWriter`
+=====================
+
+
+.. py:class:: ansys.materials.manager.parsers.lsdyna.lsdyna_writer.LsDynaWriter(materials: list[ansys.materials.manager._models.material.Material])
+
+   Bases: :py:obj:`ansys.materials.manager.parsers.base_visitor.BaseVisitor`
+
+
+   
+   Ls Dyna writer.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: LsDynaWriter
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit_material_model`
+            - Visit material model.
+          * - :py:attr:`~write`
+            - Write models to deck.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.parsers.lsdyna.lsdyna_writer import LsDynaWriter
+
+
+
+Method detail
+-------------
+
+.. py:method:: visit_material_model(material_name, material_model)
+
+   
+   Visit material model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write(deck: ansys.dyna.core.Deck | None = None) -> list[ansys.dyna.core.lib.keyword_base.KeywordBase] | None
+
+   
+   Write models to deck.
+
+
+   :Parameters:
+
+       **deck** : :obj:`Deck` | :data:`python:None`
+           Deck to write to. If None, return the material keywords.
+
+
+
+   :Returns:
+
+       :class:`python:list`\[:obj:`KeywordBase`] | :data:`python:None`
+           List of material keywords if deck is None, else None.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
