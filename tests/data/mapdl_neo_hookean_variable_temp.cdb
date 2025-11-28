@@ -1,0 +1,8 @@
+Temperature = 'TEMP' ! Temperature
+TB,HYPE,2,,,NEO
+TBTEMP,100
+TBDATA,1,27104.0,1e-05,,,,
+TBTEMP,300
+TBDATA,1,2700.0,2e-05,,,,
+TBTEMP,816
+TBDATA,1,2600.0,3e-05,,,,
