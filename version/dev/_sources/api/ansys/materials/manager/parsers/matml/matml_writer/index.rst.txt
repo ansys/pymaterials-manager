@@ -1,0 +1,73 @@
+
+
+
+
+
+
+The ``matml_writer.py`` module
+==============================
+
+.. py:module:: ansys.materials.manager.parsers.matml.matml_writer
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: matml_writer
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.parsers.matml.matml_writer.MatmlWriter`
+            - MatmlWriter.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> MatmlWriter</api/ansys/materials/manager/parsers/matml/matml_writer/MatmlWriter>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
