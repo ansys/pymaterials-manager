@@ -425,25 +425,25 @@ tests = ["pyfakefs (==5.8.0)", "pytest (==8.4.0)", "pytest-cov (==6.1.1)"]
 
 [[package]]
 name = "ansys-units"
-version = "0.9.1"
+version = "0.10.0"
 description = "Pythonic interface for units, unit systems, and unit conversions."
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "ansys_units-0.9.1-py3-none-any.whl", hash = "sha256:5e1722c64b4c9b676271ce1f7ab8e14badc9af71f6a0fa6c8fca85ae675d287a"},
-    {file = "ansys_units-0.9.1.tar.gz", hash = "sha256:ae0669a1fbcd2977bd5fd2ef30e1765967db63ccf00181e925314a7af8321099"},
+    {file = "ansys_units-0.10.0-py3-none-any.whl", hash = "sha256:800da85a3a2c576c396c95a4baf38bfc33c40f6e6701ca099c1e48cd90782415"},
+    {file = "ansys_units-0.10.0.tar.gz", hash = "sha256:d8a48d39598a10f05a2e850c3ef1640df85931600b08cf9707add4a94064b99f"},
 ]
 
 [package.dependencies]
-importlib-metadata = ">=4.0"
 pyyaml = ">=6.0"
+typing-extensions = ">=4.5.0"
 
 [package.extras]
 additional = ["numpy (>=1.24,<3)", "pydantic (>=2.11.7)", "pydantic_core (>=2.33.2)"]
-ci-types = ["black (==24.10.0)", "matplotlib (==3.10.7)", "pint (==0.24.4)", "pydantic (>=2.11.7)", "pydantic_core (>=2.33.2)", "pytest (==8.4.2)", "pytest-cov (==7.0.0)", "pytest-mock (==3.15.1)"]
-doc = ["Sphinx (==7.4.7)", "ansys-sphinx-theme (==1.6.3)", "matplotlib (==3.10.7)", "numpydoc (==1.9.0)", "pdf2image (==1.17.0)", "quarto-cli (==1.8.25)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.19.0)", "sphinx-toggleprompt (==0.6.0)"]
-tests = ["numpy (>=1.24,<3)", "pint (==0.24.4)", "pytest (==8.4.2)", "pytest-cov (==7.0.0)", "pytest-mock (==3.15.1)"]
+ci-types = ["black (==25.12.0)", "matplotlib (==3.10.8)", "pint (==0.24.4)", "pydantic (>=2.11.7)", "pydantic_core (>=2.33.2)", "pytest (==9.0.2)", "pytest-cov (==7.0.0)", "pytest-mock (==3.15.1)"]
+doc = ["Sphinx (==7.4.7)", "ansys-sphinx-theme (==1.6.4)", "matplotlib (==3.10.8)", "numpydoc (==1.10.0)", "pdf2image (==1.17.0)", "quarto-cli (==1.8.25)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.20.0)", "sphinx-toggleprompt (==0.6.0)"]
+tests = ["numpy (>=1.24,<3)", "pint (==0.24.4)", "pytest (==9.0.2)", "pytest-cov (==7.0.0)", "pytest-mock (==3.15.1)"]
 
 [[package]]
 name = "appdirs"
