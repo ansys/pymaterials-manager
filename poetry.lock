@@ -152,14 +152,14 @@ plotting = ["imageio", "imageio-ffmpeg", "matplotlib (>=3.2)", "pyvista (>=0.32.
 
 [[package]]
 name = "ansys-dyna-core"
-version = "0.9.1"
+version = "0.10.0"
 description = "Python interface to LS-DYNA Service"
 optional = false
 python-versions = "<4,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "ansys_dyna_core-0.9.1-py3-none-any.whl", hash = "sha256:a945e3054d5412fcc17b627f7f0586d16e37741270da09fb3a1e23a9820ff60d"},
-    {file = "ansys_dyna_core-0.9.1.tar.gz", hash = "sha256:ecfe47ad06b4ed5c5a25375e484b670beb17c386f0e98ab358a63585c48f70c2"},
+    {file = "ansys_dyna_core-0.10.0-py3-none-any.whl", hash = "sha256:4bb722662dea728281b3231ed215bd3ef890663fdef1c095fb63b363ed8370a0"},
+    {file = "ansys_dyna_core-0.10.0.tar.gz", hash = "sha256:440d340e0a0800af7691bbe9af89f97b36a906faeb1a5af116c05d56eced82ac"},
 ]
 
 [package.dependencies]
@@ -171,16 +171,17 @@ chardet = "5.2.0"
 hollerith = ">=0.6.0"
 numpy = ">=1"
 pandas = ">=2.0"
-requests = "2.32.4"
+requests = "2.32.5"
 transformations = "2025.1.1"
 
 [package.extras]
-all = ["Jinja2", "ansys-platform-instancemanagement (>=1.0,<2.0)", "pyvista (>=0.43.4)"]
-codegen = ["Jinja2"]
-doc = ["Sphinx (==8.2.1)", "ansys-sphinx-theme[autoapi] (==1.6.1)", "imageio (==2.37.0)", "imageio-ffmpeg (==0.6.0)", "ipython (==8.37.0)", "ipywidgets (==8.1.7)", "joblib (==1.5.1)", "jupyterlab (==4.4.4)", "matplotlib (==3.10.3)", "nbsphinx (==0.9.6)", "numpydoc (==1.9.0)", "pypandoc (==1.15)", "pytest-sphinx (==0.6.3)", "pyvista (==0.45.2)", "recommonmark (==0.7.1)", "scikit-learn (==1.7.0)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==3.1.0)", "sphinx-copybutton (==0.5.2)", "sphinx-design (==0.6.1)", "sphinx-gallery (==0.19.0)", "sphinx-notfound-page (==1.1.0)", "sphinxcontrib-websupport (==2.0.0)"]
+all = ["ansys-dyna-core[codegen,dev,doc,graphics,pim,tests]"]
+codegen = ["Jinja2 (==3.1.6)", "beartype (==0.22.9)", "jsonschema (==4.26.0)"]
+dev = ["ansys-dyna-core[codegen,graphics,tests]"]
+doc = ["Sphinx (==8.2.3)", "ansys-sphinx-theme[autoapi] (==1.6.4)", "imageio (==2.37.2)", "imageio-ffmpeg (==0.6.0)", "ipython (==8.38.0)", "ipywidgets (==8.1.8)", "joblib (==1.5.3)", "jupyterlab (==4.5.2)", "matplotlib (==3.10.8)", "nbsphinx (==0.9.8)", "numpydoc (==1.10.0)", "pypandoc (==1.16.2)", "pytest-sphinx (==0.6.3)", "pyvista (==0.46.5)", "recommonmark (==0.7.1)", "scikit-learn (==1.7.2)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==3.1.0)", "sphinx-copybutton (==0.5.2)", "sphinx-design (==0.6.1)", "sphinx-gallery (==0.20.0)", "sphinx-notfound-page (==1.1.0)", "sphinxcontrib-websupport (==2.0.0)"]
 graphics = ["pyvista (>=0.43.4)"]
 pim = ["ansys-platform-instancemanagement (>=1.0,<2.0)"]
-tests = ["ipython (==8.37.0)", "joblib (==1.5.1)", "matplotlib (==3.10.3)", "numpy (==2.2.6)", "openpyxl (==3.1.5)", "pandas (==2.3.0)", "pytest (==8.4.1)", "pytest-cov (==6.2.1)", "pytest-xdist (==3.8.0)", "pyvista (==0.45.2)", "scikit-learn (==1.7.0)"]
+tests = ["ipython (==8.38.0)", "joblib (==1.5.3)", "matplotlib (==3.10.8)", "numpy (==2.2.6)", "openpyxl (==3.1.5)", "pandas (==2.3.3)", "pytest (==9.0.2)", "pytest-cov (==7.0.0)", "pytest-xdist (==3.8.0)", "pyvista (==0.46.5)", "scikit-learn (==1.7.2)"]
 
 [[package]]
 name = "ansys-fluent-core"
@@ -3321,14 +3322,14 @@ files = [
 
 [[package]]
 name = "requests"
-version = "2.32.4"
+version = "2.32.5"
 description = "Python HTTP for Humans."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["dev", "doc"]
 files = [
-    {file = "requests-2.32.4-py3-none-any.whl", hash = "sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c"},
-    {file = "requests-2.32.4.tar.gz", hash = "sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422"},
+    {file = "requests-2.32.5-py3-none-any.whl", hash = "sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6"},
+    {file = "requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf"},
 ]
 
 [package.dependencies]
