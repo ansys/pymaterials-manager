@@ -220,14 +220,14 @@ ui-jupyter = ["ipywidgets"]
 
 [[package]]
 name = "ansys-mapdl-core"
-version = "0.71.3"
+version = "0.72.0"
 description = "A Python client library for Ansys MAPDL."
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "ansys_mapdl_core-0.71.3-py3-none-any.whl", hash = "sha256:1218f254d4a50057ba3386771efdac35eb70a5d740805acfe5a39e95d5fecbd6"},
-    {file = "ansys_mapdl_core-0.71.3.tar.gz", hash = "sha256:23ec7bb68d2e073ea5a7d95eb2b27eea0c639f0fc763f00de62e8a9912ae387c"},
+    {file = "ansys_mapdl_core-0.72.0-py3-none-any.whl", hash = "sha256:a707b6d859aa89631d94c4169ac037e7f2c6ed2dc034325e69ff4e4c53de4c92"},
+    {file = "ansys_mapdl_core-0.72.0.tar.gz", hash = "sha256:15d1dd8c447d36251d9eff3a4802fabdb5e5c683c30ab9a0a305a8d96194ceef"},
 ]
 
 [package.dependencies]
@@ -235,7 +235,7 @@ ansys-api-mapdl = "0.5.2"
 ansys-mapdl-reader = ">=0.51.7"
 ansys-math-core = ">=0.1.2"
 ansys-platform-instancemanagement = ">=1.0,<2.0"
-ansys-tools-common = ">=0.2.1"
+ansys-tools-common = ">=0.3.0"
 click = ">=8.1.3"
 grpcio = ">=1.30.0"
 numpy = ">=1.14.0,<3.0.0"
@@ -243,7 +243,6 @@ pexpect = {version = ">=4.8.0", markers = "platform_system == \"Linux\""}
 platformdirs = ">=3.6.0"
 protobuf = ">=3.12.2"
 psutil = ">=5.9.4"
-pyansys-tools-versioning = ">=0.3.3"
 pyiges = {version = ">=0.3.1", extras = ["full"]}
 pyvista = "<=0.46.4"
 scipy = ">=1.3.0"
@@ -253,10 +252,10 @@ vtk = ">=9.0.0,<9.5.3"
 
 [package.extras]
 all = ["ansys-tools-visualization-interface (>=0.9.0,<0.12.0)", "ipywidgets", "jupyterlab (>=3)", "matplotlib (>=3.0.0)"]
-doc = ["ansys-dpf-core[graphics] (==0.13.6)", "ansys-mapdl-reader (==0.55.1)", "ansys-sphinx-theme (==1.6.3)", "ansys-tools-visualization-interface (==0.12.1)", "grpcio (==1.76.0)", "imageio (==2.37.2)", "imageio-ffmpeg (==0.6.0)", "jupyter (==1.1.1)", "jupyter_sphinx (==0.5.3)", "jupyterlab (>=3.2.8)", "linuxdoc (==20240924)", "matplotlib (==3.10.7)", "nbformat (==5.10.4)", "numpydoc (==1.9.0)", "pandas (==2.3.3)", "plotly (==6.5.0)", "pyiges[full] (==0.3.2)", "pypandoc (==1.16.2)", "pytest-sphinx (==0.6.3)", "pythreejs (==2.4.2)", "sphinx (==8.2.3)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==3.1.0)", "sphinx-copybutton (==0.5.2)", "sphinx-design (==0.6.1)", "sphinx-gallery (==0.19.0)", "sphinx-jinja (==2.0.2)", "sphinx-notfound-page (==1.1.0)", "sphinxcontrib-websupport (==2.0.0)", "sphinxemoji (==0.3.1)", "vtk (==9.5.2)"]
+doc = ["ansys-dpf-core[graphics] (==0.13.6)", "ansys-mapdl-reader (==0.55.2)", "ansys-sphinx-theme (==1.6.4)", "ansys-tools-visualization-interface (==0.12.1)", "grpcio (==1.76.0)", "imageio (==2.37.2)", "imageio-ffmpeg (==0.6.0)", "jupyter (==1.1.1)", "jupyter_sphinx (==0.5.3)", "jupyterlab (>=3.2.8)", "linuxdoc (==20240924)", "matplotlib (==3.10.8)", "nbformat (==5.10.4)", "numpydoc (==1.10.0)", "pandas (==2.3.3)", "plotly (==6.5.2)", "pyiges[full] (==0.3.2)", "pypandoc (==1.16.2)", "pytest-sphinx (==0.6.3)", "pythreejs (==2.4.2)", "sphinx (==8.2.3)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==3.1.0)", "sphinx-copybutton (==0.5.2)", "sphinx-design (==0.6.1)", "sphinx-gallery (==0.20.0)", "sphinx-jinja (==2.0.2)", "sphinx-notfound-page (==1.1.0)", "sphinxcontrib-websupport (==2.0.0)", "sphinxemoji (==0.3.2)", "vtk (==9.5.2)"]
 graphics = ["ansys-tools-visualization-interface (>=0.9.0,<0.13.0)", "matplotlib (>=3.0.0)"]
 jupyter = ["ipywidgets", "jupyterlab (>=3)"]
-tests = ["ansys-dpf-core[graphics] (==0.13.6)", "ansys-tools-visualization-interface (==0.12.1)", "autopep8 (==2.3.2)", "matplotlib (==3.10.7)", "pandas (==2.3.3)", "pyansys-tools-report (==0.9.0)", "pyfakefs (==5.10.2)", "pyiges[full] (==0.3.2)", "pytest (==9.0.1)", "pytest-cov (==7.0.0)", "pytest-profiling (==1.8.1)", "pytest-pyvista (==0.3.1)", "pytest-random-order (==1.2.0)", "pytest-reportlog (==1.0.0)", "pytest-rerunfailures (==16.1)", "pytest-timeout (==2.4.0)", "scipy (==1.15.3)", "vtk (==9.5.2)"]
+tests = ["ansys-dpf-core[graphics] (==0.13.6)", "ansys-mapdl-reader (==0.55.2)", "ansys-tools-visualization-interface (==0.12.1)", "autopep8 (==2.3.2)", "matplotlib (==3.10.8)", "pandas (==2.3.3)", "pyansys-tools-report (==0.9.0)", "pyfakefs (==6.0.0)", "pyiges[full] (==0.3.2)", "pytest (==9.0.2)", "pytest-cov (==7.0.0)", "pytest-profiling (==1.8.1)", "pytest-pyvista (==0.3.2)", "pytest-random-order (==1.2.0)", "pytest-reportlog (==1.0.0)", "pytest-rerunfailures (==16.1)", "pytest-timeout (==2.4.0)", "scipy (==1.15.3)", "vtk (==9.5.2)"]
 
 [[package]]
 name = "ansys-mapdl-reader"
