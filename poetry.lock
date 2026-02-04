@@ -185,21 +185,21 @@ tests = ["ipython (==8.38.0)", "joblib (==1.5.3)", "matplotlib (==3.10.8)", "num
 
 [[package]]
 name = "ansys-fluent-core"
-version = "0.37.1"
+version = "0.37.2"
 description = "PyFluent provides Pythonic access to Ansys Fluent."
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "ansys_fluent_core-0.37.1-py3-none-any.whl", hash = "sha256:ee8c9f22c43b176837c878123ed7e8dd5d72bf7c2c5bf849589a8418e5968845"},
-    {file = "ansys_fluent_core-0.37.1.tar.gz", hash = "sha256:faeba940ee332df1af8ae82281ed07907b51745335f6d3a51c7b1486fc110b5b"},
+    {file = "ansys_fluent_core-0.37.2-py3-none-any.whl", hash = "sha256:7bc401eedaecebcc2de7797f4d2c17daec6088b9f3bb736727e36c6d7a7c6c90"},
+    {file = "ansys_fluent_core-0.37.2.tar.gz", hash = "sha256:94ead6fabf6e03105ab9d731dc61cfa5f837335ca540293547aea903094f6aa0"},
 ]
 
 [package.dependencies]
 ansys-api-fluent = ">=0.3.36"
 ansys-platform-instancemanagement = ">=1.1,<2.0"
 ansys-tools-filetransfer = ">=0.1,<0.3"
-ansys-units = ">=0.9.1,<1.0"
+ansys-units = ">=0.10.1,<0.11.0"
 defusedxml = ">=0.7.1"
 deprecated = ">=1.2.18"
 docker = ">=7.1.0"
