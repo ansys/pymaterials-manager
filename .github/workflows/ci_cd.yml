@@ -11,7 +11,7 @@ on:
 env:
   MAIN_PYTHON_VERSION: '3.13'
   MAPDL_DOCKER_PACKAGE: 'ghcr.io/ansys/mapdl'
-  MAPDL_DOCKER_VERSION: 'v24.2.0'
+  MAPDL_DOCKER_VERSION: 'v25.2.7-ubuntu-cicd'
   DOCUMENTATION_CNAME: "manager.materials.docs.pyansys.com"
   PACKAGE_NAME: "ansys-materials-manager"
 
