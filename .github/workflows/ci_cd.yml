@@ -119,11 +119,15 @@ jobs:
               --restart unless-stopped \
               -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
               -e ANSYS_LOCK="OFF" \
+              -e OMPI_ALLOW_RUN_AS_ROOT=1 \
+              -e OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1 \
               -p 50052:50052 \
               -p 50055:50055 \
-              $MAPDL_IMAGE \
-              -grpc -smp -np 2 -transport insecure -allowremote true
-              # | tee log.txt &
+              --entrypoint /bin/bash \
+              $MAPDL_IMAGE
+              /ansys_inc/v242/ansys/bin/mapdl -grpc -smp -np 2 -transport insecure -allowremote true
+
+          # | tee log.txt &
           # Wait for MAPDL to start by checking the log file every second for up to 60 seconds
           for i in {1..60}; do
             if tail -n 10 log.txt | grep -q 'Server listening on'; then
