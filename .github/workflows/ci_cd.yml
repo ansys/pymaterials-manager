@@ -11,7 +11,7 @@ on:
 env:
   MAIN_PYTHON_VERSION: '3.13'
   MAPDL_DOCKER_PACKAGE: 'ghcr.io/ansys/mapdl'
-  MAPDL_DOCKER_VERSION: 'v24.2.0'
+  MAPDL_DOCKER_VERSION: 'v24.2.3-ubuntu-cicd'
   DOCUMENTATION_CNAME: "manager.materials.docs.pyansys.com"
   PACKAGE_NAME: "ansys-materials-manager"
 
@@ -116,44 +116,31 @@ jobs:
           docker pull $MAPDL_IMAGE
           docker run \
               --name mapdl \
-              --restart always \
-              --health-cmd="ps aux | grep \"[/]ansys_inc/.*ansys\.e.*grpc\" -q && echo 0 || echo 1" \
-              --health-interval=0.5s \
-              --health-retries=4 \
-              --health-timeout=0.5s \
-              --health-start-period=10s \
+              --restart unless-stopped \
               -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
               -e ANSYS_LOCK="OFF" \
               -p 50052:50052 \
               -p 50055:50055 \
+              --entrypoint /bin/bash \
               $MAPDL_IMAGE \
-              -smp -np 2 > log.txt &
-          grep -q 'Server listening on' <(timeout 60 tail -f log.txt)
+              ansysgrpc -smp -np 2 -transport insecure -allowremote true | tee log.txt &
+          # Wait for MAPDL to start by checking the log file every second for up to 60 seconds
+          for i in {1..60}; do
+            if tail -n 10 log.txt | grep -q 'Server listening on'; then
+              echo "MAPDL server started."
+              break
+            fi
+            sleep 1
+          done
+          if ! tail -n 10 log.txt | grep -q 'Server listening on'; then
+            echo "MAPDL server did not start within 60 seconds. Log output:" >&2
+            cat log.txt >&2
+            exit 1
+          fi
 
       - name: "Test with tox"
         # Only the tox environment specified in the tox.ini gh-actions is run
         run: tox -e tests -- -m mapdl_integration
-
-      - name: "Collect MAPDL logs on failure"
-        if: always()
-        run: |
-          docker exec mapdl /bin/bash -c "mkdir -p /mapdl_logs && echo 'Successfully created directory inside docker container'"
-          docker exec mapdl /bin/bash -c "if compgen -G 'file*.out' > /dev/null ;then cp -f /file*.out /mapdl_logs && echo 'Successfully copied out files.'; fi"
-          docker exec mapdl /bin/bash -c "if compgen -G 'file*.err' > /dev/null ;then cp -f /file*.err /mapdl_logs && echo 'Successfully copied err files.'; fi"
-          docker exec mapdl /bin/bash -c "if compgen -G 'file*.log' > /dev/null ;then cp -f /file*.log /mapdl_logs && echo 'Successfully copied log files.'; fi"
-          docker exec mapdl /bin/bash -c "if compgen -G '*.crash' > /dev/null ;then cp -f /*.crash /mapdl_logs && echo 'Successfully copied crash files.'; fi"
-          mkdir ./mapdl_logs 
-          docker cp mapdl:/mapdl_logs/. ./mapdl_logs/.
-          
-      - name: "Copy logs"
-        if: always()
-        run: |
-          cp log.txt ./mapdl_logs/
-
-      - name: "Display MAPDL Logs on workflow"
-        if: always()
-        run: |
-          cat mapdl_logs/*
 
       - name: Upload coverage report
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de  # v5.5.2
