@@ -142,6 +142,10 @@ jobs:
 
       - name: "Test with tox"
         # Only the tox environment specified in the tox.ini gh-actions is run
+        env:
+          # Set the transport to insecure for testing purposes, as the MAPDL docker image used in CI does not have SSL configured.
+          # This allows the tests to connect to the MAPDL gRPC server without SSL.
+          PYMAPDL_GRPC_TRANSPORT: "insecure"
         run: tox -e tests -- -m mapdl_integration
 
       - name: "Collect MAPDL logs on failure"
