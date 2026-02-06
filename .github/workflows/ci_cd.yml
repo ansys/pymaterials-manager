@@ -124,7 +124,7 @@ jobs:
               -p 50052:50052 \
               -p 50055:50055 \
               --entrypoint /bin/bash \
-              $MAPDL_IMAGE
+              $MAPDL_IMAGE \
               ansysgrpc -smp -np 2 -transport insecure -allowremote true
 
           # | tee log.txt &
