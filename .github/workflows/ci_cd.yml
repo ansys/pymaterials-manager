@@ -121,6 +121,7 @@ jobs:
               -e ANSYS_LOCK="OFF" \
               -p 50052:50052 \
               -p 50055:50055 \
+              --entrypoint /bin/bash \
               $MAPDL_IMAGE \
               ansysgrpc -smp -np 2 -transport insecure -allowremote true | tee log.txt &
           # Wait for MAPDL to start by checking the log file every second for up to 60 seconds
