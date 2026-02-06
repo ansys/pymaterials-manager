@@ -117,13 +117,15 @@ jobs:
           docker run \
               --name mapdl \
               --restart unless-stopped \
+              --health-cmd="ps aux | grep \"[/]ansys_inc/.*ansys\.e.*grpc\" -q && echo 0 || echo 1" \
+              --health-interval=0.5s \
+              --health-retries=4 \
+              --health-timeout=0.5s \
+              --health-start-period=10s \
               -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
               -e ANSYS_LOCK="OFF" \
-              -e OMPI_ALLOW_RUN_AS_ROOT=1 \
-              -e OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1 \
               -p 50052:50052 \
               -p 50055:50055 \
-              --entrypoint /bin/bash \
               $MAPDL_IMAGE \
               ansysgrpc -smp -np 2 -transport insecure -allowremote true | tee log.txt &
           # Wait for MAPDL to start by checking the log file every second for up to 60 seconds
