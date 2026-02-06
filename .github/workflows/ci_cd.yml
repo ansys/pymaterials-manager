@@ -144,27 +144,6 @@ jobs:
         # Only the tox environment specified in the tox.ini gh-actions is run
         run: tox -e tests -- -m mapdl_integration
 
-      - name: "Collect MAPDL logs on failure"
-        if: always()
-        run: |
-          docker exec mapdl /bin/bash -c "mkdir -p /mapdl_logs && echo 'Successfully created directory inside docker container'"
-          docker exec mapdl /bin/bash -c "if compgen -G 'file*.out' > /dev/null ;then cp -f /file*.out /mapdl_logs && echo 'Successfully copied out files.'; fi"
-          docker exec mapdl /bin/bash -c "if compgen -G 'file*.err' > /dev/null ;then cp -f /file*.err /mapdl_logs && echo 'Successfully copied err files.'; fi"
-          docker exec mapdl /bin/bash -c "if compgen -G 'file*.log' > /dev/null ;then cp -f /file*.log /mapdl_logs && echo 'Successfully copied log files.'; fi"
-          docker exec mapdl /bin/bash -c "if compgen -G '*.crash' > /dev/null ;then cp -f /*.crash /mapdl_logs && echo 'Successfully copied crash files.'; fi"
-          mkdir ./mapdl_logs 
-          docker cp mapdl:/mapdl_logs/. ./mapdl_logs/.
-          
-      - name: "Copy logs"
-        if: always()
-        run: |
-          cp log.txt ./mapdl_logs/
-
-      - name: "Display MAPDL Logs on workflow"
-        if: always()
-        run: |
-          cat mapdl_logs/*
-
       - name: Upload coverage report
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de  # v5.5.2
         with:
