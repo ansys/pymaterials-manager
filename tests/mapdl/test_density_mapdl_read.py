@@ -37,7 +37,6 @@ pytestmark = pytest.mark.mapdl_integration
 
 @pytest.fixture(scope="module")
 def mapdl():
-    # Connect to MAPDL
     mapdl = Mapdl(ip="127.0.0.1", port="50052", local=False)
     mapdl.prep7()
     yield mapdl
