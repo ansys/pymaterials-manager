@@ -9,6 +9,7 @@
 * [andreas-hilti](https://github.com/andreas-hilti)
 * [Andy Grigg](https://github.com/Andy-Grigg)
 * [Dan Williams](https://github.com/dnwillia-work)
+* [German](https://github.com/germa89)
 * [janvonrickenbach](https://github.com/janvonrickenbach)
 * [Jorge Martínez](https://github.com/jorgepiloto)
 * [Kathy Pippert](https://github.com/PipKat)
