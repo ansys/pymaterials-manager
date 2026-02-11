@@ -1,0 +1,136 @@
+
+
+
+
+
+
+:class:`MatmlWriter`
+====================
+
+
+.. py:class:: ansys.materials.manager.parsers.matml.matml_writer.MatmlWriter(materials: list[ansys.materials.manager._models.material.Material])
+
+   Bases: :py:obj:`ansys.materials.manager.parsers.base_visitor.BaseVisitor`
+
+
+   
+   MatmlWriter.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MatmlWriter
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit_material_model`
+            - Visit the material model.
+          * - :py:attr:`~write`
+            - Write a MatML (engineering data XML format) representation of materials to file.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
+
+
+
+Method detail
+-------------
+
+.. py:method:: visit_material_model(material_name: str, material_model: ansys.materials.manager._models._common.material_model.MaterialModel) -> xml.etree.ElementTree.Element
+
+   
+   Visit the material model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write(path: ansys.materials.manager.parsers._common._PATH_TYPE, indent: Optional[bool] = False, xml_declaration: Optional[bool] = False) -> None
+
+   
+   Write a MatML (engineering data XML format) representation of materials to file.
+
+
+   :Parameters:
+
+       **path:**
+           File path.
+
+       **indent** : :obj:`Optional`\[:ref:`bool <python:bltin-boolean-values>`]
+           Whether to add an indent to format the XML output.
+           Defaults to ``false``.
+
+       **xml_declaration: Optional[bool]**
+           Whether to add the XML declaration to the output.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
