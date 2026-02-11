@@ -111,7 +111,7 @@ jobs:
 
       - name: "Launch first MAPDL instance using action"
         id: mapdl_0
-        uses: ansys/pymapdl/launch-mapdl-on-docker@ci/using-launch_mapdl-action
+        uses: ansys/pymapdl/.github/actions/launch-mapdl-docker@ci/using-launch_mapdl-action
         with:
           mapdl-image: ${{ env.MAPDL_DOCKER_PACKAGE }}:${{ env.MAPDL_DOCKER_VERSION }}
           license-server: ${{ secrets.LICENSE_SERVER }}
