@@ -109,33 +109,13 @@ jobs:
           username: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
           password: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
 
-      - name: "Start MAPDL"
-        run: |
-          MAPDL_IMAGE="${{ env.MAPDL_DOCKER_PACKAGE }}:${{ env.MAPDL_DOCKER_VERSION }}"
-          docker pull $MAPDL_IMAGE
-          docker run \
-              --name mapdl \
-              --restart unless-stopped \
-              -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
-              -e ANSYS_LOCK="OFF" \
-              -p 50052:50052 \
-              -p 50055:50055 \
-              --entrypoint /bin/bash \
-              $MAPDL_IMAGE \
-              ansysgrpc -smp -np 2 -transport insecure -allowremote true | tee log.txt &
-          # Wait for MAPDL to start by checking the log file every second for up to 60 seconds
-          for i in {1..60}; do
-            if tail -n 10 log.txt | grep -q 'Server listening on'; then
-              echo "MAPDL server started."
-              break
-            fi
-            sleep 1
-          done
-          if ! tail -n 10 log.txt | grep -q 'Server listening on'; then
-            echo "MAPDL server did not start within 60 seconds. Log output:" >&2
-            cat log.txt >&2
-            exit 1
-          fi
+      - name: "Launch first MAPDL instance using action"
+        id: mapdl_0
+        uses: ansys/pymapdl/.github/actions/launch-mapdl-docker@main
+        with:
+          mapdl-image: ${{ env.MAPDL_DOCKER_PACKAGE }}:${{ env.MAPDL_DOCKER_VERSION }}
+          license-server: ${{ secrets.LICENSE_SERVER }}
+          pymapdl-port: 50052
 
       - name: "Test with tox"
         # Only the tox environment specified in the tox.ini gh-actions is run
