@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Steel</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <Qualifier name="Definition">Bilinear</Qualifier>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>225000000</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>2091000000</Data>
+        <Qualifier name="Variable Type">Dependent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>

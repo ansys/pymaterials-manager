@@ -45,6 +45,9 @@ ISOTROPIC_HARDENING_VOCE_METADATA = DIR_PATH.joinpath(
 ISOTROPIC_HARDENING_VOCE_VARIABLE = DIR_PATH.joinpath(
     "..", "data", "matml_isotropic_hardening_voce_variable.txt"
 )
+BILINEAR_HARDENING_XML = DIR_PATH.joinpath(
+    "..", "data", "matml_unittest_isotropic_hardening_bilinear.xml"
+)
 
 
 def test_read_constant_voce_isotropic_hardening_material():
@@ -387,3 +390,48 @@ def test_read_variable_multilinear_isotropic_hardening_material():
         45,
     ]
     isotropic_hardening.independent_parameters[1].values.unit == "C"
+
+
+def test_read_bilinear_isotropic_hardening_constant():
+    matml_reader = MatmlReader(BILINEAR_HARDENING_XML)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["Material with constant bilinear hardening"]
+    assert len(material.models) == 1
+    isotropic_hardening = material.models[0]
+    assert isotropic_hardening.yield_strength.value == [225000000]
+    assert isotropic_hardening.yield_strength.unit == "Pa"
+    assert isotropic_hardening.tangent_modulus.value == [2091000000]
+    assert isotropic_hardening.tangent_modulus.unit == "Pa"
+
+
+def test_read_bilinear_isotropic_hardening_variable():
+    matml_reader = MatmlReader(BILINEAR_HARDENING_XML)
+    materials = matml_reader.convert_matml_materials()
+    material = materials["Material with variable bilinear hardening"]
+    assert len(material.models) == 1
+    isotropic_hardening = material.models[0]
+    assert isotropic_hardening.yield_strength.value.tolist() == [
+        225000000,
+        168000000,
+        115000000,
+        31000000,
+        15000000,
+    ]
+    assert isotropic_hardening.yield_strength.unit == "Pa"
+    assert isotropic_hardening.tangent_modulus.value.tolist() == [
+        2091000000,
+        1577000000,
+        708000000,
+        405000000,
+        265000000,
+    ]
+    assert isotropic_hardening.tangent_modulus.unit == "Pa"
+    assert isotropic_hardening.independent_parameters[0].name == "Temperature"
+    assert isotropic_hardening.independent_parameters[0].values.value.tolist() == [
+        100,
+        300,
+        816,
+        1040,
+        1150,
+    ]
+    assert isotropic_hardening.independent_parameters[0].values.unit == "C"
