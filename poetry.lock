@@ -152,14 +152,14 @@ plotting = ["imageio", "imageio-ffmpeg", "matplotlib (>=3.2)", "pyvista (>=0.32.
 
 [[package]]
 name = "ansys-dyna-core"
-version = "0.10.0"
+version = "0.11.0"
 description = "Python interface to LS-DYNA Service"
 optional = false
 python-versions = "<4,>=3.10"
 groups = ["dev"]
 files = [
-    {file = "ansys_dyna_core-0.10.0-py3-none-any.whl", hash = "sha256:4bb722662dea728281b3231ed215bd3ef890663fdef1c095fb63b363ed8370a0"},
-    {file = "ansys_dyna_core-0.10.0.tar.gz", hash = "sha256:440d340e0a0800af7691bbe9af89f97b36a906faeb1a5af116c05d56eced82ac"},
+    {file = "ansys_dyna_core-0.11.0-py3-none-any.whl", hash = "sha256:c864527c2b6fdcae5bd63919f676e7c971fd5a91923ab65384acbcbf583e68df"},
+    {file = "ansys_dyna_core-0.11.0.tar.gz", hash = "sha256:86833806b92f6ebc2ffc102dc9c87d68ec35e8ca9de72252f7b9efe21896c14a"},
 ]
 
 [package.dependencies]
@@ -179,7 +179,7 @@ all = ["ansys-dyna-core[codegen,dev,doc,graphics,pim,tests]"]
 codegen = ["Jinja2 (==3.1.6)", "beartype (==0.22.9)", "jsonschema (==4.26.0)"]
 dev = ["ansys-dyna-core[codegen,graphics,tests]"]
 doc = ["Sphinx (==8.2.3)", "ansys-sphinx-theme[autoapi] (==1.6.4)", "imageio (==2.37.2)", "imageio-ffmpeg (==0.6.0)", "ipython (==8.38.0)", "ipywidgets (==8.1.8)", "joblib (==1.5.3)", "jupyterlab (==4.5.2)", "matplotlib (==3.10.8)", "nbsphinx (==0.9.8)", "numpydoc (==1.10.0)", "pypandoc (==1.16.2)", "pytest-sphinx (==0.6.3)", "pyvista (==0.46.5)", "recommonmark (==0.7.1)", "scikit-learn (==1.7.2)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==3.1.0)", "sphinx-copybutton (==0.5.2)", "sphinx-design (==0.6.1)", "sphinx-gallery (==0.20.0)", "sphinx-notfound-page (==1.1.0)", "sphinxcontrib-websupport (==2.0.0)"]
-graphics = ["pyvista (>=0.43.4)"]
+graphics = ["matplotlib (>=3.0)", "pyvista (>=0.43.4)"]
 pim = ["ansys-platform-instancemanagement (>=1.0,<2.0)"]
 tests = ["ipython (==8.38.0)", "joblib (==1.5.3)", "matplotlib (==3.10.8)", "numpy (==2.2.6)", "openpyxl (==3.1.5)", "pandas (==2.3.3)", "pytest (==9.0.2)", "pytest-cov (==7.0.0)", "pytest-xdist (==3.8.0)", "pyvista (==0.46.5)", "scikit-learn (==1.7.2)"]
 
