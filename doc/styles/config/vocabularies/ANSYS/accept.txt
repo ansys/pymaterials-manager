@@ -4,3 +4,4 @@ ansys
 Pymaterials-manager
 socio-economic
 THIRDPARTY
+astroid
