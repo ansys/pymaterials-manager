@@ -338,14 +338,14 @@ tests = ["ansys-api-platform-instancemanagement (==1.0.0)", "grpcio-health-check
 
 [[package]]
 name = "ansys-sphinx-theme"
-version = "1.7.0"
+version = "1.7.2"
 description = "A theme devised by ANSYS, Inc. for Sphinx documentation."
 optional = false
 python-versions = "<4,>=3.10"
 groups = ["doc"]
 files = [
-    {file = "ansys_sphinx_theme-1.7.0-py3-none-any.whl", hash = "sha256:e346943742f16a1e74b2d9f4d29e0c984c6a47b1c4229ac8909a88c0202e7ae9"},
-    {file = "ansys_sphinx_theme-1.7.0.tar.gz", hash = "sha256:8ff959f9af58e39f81bdf5311e1c22f20688e951803e68664fa9b3dc0fda169b"},
+    {file = "ansys_sphinx_theme-1.7.2-py3-none-any.whl", hash = "sha256:9cf2aba62eede436b3ef4431dd9e20d22eb3601150ee5daa68977a98a212126c"},
+    {file = "ansys_sphinx_theme-1.7.2.tar.gz", hash = "sha256:849768cfac9c1c32bf4211de99db9c3f82535b607ac6813b76040cd0d78f78c4"},
 ]
 
 [package.dependencies]
@@ -357,8 +357,9 @@ PyYAML = ">=6.0"
 Sphinx = ">=6.1.0"
 
 [package.extras]
-autoapi = ["sphinx-autoapi (==3.6.1)", "sphinx-design (==0.7.0)", "sphinx-jinja (==2.0.2)"]
-changelog = ["PyYAML (==6.0.3)", "sphinx-design (==0.7.0)"]
+all = ["PyYAML (>=6.0.3)", "sphinx-autoapi (>=3.7.0)", "sphinx-design (>=0.6.0)", "sphinx-jinja (>=2.0.2)"]
+autoapi = ["sphinx-autoapi (>=3.7.0)", "sphinx-design (>=0.6.0)", "sphinx-jinja (>=2.0.2)"]
+changelog = ["PyYAML (>=6.0.3)", "sphinx-design (>=0.6.0)"]
 
 [[package]]
 name = "ansys-tools-common"
