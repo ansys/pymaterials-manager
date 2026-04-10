@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -24,7 +24,7 @@
 
 import os
 from pydoc import locate
-from typing import Optional, Sequence, Union
+from typing import Optional, Union
 import warnings
 import xml.etree.ElementTree as ET
 
@@ -278,7 +278,7 @@ class MatmlReader:
         else:
             return False
 
-    def convert_matml_materials(self) -> dict[str, Sequence[Material]]:
+    def convert_matml_materials(self) -> dict[str, Material]:
         """
         Convert MatML materials to the internal material representation.
 
