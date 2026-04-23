@@ -65,6 +65,7 @@ TABLE_LABELS = {
     "ThermalConductivityOrthotropic": "THERM",
     "IsotropicHardening": "PLASTIC",
     "HillYieldCriterion": "HILL",
+    "NeoHookean": "HYPE",
 }
 
 TABLE_TBOPT = {
@@ -76,6 +77,7 @@ TABLE_TBOPT = {
     "Density": None,
     "ThermalConductivityIsotropic": "COND",
     "ThermalConductivityOrthotropic": "COND",
+    "NeoHookean": "NEO",
     "IsotropicHardening": "MISO",
 }
 

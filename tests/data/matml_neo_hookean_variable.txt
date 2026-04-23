@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<Material>
+  <BulkDetails>
+    <Name>Neo Hookean variable</Name>
+    <PropertyData property="pr0">
+      <Data format="string">-</Data>
+      <ParameterValue parameter="pa0" format="float">
+        <Data>27104.0, 2700.0, 2600.0</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa1" format="float">
+        <Data>1e-05, 2e-05, 3e-05</Data>
+        <Qualifier name="Variable Type">Dependent,Dependent,Dependent</Qualifier>
+      </ParameterValue>
+      <ParameterValue parameter="pa2" format="float">
+        <Data>100, 300, 816</Data>
+        <Qualifier name="Variable Type">Independent,Independent,Independent</Qualifier>
+      </ParameterValue>
+    </PropertyData>
+  </BulkDetails>
+</Material>
