@@ -58,6 +58,7 @@ from .larc03_04_constants import (
     LaRc0304Constants,
 )
 from .molecular_weight import MolecularWeight
+from .neo_hookean import NeoHookean
 from .ply_type import (
     PlyType,
 )

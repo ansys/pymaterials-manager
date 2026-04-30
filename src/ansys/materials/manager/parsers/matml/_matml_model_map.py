@@ -46,6 +46,7 @@ from ansys.materials.manager._models._material_models.isotropic_hardening_voce_l
 from ansys.materials.manager._models._material_models.kinematic_hardening import KinematicHardening
 from ansys.materials.manager._models._material_models.larc03_04_constants import LaRc0304Constants
 from ansys.materials.manager._models._material_models.molecular_weight import MolecularWeight
+from ansys.materials.manager._models._material_models.neo_hookean import NeoHookean
 from ansys.materials.manager._models._material_models.ply_type import PlyType
 from ansys.materials.manager._models._material_models.puck_constants import PuckConstants
 from ansys.materials.manager._models._material_models.puck_constants_additional import (
@@ -82,8 +83,10 @@ from ansys.materials.manager.parsers._common import ModelInfo
 from ansys.materials.manager.parsers.matml._matml_utils import (
     map_from_anisotropic_elasticity,
     map_from_hill_yield_criterion,
+    map_from_isotropic_hardening,
     map_to_anisotropic_elasticity,
     map_to_hill_yield_criterion,
+    map_to_isotropic_hardening,
     map_to_model_coefficients,
 )
 
@@ -161,8 +164,8 @@ MATERIAL_MODEL_MAP = {
         ],
     ),
     IsotropicHardening: ModelInfo(
-        labels=["Stress"],
-        attributes=["stress"],
+        method_write=map_from_isotropic_hardening,
+        method_read=map_to_isotropic_hardening,
     ),
     KinematicHardening: ModelInfo(
         labels=[
@@ -212,6 +215,16 @@ MATERIAL_MODEL_MAP = {
     MolecularWeight: ModelInfo(
         labels=["Molecular Weight"],
         attributes=["molecular_weight"],
+    ),
+    NeoHookean: ModelInfo(
+        labels=[
+            "Initial Shear Modulus Mu",
+            "Incompressibility Parameter D1",
+        ],
+        attributes=[
+            "initial_shear_modulus",
+            "incompressibility_modulus",
+        ],
     ),
     PlyType: ModelInfo(),
     PuckConstants: ModelInfo(
