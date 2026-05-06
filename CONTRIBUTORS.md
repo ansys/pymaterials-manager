@@ -10,6 +10,7 @@
 * [Andy Grigg](https://github.com/Andy-Grigg)
 * [Dan Williams](https://github.com/dnwillia-work)
 * [German](https://github.com/germa89)
+* [github-merge-queue[bot]](https://github.com/apps/github-merge-queue)
 * [janvonrickenbach](https://github.com/janvonrickenbach)
 * [Jorge Martínez](https://github.com/jorgepiloto)
 * [Kathy Pippert](https://github.com/PipKat)
