@@ -520,3 +520,43 @@ def test_elasticity_anisotropic_constant():
     with open(ELASTICITY_ANISOTROPIC_CONSTANT, "r") as file:
         data = file.read()
         assert data == material_strings[0]
+
+
+def test_elasticity_isotropic_partial_only_youngs_modulus():
+    elasticity = ElasticityIsotropic(
+        youngs_modulus=Quantity(value=[75800000000.0], units="Pa"),
+        # poissons_ratio intentionally left as None (not provided by server)
+    )
+    material = Material(name="CMC Fibre", material_id=1, models=[elasticity])
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
+    output = material_strings[0]
+    assert "MP,EX" in output  # Young's modulus written
+    assert "MP,PRXY" not in output  # Poisson's ratio absent — None was skipped
+
+
+def test_elasticity_isotropic_partial_only_poissons_ratio():
+    elasticity = ElasticityIsotropic(
+        poissons_ratio=Quantity(value=[0.28], units=""),
+        # youngs_modulus intentionally left as None
+    )
+    material = Material(name="Partial Mat", material_id=2, models=[elasticity])
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
+    output = material_strings[0]
+    assert "MP,PRXY" in output
+    assert "MP,EX" not in output
+
+
+def test_elasticity_isotropic_all_none_fields_writes_nothing():
+    elasticity = ElasticityIsotropic()  # youngs_modulus=None, poissons_ratio=None
+    material = Material(name="Empty Mat", material_id=3, models=[elasticity])
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
+    assert material_strings[0] == ""

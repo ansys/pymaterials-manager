@@ -89,7 +89,7 @@ class BaseVisitor:
                     return {}
                 labels = mapping.labels
                 quantities = [getattr(material_model, label) for label in mapping.attributes]
-            return dict(zip(labels, quantities))
+            return {label: qty for label, qty in zip(labels, quantities) if qty is not None}
 
     @abstractmethod
     def visit_material_model(self, material_name: str, material_model: MaterialModel):

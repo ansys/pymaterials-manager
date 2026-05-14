@@ -32,7 +32,7 @@ from .model_qualifier import ModelQualifier
 
 
 class MaterialModel(BaseModel, abc.ABC):
-    """A base class for representing a material models."""
+    """A base class for representing a material model."""
 
     name: str = Field(default="", title="Name", description="The name of the material model.")
     supported_packages: list[SupportedPackage] = Field(
