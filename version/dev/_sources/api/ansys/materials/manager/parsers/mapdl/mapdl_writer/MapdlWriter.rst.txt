@@ -1,0 +1,242 @@
+
+
+
+
+
+
+:class:`MapdlWriter`
+====================
+
+
+.. py:class:: ansys.materials.manager.parsers.mapdl.mapdl_writer.MapdlWriter(materials: list[ansys.materials.manager._models.material.Material])
+
+   Bases: :py:obj:`ansys.materials.manager.parsers.base_visitor.BaseVisitor`
+
+
+   
+   Mapdl writer.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MapdlWriter
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit_standard`
+            - Visit standard.
+          * - :py:attr:`~visit_anisotropic`
+            - Visit anisotropic.
+          * - :py:attr:`~visit_hill_yield_criterion`
+            - Visit hill yield criterion.
+          * - :py:attr:`~visit_isotropic_harderning`
+            - Write isotropic hardening.
+          * - :py:attr:`~visit_material_model`
+            - Visit material model.
+          * - :py:attr:`~write`
+            - Write the materials into MAPDL representation.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
+
+
+
+Method detail
+-------------
+
+.. py:method:: visit_standard(material_model: ansys.materials.manager._models._material_models.density.Density) -> str
+
+   
+   Visit standard.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_anisotropic(material_model: ansys.materials.manager._models._material_models.elasticity_anisotropic.ElasticityAnisotropic) -> str
+
+   
+   Visit anisotropic.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_hill_yield_criterion(material_model: ansys.materials.manager._models._material_models.hill_yield_criterion.HillYieldCriterion) -> str
+
+   
+   Visit hill yield criterion.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_isotropic_harderning(material_model: ansys.materials.manager._models._material_models.isotropic_hardening.IsotropicHardening) -> str
+
+   
+   Write isotropic hardening.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_material_model(material_name: str, material_model: ansys.materials.manager._models._common.material_model.MaterialModel) -> None
+
+   
+   Visit material model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write(client: ansys.materials.manager._models._common._MapdlCore | None = None, material_names: list[str] | None = None, material_ids: list[int] | None = None, reference_temperatures: list[float] | None = None) -> list[str] | None
+
+   
+   Write the materials into MAPDL representation.
+
+
+   :Parameters:
+
+       **client** : :obj:`_MapdlCore` | :data:`python:None`
+           MAPDL client to write to. If None, return the material strings.
+
+       **material_names** : :class:`python:list`\[:class:`python:str`] | :data:`python:None`
+           List of material names to write. If None, write all materials.
+
+       **material_ids** : :class:`python:list`\[:class:`python:int`] | :data:`python:None`
+           List of material ids to write. If None, get the ids from the materials.
+
+       **reference_temperatures** : :class:`python:list`\[:class:`python:float`] | :data:`python:None`
+           List of reference temperatures to write. If None, use default values.
+
+
+
+   :Returns:
+
+       :class:`python:list`\[:class:`python:str`] | :data:`python:None`
+           List of material strings if client is None, else None.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
