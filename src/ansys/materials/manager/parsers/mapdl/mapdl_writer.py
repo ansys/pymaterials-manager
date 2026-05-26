@@ -64,6 +64,9 @@ from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
     write_temperature_reference_value,
     write_temperature_table_values,
 )
+from src.ansys.materials.manager._models._material_models.crystal_plasticity import (
+    CrystalPlasticity,
+)
 
 from ._mapdl_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
@@ -255,6 +258,156 @@ class MapdlWriter(BaseVisitor):
 
         return material_string
 
+    def visit_crystal_plasticity(self, material_model: CrystalPlasticity) -> str:
+        """Write crystal plasticity."""
+        orientations = []
+        for model_qualifier in material_model.model_qualifiers:
+            if model_qualifier.name == "NumberOfSlipFamilies":
+                if model_qualifier.value == "FCC":
+                    nslfam = 1
+                elif model_qualifier.value == "HCP":
+                    nslfam = 5
+            elif model_qualifier.name == "FormulationNumber":
+                if model_qualifier.value == "Power law":
+                    form_num = 1
+                elif model_qualifier.value == "Exponential":
+                    form_num = 2
+            elif model_qualifier.name == "CrystalIndex":
+                if model_qualifier.value == "FCC":
+                    crystal_index = 1
+                elif model_qualifier.value == "HCP":
+                    crystal_index = 2
+                elif model_qualifier.value == "BCC":
+                    crystal_index = 3
+                else:
+                    raise Exception(
+                        f"Crystal index {model_qualifier.value} is not supported for the crystal plasticity model."  # noqa: E501
+                    )
+            elif model_qualifier.name == "OrientationTransformationMatrix":
+                if model_qualifier.value == "Straight":
+                    orientation_transformation_matrix = 0
+                elif model_qualifier.value == "Transformed":
+                    orientation_transformation_matrix = 1
+                else:
+                    raise Exception(
+                        f"Orientation transformation matrix {model_qualifier.value} is not supported for the crystal plasticity model."  # noqa: E501
+                    )
+            elif model_qualifier.name == "NumberOfSlipSystems":
+                if number_of_slip_systems == "FCC":
+                    number_of_slip_systems = 12
+                elif number_of_slip_systems == "HCP":
+                    number_of_slip_systems = 30
+                elif number_of_slip_systems == "BCC":
+                    number_of_slip_systems = 48
+                else:
+                    raise Exception(
+                        f"Number of slip systems {model_qualifier.value} is not supported for the crystal plasticity model."  # noqa: E501
+                    )
+            elif model_qualifier.name == "SlipFamilyHardening":
+                if model_qualifier.value == "Yes":
+                    slip_family_hardening = 1
+                elif model_qualifier.value == "No":
+                    slip_family_hardening = 0
+                else:
+                    raise Exception(
+                        f"Slip family hardening {model_qualifier.value} is not supported for the crystal plasticity model."  # noqa: E501
+                    )
+            elif model_qualifier.name == "ActivatedSlipFamily":
+                if model_qualifier.value == "Active":
+                    activated_slip_family = 1
+                elif model_qualifier.value == "Inactive":
+                    activated_slip_family = 0
+                else:
+                    raise Exception(
+                        f"Activated slip family {model_qualifier.value} is not supported for the crystal plasticity model."  # noqa: E501
+                    )
+        if crystal_index == 1:
+            flow_tbopt = "FLFCC"
+        elif crystal_index == 2:
+            flow_tbopt = "FLHCP"
+        else:
+            flow_tbopt = "FLBCC"
+
+        xparam = [
+            crystal_index,
+            0,
+            orientation_transformation_matrix,
+            number_of_slip_systems,
+            slip_family_hardening,
+            activated_slip_family,
+        ]
+        hard = [
+            material_model.initial_hardness_per_slip_family.value[0],
+            material_model.hardness_modulus_per_slip_family.value[0],
+            material_model.saturation_hardness_per_slip_family.value[0],
+            material_model.power_dependence_of_hardenss_moduli.value[0],
+            material_model.power_dependence_of_saturation_hardness.value[0],
+            material_model.cross_hardness_parameter.value[0],
+        ]
+        if flow_tbopt == "FLFCC":
+            flow_characteristics = [
+                material_model.slip_pre_exponential.value[0],
+                material_model.slip_power_dependence_1.value[0],
+                material_model.slip_power_dependence_2.value[0],
+                material_model.initial_ratio_of_slip_resistance.value[0],
+                material_model.activation_energy.value[0],
+                material_model.lattice_c_by_a_ratio.value[0],
+            ]
+        if flow_tbopt == "FLHCP":
+            flow_characteristics = [
+                material_model.slip_pre_exponential.value[0],
+                material_model.slip_power_dependende_on_offset.value[0],
+                material_model.lattice_c_by_a_ratio.value[0],
+            ]
+        else:
+            flow_characteristics = [
+                material_model.slip_pre_exponential.value[0],
+                material_model.slip_power_dependence_1.value[0],
+                material_model.slip_power_dependence_2.value[0],
+                material_model.constant_ratio_of_slip_resistance.value[0],
+                material_model.activation_energy.value[0],
+                material_model.lattice_c_by_a_ratio.value[0],
+            ]
+
+        material_string = "TB,PLAS,{matid}\n".format(matid=None)
+        material_string += write_table_dep_values(
+            material_id=None,
+            label="XTAL",
+            dependent_values=orientations,
+            tb_opt="ORIE",
+        )
+        material_string += write_table_dep_values(
+            material_id=None,
+            label="XTAL",
+            dependent_values=[nslfam],
+            tb_opt="NSLFAM",
+        )
+        material_string += write_table_dep_values(
+            material_id=None,
+            label="XTAL",
+            dependent_values=[form_num],
+            tb_opt="FORM",
+        )
+        material_string += write_table_dep_values(
+            material_id=None,
+            label="XTAL",
+            dependent_values=xparam,
+            tb_opt="XPARAM",
+        )
+        material_string += write_table_dep_values(
+            material_id=None,
+            label="XTAL",
+            dependent_values=hard,
+            tb_opt="HARD",
+        )
+        material_string = write_table_dep_values(
+            material_id=None,
+            label="XTAL",
+            dependent_values=flow_characteristics,
+            tb_opt=flow_tbopt,
+        )
+        pass
+
     def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
         """Visit material model."""
         standard_models = (
@@ -274,6 +427,8 @@ class MapdlWriter(BaseVisitor):
             model = self.visit_hill_yield_criterion(material_model)
         elif isinstance(material_model, IsotropicHardening):
             model = self.visit_isotropic_harderning(material_model)
+        elif isinstance(material_model, CrystalPlasticity):
+            model = self.visit_crystal_plasticity(material_model)
         else:
             return
         self._material_repr[material_name].append(model)
