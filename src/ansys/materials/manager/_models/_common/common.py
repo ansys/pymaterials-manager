@@ -57,6 +57,8 @@ class GILInterpolationAlgorithms(str, Enum):
 MATML_TO_GIL_ALGORITHM_MAPPING = {
     "Linear Multivariate": GILInterpolationAlgorithms.LINEAR_TRIANGULATION,
     "Linear Multivariate (Qhull)": GILInterpolationAlgorithms.LINEAR_QHULL,
+    "Radial Basis": GILInterpolationAlgorithms.RADIAL_BASIS,
+    "Nearest Neighbor": GILInterpolationAlgorithms.NEAREST_NEIGHBOR,
 }
 
 

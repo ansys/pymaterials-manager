@@ -45,8 +45,12 @@ twine = ">=4.0.2"
 pytest-cov = ">=4"
 pre-commit = ">=3.2.2"
 pydantic = ">=2.7.0"
-ansys-units = ">=0.8.dev0"
+ansys-units = "==0.8.dev0"
 ansys-dyna-core = ">=0.9.0"
+
+[tool.poetry.extras]
+interpolation = ["ansys-dpf-core"]
+
 
 [tool.black]
 line-length = 100
