@@ -176,6 +176,7 @@ description = "PyFluent provides Pythonic access to Ansys Fluent."
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["dev"]
+markers = "python_version < \"3.12\""
 files = [
     {file = "ansys_fluent_core-0.35.1-py3-none-any.whl", hash = "sha256:2191a34527b1aa453df0f785e4ae359154851b93298c93f362e179b0ee509340"},
     {file = "ansys_fluent_core-0.35.1.tar.gz", hash = "sha256:d9032acefc72b61b922bc42d59c3ae68216fffa0dfc612463df59cd1bd5967b5"},
@@ -202,6 +203,44 @@ pyyaml = ">=6.0"
 docs = ["Sphinx (==8.1.3)", "ansys-sphinx-theme (==1.5.3)", "autodocsumm (==0.2.14)", "beautifulsoup4 (==4.13.4)", "jupyter_sphinx (==0.5.3)", "matplotlib (==3.10.5)", "numpydoc (==1.9.0)", "openpyxl (>=3.1.5)", "pdf2image (==1.17.0)", "plotly (>=5.22.0)", "pypandoc (==1.15)", "pytest-sphinx (==0.6.3)", "python-pptx (>=0.6.23)", "quarto-cli (==1.7.32)", "seaborn (>=0.13.2)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==3.0.1)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.19.0)", "sphinx-notfound-page (==1.1.0)", "sphinx-toggleprompt (==0.6.0)", "sphinxcontrib-websupport (==2.0.0)", "sphinxemoji (==0.3.1)"]
 reader = ["h5py (==3.14.0)"]
 tests = ["pyfakefs (==5.9.2)", "pytest (==8.4.1)", "pytest-cov (==6.2.1)", "pytest-mock (==3.14.1)", "pytest-xdist (==3.8.0)"]
+
+[[package]]
+name = "ansys-fluent-core"
+version = "0.39.0"
+description = "PyFluent provides Pythonic access to Ansys Fluent."
+optional = false
+python-versions = "<3.15,>=3.10"
+groups = ["dev"]
+markers = "python_version >= \"3.12\""
+files = [
+    {file = "ansys_fluent_core-0.39.0-py3-none-any.whl", hash = "sha256:6b329e9c604b532487c005df09a2ca8e7b683adf151c601ecc5bd29552a7444a"},
+    {file = "ansys_fluent_core-0.39.0.tar.gz", hash = "sha256:ad1a161b11512b4d9477a60255bf2076d67ba1d39d7747d250b4e2dcace9834f"},
+]
+
+[package.dependencies]
+ansys-api-fluent = ">=0.3.40"
+ansys-platform-instancemanagement = ">=1.1,<2.0"
+ansys-tools-common = ">=0.4.0"
+ansys-tools-filetransfer = ">=0.2,<1.0"
+ansys-units = ">=0.12.0,<0.13.0"
+defusedxml = ">=0.7.1"
+deprecated = ">=1.2.18"
+docker = ">=7.1.0"
+grpcio = ">=1.30.0"
+grpcio-health-checking = ">=1.30.0"
+grpcio-reflection = ">=1.30.0"
+grpcio-status = ">=1.26.0"
+nltk = ">=3.9.1"
+numpy = ">=1.14.0,<3.0.0"
+pandas = ">=1.1.0,<3.0.0"
+pyyaml = ">=6.0"
+
+[package.extras]
+docs = ["Sphinx (==8.1.3)", "ansys-sphinx-theme (==1.7.2)", "autodocsumm (==0.2.15)", "beautifulsoup4 (==4.14.3)", "jupyter_sphinx (==0.5.3)", "matplotlib (==3.10.9)", "numpydoc (==1.10.0)", "openpyxl (>=3.1.5)", "pdf2image (==1.17.0)", "plotly (>=5.22.0)", "pypandoc (==1.17)", "pytest-sphinx (==0.7.1)", "python-pptx (>=0.6.23)", "quarto-cli (==1.9.37)", "seaborn (>=0.13.2)", "sphinx-autobuild (==2024.10.3)", "sphinx-autodoc-typehints (==3.0.1)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.21.0)", "sphinx-notfound-page (==1.1.0)", "sphinx-toggleprompt (==0.6.0)", "sphinx_design (==0.6.1)", "sphinxcontrib-websupport (==2.0.0)", "sphinxemoji (==0.3.2)"]
+reader = ["h5py (>=3.15.1)"]
+tests = ["pyfakefs (==6.2.0)", "pytest (==9.0.3)", "pytest-cov (==7.1.0)", "pytest-mock (==3.15.1)", "pytest-xdist (==3.8.0)"]
+ui = ["panel (>=1.8.1)"]
+ui-jupyter = ["ipywidgets (>=8.1.8)"]
 
 [[package]]
 name = "ansys-mapdl-core"
@@ -398,6 +437,7 @@ description = "Pythonic interface for units, unit systems, and unit conversions.
 optional = false
 python-versions = "<3.14,>=3.10"
 groups = ["dev"]
+markers = "python_version < \"3.12\""
 files = [
     {file = "ansys_units-0.8.dev0-py3-none-any.whl", hash = "sha256:b209918e10138bc6b4a268735177eca8b5976bb06d099654d9c3370698472042"},
     {file = "ansys_units-0.8.dev0.tar.gz", hash = "sha256:188ec6eaaf35a6f44aa0d2cb9e1d0c21b7dd10a11fb51ef495bde619a8eeb584"},
@@ -411,6 +451,29 @@ pyyaml = ">=6.0"
 additional = ["numpy (==2.2.3)", "pydantic (>=2.11.7)", "pydantic_core (>=2.33.2)"]
 doc = ["Sphinx (==7.4.7)", "ansys-sphinx-theme (==1.3.2)", "matplotlib (==3.10.1)", "numpydoc (==1.9.0)", "pdf2image (==1.17.0)", "quarto-cli (==1.7.32)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.19.0)", "sphinx-toggleprompt (==0.6.0)"]
 tests = ["numpy (==2.2.3)", "pint (==0.24.4)", "pytest (==8.4.1)", "pytest-cov (==6.2.1)", "pytest-mock (==3.14.1)"]
+
+[[package]]
+name = "ansys-units"
+version = "0.12.0"
+description = "Pythonic interface for units, unit systems, and unit conversions."
+optional = false
+python-versions = "<3.15,>=3.10"
+groups = ["dev"]
+markers = "python_version >= \"3.12\""
+files = [
+    {file = "ansys_units-0.12.0-py3-none-any.whl", hash = "sha256:c1dbe1d50f7de6672bb786ccde759bc6d2a167206e817b868249d87053a5e18d"},
+    {file = "ansys_units-0.12.0.tar.gz", hash = "sha256:779e7c33bba5c721859fd26abe603673534b5cb9e0725f34997db11582504da2"},
+]
+
+[package.dependencies]
+pyyaml = ">=6.0"
+typing-extensions = ">=4.5.0"
+
+[package.extras]
+additional = ["numpy (>=1.24,<3)", "pandas (>=2.2,<3.0) ; python_version < \"3.11\"", "pandas (>=3.0.0) ; python_version >= \"3.11\"", "pandas-stubs (>=2)", "pydantic (>=2.11.7)", "pydantic_core (>=2.33.2)"]
+ci-types = ["basedpyright", "black (==26.3.1)", "matplotlib (==3.10.8)", "pandas (>=2.2,<3.0) ; python_version < \"3.11\"", "pandas (>=3.0.0) ; python_version >= \"3.11\"", "pandas-stubs (>=2)", "pint (==0.24.4)", "pydantic (>=2.11.7)", "pydantic_core (>=2.33.2)", "pytest (==9.0.3)", "pytest-cov (==7.1.0)", "pytest-mock (==3.15.1)"]
+doc = ["Sphinx (==7.4.7)", "ansys-sphinx-theme (==1.7.2)", "matplotlib (==3.10.8)", "numpydoc (==1.10.0)", "pdf2image (==1.17.0)", "quarto-cli (==1.9.37)", "sphinx-copybutton (==0.5.2)", "sphinx-gallery (==0.20.0)", "sphinx-toggleprompt (==0.6.0)"]
+tests = ["numpy (>=1.24,<3)", "pandas (>=2.2,<3.0) ; python_version < \"3.11\"", "pandas (>=3.0.0) ; python_version >= \"3.11\"", "pandas-stubs (>=2)", "pint (==0.24.4)", "pytest (==9.0.3)", "pytest-cov (==7.1.0)", "pytest-mock (==3.15.1)"]
 
 [[package]]
 name = "appdirs"
@@ -1621,6 +1684,23 @@ groups = ["dev"]
 files = [
     {file = "grpcio_health_checking-1.80.0-py3-none-any.whl", hash = "sha256:d804d4549cbb71e90ca2c7bf0c501060135dfd220aca8e2c54f96d3e79e210e5"},
     {file = "grpcio_health_checking-1.80.0.tar.gz", hash = "sha256:2cc5f08bc8b816b8655ab6f59c71450063ba20766d31e21a493e912e3560c8b1"},
+]
+
+[package.dependencies]
+grpcio = ">=1.80.0"
+protobuf = ">=6.31.1,<7.0.0"
+
+[[package]]
+name = "grpcio-reflection"
+version = "1.80.0"
+description = "Standard Protobuf Reflection Service for gRPC"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+markers = "python_version >= \"3.12\""
+files = [
+    {file = "grpcio_reflection-1.80.0-py3-none-any.whl", hash = "sha256:a7d0b77961b1c722400b1509968f1ad3a64e9d78280d4cf5b88b6cfe5b41eb61"},
+    {file = "grpcio_reflection-1.80.0.tar.gz", hash = "sha256:e9c76aabc4324279945b70bc76a3d41bc4f9396bffcf1cfc1011a571c2c56221"},
 ]
 
 [package.dependencies]
@@ -2919,6 +2999,7 @@ description = "PyAnsys Tools Report package."
 optional = false
 python-versions = "<4,>=3.10"
 groups = ["dev"]
+markers = "python_version < \"3.12\""
 files = [
     {file = "pyansys_tools_report-0.9.0-py3-none-any.whl", hash = "sha256:cc17222c8992b83d5fc36b67ce52d23fb8afb80190a1d067c472c5d53df050fc"},
     {file = "pyansys_tools_report-0.9.0.tar.gz", hash = "sha256:720a58857a3b1a20cd4920370706cfca700ba142beba03f1afd259c21a14991e"},
@@ -4640,5 +4721,5 @@ interpolation = []
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.10,<3.14"
-content-hash = "41060d8afeb3283cc5bec23e27c394efccc65829515943b82eb85fbe2e78fa31"
+python-versions = ">=3.10,<3.15"
+content-hash = "819b5c1dff22f7ff77c5cfd2b13b7b0a18fcb73083c048a2d5d57bf1e5a724db"
