@@ -16,7 +16,7 @@ jobs:
     name: Syncer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - uses: micnncim/action-label-syncer@3abd5ab72fda571e69fffd97bd4e0033dd5f495c  # v1.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -32,7 +32,7 @@ jobs:
 
     # Label based on modified files
     - name: Label based on changed files
-      uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b  #v6.0.1
+      uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213  #v6.1.0
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         sync-labels: true
