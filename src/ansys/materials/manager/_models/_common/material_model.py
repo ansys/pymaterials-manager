@@ -34,13 +34,14 @@ from .model_qualifier import ModelQualifier
 try:
     import ansys.dpf.core as dpf
     from ansys.dpf.core import load_library
-    from ansys.tools.path import get_available_ansys_installations
+    from ansys.tools.common.path import get_available_ansys_installations
 
     HAS_DPF = True
     _ansys_paths = get_available_ansys_installations()
-    if all(version >= 271 for version in _ansys_paths):
+    HAS_MINIMUM_271 = any(version >= 271 for version in _ansys_paths)
+    if HAS_MINIMUM_271:
         load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
-        HAS_MINIMUM_271 = True
+
 except ImportError:
     HAS_DPF = False
     HAS_MINIMUM_271 = False
