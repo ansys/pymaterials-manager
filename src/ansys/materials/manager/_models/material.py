@@ -121,7 +121,13 @@ class Material:
     def get_model_by_name(self, model_name: str) -> MaterialModel | None:
         """Get the material model with a given model name."""
         model = None
-        for mat_model in self.models:
+        for mat_model in self._models:
             if model_name.lower() == mat_model.name.lower():
                 model = mat_model
         return model
+
+    def remove_model_by_name(self, model_name: str) -> None:
+        """Remove a material model from the current material models by name."""
+        model = self.get_model_by_name(model_name)
+        if model is not None:
+            self._models.remove(model)
