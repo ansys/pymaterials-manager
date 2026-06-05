@@ -73,6 +73,11 @@ Per-request HTTP timeout for the polling GET.
 Slightly above ``_POLL_SECONDS`` to allow for connection overheads.
 """
 
+_TIMEOUT_ERROR_MSG = (
+    "Timed out after {timeout:.0f}s waiting for a material selection. The material picker may "
+    "have been closed without making a selection, or the session timed out."
+)
+
 
 class RestSessionClient:
     """
@@ -222,20 +227,12 @@ class RestSessionClient:
         while True:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                raise GrantaMIError(
-                    f"Timed out after {timeout:.0f}s waiting for a material selection. "
-                    "The material picker may have been closed without making a selection, "
-                    "or the session timed out."
-                )
+                raise GrantaMIError(_TIMEOUT_ERROR_MSG.format(timeout=timeout))
             request_timeout = min(_POLL_REQUEST_TIMEOUT, remaining)
             try:
                 response = self._client.get(endpoint, timeout=request_timeout)
             except httpx.ReadTimeout:
-                raise GrantaMIError(
-                    f"Timed out after {timeout:.0f}s waiting for a material selection. "
-                    "The material picker may have been closed without making a selection, "
-                    "or the session timed out."
-                )
+                raise GrantaMIError(_TIMEOUT_ERROR_MSG.format(timeout=timeout))
             response.raise_for_status()
             if response.status_code != 204:
                 _logger.debug("Raw response body: %s", response.text)
