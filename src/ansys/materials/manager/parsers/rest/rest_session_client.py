@@ -87,6 +87,9 @@ class RestSessionClient:
     ----------
     base_url : str
         Base URL for the REST API, e.g. ``"https://cloudserver.com/is"``.
+    package_name : str, optional
+        The package name used to define which material models are exported from
+        Granta MI.
     verify_ssl : bool
         Whether to verify SSL certificates.  Defaults to ``True``.
     oidc_config : MSALOIDCConfiguration | None
@@ -100,6 +103,7 @@ class RestSessionClient:
     def __init__(
         self,
         base_url: str,
+        package_name: str | None = None,
         verify_ssl: bool = True,
         oidc_config=None,
     ) -> None:
@@ -114,6 +118,7 @@ class RestSessionClient:
         auth_header = {"Authorization": f"Bearer {auth_token}"}
         self._client = httpx.Client(headers=auth_header, verify=verify_ssl)
         self._session_id: str | None = None
+        self._package_name = package_name
 
     def _authenticate_hosted_granta_mi(self) -> str:
         _logger.info("Authenticating with Granta MI at %s…", self._base_url)
@@ -129,8 +134,9 @@ class RestSessionClient:
 
         Parameters
         ----------
-        name : str
-            Human-readable session name displayed in the material picker.
+        name : str, optional
+            Human-readable session name displayed in the material picker. Defaults to
+            "PyMaterials Manager".
 
         Raises
         ------
@@ -149,10 +155,11 @@ class RestSessionClient:
             "name": name,
             "settings": {
                 "title": name,
-                "packageName": "Workbench",
                 "pollSeconds": _POLL_SECONDS,
             },
         }
+        if self._package_name is not None:
+            payload["settings"]["packageName"] = self._package_name
         _logger.info("Creating Granta MI session '%s' at %s", name, endpoint)
         _logger.debug("Session creation payload: %s", payload)
         response = self._client.post(endpoint, json=payload)

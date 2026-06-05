@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
 from unittest.mock import patch
 
 import httpx
@@ -246,6 +247,7 @@ def test_context_manager_closes_client_when_enter_raises(httpx_mock, mock_auth):
     client = RestSessionClient.__new__(RestSessionClient)
     client._base_url = BASE_URL
     client._session_id = None
+    client._package_name = None
     # Use a real httpx.Client so we can check is_closed
     import httpx as _httpx
 
@@ -294,7 +296,46 @@ def test_delete_session_clears_id_even_when_server_returns_error(httpx_mock, moc
     assert client._session_id is None
 
 
-def test_auth_error_raised_on_bad_token(mock_auth):
+def test_create_session_without_package_omits_package_name(httpx_mock, mock_auth):
+    """RestSessionClient with no package_name should not include packageName in the payload."""
+    httpx_mock.add_response(method="POST", url=_SESSIONS_URL, json={"id": "session-no-pkg"})
+
+    client = RestSessionClient(BASE_URL)
+    client.create_session()
+
+    request = httpx_mock.get_requests()[0]
+    body = json.loads(request.content)
+    assert "packageName" not in body["settings"]
+
+
+def test_create_session_with_package_includes_package_name(httpx_mock, mock_auth):
+    """RestSessionClient with package_name should include packageName in the payload."""
+    httpx_mock.add_response(method="POST", url=_SESSIONS_URL, json={"id": "session-pkg"})
+
+    client = RestSessionClient(BASE_URL, package_name="Workbench")
+    client.create_session()
+
+    request = httpx_mock.get_requests()[0]
+    body = json.loads(request.content)
+    assert body["settings"]["packageName"] == "Workbench"
+
+
+def test_context_manager_uses_instance_package_name(httpx_mock, mock_auth):
+    """The context manager should forward the instance package_name in the session payload."""
+    httpx_mock.add_response(method="POST", url=_SESSIONS_URL, json={"id": "session-cm-pkg"})
+    httpx_mock.add_response(
+        method="DELETE",
+        url=f"{BASE_URL}/is/api/v1/sessions/session-cm-pkg",
+        status_code=204,
+    )
+
+    with RestSessionClient(BASE_URL, package_name="Workbench"):
+        pass
+
+    request = httpx_mock.get_requests()[0]
+    body = json.loads(request.content)
+    assert body["settings"]["packageName"] == "Workbench"
+
     """_authenticate_hosted_granta_mi should raise AuthenticationError on bad token response."""
     mock_auth.side_effect = AuthenticationError("no token")
     with pytest.raises(AuthenticationError):

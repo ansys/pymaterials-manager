@@ -181,6 +181,7 @@ class MaterialManager:
     def from_grantami(
         cls,
         granta_mi_url: str,
+        package_name: str | None = None,
         verify_ssl: bool = True,
         oidc_config=None,
     ) -> "MaterialManager":
@@ -198,6 +199,9 @@ class MaterialManager:
         ----------
         granta_mi_url : str
             Base URL of the Granta MI instance, e.g. ``"https://my_granta_mi_server.com"``.
+        package_name : str, optional
+            The package name used to define which material models are exported from
+            Granta MI.
         verify_ssl : bool
             Whether to verify SSL certificates.  Defaults to ``True``.
         oidc_config : MSALOIDCConfiguration | None
@@ -216,12 +220,19 @@ class MaterialManager:
         """
         manager = cls()
         manager.read_from_grantami(
-            granta_mi_url=granta_mi_url, verify_ssl=verify_ssl, oidc_config=oidc_config
+            granta_mi_url=granta_mi_url,
+            package_name=package_name,
+            verify_ssl=verify_ssl,
+            oidc_config=oidc_config,
         )
         return manager
 
     def read_from_grantami(
-        self, granta_mi_url: str, verify_ssl: bool = True, oidc_config=None
+        self,
+        granta_mi_url: str,
+        package_name: str | None = None,
+        verify_ssl: bool = True,
+        oidc_config=None,
     ) -> None:
         """
         Fetch materials from Granta MI and add them to the library.
@@ -237,6 +248,9 @@ class MaterialManager:
         ----------
         granta_mi_url : str
             Base URL of the Granta MI instance, e.g. ``"https://my_granta_mi_server.com"``.
+        package_name : str, optional
+            The package name used to define which material models are exported from
+            Granta MI.
         verify_ssl : bool
             Whether to verify SSL certificates. Defaults to ``True``.
         oidc_config : MSALOIDCConfiguration | None
@@ -254,7 +268,10 @@ class MaterialManager:
         from ansys.materials.manager.parsers.rest.rest_session_client import RestSessionClient
 
         with RestSessionClient(
-            base_url=granta_mi_url, verify_ssl=verify_ssl, oidc_config=oidc_config
+            base_url=granta_mi_url,
+            package_name=package_name,
+            verify_ssl=verify_ssl,
+            oidc_config=oidc_config,
         ) as client:
             picker_url = client.granta_material_picker_url
             self._logger.info("Opening Granta Material Picker in browser: %s", picker_url)
