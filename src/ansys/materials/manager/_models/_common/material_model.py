@@ -124,7 +124,6 @@ class MaterialModel(BaseModel, abc.ABC):
                     raise Exception(f"the value of {field_name} cannot be None, please update it.")
                 validate_parameters(field_name, field_value["value"], self.independent_parameters)
 
-    @requires_dpf_271
     def query(self, values: list[float] | list[list[float]]) -> list[float] | list[list[float]]:
         """
         Query the material model with the given values.
@@ -148,6 +147,7 @@ class MaterialModel(BaseModel, abc.ABC):
         else:
             raise NotImplementedError(f"Interpolator {self.interpolator} is not implemented yet.")
 
+    @requires_dpf_271
     def _query_with_gil(
         self, values: list[float] | list[list[float]]
     ) -> list[float] | list[list[float]]:
@@ -170,29 +170,34 @@ class MaterialModel(BaseModel, abc.ABC):
             len(self.independent_parameters) if self.independent_parameters is not None else None
         )
         if self.independent_parameters is None:
-            print("Querying a material model with no independent parameters.")
-            return
+            raise ValueError("Querying a material model with no independent parameters.")
         if indep_param_dim > 0:
             indep_param_dim = len(self.independent_parameters)
         if indep_param_dim == 0:
-            print("Querying a material model with no independent parameters.")
-            return
+            raise ValueError("Querying a material model with no independent parameters.")
+
+        if self.independent_parameters[0].values is None:
+            raise ValueError(
+                "Querying a material model with independent parameters that have no values."
+            )
+
         indep_param_ent = len(self.independent_parameters[0].values.value)
 
         excluded_fields = list(MaterialModel.model_fields.keys())
         dependant_parameters = [
             field for field in self.__class__.model_fields.keys() if field not in excluded_fields
         ]
+
         dep_param_dim = len(dependant_parameters)
         if dep_param_dim == 0:
-            print("Querying a material model with no dependent parameters.")
-            return
+            raise ValueError("No dependent parameters found for this material model.")
         dep_param_ent = (
             len(getattr(self, dependant_parameters[0]).value) if dep_param_dim > 0 else None
         )
         if dep_param_ent is None:
-            print("Querying a material model with dependent parameters that have no values.")
-            return
+            raise ValueError(
+                "Querying a material model with dependent parameters that have no values."
+            )
 
         indep_values = [
             self.independent_parameters[i].values.value.tolist() for i in range(indep_param_dim)
@@ -247,16 +252,15 @@ class MaterialModel(BaseModel, abc.ABC):
             ind_parameter_ranges.append(min_max[i], i)
 
         if not self.interpolation_options:
-            print("Querying a material model with no interpolation options")
-            return
+            raise ValueError("Querying a material model with no interpolation options")
 
         algorithm = MATML_TO_GIL_ALGORITHM_MAPPING.get(
             self.interpolation_options.algorithm_type, None
         )
 
         if algorithm is None:
-            print("Querying a material model with no interpolation options algorithm.")
-            return
+            raise ValueError("Querying a material model with no interpolation options algorithm.")
+
         is_cached = self.interpolation_options.cached
         is_normalized = self.interpolation_options.normalized
         # TODO need to adapt algorithm options
