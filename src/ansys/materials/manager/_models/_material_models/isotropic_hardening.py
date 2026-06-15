@@ -45,9 +45,35 @@ class IsotropicHardening(MaterialModel):
         description="Stress values for the material.",
     )
 
+    yield_strength: Quantity | None = Field(
+        default=None,
+        description="Yield strength values for the material.",
+    )
+
+    tangent_modulus: Quantity | None = Field(
+        default=None,
+        description="Tangent modulus values for the material.",
+    )
+
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> Dict:
-        expected_qualifiers = {"Definition": ["Multilinear", QualifierType.STRICT]}
+        expected_qualifiers = {
+            "Definition": ["Multilinear", QualifierType.RANGE, ["Multilinear", "Bilinear"]]
+        }
+        if values:
+            definition = values["model_qualifiers"].get("Definition", None)
+            if definition is not None:
+                if definition == "Bilinear":
+                    expected_qualifiers["Table"] = [
+                        "Plastic",
+                        QualifierType.RANGE,
+                        ["Plastic", "Total"],
+                    ]
+                    expected_qualifiers["Active Table"] = [
+                        "Plastic",
+                        QualifierType.RANGE,
+                        ["Plastic", "Total"],
+                    ]
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
             values, expected_qualifiers
         )
@@ -55,12 +81,40 @@ class IsotropicHardening(MaterialModel):
 
     def validate_model(self):
         """Override the validate_model implementation from the baseclass."""
-        is_plastic_strain = [
-            True if ind_par.name == "Plastic Strain" else False
-            for ind_par in self.independent_parameters
-        ]
-        if not any(is_plastic_strain):
-            raise Exception(
-                "Plastic Strain has not been provided for the isotropic hardening model."
-            )
+        for qualifier in self.model_qualifiers:
+            if qualifier.name == "Definition":
+                if qualifier.value == "Bilinear":
+                    if self.stress is not None:
+                        raise Exception(
+                            "Stress values should not be provided for the Bilinear definition of the isotropic hardening model."
+                        )
+                    if self.yield_strength is None:
+                        raise Exception(
+                            "Yield Strength values must be provided for the Bilinear definition of the isotropic hardening model."
+                        )
+                    if self.tangent_modulus is None:
+                        raise Exception(
+                            "Tangent Modulus values must be provided for the Bilinear definition of the isotropic hardening model."
+                        )
+            elif qualifier.name == "Multiliear":
+                is_plastic_strain = [
+                    True if ind_par.name == "Plastic Strain" else False
+                    for ind_par in self.independent_parameters
+                ]
+                if not any(is_plastic_strain):
+                    raise Exception(
+                        "Plastic Strain has not been provided for the isotropic hardening model."
+                    )
+                if self.stress is None:
+                    raise Exception(
+                        "Stress values must be provided for the Multilinear definition of the isotropic hardening model."
+                    )
+                if self.yield_strength is not None:
+                    raise Exception(
+                        "Yield Strength values should not be provided for the Multilinear definition of the isotropic hardening model."
+                    )
+                if self.tangent_modulus is not None:
+                    raise Exception(
+                        "Tangent Modulus values should not be provided for the Multilinear definition of the isotropic hardening model."
+                    )
         super().validate_model()
