@@ -96,7 +96,7 @@ class IsotropicHardening(MaterialModel):
                         raise Exception(
                             "Tangent Modulus values must be provided for the Bilinear definition of the isotropic hardening model."
                         )
-            elif qualifier.name == "Multiliear":
+            elif qualifier.name == "Multilinear":
                 is_plastic_strain = [
                     True if ind_par.name == "Plastic Strain" else False
                     for ind_par in self.independent_parameters
