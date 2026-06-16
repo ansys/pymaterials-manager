@@ -30,6 +30,7 @@ from ansys.materials.manager._models._common import (
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
 class SpecificHeat(MaterialModel):
@@ -37,7 +38,7 @@ class SpecificHeat(MaterialModel):
 
     name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
 
-    specific_heat: Quantity | None = Field(
+    specific_heat: TabularQuantity | Quantity | None = Field(
         default=None,
         description="The specific heat of the material.",
     )

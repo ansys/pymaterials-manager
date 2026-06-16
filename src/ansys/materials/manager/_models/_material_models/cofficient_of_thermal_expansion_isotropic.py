@@ -30,6 +30,7 @@ from ansys.materials.manager._models._common import (
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
 class CoefficientofThermalExpansionIsotropic(MaterialModel):
@@ -38,7 +39,7 @@ class CoefficientofThermalExpansionIsotropic(MaterialModel):
     name: Literal["Coefficient of Thermal Expansion"] = Field(
         default="Coefficient of Thermal Expansion", repr=False, frozen=True
     )
-    coefficient_of_thermal_expansion: Quantity | None = Field(
+    coefficient_of_thermal_expansion: TabularQuantity | Quantity | None = Field(
         default=None,
         description="The coefficient of thermal expansion for the material.",
     )

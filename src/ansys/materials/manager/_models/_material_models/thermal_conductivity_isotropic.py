@@ -30,6 +30,7 @@ from ansys.materials.manager._models._common import (
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
 class ThermalConductivityIsotropic(MaterialModel):
@@ -38,7 +39,7 @@ class ThermalConductivityIsotropic(MaterialModel):
     name: Literal["Thermal Conductivity"] = Field(
         default="Thermal Conductivity", repr=False, frozen=True
     )
-    thermal_conductivity: Quantity | None = Field(
+    thermal_conductivity: TabularQuantity | Quantity | None = Field(
         default=None,
         description="The thermal conductivity of the material.",
     )
