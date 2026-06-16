@@ -26,6 +26,7 @@ from .cofficient_of_thermal_expansion_isotropic import (
 from .cofficient_of_thermal_expansion_orthotropic import (
     CoefficientofThermalExpansionOrthotropic,
 )
+from .compressive_strength import CompressiveStrengthUltimate
 from .density import Density
 from .elasticity_anisotropic import (
     ElasticityAnisotropic,
@@ -36,6 +37,7 @@ from .elasticity_isotropic import (
 from .elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
+from .electrical_resistivity_isotropic import ElectricalResistivityIsotropic
 from .fabric_fiber_angle import (
     FabricFiberAngle,
 )
@@ -85,6 +87,8 @@ from .strain_limits_orthotropic import (
 from .stress_limits_orthotropic import (
     StressLimitsOrthotropic,
 )
+from .tensile_elongation import TensileElongation
+from .tensile_strength import TensileStrengthUltimate, TensileStrengthYield
 from .thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )

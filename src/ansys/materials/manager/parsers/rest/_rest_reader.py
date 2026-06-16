@@ -43,6 +43,8 @@ from typing import Any, Final
 
 from ansys.units import Quantity
 
+from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 from ansys.materials.manager.parsers._common import ModelInfo
 
 _logger = logging.getLogger(__name__)
@@ -53,6 +55,10 @@ _GRANTA_MI_UNIT_MAP: Final[dict[str, str]] = {
     "W/m.\N{DEGREE SIGN}C": "W m^-1 K^-1",
     "J/kg.\N{DEGREE SIGN}C": "J kg^-1 K^-1",
     "strain/\N{DEGREE SIGN}C": "K^-1",
+    "strain": "",
+    "\N{DEGREE SIGN}C": "C",
+    "K": "K",
+    "ohm.m": "ohm m",
 }
 """
 Maps Granta MI unit strings to their ``ansys.units`` equivalents.
@@ -116,6 +122,34 @@ def _make_quantity(value: float, granta_unit: str | None) -> Quantity:
     KeyError
         If *granta_unit* is not ``None`` and has no entry in :data:`_GRANTA_MI_UNIT_MAP`.
     """
+    return _make_quantity_array([value], granta_unit)
+
+
+def _make_quantity_array(values: list[float], granta_unit: str | None) -> Quantity:
+    """
+    Wrap a list of floats in a :class:`~ansys.units.Quantity`.
+
+    The Granta MI unit string is translated via :data:`_GRANTA_MI_UNIT_MAP`
+    before constructing the :class:`~ansys.units.Quantity`.
+
+    Parameters
+    ----------
+    values : list[float]
+        The numeric values to wrap.
+    granta_unit : str | None
+        The Granta MI unit string (e.g. ``"kg/m^3"``), or ``None`` for
+        dimensionless quantities.
+
+    Returns
+    -------
+    Quantity
+        A ``Quantity`` wrapping *values*.
+
+    Raises
+    ------
+    KeyError
+        If *granta_unit* is not ``None`` and has no entry in :data:`_GRANTA_MI_UNIT_MAP`.
+    """
     if granta_unit is None:
         mapped_unit = ""
     else:
@@ -123,7 +157,77 @@ def _make_quantity(value: float, granta_unit: str | None) -> Quantity:
             mapped_unit = _GRANTA_MI_UNIT_MAP[granta_unit]
         except KeyError as e:
             raise KeyError(f"No mapping available for Granta MI unit symbol {granta_unit}.") from e
-    return Quantity(value=[value], units=mapped_unit)
+    return Quantity(value=values, units=mapped_unit)
+
+
+def get_dimensionality(model_data: dict) -> int:
+    """
+    Count the number of free (independent) parameter columns in a model section.
+
+    A scalar model section (``numericValue`` only, no ``columns``) has dimensionality 0.
+    A temperature-dependent section with one ``isFreeParameter`` column has dimensionality 1.
+
+    Parameters
+    ----------
+    model_data : dict
+        A model section dict from the REST response.
+
+    Returns
+    -------
+    int
+        Total count of ``isFreeParameter: true`` columns across all properties.
+    """
+    count = 0
+    for prop in model_data.get("properties", []):
+        for col in prop.get("columns", []):
+            if col.get("isFreeParameter", False):
+                count += 1
+    return count
+
+
+def get_tabular_property(model_data: dict, property_name: str) -> TabularQuantity | None:
+    """
+    Extract a tabular property from a model data dict.
+
+    Returns a :class:`~ansys.materials.manager._models._common.tabular_quantity.TabularQuantity`
+    containing dependent values and independent parameters, or ``None`` if the property is not
+    found or has no column data.
+
+    Parameters
+    ----------
+    model_data : dict
+        A model section dict from the REST response.
+    property_name : str
+        The ``"name"`` field of the property to extract.
+
+    Returns
+    -------
+    TabularQuantity | None
+        A tabular quantity for the requested property, or ``None`` if the property is absent.
+
+    Raises
+    ------
+    KeyError
+        If any column's unit string is not in :data:`_GRANTA_MI_UNIT_MAP`.
+    """
+    for prop in model_data.get("properties", []):
+        if prop.get("name") == property_name and "columns" in prop:
+            dependent_column = None
+            independent_parameters = []
+            for column in prop["columns"]:
+                quantity = _make_quantity_array(column.get("numericValues", []), column.get("unit"))
+                if not column.get("isFreeParameter", False):
+                    dependent_column = quantity
+                else:
+                    independent_parameters.append(
+                        IndependentParameter(name=column.get("name", ""), values=quantity)
+                    )
+            if dependent_column is not None:
+                return TabularQuantity(
+                    values=dependent_column,
+                    independent_parameters=independent_parameters,
+                )
+    return None
 
 
 def map_json_to_model_attributes(model_data: dict, model_info: ModelInfo) -> dict[str, Any]:
@@ -148,7 +252,11 @@ def map_json_to_model_attributes(model_data: dict, model_info: ModelInfo) -> dic
         Mapping of attribute names to their values extracted from *model_data*.
     """
     if model_info.method_read is not None:
-        attribute_names, values = model_info.method_read(model_data)
+        try:
+            attribute_names, values = model_info.method_read(model_data)
+        except KeyError as exc:
+            _logger.warning("Skipping tabular property due to unknown Granta MI unit: %s.", exc)
+            return {}
         return dict(zip(attribute_names, values))
 
     if not model_info.labels or not model_info.attributes:

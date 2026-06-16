@@ -31,6 +31,9 @@ from ansys.materials.manager._models._material_models.density import Density
 from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
+from ansys.materials.manager._models._material_models.electrical_resistivity_isotropic import (
+    ElectricalResistivityIsotropic,
+)
 from ansys.materials.manager._models._material_models.specific_heat import SpecificHeat
 from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
@@ -151,6 +154,14 @@ class TestModelIdMapDefaults:
             is CoefficientofThermalExpansionIsotropic
         )
 
+    def test_electrical_resistivity_registered(self):
+        assert MODEL_ID_MAP.get("electrical.resistivity") is ElectricalResistivityIsotropic
+
+    def test_electrical_resistivity_with_temp_registered(self):
+        assert (
+            MODEL_ID_MAP.get("electrical.resistivity.with.temp") is ElectricalResistivityIsotropic
+        )
+
 
 class TestMaterialModelMapDefaults:
     """Verify MATERIAL_MODEL_MAP carries correct labels/attributes for each class."""
@@ -179,6 +190,11 @@ class TestMaterialModelMapDefaults:
         info = MATERIAL_MODEL_MAP[CoefficientofThermalExpansionIsotropic]
         assert info.labels == ["Thermal expansion coefficient"]
         assert info.attributes == ["coefficient_of_thermal_expansion"]
+
+    def test_electrical_resistivity_labels_and_attributes(self):
+        info = MATERIAL_MODEL_MAP[ElectricalResistivityIsotropic]
+        assert info.labels == ["Electrical resistivity"]
+        assert info.attributes == ["electrical_resistivity"]
 
 
 class TestEndToEndWithDefaultMaps:
