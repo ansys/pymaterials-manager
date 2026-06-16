@@ -28,6 +28,7 @@ from ansys.materials.manager._models._common import (
     IndependentParameter,
     InterpolationOptions,
 )
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 from ansys.materials.manager._models._material_models import ElasticityIsotropic
 from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
@@ -560,3 +561,40 @@ def test_elasticity_isotropic_all_none_fields_writes_nothing():
     material_strings = mapdl_writer.write()
 
     assert material_strings[0] == ""
+
+
+def test_elasticity_isotropic_tabular_different_temp_grids():
+    """Regression: E and nu on different temperature grids must not crash MAPDL writer."""
+    youngs_modulus = TabularQuantity(
+        values=Quantity(value=[2e11, 1.9e11, 1.8e11], units="Pa"),
+        independent_parameters=[
+            IndependentParameter(
+                name="Temperature",
+                values=Quantity(value=[20.0, 100.0, 200.0], units="C"),
+            )
+        ],
+    )
+    poissons_ratio = TabularQuantity(
+        values=Quantity(value=[0.3, 0.31], units=""),
+        independent_parameters=[
+            IndependentParameter(
+                name="Temperature",
+                values=Quantity(value=[100.0, 200.0], units="C"),
+            )
+        ],
+    )
+    elasticity = ElasticityIsotropic(
+        youngs_modulus=youngs_modulus,
+        poissons_ratio=poissons_ratio,
+    )
+    material = Material(name="Test Mat", material_id=1, models=[elasticity])
+
+    mapdl_writer = MapdlWriter(materials=[material])
+    material_strings = mapdl_writer.write()
+
+    output = material_strings[0]
+    assert "MPDATA,EX" in output
+    assert "MPDATA,PRXY" in output
+    assert "100.0" in output
+    assert "200.0" in output
+    assert "20.0" not in output

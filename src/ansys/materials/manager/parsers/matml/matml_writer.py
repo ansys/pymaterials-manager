@@ -271,13 +271,14 @@ class MatmlWriter(BaseVisitor):
         data_element.text = _matml_strings.DASH_KEY
         self._add_model_qualifiers(property_data_element, material_model.model_qualifiers)
         self._add_interpolation_options(property_data_element, material_model.interpolation_options)
-        dependent_parameters = self._populate_dependent_parameters(material_model)
+        aligned_model = material_model.flatten_parameter_grids()
+        dependent_parameters = self._populate_dependent_parameters(aligned_model)
         self._add_dependent_parameters(property_data_element, dependent_parameters)
         self._add_usermat_parameters(
             property_data_element, getattr(material_model, "user_parameters", None)
         )
         self._add_independent_parameters(
-            property_data_element, material_model.independent_parameters
+            property_data_element, aligned_model.independent_parameters
         )
 
         return property_data_element
