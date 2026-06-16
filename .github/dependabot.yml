@@ -1,8 +1,8 @@
 version: 2
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
+  - package-ecosystem: "uv"
     cooldown:
-      default-days: 10 # Fallback cooldown if no specific rule applies
+      default-days: 7
     directory: "/"
     schedule:
       interval: "daily"
@@ -10,9 +10,9 @@ updates:
       - "maintenance"
       - "dependencies"
 
-  - package-ecosystem: "github-actions" # Allow for notification of GH action updates.
+  - package-ecosystem: "github-actions"
     cooldown:
-      default-days: 10 # Fallback cooldown if no specific rule applies
+      default-days: 7
     directory: "/"
     schedule:
       interval: "daily"
