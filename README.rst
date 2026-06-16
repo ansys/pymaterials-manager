@@ -88,7 +88,7 @@ To run only the MAPDL integration tests (requires a running MAPDL instance):
 
 .. code:: bash
 
-    uv run pytest ./tests -m mapdl_integration -o addopts=
+    uv run pytest ./tests -m mapdl_integration -o addopts="--cov=ansys.materials --cov-report=term --cov-report=xml:.cov/xml"
 
 Use pre-commit
 ^^^^^^^^^^^^^^

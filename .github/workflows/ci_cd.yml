@@ -140,7 +140,7 @@ jobs:
           fi
 
       - name: Test with pytest (MAPDL integration tests only)
-        run: uv run --frozen pytest ./tests -m mapdl_integration -o addopts=
+        run: uv run --frozen pytest ./tests -m mapdl_integration -o addopts="--cov=ansys.materials --cov-report=term --cov-report=xml:.cov/xml --cov-report=html:.cov/html"
         env:
           PYMAPDL_GRPC_TRANSPORT: insecure
 
