@@ -33,7 +33,30 @@ _PATH_TYPE = Union[str, os.PathLike]
 
 @dataclass
 class ModelInfo:
-    """Model Info class."""
+    """
+    Associates human-readable property labels with Python attribute names on a material model.
+
+    ``labels`` and ``attributes`` are parallel sequences which map external properties (e.g.
+    from a file or API response) to corresponding attribute names of the Python field it maps
+    to.
+
+    Either pair can be replaced by a callable (``method_read`` or ``method_write``) for
+    cases where a simple 1-to-1 mapping is insufficient.
+
+    Parameters
+    ----------
+    labels : list[str] | list[list[str]], optional
+        External property name strings, in the same order as *attributes*.
+        A nested list is accepted for models that group properties (e.g. orthotropic).
+    attributes : list[str], optional
+        Python attribute names on the model class, in the same order as *labels*.
+    method_write : callable, optional
+        ``(model_instance) -> (labels, quantities)`` — overrides *labels* / *attributes*
+        for serialization.
+    method_read : callable, optional
+        ``(source_dict) -> (attribute_names, values)`` — overrides *labels* / *attributes*
+        for deserialization.
+    """
 
     labels: Optional[list[str] | list[list[str]]] = None
     attributes: Optional[list[str]] = None

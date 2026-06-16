@@ -341,6 +341,8 @@ def create_xml_string_value(values: float | int | list[float | int]) -> str:
     str
         Parsed value to add to xml data.
     """
+    if not hasattr(values, "__iter__"):
+        values = [values]
     return ", ".join(f"{v}" for v in values)
 
 
