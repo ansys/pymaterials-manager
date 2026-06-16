@@ -224,7 +224,9 @@ name = "ansys-materials-manager"
 version = "0.3.0"
 source = { editable = "." }
 dependencies = [
+    { name = "ansys-units" },
     { name = "numpy" },
+    { name = "pydantic" },
 ]
 
 [package.optional-dependencies]
@@ -238,12 +240,10 @@ dev = [
     { name = "ansys-dyna-core" },
     { name = "ansys-fluent-core" },
     { name = "ansys-mapdl-core" },
-    { name = "ansys-units" },
     { name = "coolprop" },
     { name = "httpx" },
     { name = "msal" },
     { name = "pre-commit" },
-    { name = "pydantic" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-httpx" },
@@ -261,9 +261,11 @@ doc = [
 
 [package.metadata]
 requires-dist = [
+    { name = "ansys-units", specifier = ">=0.8.dev0" },
     { name = "httpx", marker = "extra == 'grantami'", specifier = ">=0.27" },
     { name = "msal", marker = "extra == 'grantami'", specifier = ">=1.28" },
     { name = "numpy", specifier = ">=1.24,<3" },
+    { name = "pydantic", specifier = ">=2.7.0" },
 ]
 provides-extras = ["grantami"]
 
@@ -272,12 +274,10 @@ dev = [
     { name = "ansys-dyna-core", specifier = ">=0.9.0" },
     { name = "ansys-fluent-core", specifier = ">=0.28" },
     { name = "ansys-mapdl-core", specifier = ">=0.68" },
-    { name = "ansys-units", specifier = ">=0.8.dev0" },
     { name = "coolprop", specifier = ">=6.4.1,<8.0.0" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "msal", specifier = ">=1.28" },
     { name = "pre-commit", specifier = ">=3.2.2" },
-    { name = "pydantic", specifier = ">=2.7.0" },
     { name = "pytest", specifier = ">=7.3,<10.0" },
     { name = "pytest-cov", specifier = ">=4" },
     { name = "pytest-httpx", specifier = ">=0.35" },

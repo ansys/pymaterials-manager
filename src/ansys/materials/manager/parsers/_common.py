@@ -22,9 +22,7 @@
 
 from dataclasses import dataclass
 import os
-from typing import Any, Callable, Optional
-
-from pyparsing import Union
+from typing import Any, Callable, Optional, Union
 
 from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
 

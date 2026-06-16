@@ -21,11 +21,10 @@
 # SOFTWARE.
 
 
-from typing import Literal
+from typing import Dict, Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
-from pyparsing import Dict
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
