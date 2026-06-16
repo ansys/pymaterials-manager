@@ -15,15 +15,16 @@ The following contribution information is specific to PyMaterials Manager.
 Clone the repository and install the package
 ============================================
 
-To clone the PyMaterials Manager repository and install the latest release
-in development mode, run this code:
+PyMaterials Manager uses `uv`_ for packaging and dependency management. To clone
+the repository and install the latest release in development mode, run:
 
 .. code:: console
 
     git clone https://github.com/ansys/pymaterials-manager
     cd pymaterials-manager
-    pip install poetry
-    poetry install
+    uv sync --group doc
+
+.. _uv: https://docs.astral.sh/uv/
 
 
 Post issues

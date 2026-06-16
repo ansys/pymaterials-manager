@@ -75,33 +75,20 @@ Alternatively, clone and install this package with this code:
 Testing
 -------
 
-This project takes advantage of `tox`_. This tool is used to automate common
-development tasks (similar to Makefile), but it is oriented towards Python
-development. 
+This project uses `uv`_ for dependency management and `pytest`_ for testing.
 
-Use ``tox``
-^^^^^^^^^^^
+Install development dependencies and run the unit test suite with:
 
-`tox`_ uses environments, which are similar to ``Makefile`` rules, to make it highly
-customizable. In fact, this tool creates its own virtual environment so that anything
-being tested is isolated from the project to guarantee the project's integrity.
+.. code:: bash
 
-Descriptions follow of some of the most widely used environments:
+    uv sync
+    uv run pytest ./tests
 
-- **tox -e style**: Checks the code style of your project.
-- **tox -e py**: Runs your test suite.
-- **tox -e doc**: Builds the documentation of your project.
+To run only the MAPDL integration tests (requires a running MAPDL instance):
 
+.. code:: bash
 
-Perform raw testing
-^^^^^^^^^^^^^^^^^^^
-
-If required, you can call style commands (such as `black`_, `isort`_,
-and `flake8`_) or unit testing commands (such as `pytest`_) from the command
-line. However, calling these commands does not guarantee that your project
-is being tested in an isolated environment, which is the reason why tools
-like `tox`_ exist.
-
+    uv run pytest ./tests -m mapdl_integration -o addopts=
 
 Use pre-commit
 ^^^^^^^^^^^^^^
@@ -126,15 +113,12 @@ report bugs, and request new features. This is the best place to post questions 
 Distribution
 ------------
 
-If you want to create either source or wheel files, start by installing poetry and then 
-executing the build module. To install poetry you should use the ``pipx`` installation
-method in the `poetry documentation`_.
+To build source and wheel distributions:
 
 .. code:: bash
 
-    poetry install
-    poetry build
-    twine check ./dist
+    uv build
+    uv run twine check dist/*
 
 .. LINKS AND REFERENCES
 .. _black: https://github.com/psf/black
@@ -145,7 +129,6 @@ method in the `poetry documentation`_.
 .. _PyAnsys Developer's Guide: https://dev.docs.pyansys.com/
 .. _pytest: https://docs.pytest.org/en/stable/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
-.. _tox: https://tox.wiki/
+.. _uv: https://docs.astral.sh/uv/
 .. _PyMaterials Manager Issues: https://github.com/ansys/pymaterials-manager/issues
 .. _documentation: https://manager.materials.docs.pyansys.com/
-.. _poetry documentation: https://python-poetry.org/docs/#installing-with-pipx
