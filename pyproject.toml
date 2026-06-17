@@ -45,7 +45,7 @@ doc = [
     "sphinx-autoapi>=3.0,<4",
     "sphinx-copybutton==0.5.2",
     "sphinx-jinja>=2.0.2,<3",
-    "sphinx-design>=0.6.0,<0.7",
+    "sphinx-design>=0.6.0,<0.8",
 ]
 dev = [
     "pytest>=7.3,<10.0",
