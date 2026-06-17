@@ -47,7 +47,7 @@ from ansys.materials.manager.parsers.rest._rest_model_map import (
 )
 from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
 
-from .common import BROAD_COVERAGE_PAYLOAD, MIXED_TEMPERATURE_GRIDS_PAYLOAD
+from .static_test_data import BROAD_COVERAGE_PAYLOAD, MIXED_TEMPERATURE_GRIDS_PAYLOAD
 
 
 def _register_all_tabular_models():

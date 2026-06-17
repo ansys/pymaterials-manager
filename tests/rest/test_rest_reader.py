@@ -40,7 +40,8 @@ from ansys.materials.manager.parsers.rest._rest_model_map import (
 from ansys.materials.manager.parsers.rest._rest_reader import get_property_with_unit
 from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
 
-from .common import SYNTHETIC_PAYLOAD, density_model_section, minimal_json
+from .common import density_model_section, minimal_json
+from .static_test_data import SYNTHETIC_PAYLOAD
 
 
 class TestConvertMaterials:
