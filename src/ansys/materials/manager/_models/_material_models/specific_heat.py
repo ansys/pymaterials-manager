@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Dict, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
@@ -44,7 +44,7 @@ class SpecificHeat(MaterialModel):
     )
 
     @model_validator(mode="before")
-    def _initialize_qualifiers(cls, values) -> Dict:
+    def _initialize_qualifiers(cls, values) -> dict:
         expected_qualifiers = {
             "Definition": [
                 "Constant Pressure",
