@@ -33,25 +33,20 @@ from ansys.materials.manager._models._common import (
 from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
-class SpecificHeat(MaterialModel):
-    """Represents a specific heat material model."""
+class ElectricalResistivityIsotropic(MaterialModel):
+    """Represents an isotropic electrical resistivity material model."""
 
-    name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
-
-    specific_heat: TabularQuantity | Quantity | None = Field(
+    name: Literal["Electrical Resistivity"] = Field(
+        default="Electrical Resistivity", repr=False, frozen=True
+    )
+    electrical_resistivity: TabularQuantity | Quantity | None = Field(
         default=None,
-        description="The specific heat of the material.",
+        description="The electrical resistivity of the material.",
     )
 
     @model_validator(mode="before")
     def _initialize_qualifiers(cls, values) -> dict:
-        expected_qualifiers = {
-            "Definition": [
-                "Constant Pressure",
-                QualifierType.RANGE,
-                ["Constant Pressure", "Constant Volume"],
-            ]
-        }
+        expected_qualifiers = {"Behavior": ["Isotropic", QualifierType.STRICT]}
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
             values, expected_qualifiers
         )

@@ -30,6 +30,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from ansys.materials.manager.parsers.rest._rest_model_map import (
+    MATERIAL_MODEL_MAP,
+    MODEL_ID_INFO_MAP,
+    MODEL_ID_MAP,
+)
+
 
 class _AutoModule(types.ModuleType):
     """A module that returns a MagicMock for any undefined attribute."""
@@ -81,3 +87,21 @@ def mock_auth():
     """Patch MSAL authentication so no real identity-provider call is made."""
     with patch(_AUTH_PATH, return_value="test-token") as mock:
         yield mock
+
+
+@pytest.fixture
+def _clean_model_maps():
+    """Save, clear, and restore MODEL_ID_MAP / MATERIAL_MODEL_MAP / MODEL_ID_INFO_MAP."""
+    orig_material = dict(MATERIAL_MODEL_MAP)
+    orig_id = dict(MODEL_ID_MAP)
+    orig_info = dict(MODEL_ID_INFO_MAP)
+    MATERIAL_MODEL_MAP.clear()
+    MODEL_ID_MAP.clear()
+    MODEL_ID_INFO_MAP.clear()
+    yield
+    MATERIAL_MODEL_MAP.clear()
+    MATERIAL_MODEL_MAP.update(orig_material)
+    MODEL_ID_MAP.clear()
+    MODEL_ID_MAP.update(orig_id)
+    MODEL_ID_INFO_MAP.clear()
+    MODEL_ID_INFO_MAP.update(orig_info)

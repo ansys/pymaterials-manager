@@ -26,9 +26,17 @@ import warnings
 
 from ansys.materials.manager._models._common.material_model import MaterialModel
 from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.parsers._common import ModelInfo
 from ansys.materials.manager.parsers.rest._exceptions import GrantaMIError
-from ansys.materials.manager.parsers.rest._rest_model_map import MATERIAL_MODEL_MAP, MODEL_ID_MAP
-from ansys.materials.manager.parsers.rest._rest_reader import map_json_to_model_attributes
+from ansys.materials.manager.parsers.rest._rest_model_map import (
+    MATERIAL_MODEL_MAP,
+    MODEL_ID_INFO_MAP,
+    MODEL_ID_MAP,
+)
+from ansys.materials.manager.parsers.rest._rest_reader import (
+    get_dimensionality,
+    map_json_to_model_attributes,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -44,6 +52,61 @@ _METADATA_ONLY_MODEL_IDS: frozenset[str] = frozenset(
         "rendering",
     }
 )
+
+
+def _pick_by_dimensionality(
+    model_class: type,
+    entries: list[tuple[str, dict, "ModelInfo | None"]],
+) -> tuple[str, dict, "ModelInfo | None"] | None:
+    """
+    Select the highest-dimensionality entry from a group of candidates for the same model class.
+
+    When only one entry is present it is returned directly.  When multiple entries exist, the one
+    with the most independent (free-parameter) columns wins.  If two entries tie on dimensionality
+    a warning is logged and ``None`` is returned (no model is populated to avoid ambiguity).
+
+    Parameters
+    ----------
+    model_class : type
+        The :class:`~.MaterialModel` subclass shared by all entries (used for log messages).
+    entries : list[tuple[str, dict, ModelInfo | None]]
+        Each item is ``(model_id, model_data, model_info)`` for a candidate section.
+
+    Returns
+    -------
+    tuple[str, dict, ModelInfo | None] | None
+        The selected entry, or ``None`` when there is a tie or no entries.
+    """
+    if not entries:
+        return None
+    if len(entries) == 1:
+        return entries[0]
+
+    scored = [(get_dimensionality(data), model_id, data, info) for model_id, data, info in entries]
+    max_dim = max(s[0] for s in scored)
+    winners = [s for s in scored if s[0] == max_dim]
+
+    if len(winners) > 1:
+        tied_ids = [s[1] for s in winners]
+        _logger.warning(
+            "Multiple model sections for %s have equal dimensionality (%d): %s. "
+            "Skipping all to avoid ambiguity.",
+            model_class.__name__,
+            max_dim,
+            tied_ids,
+        )
+        return None
+
+    winning_dim, winning_id, winning_data, winning_info = winners[0]
+    losers = [s[1] for s in scored if s[0] < winning_dim]
+    _logger.debug(
+        "Selected modelId='%s' (dimensionality=%d) over %s for %s.",
+        winning_id,
+        winning_dim,
+        losers,
+        model_class.__name__,
+    )
+    return winning_id, winning_data, winning_info
 
 
 class RestMaterialReader:
@@ -116,10 +179,21 @@ class RestMaterialReader:
                 "The server response may be malformed."
             ) from exc
         _logger.debug("Processing material #%d: '%s' (id=%s).", material_index, name, material_id)
-        models: list[MaterialModel] = []
 
-        for model_class, model_data in self._iter_model_sections(material_data):
-            model = self.visit_material_model(model_class, model_data)
+        # Collect all candidates per model class so we can resolve conflicts by dimensionality.
+        candidates: dict[type, list[tuple[str, dict, ModelInfo | None]]] = {}
+        for model_class, model_id, model_data, model_info in self._iter_model_sections(
+            material_data
+        ):
+            candidates.setdefault(model_class, []).append((model_id, model_data, model_info))
+
+        models: list[MaterialModel] = []
+        for model_class, entries in candidates.items():
+            selected = _pick_by_dimensionality(model_class, entries)
+            if selected is None:
+                continue
+            _, section_data, model_info = selected
+            model = self.visit_material_model(model_class, section_data, model_info)
             if model is not None:
                 models.append(model)
 
@@ -127,12 +201,17 @@ class RestMaterialReader:
         return Material(name=name, material_id=material_id, models=models)
 
     @staticmethod
-    def visit_material_model(model_class: type, model_data: dict) -> MaterialModel | None:
+    def visit_material_model(
+        model_class: type,
+        model_data: dict,
+        model_info: ModelInfo | None = None,
+    ) -> MaterialModel | None:
         """
         Instantiate and populate a single :class:`~.MaterialModel`.
 
-        Looks up *model_class* in :data:`~.MATERIAL_MODEL_MAP`. If no mapping is registered a
-        warning is emitted and ``None`` is returned.
+        Looks up *model_class* in :data:`~.MATERIAL_MODEL_MAP` unless a *model_info* override
+        is supplied directly (used when the caller has already resolved the per-ID mapping).
+        If no mapping is found, a warning is emitted and ``None`` is returned.
 
         Parameters
         ----------
@@ -140,13 +219,17 @@ class RestMaterialReader:
             The :class:`~.MaterialModel` subclass to instantiate.
         model_data : dict
             The model section dict from the Granta MI REST response.
+        model_info : ModelInfo | None
+            Optional pre-resolved :class:`~.ModelInfo`.  When ``None``, the mapping is
+            looked up from :data:`~.MATERIAL_MODEL_MAP`.
 
         Returns
         -------
         MaterialModel | None
             A populated model instance, or ``None`` if *model_class* has no registered mapping.
         """
-        model_info = MATERIAL_MODEL_MAP.get(model_class)
+        if model_info is None:
+            model_info = MATERIAL_MODEL_MAP.get(model_class)
         if model_info is None:
             warnings.warn(
                 f"No REST mapping registered for material model "
@@ -207,13 +290,16 @@ class RestMaterialReader:
     @staticmethod
     def _iter_model_sections(material_data: dict):
         """
-        Yield ``(model_class, model_data)`` pairs for a Granta MI material record.
+        Yield ``(model_class, model_id, model_data, model_info)`` tuples for a material record.
 
-        Dispatches on the ``"modelId"`` field of each entry in the ``"models"`` array
-        using :data:`~ansys.materials.manager.parsers.rest._rest_model_map.MODEL_ID_MAP`.
-        Model sections whose ``"modelId"`` is not registered are silently skipped — this
-        is expected for informational-only models such as ``"classification"`` or
-        ``"rendering"`` that have no corresponding ``MaterialModel`` subclass.
+        Dispatches on the ``"modelId"`` field of each entry in the ``"models"`` array using
+        :data:`~ansys.materials.manager.parsers.rest._rest_model_map.MODEL_ID_MAP`.
+        The :class:`~ansys.materials.manager.parsers._common.ModelInfo` is resolved by
+        checking :data:`~.MODEL_ID_INFO_MAP` first (per-ID override, e.g. for tabular variants)
+        and falling back to :data:`~.MATERIAL_MODEL_MAP` (class-level default).
+
+        Model sections whose ``"modelId"`` is not registered are silently skipped or warned
+        depending on whether they appear in :data:`~._METADATA_ONLY_MODEL_IDS`.
 
         Parameters
         ----------
@@ -222,15 +308,17 @@ class RestMaterialReader:
 
         Yields
         ------
-        tuple[type, dict]
-            The resolved model class and its model section dict.
+        tuple[type, str, dict, ModelInfo | None]
+            The resolved model class, its Granta MI model ID, its model section dict, and
+            the resolved :class:`~.ModelInfo` (may be ``None`` if no mapping is registered).
         """
         for model_section in material_data.get("models", []):
             model_id = model_section.get("modelId")
             model_class = MODEL_ID_MAP.get(model_id)
             if model_class is not None:
+                model_info = MODEL_ID_INFO_MAP.get(model_id) or MATERIAL_MODEL_MAP.get(model_class)
                 _logger.debug("Dispatching modelId='%s' → %s.", model_id, model_class.__name__)
-                yield model_class, model_section
+                yield model_class, model_id, model_section, model_info
             elif model_id in _METADATA_ONLY_MODEL_IDS:
                 _logger.debug("Skipping metadata-only Granta MI modelId='%s'.", model_id)
             else:

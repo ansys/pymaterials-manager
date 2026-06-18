@@ -24,6 +24,7 @@ from ansys.units import Quantity
 import pytest
 
 from ansys.materials.manager._models._common import IndependentParameter
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 from ansys.materials.manager._models._material_models.density import Density
 
 
@@ -144,3 +145,19 @@ def test_validate_model_10():
         error_info.value.args[0]
         == "The number independent parameters Temperature and dependent parameters density do not match."  # noqa: E501
     )
+
+
+def test_validate_model_tabular_quantity():
+    density = Density(
+        density=TabularQuantity(
+            values=Quantity(value=[1.0, 2.0], units="kg m^-3"),
+            independent_parameters=[
+                IndependentParameter(
+                    name="Temperature", values=Quantity(value=[20.0, 30.0], units="C")
+                )
+            ],
+        )
+    )
+
+    density.validate_model()
+    assert density
