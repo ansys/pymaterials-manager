@@ -28,6 +28,7 @@ from ansys.materials.manager._models._material_models.elasticity_anisotropic imp
     ElasticityAnisotropic,
 )
 from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
 from ansys.materials.manager.parsers._common import get_creep_flag
 from ansys.materials.manager.parsers.matml._matml_parser import get_data_and_unit
 
@@ -301,3 +302,78 @@ def map_to_model_coefficients(property_set: dict) -> tuple[list[str], list[Quant
                 )
             )
     return ["user_parameters"], [user_parameters]
+
+
+def map_from_isotropic_hardening(
+    isotropic_hardening: IsotropicHardening,
+) -> tuple[list[str], list[Quantity]]:
+    """
+    Map isotropic hardening model parameters to MATML.
+
+    Parameters
+    ----------
+    isotropic_hardening : IsotropicHardening
+        The isotropic hardening material model.
+
+    Returns
+    -------
+    tuple[list[str], list[Quantity]]
+        The labels and quantities for the isotropic hardening model.
+    """
+    is_multilinear = False
+    is_bilinear = False
+    for qualifier in isotropic_hardening.model_qualifiers:
+        if qualifier.name == "Definition" and qualifier.value == "Multilinear":
+            is_multilinear = True
+        elif qualifier.name == "Definition" and qualifier.value == "Bilinear":
+            is_bilinear = True
+    if is_multilinear:
+        return ["Stress"], [isotropic_hardening.stress]
+    if is_bilinear:
+        return ["Yield Strength", "Tangent Modulus"], [
+            isotropic_hardening.yield_strength,
+            isotropic_hardening.tangent_modulus,
+        ]
+
+
+def map_to_isotropic_hardening(property_set: dict) -> tuple[list[str], list[Quantity]]:
+    """
+    Map isotropic hardening model parameters from MATML.
+
+    Parameters
+    ----------
+    property_set : dict
+        The isotropic hardening property set.
+
+    Returns
+    -------
+    tuple[list[str], list[Quantity]]
+        The labels and quantities for the isotropic hardening model.
+    """
+    qualifiers = [
+        ModelQualifier(name=key, value=value) for key, value in property_set.qualifiers.items()
+    ]
+
+    is_multilinear = False
+    is_bilinear = False
+    for qualifier in qualifiers:
+        if qualifier.name == "Definition" and qualifier.value == "Multilinear":
+            is_multilinear = True
+        elif qualifier.name == "Definition" and qualifier.value == "Bilinear":
+            is_bilinear = True
+    labels = []
+    quantities = []
+    if is_multilinear:
+        labels.append("stress")
+        values = property_set.parameters.get("Stress")
+        data, units = get_data_and_unit(values)
+        quantities.append(Quantity(value=data, units=units))
+    if is_bilinear:
+        labels += ["yield_strength", "tangent_modulus"]
+        values_yield_strength = property_set.parameters.get("Yield Strength")
+        data_yield_strength, units_yield_strength = get_data_and_unit(values_yield_strength)
+        quantities.append(Quantity(value=data_yield_strength, units=units_yield_strength))
+        values_tangent_modulus = property_set.parameters.get("Tangent Modulus")
+        data_tangent_modulus, units_tangent_modulus = get_data_and_unit(values_tangent_modulus)
+        quantities.append(Quantity(value=data_tangent_modulus, units=units_tangent_modulus))
+    return labels, quantities
