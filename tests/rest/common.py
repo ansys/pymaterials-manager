@@ -85,5 +85,22 @@ def _tabular_section(model_id, prop_name, dep_unit, dep_values, temps=None):
     }
 
 
+def multilinear_hardening_section(strains, stresses):
+    """Return a model section dict for Multilinear hardening matching the Granta MI REST schema."""
+    return {
+        "modelId": "multilinear.hardening",
+        "constraints": [],
+        "properties": [
+            {
+                "name": "True stress with strain",
+                "columns": [
+                    _col("Stress", "Pa", stresses, False),
+                    _col("Strain", "strain", strains, True),
+                ],
+            }
+        ],
+    }
+
+
 def tabular_density_section(temps, densities):
     return _tabular_section("density.with.temp", "Density", "kg/m^3", densities, temps)
