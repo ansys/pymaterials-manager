@@ -124,7 +124,9 @@ MATERIAL_MODEL_MAP[ElectricalResistivityIsotropic] = ModelInfo(
 )
 
 
-def _tabular_reader(*attr_label_pairs: tuple[str, str], ip_rename: dict[str, str] | None = None):
+def _tabular_reader(
+    *attr_label_pairs: tuple[str, str], independent_parameter_map: dict[str, str] | None = None
+):
     """
     Create a tabular model reader from one or more ``(attribute, label)`` pairs.
 
@@ -135,7 +137,7 @@ def _tabular_reader(*attr_label_pairs: tuple[str, str], ip_rename: dict[str, str
     ----------
     *attr_label_pairs : tuple[str, str]
         Each pair maps a model attribute name to its Granta MI property label.
-    ip_rename : dict[str, str] | None, optional
+    independent_parameter_map : dict[str, str] | None, optional
         Optional mapping of ``{old_ip_name: new_ip_name}``. When provided, any
         :class:`~.IndependentParameter` whose name matches a key is renamed before
         the :class:`~.TabularQuantity` is returned.
@@ -148,10 +150,10 @@ def _tabular_reader(*attr_label_pairs: tuple[str, str], ip_rename: dict[str, str
 
     def _rename(tabular_quantity: TabularQuantity | None) -> TabularQuantity | None:
         """Rename matching independent parameters in the tabular quantity."""
-        if tabular_quantity is None or ip_rename is None:
+        if tabular_quantity is None or independent_parameter_map is None:
             return tabular_quantity
         renamed_ips = [
-            ip.model_copy(update={"name": ip_rename.get(ip.name, ip.name)})
+            ip.model_copy(update={"name": independent_parameter_map.get(ip.name, ip.name)})
             for ip in tabular_quantity.independent_parameters
         ]
         return tabular_quantity.model_copy(update={"independent_parameters": renamed_ips})
