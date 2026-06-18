@@ -42,7 +42,7 @@ from ansys.materials.manager.parsers.rest._rest_reader import (
 from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
 
 from .common import minimal_json, tabular_density_section
-from .static_test_data import TABULAR_ELASTICITY_WITH_TEMPERATURE_SECTION
+from .static_test_data import TABULAR_ELASTICITY_WITH_TEMPERATURE_MODEL
 
 
 class TestTabularReader:
@@ -87,7 +87,7 @@ class TestTabularReader:
         assert density_tq.independent_parameters[0].name == "Temperature"
 
     def test_read_elasticity_isotropic_with_temp(self):
-        section = TABULAR_ELASTICITY_WITH_TEMPERATURE_SECTION
+        section = TABULAR_ELASTICITY_WITH_TEMPERATURE_MODEL
         attrs, values = _tabular_reader(
             ("youngs_modulus", "Tensile modulus"),
             ("poissons_ratio", "Poisson's ratio"),

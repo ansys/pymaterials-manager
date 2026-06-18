@@ -41,7 +41,7 @@ from ansys.materials.manager.parsers.rest._rest_reader import get_property_with_
 from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
 
 from .common import density_model_section, minimal_json
-from .static_test_data import SYNTHETIC_PAYLOAD
+from .static_test_data import SYNTHETIC_VALUE_SECTION
 
 
 class TestConvertMaterials:
@@ -186,7 +186,7 @@ class TestSyntheticPayload:
 
     def test_real_payload_parses_material_name_and_id(self):
         """The reader should extract material name and ID from the Granta MI payload."""
-        result = RestMaterialReader(SYNTHETIC_PAYLOAD).convert_materials()
+        result = RestMaterialReader(SYNTHETIC_VALUE_SECTION).convert_materials()
 
         assert "Test Alloy X-7" in result
         assert result["Test Alloy X-7"].mat_id == "c0ffee00-0000-4242-beef-123456789abc"
@@ -196,7 +196,7 @@ class TestSyntheticPayload:
             logging.WARNING,
             logger="ansys.materials.manager.parsers.rest.rest_material_reader",
         ):
-            result = RestMaterialReader(SYNTHETIC_PAYLOAD).convert_materials()
+            result = RestMaterialReader(SYNTHETIC_VALUE_SECTION).convert_materials()
 
         assert "Test Alloy X-7" in result
         assert result["Test Alloy X-7"].models == []
@@ -214,7 +214,7 @@ class TestSyntheticPayload:
         MODEL_ID_MAP["density"] = Density
         MATERIAL_MODEL_MAP[Density] = ModelInfo(labels=["Density"], attributes=["density"])
 
-        result = RestMaterialReader(SYNTHETIC_PAYLOAD).convert_materials()
+        result = RestMaterialReader(SYNTHETIC_VALUE_SECTION).convert_materials()
         density_model = result["Test Alloy X-7"].get_model_by_name("Density")
 
         assert density_model is not None
@@ -228,7 +228,7 @@ class TestSyntheticPayload:
             labels=["Specific heat capacity"], attributes=["specific_heat"]
         )
 
-        result = RestMaterialReader(SYNTHETIC_PAYLOAD).convert_materials()
+        result = RestMaterialReader(SYNTHETIC_VALUE_SECTION).convert_materials()
         sh_model = result["Test Alloy X-7"].get_model_by_name("Specific Heat")
 
         assert sh_model is not None
@@ -242,7 +242,7 @@ class TestSyntheticPayload:
             labels=["Thermal conductivity"], attributes=["thermal_conductivity"]
         )
 
-        result = RestMaterialReader(SYNTHETIC_PAYLOAD).convert_materials()
+        result = RestMaterialReader(SYNTHETIC_VALUE_SECTION).convert_materials()
         tc_model = result["Test Alloy X-7"].get_model_by_name("Thermal Conductivity")
 
         assert tc_model is not None
@@ -262,7 +262,7 @@ class TestSyntheticPayload:
             labels=["Thermal conductivity"], attributes=["thermal_conductivity"]
         )
 
-        result = RestMaterialReader(SYNTHETIC_PAYLOAD).convert_materials()
+        result = RestMaterialReader(SYNTHETIC_VALUE_SECTION).convert_materials()
         mat = result["Test Alloy X-7"]
 
         assert mat.get_model_by_name("Density") is not None

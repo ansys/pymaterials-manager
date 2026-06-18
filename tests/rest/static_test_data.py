@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-SYNTHETIC_PAYLOAD = {
+SYNTHETIC_VALUE_SECTION = {
     "materials": [
         {
             "materialName": "Test Alloy X-7",
@@ -644,7 +644,7 @@ BROAD_COVERAGE_PAYLOAD = {
     """,
     "id": 1,
 }
-TABULAR_ELASTICITY_WITH_TEMPERATURE_SECTION = {
+TABULAR_ELASTICITY_WITH_TEMPERATURE_MODEL = {
     "modelId": "elasticity.isotropic.with.temp",
     "properties": [
         {
