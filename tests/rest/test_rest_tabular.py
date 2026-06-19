@@ -473,10 +473,11 @@ class TestMultilinearHardening:
     def section(self):
         return multilinear_hardening_section(self._STRAINS, self._STRESSES)
 
-    def test_tabular_reader_ip_rename(self, section):
-        """ip_rename should rename IPs in the returned TabularQuantity."""
+    def test_tabular_reader_independent_parameter_map(self, section):
+        """independent_parameter_map should rename IPs in the returned TabularQuantity."""
         reader = _tabular_reader(
-            ("stress", "True stress with strain"), ip_rename={"Strain": "Plastic Strain"}
+            ("stress", "True stress with strain"),
+            independent_parameter_map={"Strain": "Plastic Strain"},
         )
         attrs, values = reader(section)
         tq = dict(zip(attrs, values))[
@@ -485,8 +486,8 @@ class TestMultilinearHardening:
         assert isinstance(tq, TabularQuantity)
         assert tq.independent_parameters[0].name == "Plastic Strain"
 
-    def test_tabular_reader_ip_rename_not_provided_preserves_name(self, section):
-        """Without ip_rename the original column name should be preserved."""
+    def test_tabular_reader_independent_parameter_map_not_provided_preserves_name(self, section):
+        """Without independent_parameter_map the original column name should be preserved."""
         reader = _tabular_reader(("stress", "True stress with strain"))
         attrs, values = reader(section)
         tq = dict(zip(attrs, values))["stress"]

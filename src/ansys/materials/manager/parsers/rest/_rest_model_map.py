@@ -267,7 +267,8 @@ def _multilinear_hardening_reader(model_data: dict):
     which returns a function which returns the values.
     """
     _reader = _tabular_reader(
-        ("stress", "True stress with strain"), ip_rename={"Strain": "Plastic Strain"}
+        ("stress", "True stress with strain"),
+        independent_parameter_map={"Strain": "Plastic Strain"},
     )
     _, (tq,) = _reader(model_data)
     if tq is None:
