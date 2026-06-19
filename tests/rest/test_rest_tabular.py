@@ -20,10 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ansys.units import Quantity
 import pytest
 
 from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
 from ansys.materials.manager._models._material_models.tensile_strength import (
     TensileStrengthUltimate,
     TensileStrengthYield,
@@ -41,8 +43,12 @@ from ansys.materials.manager.parsers.rest._rest_reader import (
 )
 from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
 
-from .common import minimal_json, tabular_density_section
-from .static_test_data import TABULAR_ELASTICITY_WITH_TEMPERATURE_MODEL
+from .common import (
+    minimal_json,
+    multilinear_hardening_section,
+    tabular_density_section,
+)
+from .static_test_data import BROAD_COVERAGE_PAYLOAD, TABULAR_ELASTICITY_WITH_TEMPERATURE_MODEL
 
 
 class TestTabularReader:
@@ -455,3 +461,78 @@ class TestDimensionalityPreference:
         assert any(
             "unit" in r.message.lower() for r in caplog.records if r.levelno == logging.WARNING
         )
+
+
+class TestMultilinearHardening:
+    """Tests for the multilinear.hardening → IsotropicHardening mapping."""
+
+    _STRAINS = [0.0, 0.002, 0.004, 0.006]
+    _STRESSES = [204267400.0, 215867000.0, 227161500.0, 238158400.0]
+
+    @pytest.fixture
+    def section(self):
+        return multilinear_hardening_section(self._STRAINS, self._STRESSES)
+
+    def test_tabular_reader_independent_parameter_map(self, section):
+        """independent_parameter_map should rename IPs in the returned TabularQuantity."""
+        reader = _tabular_reader(
+            ("stress", "True stress with strain"),
+            independent_parameter_map={"Strain": "Plastic Strain"},
+        )
+        attrs, values = reader(section)
+        tq = dict(zip(attrs, values))[
+            "stress"
+        ]  # Mirrors how attributes and values are mapped when creating models
+        assert isinstance(tq, TabularQuantity)
+        assert tq.independent_parameters[0].name == "Plastic Strain"
+
+    def test_tabular_reader_independent_parameter_map_not_provided_preserves_name(self, section):
+        """Without independent_parameter_map the original column name should be preserved."""
+        reader = _tabular_reader(("stress", "True stress with strain"))
+        attrs, values = reader(section)
+        tq = dict(zip(attrs, values))["stress"]
+        assert tq.independent_parameters[0].name == "Strain"
+
+    @pytest.fixture
+    def model(self, section):
+        raw = minimal_json(models=[section])
+        result = RestMaterialReader(raw).convert_materials()
+        return result["Steel"].get_model_by_name("Isotropic Hardening")
+
+    def test_model_is_populated(self, model):
+        """The IsotropicHardening model should be present in the material."""
+        assert model is not None
+        assert isinstance(model, IsotropicHardening)
+
+    def test_stress_is_quantity(self, model):
+        """model.stress should be a plain Quantity, not a TabularQuantity."""
+        assert isinstance(model.stress, Quantity)
+        assert not isinstance(model.stress, TabularQuantity)
+
+    def test_stress_values(self, model):
+        """Stress values should match the payload."""
+        assert list(model.stress.value) == pytest.approx(self._STRESSES)
+
+    def test_stress_unit(self, model):
+        """Stress unit should be Pa."""
+        assert model.stress.unit == "Pa"
+
+    def test_plastic_strain_ip_present(self, model):
+        """independent_parameters should contain exactly one IP named 'Plastic Strain'."""
+        ip_names = [ip.name for ip in model.independent_parameters]
+        assert ip_names == ["Plastic Strain"]
+
+    def test_plastic_strain_values(self, model):
+        """Plastic strain values should match the payload."""
+        ip = model.independent_parameters[0]
+        assert list(ip.values.value) == pytest.approx(self._STRAINS)
+
+    def test_broad_coverage_payload_includes_hardening(self):
+        """BROAD_COVERAGE_PAYLOAD should produce an IsotropicHardening model."""
+        result = RestMaterialReader(BROAD_COVERAGE_PAYLOAD).convert_materials()
+        material = result.get("Synthetic Carbon Steel")
+        assert material is not None
+        model = material.get_model_by_name("Isotropic Hardening")
+        assert model is not None
+        assert isinstance(model, IsotropicHardening)
+        assert isinstance(model.stress, Quantity)

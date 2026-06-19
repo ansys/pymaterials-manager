@@ -447,7 +447,35 @@ BROAD_COVERAGE_PAYLOAD = {
                     {
                         "modelId": "multilinear.hardening",
                         "constraints": [],
-                        "properties": []
+                        "properties": [
+                            {
+                                "name": "True stress with strain",
+                                "columns": [
+                                    {
+                                        "name": "Stress",
+                                        "isFreeParameter": false,
+                                        "numericValues": [
+                                            204267400.0,
+                                            215867000.0,
+                                            227161500.0,
+                                            238158400.0
+                                        ],
+                                        "unit": "Pa"
+                                    },
+                                    {
+                                        "name": "Strain",
+                                        "isFreeParameter": true,
+                                        "numericValues": [
+                                            0.0,
+                                            0.002,
+                                            0.004,
+                                            0.006
+                                        ],
+                                        "unit": "strain"
+                                    }
+                                ]
+                            }
+                        ]
                     },
                     {
                         "modelId": "specific.heat.capacity",
