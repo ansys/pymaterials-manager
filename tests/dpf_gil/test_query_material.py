@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 from ansys.dpf.core import connect_to_server
-from ansys.dpf.core.server_factory import ServerConfig, GrpcMode
+from ansys.dpf.core.server_factory import GrpcMode, ServerConfig
 from ansys.units import Quantity
 import numpy as np
 import pytest
@@ -39,7 +39,7 @@ pytestmark = pytest.mark.dpf_gil_integration
 @pytest.fixture(scope="module")
 def dpf_server():
     dpf_server = connect_to_server(
-        ip="127.0.0.1", 
+        ip="127.0.0.1",
         port="50054",
         config=ServerConfig(grpc_mode=GrpcMode.Insecure),
     )
