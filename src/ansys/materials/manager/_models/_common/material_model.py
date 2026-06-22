@@ -54,15 +54,16 @@ except ImportError:
     HAS_DPF = False
     HAS_MINIMUM_271 = False
 
+print("has dpf:", HAS_DPF)
+print("has minimum 271:", HAS_MINIMUM_271)
+print("has gil:", HAS_GIL)
+
 
 def requires_dpf_271(func):
     """Check DPF and Ansys 2027 R1 (v271) availability."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        print("has dpf:", HAS_DPF)
-        print("has minimum 271:", HAS_MINIMUM_271)
-        print("has gil:", HAS_GIL)
         if not HAS_DPF:
             raise ImportError(
                 f"'{func.__name__}' requires ansys-dpf-core. "
@@ -298,7 +299,7 @@ class MaterialModel(BaseModel, abc.ABC):
         else:
             raise NotImplementedError(f"Interpolator {self.interpolator} is not implemented yet.")
 
-    @requires_dpf_271
+    # @requires_dpf_271
     def _query_with_gil(
         self, values: list[float] | list[list[float]]
     ) -> list[float] | list[list[float]]:
