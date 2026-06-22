@@ -87,9 +87,10 @@ show_missing = true
 [tool.pytest.ini_options]
 markers = [
     "mapdl_integration: tests requiring a running instance of MAPDL",
+    "dpf_gil_integration: tests requiring a running DPF GIL server",
 ]
 addopts = [
-    "-m", "not mapdl_integration",
+    "-m", "not mapdl_integration and not dpf_gil_integration",
     "--cov=ansys.materials",
     "--cov-report=term",
     "--cov-report=xml:.cov/xml",
