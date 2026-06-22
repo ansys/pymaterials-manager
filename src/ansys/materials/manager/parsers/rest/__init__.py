@@ -20,39 +20,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Literal
+"""
+REST-based visitor framework for populating material models from a Granta MI REST API.
 
-from ansys.units import Quantity
-from pydantic import Field, model_validator
+Requires the ``grantami`` extra::
 
-from ansys.materials.manager._models._common import (
-    MaterialModel,
-    QualifierType,
-    validate_and_initialize_model_qualifiers,
-)
-from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
+    pip install ansys-materials-manager[grantami]
+"""
 
+_MISSING: list[str] = []
+try:
+    import httpx  # noqa: F401
+except ImportError:
+    _MISSING.append("httpx")
 
-class SpecificHeat(MaterialModel):
-    """Represents a specific heat material model."""
+try:
+    import msal  # noqa: F401
+except ImportError:
+    _MISSING.append("msal")
 
-    name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
-
-    specific_heat: TabularQuantity | Quantity | None = Field(
-        default=None,
-        description="The specific heat of the material.",
+if _MISSING:
+    raise ImportError(
+        f"The following packages are required to use the Granta MI REST visitor but are not "
+        f"installed: {', '.join(_MISSING)}. "
+        f"Install them with: pip install ansys-materials-manager[grantami]"
     )
 
-    @model_validator(mode="before")
-    def _initialize_qualifiers(cls, values) -> dict:
-        expected_qualifiers = {
-            "Definition": [
-                "Constant Pressure",
-                QualifierType.RANGE,
-                ["Constant Pressure", "Constant Volume"],
-            ]
-        }
-        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
-            values, expected_qualifiers
-        )
-        return values
+from ansys.materials.manager.parsers.rest.rest_material_reader import (  # noqa: E402, F401
+    RestMaterialReader,
+)
+from ansys.materials.manager.parsers.rest.rest_session_client import (  # noqa: E402, F401
+    RestSessionClient,
+)
+
+__all__ = ["RestSessionClient", "RestMaterialReader"]

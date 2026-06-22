@@ -20,35 +20,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
-from pyparsing import Dict
 
 from ansys.materials.manager._models._common import (
     MaterialModel,
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
 class ElasticityIsotropic(MaterialModel):
     """Represents an isotropic elasticity material model."""
 
     name: Literal["Elasticity"] = Field(default="Elasticity", repr=False, frozen=True)
-    youngs_modulus: Quantity | None = Field(
+    youngs_modulus: TabularQuantity | Quantity | None = Field(
         default=None,
         description="The Young's modulus of the material.",
     )
-    poissons_ratio: Quantity | None = Field(
+    poissons_ratio: TabularQuantity | Quantity | None = Field(
         default=None,
         description="The Poisson's ratio of the material.",
     )
 
     @model_validator(mode="before")
-    def _initialize_qualifiers(cls, values) -> Dict:
+    def _initialize_qualifiers(cls, values) -> dict:
         expected_qualifiers = {"Behavior": ["Isotropic", QualifierType.STRICT]}
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
             values, expected_qualifiers

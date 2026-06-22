@@ -265,3 +265,25 @@ def test_write_variable_elastic_orthotropic_material():
     with open(ORTHOTROPIC_ELASTICITY_METADATA, "r") as file:
         data = file.read()
         assert data == metadata_string
+
+
+def test_write_partial_elastic_isotropic_only_youngs_modulus():
+    materials = [
+        Material(
+            name="Partial Material",
+            models=[
+                ElasticityIsotropic(
+                    youngs_modulus=Quantity(value=[75800000000.0], units="Pa"),
+                    # poissons_ratio intentionally left as None
+                )
+            ],
+        )
+    ]
+    writer = MatmlWriter(materials)
+    tree = writer._to_etree()
+    material_string, _ = get_material_and_metadata_from_xml(tree)
+
+    # Young's modulus should be present; Poisson's ratio should not appear
+    assert "75800000000.0" in material_string
+    # Only one ParameterValue for a dependent variable should appear
+    assert material_string.count('Qualifier name="Variable Type">Dependent') == 1

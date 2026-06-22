@@ -1,28 +1,29 @@
 # Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
-# #
-# #
-# # Permission is hereby granted, free of charge, to any person obtaining a copy
-# # of this software and associated documentation files (the "Software"), to deal
-# # in the Software without restriction, including without limitation the rights
-# # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# # copies of the Software, and to permit persons to whom the Software is
-# # furnished to do so, subject to the following conditions:
-# #
-# # The above copyright notice and this permission notice shall be included in all
-# # copies or substantial portions of the Software.
-# #
-# # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# # SOFTWARE.
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 """Provides the ``MaterialManager`` class."""
 
+import logging
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -48,6 +49,7 @@ class MaterialManager:
     """
 
     _materials: dict[str, Material]
+    _logger = logging.getLogger(__name__)
 
     def __init__(self):
         """Initialize the material manager instance."""
@@ -174,3 +176,108 @@ class MaterialManager:
         materials = self._get_materials_to_write(material_names)
         writer = FluentWriter(materials)
         return writer.write(material_names)
+
+    @classmethod
+    def from_grantami(
+        cls,
+        granta_mi_url: str,
+        package_name: str | None = None,
+        verify_ssl: bool = True,
+        oidc_config=None,
+    ) -> "MaterialManager":
+        """
+        Create a :class:`MaterialManager` pre-populated from a Granta MI REST session.
+
+        Opens the Granta Material Picker in the default browser, waits for the user
+        to select a material, then converts the response into ``Material`` objects.
+
+        Requires the ``grantami`` extra::
+
+            pip install ansys-materials-manager[grantami]
+
+        Parameters
+        ----------
+        granta_mi_url : str
+            Base URL of the Granta MI instance, e.g. ``"https://my_granta_mi_server.com"``.
+        package_name : str, optional
+            The package name used to define which material models are exported from
+            Granta MI.
+        verify_ssl : bool
+            Whether to verify SSL certificates.  Defaults to ``True``.
+        oidc_config : MSALOIDCConfiguration | None
+            OIDC configuration used to authenticate with the identity provider. Required if
+            connecting to an on-premises Granta MI deployment.
+
+        Returns
+        -------
+        MaterialManager
+            A new ``MaterialManager`` instance populated with the selected materials.
+
+        Raises
+        ------
+        ImportError
+            If the required Granta MI REST client dependencies are not installed.
+        """
+        manager = cls()
+        manager.read_from_grantami(
+            granta_mi_url=granta_mi_url,
+            package_name=package_name,
+            verify_ssl=verify_ssl,
+            oidc_config=oidc_config,
+        )
+        return manager
+
+    def read_from_grantami(
+        self,
+        granta_mi_url: str,
+        package_name: str | None = None,
+        verify_ssl: bool = True,
+        oidc_config=None,
+    ) -> None:
+        """
+        Fetch materials from Granta MI and add them to the library.
+
+        Opens the Granta Material Picker in the default browser, waits for a selection, then merges
+        the returned materials into this manager's library.
+
+        Requires the ``grantami`` extra::
+
+            pip install ansys-materials-manager[grantami]
+
+        Parameters
+        ----------
+        granta_mi_url : str
+            Base URL of the Granta MI instance, e.g. ``"https://my_granta_mi_server.com"``.
+        package_name : str, optional
+            The package name used to define which material models are exported from
+            Granta MI.
+        verify_ssl : bool
+            Whether to verify SSL certificates. Defaults to ``True``.
+        oidc_config : MSALOIDCConfiguration | None
+            OIDC configuration used to authenticate with the identity provider. Required if
+            connecting to an on-premises Granta MI deployment.
+
+        Raises
+        ------
+        ImportError
+            If the required Granta MI REST client dependencies are not installed.
+        """
+        import webbrowser
+
+        from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
+        from ansys.materials.manager.parsers.rest.rest_session_client import RestSessionClient
+
+        with RestSessionClient(
+            base_url=granta_mi_url,
+            package_name=package_name,
+            verify_ssl=verify_ssl,
+            oidc_config=oidc_config,
+        ) as client:
+            picker_url = client.granta_material_picker_url
+            self._logger.info("Opening Granta Material Picker in browser: %s", picker_url)
+            webbrowser.open(picker_url)
+            raw_data = client.fetch_data()
+
+        material_dict = RestMaterialReader(raw_data).convert_materials()
+        self._add_library(material_dict)
+        self._logger.info("Added %d material(s) from Granta MI.", len(material_dict))

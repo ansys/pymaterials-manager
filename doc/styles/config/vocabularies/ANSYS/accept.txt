@@ -5,3 +5,4 @@ Pymaterials-manager
 socio-economic
 THIRDPARTY
 astroid
+uv

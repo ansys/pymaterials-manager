@@ -77,7 +77,7 @@ class BaseVisitor:
             return False
 
     def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict:
-        """Populate dependent parameters."""
+        """Populate dependent parameters with quantity-like values."""
         module = sys.modules[self.__module__]
         model_map = getattr(module, "MATERIAL_MODEL_MAP")
         if material_model.__class__ in model_map.keys():
@@ -89,7 +89,7 @@ class BaseVisitor:
                     return {}
                 labels = mapping.labels
                 quantities = [getattr(material_model, label) for label in mapping.attributes]
-            return dict(zip(labels, quantities))
+            return {label: qty for label, qty in zip(labels, quantities) if qty is not None}
 
     @abstractmethod
     def visit_material_model(self, material_name: str, material_model: MaterialModel):

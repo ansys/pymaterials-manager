@@ -78,7 +78,8 @@ class MapdlWriter(BaseVisitor):
 
     def _write_standard(self, material_model: MaterialModel) -> str:
         """Write standard properties."""
-        dependent_parameters_dict = self._populate_dependent_parameters(material_model)
+        aligned_model = material_model.flatten_parameter_grids()
+        dependent_parameters_dict = self._populate_dependent_parameters(aligned_model)
         dependent_parameters_labels = list(dependent_parameters_dict.keys())
         dependent_parameters_value = []
         dependent_parameters_units = []
@@ -86,7 +87,7 @@ class MapdlWriter(BaseVisitor):
             dependent_parameters_value.append(quantity.value.tolist())
             dependent_parameters_units.append(quantity.unit)
         material_string = ""
-        if not material_model.independent_parameters:
+        if not aligned_model.independent_parameters:
             material_string += write_constant_properties(
                 labels=dependent_parameters_labels,
                 properties=dependent_parameters_value,
@@ -96,10 +97,10 @@ class MapdlWriter(BaseVisitor):
             return material_string
         else:
             if (
-                len(material_model.independent_parameters) == 1
-                and material_model.independent_parameters[0].name.lower() == "temperature"
+                len(aligned_model.independent_parameters) == 1
+                and aligned_model.independent_parameters[0].name.lower() == "temperature"
             ):
-                if len(material_model.independent_parameters[0].values.value) == 1:
+                if len(aligned_model.independent_parameters[0].values.value) == 1:
                     material_string += write_constant_properties(
                         labels=dependent_parameters_labels,
                         properties=dependent_parameters_value,
@@ -113,7 +114,7 @@ class MapdlWriter(BaseVisitor):
                         dependent_parameters=dependent_parameters_value,
                         dependent_parameters_unit=dependent_parameters_units,
                         material_id=None,
-                        temperature_parameter=material_model.independent_parameters[0],
+                        temperature_parameter=aligned_model.independent_parameters[0],
                     )
                     return material_string
             else:
@@ -123,7 +124,7 @@ class MapdlWriter(BaseVisitor):
                     label=table_label,
                     dependent_parameters=dependent_parameters_value,
                     material_id=None,
-                    independent_parameters=material_model.independent_parameters,
+                    independent_parameters=aligned_model.independent_parameters,
                     tb_opt=tb_opt,
                 )
                 material_string += parameters_str + "\n" + table_str

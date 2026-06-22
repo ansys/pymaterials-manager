@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Dict, Literal
+from typing import Literal
 
 from ansys.units import Quantity
 from pydantic import Field, model_validator
@@ -30,6 +30,7 @@ from ansys.materials.manager._models._common import (
     QualifierType,
     validate_and_initialize_model_qualifiers,
 )
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
 class ThermalConductivityIsotropic(MaterialModel):
@@ -38,13 +39,13 @@ class ThermalConductivityIsotropic(MaterialModel):
     name: Literal["Thermal Conductivity"] = Field(
         default="Thermal Conductivity", repr=False, frozen=True
     )
-    thermal_conductivity: Quantity | None = Field(
+    thermal_conductivity: TabularQuantity | Quantity | None = Field(
         default=None,
         description="The thermal conductivity of the material.",
     )
 
     @model_validator(mode="before")
-    def _initialize_qualifiers(cls, values) -> Dict:
+    def _initialize_qualifiers(cls, values) -> dict:
         expected_qualifiers = {"Behavior": ["Isotropic", QualifierType.STRICT]}
         values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
             values, expected_qualifiers

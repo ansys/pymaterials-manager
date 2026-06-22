@@ -20,39 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from typing import Literal
 
-from ansys.units import Quantity
-from pydantic import Field, model_validator
+class AuthenticationError(Exception):
+    """Exception caused by an authentication error."""
 
-from ansys.materials.manager._models._common import (
-    MaterialModel,
-    QualifierType,
-    validate_and_initialize_model_qualifiers,
-)
-from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
+    pass
 
 
-class SpecificHeat(MaterialModel):
-    """Represents a specific heat material model."""
+class GrantaMIError(Exception):
+    """Exception caused by a Granta MI error."""
 
-    name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
-
-    specific_heat: TabularQuantity | Quantity | None = Field(
-        default=None,
-        description="The specific heat of the material.",
-    )
-
-    @model_validator(mode="before")
-    def _initialize_qualifiers(cls, values) -> dict:
-        expected_qualifiers = {
-            "Definition": [
-                "Constant Pressure",
-                QualifierType.RANGE,
-                ["Constant Pressure", "Constant Volume"],
-            ]
-        }
-        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
-            values, expected_qualifiers
-        )
-        return values
+    pass

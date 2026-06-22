@@ -23,36 +23,31 @@
 from typing import Literal
 
 from ansys.units import Quantity
-from pydantic import Field, model_validator
+from pydantic import Field
 
-from ansys.materials.manager._models._common import (
-    MaterialModel,
-    QualifierType,
-    validate_and_initialize_model_qualifiers,
-)
+from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
-class SpecificHeat(MaterialModel):
-    """Represents a specific heat material model."""
+class TensileStrengthUltimate(MaterialModel):
+    """Represents an ultimate tensile strength material model."""
 
-    name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
-
-    specific_heat: TabularQuantity | Quantity | None = Field(
+    name: Literal["Tensile Strength, Ultimate"] = Field(
+        default="Tensile Strength, Ultimate", repr=False, frozen=True
+    )
+    tensile_strength_ultimate: TabularQuantity | Quantity | None = Field(
         default=None,
-        description="The specific heat of the material.",
+        description="The ultimate tensile strength of the material.",
     )
 
-    @model_validator(mode="before")
-    def _initialize_qualifiers(cls, values) -> dict:
-        expected_qualifiers = {
-            "Definition": [
-                "Constant Pressure",
-                QualifierType.RANGE,
-                ["Constant Pressure", "Constant Volume"],
-            ]
-        }
-        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
-            values, expected_qualifiers
-        )
-        return values
+
+class TensileStrengthYield(MaterialModel):
+    """Represents a yield (proof) tensile strength material model."""
+
+    name: Literal["Tensile Strength, Yield"] = Field(
+        default="Tensile Strength, Yield", repr=False, frozen=True
+    )
+    tensile_strength_yield: TabularQuantity | Quantity | None = Field(
+        default=None,
+        description="The yield tensile strength of the material.",
+    )

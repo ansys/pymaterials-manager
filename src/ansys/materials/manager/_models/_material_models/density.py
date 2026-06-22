@@ -26,13 +26,14 @@ from ansys.units import Quantity
 from pydantic import Field
 
 from ansys.materials.manager._models._common import MaterialModel, SupportedPackage
+from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
 class Density(MaterialModel):
     """Represents an isotropic density material model."""
 
     name: Literal["Density"] = Field(default="Density", repr=False, frozen=True)
-    density: Quantity | None = Field(
+    density: TabularQuantity | Quantity | None = Field(
         default=None,
         description="The density of the material.",
     )

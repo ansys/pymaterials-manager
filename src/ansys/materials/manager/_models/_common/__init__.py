@@ -43,4 +43,5 @@ from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .material_model import MaterialModel
 from .model_qualifier import ModelQualifier
+from .tabular_quantity import TabularQuantity
 from .user_parameter import UserParameter

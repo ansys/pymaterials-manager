@@ -23,36 +23,19 @@
 from typing import Literal
 
 from ansys.units import Quantity
-from pydantic import Field, model_validator
+from pydantic import Field
 
-from ansys.materials.manager._models._common import (
-    MaterialModel,
-    QualifierType,
-    validate_and_initialize_model_qualifiers,
-)
+from ansys.materials.manager._models._common import MaterialModel
 from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 
 
-class SpecificHeat(MaterialModel):
-    """Represents a specific heat material model."""
+class TensileElongation(MaterialModel):
+    """Represents a tensile elongation (ductility) material model."""
 
-    name: Literal["Specific Heat"] = Field(default="Specific Heat", repr=False, frozen=True)
-
-    specific_heat: TabularQuantity | Quantity | None = Field(
-        default=None,
-        description="The specific heat of the material.",
+    name: Literal["Tensile Elongation"] = Field(
+        default="Tensile Elongation", repr=False, frozen=True
     )
-
-    @model_validator(mode="before")
-    def _initialize_qualifiers(cls, values) -> dict:
-        expected_qualifiers = {
-            "Definition": [
-                "Constant Pressure",
-                QualifierType.RANGE,
-                ["Constant Pressure", "Constant Volume"],
-            ]
-        }
-        values["model_qualifiers"] = validate_and_initialize_model_qualifiers(
-            values, expected_qualifiers
-        )
-        return values
+    tensile_elongation: TabularQuantity | Quantity | None = Field(
+        default=None,
+        description="The tensile elongation of the material (dimensionless strain).",
+    )
