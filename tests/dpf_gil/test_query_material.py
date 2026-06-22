@@ -615,6 +615,18 @@ def test_gil_query_md_stress_limits(dpf_server):
     stress_limits = variable_material.get_model_by_name("Stress Limits")
     assert stress_limits is not None
     stress_results = stress_limits.query([[0.79, 0.14, 22.0]], dpf_server=dpf_server)
-    expected_stress_results = [[183.6307060239161, 88.97178202705851, 85.11105927155995, 183.6307060239161, 88.97178202705851, 85.11105927155995, 61.24119870999999, 61.24119870999999, 61.24119870999999]]
+    expected_stress_results = [
+        [
+            183.6307060239161,
+            88.97178202705851,
+            85.11105927155995,
+            183.6307060239161,
+            88.97178202705851,
+            85.11105927155995,
+            61.24119870999999,
+            61.24119870999999,
+            61.24119870999999,
+        ]
+    ]
     for i in range(len(stress_results[0])):
         assert np.isclose(stress_results[0][i], expected_stress_results[0][i], rtol=1e-4)
