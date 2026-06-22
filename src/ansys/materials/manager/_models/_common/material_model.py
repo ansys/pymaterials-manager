@@ -48,7 +48,7 @@ try:
             HAS_GIL = False
             load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
         except:
-            print("Failed to load Ans.Dpf.Gil library.")
+            print("Failed to load Ans.Dpf.Gil library.")  # codespell:ignore Ans
 
 except ImportError:
     HAS_DPF = False
