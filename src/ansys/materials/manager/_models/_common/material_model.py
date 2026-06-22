@@ -22,6 +22,7 @@
 
 import abc
 import functools
+import re
 
 from ansys.units import Quantity
 import numpy as np
@@ -58,19 +59,26 @@ except ImportError:
 def requires_dpf_271(func):
     """Check DPF and Ansys 2027 R1 (v271) availability.
 
-    The Ansys installation version check is skipped when a ``dpf_server``
-    keyword argument is supplied to the decorated function, because the
-    caller is connecting to an already-running server whose version is
-    assumed to meet the requirement.
+    When a ``dpf_server`` keyword argument is supplied, the local Ansys
+    installation version check is skipped and the GIL library is loaded
+    against that server instead. A ``RuntimeError`` is still raised if
+    the server version is older than 2027 R1 (v271).
+
+    When no ``dpf_server`` is provided, both ``ansys-dpf-core`` and a
+    local Ansys 2027 R1 (v271) or later installation are required.
     """
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         dpf_server = kwargs.get("dpf_server", None)
         if dpf_server is not None:
-            print("Assuming connected DPF server meets Ansys 2027 R1 (v271) requirement.")
-            load_library("Ans.Dpf.Gil", server=dpf_server)  # codespell:ignore Ans
-            print("Successfully loaded gil library on connected DPF server.")
+            if int(re.search(r"\b(20\d{2})\b", dpf_server.version).group(1)) >= 2027:
+                load_library("Ans.Dpf.Gil", server=dpf_server)  # codespell:ignore Ans
+            else:
+                raise RuntimeError(
+                    f"'{func.__name__}' requires Ansys 2027 R1 (v271) or later. "
+                    "Please update your Ansys installation."
+                )
             return func(*args, **kwargs)
 
         if not HAS_DPF:
@@ -323,6 +331,16 @@ class MaterialModel(BaseModel, abc.ABC):
         values: list[float] | list[list[float]]
             The values to query the material model with. This can be a list of lists for multiple
             independent parameters or a list of floats for a single independent parameter.
+
+            from ansys.dpf.core.server_types import (
+            GrpcServer,
+            InProcessServer,
+            LegacyGrpcServer,
+        )
+        dpf_server: GrpcServer | InProcessServer | LegacyGrpcServer | None, optional
+            The DPF server to use for the query.
+            If not provided, the global DPF server will be used.
+            servers can be imported from ansys.dpf.core.server_types.
 
         Returns
         -------

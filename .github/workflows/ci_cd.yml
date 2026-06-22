@@ -92,8 +92,8 @@ jobs:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  mapdl-integration-tests:
-    name: Integration tests with MAPDL
+  integration-tests:
+    name: Integration tests with MAPDL and DPF GIL
     runs-on: ubuntu-latest
     needs: code-style
     steps:
@@ -146,7 +146,7 @@ jobs:
         env:
           PYMAPDL_GRPC_TRANSPORT: insecure
 
-      - name: "Pull and run dpf-gil plugin to query"
+      - name: "Pull and Run dpf-gil plugin"
         run: |
           DPF_GIL_IMAGE="${{ env.DPF_GIL_DOCKER_PACKAGE }}:${{ env.DPF_GIL_DOCKER_VERSION }}"
           docker pull $DPF_GIL_IMAGE
