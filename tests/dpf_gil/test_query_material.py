@@ -39,15 +39,15 @@ pytestmark = pytest.mark.dpf_gil_integration
 
 @pytest.fixture(scope="module")
 def dpf_server():
-    out = available_servers()
-    print(f"Available servers: {out}")
     dpf_server = connect_to_server(
         ip="127.0.0.1",
         port="50054",
-        as_global=False,
+        as_global=True,
         config=ServerConfig(protocol=CommunicationProtocols.gRPC, grpc_mode=GrpcMode.Insecure),
     )
     yield dpf_server
+    out = available_servers()
+    print(f"Available servers: {out}")
 
 
 def test_gil_query_linear_elastic(dpf_server):
