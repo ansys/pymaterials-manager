@@ -424,7 +424,7 @@ class MaterialModel(BaseModel, abc.ABC):
         ]
 
         ind_parameter_defaults = dpf.fields_factory.create_vector_field(
-            num_entities=1, num_comp=indep_param_dim
+            num_entities=indep_param_dim, num_comp=1
         )
         ind_parameter_ranges = dpf.fields_factory.create_vector_field(
             num_entities=indep_param_dim, num_comp=2
