@@ -22,7 +22,7 @@
 
 from ansys.dpf.core import connect_to_server
 from ansys.dpf.core.server import available_servers
-from ansys.dpf.core.server_factory import GrpcMode, ServerConfig
+from ansys.dpf.core.server_factory import CommunicationProtocols, GrpcMode, ServerConfig
 from ansys.units import Quantity
 import numpy as np
 import pytest
@@ -45,7 +45,7 @@ def dpf_server():
         ip="127.0.0.1",
         port="50054",
         as_global=False,
-        config=ServerConfig(grpc_mode=GrpcMode.Insecure),
+        config=ServerConfig(protocol=CommunicationProtocols.gRPC, grpc_mode=GrpcMode.Insecure),
     )
     yield dpf_server
 
