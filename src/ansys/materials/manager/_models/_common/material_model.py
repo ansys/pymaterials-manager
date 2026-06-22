@@ -21,8 +21,9 @@
 # SOFTWARE.
 
 import abc
-import functools
 
+import ansys.dpf.core as dpf
+from ansys.dpf.core import load_library
 from ansys.units import Quantity
 import numpy as np
 from pydantic import BaseModel, Field
@@ -34,49 +35,53 @@ from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
 from .tabular_quantity import TabularQuantity
 
-try:
-    import ansys.dpf.core as dpf
-    from ansys.dpf.core import load_library
-    from ansys.tools.common.path import get_available_ansys_installations
-
-    HAS_DPF = True
-    HAS_GIL = True
-    _ansys_paths = get_available_ansys_installations()
-    HAS_MINIMUM_271 = any(version >= 271 for version in _ansys_paths)
-    if HAS_MINIMUM_271:
-        try:
-            HAS_GIL = False
-            load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
-        except:
-            print("Failed to load Ans.Dpf.Gil library.")  # codespell:ignore Ans
-
-except ImportError:
-    HAS_DPF = False
-    HAS_MINIMUM_271 = False
-
-print("has dpf:", HAS_DPF)
-print("has minimum 271:", HAS_MINIMUM_271)
-print("has gil:", HAS_GIL)
+# import functools
 
 
-def requires_dpf_271(func):
-    """Check DPF and Ansys 2027 R1 (v271) availability."""
+load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
+# try:
+#     import ansys.dpf.core as dpf
+#     from ansys.dpf.core import load_library
+#     from ansys.tools.common.path import get_available_ansys_installations
 
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        if not HAS_DPF:
-            raise ImportError(
-                f"'{func.__name__}' requires ansys-dpf-core. "
-                "Install it with: pip install ansys-dpf-core"
-            )
-        if not HAS_MINIMUM_271:
-            raise RuntimeError(
-                f"'{func.__name__}' requires Ansys 2027 R1 (v271) or later. "
-                "Please update your Ansys installation."
-            )
-        return func(*args, **kwargs)
+#     HAS_DPF = True
+#     HAS_GIL = True
+#     _ansys_paths = get_available_ansys_installations()
+#     HAS_MINIMUM_271 = any(version >= 271 for version in _ansys_paths)
+#     if HAS_MINIMUM_271:
+#         try:
+#             HAS_GIL = False
+#             load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
+#         except:
+#             print("Failed to load Ans.Dpf.Gil library.")  # codespell:ignore Ans
 
-    return wrapper
+# except ImportError:
+#     HAS_DPF = False
+#     HAS_MINIMUM_271 = False
+
+# print("has dpf:", HAS_DPF)
+# print("has minimum 271:", HAS_MINIMUM_271)
+# print("has gil:", HAS_GIL)
+
+
+# def requires_dpf_271(func):
+#     """Check DPF and Ansys 2027 R1 (v271) availability."""
+
+#     @functools.wraps(func)
+#     def wrapper(*args, **kwargs):
+#         if not HAS_DPF:
+#             raise ImportError(
+#                 f"'{func.__name__}' requires ansys-dpf-core. "
+#                 "Install it with: pip install ansys-dpf-core"
+#             )
+#         if not HAS_MINIMUM_271:
+#             raise RuntimeError(
+#                 f"'{func.__name__}' requires Ansys 2027 R1 (v271) or later. "
+#                 "Please update your Ansys installation."
+#             )
+#         return func(*args, **kwargs)
+
+#     return wrapper
 
 
 class MaterialModel(BaseModel, abc.ABC):
