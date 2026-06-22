@@ -40,10 +40,15 @@ try:
     from ansys.tools.common.path import get_available_ansys_installations
 
     HAS_DPF = True
+    HAS_GIL = True
     _ansys_paths = get_available_ansys_installations()
     HAS_MINIMUM_271 = any(version >= 271 for version in _ansys_paths)
     if HAS_MINIMUM_271:
-        load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
+        try:
+            HAS_GIL = False
+            load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
+        except:
+            print("Failed to load Ans.Dpf.Gil library.")
 
 except ImportError:
     HAS_DPF = False
@@ -55,6 +60,9 @@ def requires_dpf_271(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        print("has dpf:", HAS_DPF)
+        print("has minimum 271:", HAS_MINIMUM_271)
+        print("has gil:", HAS_GIL)
         if not HAS_DPF:
             raise ImportError(
                 f"'{func.__name__}' requires ansys-dpf-core. "

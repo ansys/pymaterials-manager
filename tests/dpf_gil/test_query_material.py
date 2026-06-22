@@ -46,8 +46,6 @@ def dpf_server():
         config=ServerConfig(protocol=CommunicationProtocols.gRPC, grpc_mode=GrpcMode.Insecure),
     )
     yield dpf_server
-    out = available_servers()
-    print(f"Available servers: {out}")
 
 
 def test_gil_query_linear_elastic(dpf_server):
