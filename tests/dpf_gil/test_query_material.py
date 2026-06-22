@@ -84,7 +84,7 @@ def test_gil_query_linear_elastic(dpf_server):
         assert np.isclose(results[i][1], expected_results[i][1], rtol=1e-4)
 
 
-def test_gil_query_md_stress_limits():
+def test_gil_query_md_stress_limits(dpf_server):
     variable_material = Material(
         name="Stress Limits Material",
         models=[
@@ -614,7 +614,7 @@ def test_gil_query_md_stress_limits():
     )
     stress_limits = variable_material.get_model_by_name("Stress Limits")
     assert stress_limits is not None
-    stress_results = stress_limits.query([[0.79, 0.14, 22.0]])
+    stress_results = stress_limits.query([[0.79, 0.14, 22.0]], dpf_server=dpf_server)
     expected_stress_results = [
         [
             183.92634408109018,
