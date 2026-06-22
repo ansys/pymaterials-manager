@@ -171,6 +171,8 @@ jobs:
           fi
             
       - name: Test with pytest (DPF GIL integration tests only)
+        env:
+          AWP_ROOT271: C:\Program Files\ANSYS Inc\v271
         run: uv run --frozen pytest ./tests -m dpf_gil_integration -o addopts="--cov=ansys.materials --cov-report=term --cov-report=xml:.cov/xml --cov-report=html:.cov/html"
 
       - name: Upload coverage report
