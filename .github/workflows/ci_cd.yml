@@ -146,20 +146,20 @@ jobs:
         env:
           PYMAPDL_GRPC_TRANSPORT: insecure
 
-      - name: "Pull dpf-gil plugin to query"
+      - name: "Pull and run dpf-gil plugin to query"
         run: |
           DPF_GIL_IMAGE="${{ env.DPF_GIL_DOCKER_PACKAGE }}:${{ env.DPF_GIL_DOCKER_VERSION }}"
           docker pull $DPF_GIL_IMAGE
-            docker run \
-              --name dpf_gil \
-              --restart unless-stopped \
-              -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
-              -e ANSYS_LOCK="OFF" \
-              -p 50054:50054 \
-              -p 50056:50056 \
-              --entrypoint /bin/bash \
-              $DPF_GIL_IMAGE \
+          docker run \
+          --name dpf_gil \
+          -e "ANSYS_DPF_ACCEPT_LA=Y"\
+           -e ANSYSLMD_LICENSE_FILE=1055@${{ secrets.LICENSE_SERVER }} \
+           -p 50054:50054 \
+           -e DOCKER_SERVER_PORT=50054 \
+           --expose=50054 \
+           $DPF_GIL_IMAGE \
               ansysgrpc -smp -np 2 -transport insecure -allowremote true | tee log.txt &
+
           # Wait for DPF GIL server to start by checking the log file every second for up to 60 seconds
           for i in {1..60}; do
             if tail -n 10 log.txt | grep -q 'Server listening on'; then
