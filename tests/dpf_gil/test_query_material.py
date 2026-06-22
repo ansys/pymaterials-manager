@@ -215,7 +215,7 @@ def test_gil_query_md_stress_limits():
                     ],
                     units="MPa",
                 ),
-                compression_x_direction=Quantity(
+                compressive_x_direction=Quantity(
                     value=[
                         104.41558825,
                         110.09023848,
@@ -257,7 +257,7 @@ def test_gil_query_md_stress_limits():
                     ],
                     units="MPa",
                 ),
-                compression_y_direction=Quantity(
+                compressive_y_direction=Quantity(
                     value=[
                         104.41558825,
                         110.09023848,
@@ -299,7 +299,7 @@ def test_gil_query_md_stress_limits():
                     ],
                     units="MPa",
                 ),
-                compression_z_direction=Quantity(
+                compressive_z_direction=Quantity(
                     value=[
                         104.41558826,
                         94.64803438,
