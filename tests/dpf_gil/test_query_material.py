@@ -56,7 +56,7 @@ def test_gil_query_linear_elastic(dpf_server):
         models=[
             ElasticityIsotropic(
                 youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
-                poisson_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
                 independent_parameters=[
                     IndependentParameter(
                         name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
