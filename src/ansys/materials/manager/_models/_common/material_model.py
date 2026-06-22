@@ -21,9 +21,8 @@
 # SOFTWARE.
 
 import abc
+import functools
 
-import ansys.dpf.core as dpf
-from ansys.dpf.core import load_library
 from ansys.units import Quantity
 import numpy as np
 from pydantic import BaseModel, Field
@@ -35,53 +34,58 @@ from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
 from .tabular_quantity import TabularQuantity
 
-# import functools
+try:
+    import ansys.dpf.core as dpf
+    from ansys.dpf.core import load_library
+    from ansys.tools.common.path import get_available_ansys_installations
+
+    HAS_DPF = True
+    HAS_GIL = True
+    _ansys_paths = get_available_ansys_installations()
+    HAS_MINIMUM_271 = any(version >= 271 for version in _ansys_paths)
+    if HAS_MINIMUM_271:
+        try:
+            HAS_GIL = False
+            load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
+        except:
+            print("Failed to load Ans.Dpf.Gil library.")  # codespell:ignore Ans
+
+except ImportError:
+    HAS_DPF = False
+    HAS_MINIMUM_271 = False
 
 
-load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
-# try:
-#     import ansys.dpf.core as dpf
-#     from ansys.dpf.core import load_library
-#     from ansys.tools.common.path import get_available_ansys_installations
+def requires_dpf_271(func):
+    """Check DPF and Ansys 2027 R1 (v271) availability.
 
-#     HAS_DPF = True
-#     HAS_GIL = True
-#     _ansys_paths = get_available_ansys_installations()
-#     HAS_MINIMUM_271 = any(version >= 271 for version in _ansys_paths)
-#     if HAS_MINIMUM_271:
-#         try:
-#             HAS_GIL = False
-#             load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
-#         except:
-#             print("Failed to load Ans.Dpf.Gil library.")  # codespell:ignore Ans
+    The Ansys installation version check is skipped when a ``dpf_server``
+    keyword argument is supplied to the decorated function, because the
+    caller is connecting to an already-running server whose version is
+    assumed to meet the requirement.
+    """
 
-# except ImportError:
-#     HAS_DPF = False
-#     HAS_MINIMUM_271 = False
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        dpf_server = kwargs.get("dpf_server", None)
+        if dpf_server is not None:
+            print("Assuming connected DPF server meets Ansys 2027 R1 (v271) requirement.")
+            load_library("Ans.Dpf.Gil", server=dpf_server)  # codespell:ignore Ans
+            print("Successfully loaded gil library on connected DPF server.")
+            return func(*args, **kwargs)
 
-# print("has dpf:", HAS_DPF)
-# print("has minimum 271:", HAS_MINIMUM_271)
-# print("has gil:", HAS_GIL)
+        if not HAS_DPF:
+            raise ImportError(
+                f"'{func.__name__}' requires ansys-dpf-core. "
+                "Install it with: pip install ansys-dpf-core"
+            )
+        if dpf_server is None and not HAS_MINIMUM_271:
+            raise RuntimeError(
+                f"'{func.__name__}' requires Ansys 2027 R1 (v271) or later. "
+                "Please update your Ansys installation."
+            )
+        return func(*args, **kwargs)
 
-
-# def requires_dpf_271(func):
-#     """Check DPF and Ansys 2027 R1 (v271) availability."""
-
-#     @functools.wraps(func)
-#     def wrapper(*args, **kwargs):
-#         if not HAS_DPF:
-#             raise ImportError(
-#                 f"'{func.__name__}' requires ansys-dpf-core. "
-#                 "Install it with: pip install ansys-dpf-core"
-#             )
-#         if not HAS_MINIMUM_271:
-#             raise RuntimeError(
-#                 f"'{func.__name__}' requires Ansys 2027 R1 (v271) or later. "
-#                 "Please update your Ansys installation."
-#             )
-#         return func(*args, **kwargs)
-
-#     return wrapper
+    return wrapper
 
 
 class MaterialModel(BaseModel, abc.ABC):
@@ -281,7 +285,9 @@ class MaterialModel(BaseModel, abc.ABC):
 
         return self.model_copy(update=updates)
 
-    def query(self, values: list[float] | list[list[float]]) -> list[float] | list[list[float]]:
+    def query(
+        self, values: list[float] | list[list[float]], **kwargs
+    ) -> list[float] | list[list[float]]:
         """
         Query the material model with the given values.
 
@@ -300,13 +306,14 @@ class MaterialModel(BaseModel, abc.ABC):
         """
         self.validate_model()
         if self.interpolator == Interpolator.GIL_INTERPOLATOR:
-            return self._query_with_gil(values)
+            dpf_server = kwargs.get("dpf_server", None)
+            return self._query_with_gil(values, dpf_server=dpf_server)
         else:
             raise NotImplementedError(f"Interpolator {self.interpolator} is not implemented yet.")
 
-    # @requires_dpf_271
+    @requires_dpf_271
     def _query_with_gil(
-        self, values: list[float] | list[list[float]]
+        self, values: list[float] | list[list[float]], dpf_server=None
     ) -> list[float] | list[list[float]]:
         """
         Query the material model using GIL interpolation.

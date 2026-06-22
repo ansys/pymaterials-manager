@@ -69,7 +69,7 @@ def test_gil_query_linear_elastic(dpf_server):
     )
     elasticity = variable_material.get_model_by_name("Elasticity")
     assert elasticity is not None
-    results = elasticity.query([0.25, 0.28, 0.4, 0.5])
+    results = elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
     expected_results = [
         [1.50e09, 2.90e-01],
         [1.80e09, 2.84e-01],
