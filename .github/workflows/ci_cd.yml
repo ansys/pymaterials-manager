@@ -146,7 +146,7 @@ jobs:
         env:
           PYMAPDL_GRPC_TRANSPORT: insecure
 
-      - name: "Pull dpf-gil pluging to query"
+      - name: "Pull dpf-gil plugin to query"
         run: |
           DPF_GIL_IMAGE="${{ env.DPF_GIL_DOCKER_PACKAGE }}:${{ env.DPF_GIL_DOCKER_VERSION }}"
           docker pull $DPF_GIL_IMAGE
