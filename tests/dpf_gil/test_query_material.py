@@ -383,7 +383,7 @@ def test_gil_query_md_stress_limits():
                     ],
                     units="MPa",
                 ),
-                shere_yz=Quantity(
+                shear_yz=Quantity(
                     value=[
                         61.24119871,
                         61.24119871,
