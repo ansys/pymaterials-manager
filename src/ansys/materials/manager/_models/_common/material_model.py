@@ -344,13 +344,10 @@ class MaterialModel(BaseModel, abc.ABC):
              The result of the query. This will be a list of floats for a single
              independent parameter or a list of lists for multiple independent parameters.
         """
-        indep_param_dim = (
-            len(self.independent_parameters) if self.independent_parameters is not None else None
-        )
+
         if self.independent_parameters is None:
             raise ValueError("Querying a material model with no independent parameters.")
-        if indep_param_dim > 0:
-            indep_param_dim = len(self.independent_parameters)
+        indep_param_dim = len(self.independent_parameters)
         if indep_param_dim == 0:
             raise ValueError("Querying a material model with no independent parameters.")
 
@@ -358,10 +355,9 @@ class MaterialModel(BaseModel, abc.ABC):
             raise ValueError(
                 "Querying a material model with independent parameters that have no values."
             )
-
         indep_param_ent = len(self.independent_parameters[0].values.value)
 
-        excluded_fields = list(MaterialModel.model_fields.keys())
+        excluded_fields = set(MaterialModel.model_fields.keys())
         dependant_parameters = [
             field for field in self.__class__.model_fields.keys() if field not in excluded_fields
         ]
@@ -464,8 +460,8 @@ class MaterialModel(BaseModel, abc.ABC):
         evaluation_points = dpf.fields_factory.create_vector_field(
             num_entities=len(values), num_comp=indep_param_dim
         )
-        for i in range(len(values)):
-            evaluation_points.append(values[i] if isinstance(values[i], list) else [values[i]], i)
+        for value_idx, value in enumerate(values):
+            evaluation_points.append(value if isinstance(value, list) else [value], value_idx)
         query.inputs.evaluation_points.connect(evaluation_points)
         query.run()
         return query.outputs.evaluation.get_data().data

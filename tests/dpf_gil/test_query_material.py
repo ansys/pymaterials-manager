@@ -57,8 +57,10 @@ def test_gil_query_linear_elastic(dpf_server):
         name="Elastic Material",
         models=[
             ElasticityIsotropic(
-                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
-                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                youngs_modulus=Quantity(
+                    value=[1000000000.0, 2000000000.0, 4000000000.0], units="Pa"
+                ),
+                poissons_ratio=Quantity(value=[0.3, 0.28, 0.25], units=""),
                 independent_parameters=[
                     IndependentParameter(
                         name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
@@ -639,8 +641,10 @@ def test_gil_import_error():
         name="Elastic Material",
         models=[
             ElasticityIsotropic(
-                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
-                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                youngs_modulus=Quantity(
+                    value=[1000000000.0, 2000000000.0, 4000000000.0], units="Pa"
+                ),
+                poissons_ratio=Quantity(value=[0.3, 0.28, 0.25], units=""),
                 independent_parameters=[
                     IndependentParameter(
                         name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
@@ -670,8 +674,10 @@ def test_gil_no_interpolation_options(dpf_server):
         name="Elastic Material",
         models=[
             ElasticityIsotropic(
-                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
-                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                youngs_modulus=Quantity(
+                    value=[1000000000.0, 2000000000.0, 4000000000.0], units="Pa"
+                ),
+                poissons_ratio=Quantity(value=[0.3, 0.28, 0.25], units=""),
                 independent_parameters=[
                     IndependentParameter(
                         name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
@@ -693,8 +699,10 @@ def test_gil_no_interpolation_options_algorithm(dpf_server):
         name="Elastic Material",
         models=[
             ElasticityIsotropic(
-                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
-                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                youngs_modulus=Quantity(
+                    value=[1000000000.0, 2000000000.0, 4000000000.0], units="Pa"
+                ),
+                poissons_ratio=Quantity(value=[0.3, 0.28, 0.25], units=""),
                 independent_parameters=[
                     IndependentParameter(
                         name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
