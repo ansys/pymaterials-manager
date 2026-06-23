@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import re
+
 from ansys.dpf.core import connect_to_server
 from ansys.dpf.core.server_factory import CommunicationProtocols, GrpcMode, ServerConfig
 from ansys.units import Quantity
@@ -656,7 +658,9 @@ def test_gil_import_error():
     assert elasticity is not None
     with pytest.raises(
         RuntimeError,
-        match="'_query_with_gil' requires Ansys 2027 R1 (v271) or later. Please update your Ansys installation.",  # noqa: E501
+        match=re.escape(
+            "'_query_with_gil' requires Ansys 2027 R1 (v271) or later. Please update your Ansys installation."  # noqa: E501
+        ),
     ):
         elasticity.query([0.25, 0.28, 0.4, 0.5])
 
@@ -680,5 +684,29 @@ def test_gil_no_interpolation_options(dpf_server):
     assert elasticity is not None
     with pytest.raises(
         ValueError, match="Querying a material model with no interpolation options."
+    ):
+        elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
+
+
+def test_gil_no_interpolation_options_algorithm(dpf_server):
+    variable_material = Material(
+        name="Elastic Material",
+        models=[
+            ElasticityIsotropic(
+                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
+                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                independent_parameters=[
+                    IndependentParameter(
+                        name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
+                    )
+                ],
+                interpolation_options=InterpolationOptions(),
+            )
+        ],
+    )
+    elasticity = variable_material.get_model_by_name("Elasticity")
+    assert elasticity is not None
+    with pytest.raises(
+        ValueError, match="Querying a material model with no interpolation options algorithm."
     ):
         elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)

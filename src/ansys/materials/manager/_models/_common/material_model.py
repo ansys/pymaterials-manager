@@ -430,7 +430,7 @@ class MaterialModel(BaseModel, abc.ABC):
             ind_parameter_ranges.append(min_max[i], i)
 
         if not self.interpolation_options:
-            raise ValueError("Querying a material model with no interpolation options")
+            raise ValueError("Querying a material model with no interpolation options.")
 
         algorithm = MATML_TO_GIL_ALGORITHM_MAPPING.get(
             self.interpolation_options.algorithm_type, None
