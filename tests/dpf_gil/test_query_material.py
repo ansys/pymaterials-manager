@@ -630,3 +630,126 @@ def test_gil_query_md_stress_limits(dpf_server):
     ]
     for i in range(len(stress_results[0])):
         assert np.isclose(stress_results[0][i], expected_stress_results[0][i], rtol=1e-4)
+
+
+def test_gil_import_error():
+    variable_material = Material(
+        name="Elastic Material",
+        models=[
+            ElasticityIsotropic(
+                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
+                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                independent_parameters=[
+                    IndependentParameter(
+                        name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
+                    )
+                ],
+                interpolation_options=InterpolationOptions(
+                    algorithm_type="Linear Multivariate",
+                    normalized=False,
+                    Cached=True,
+                ),
+            )
+        ],
+    )
+    elasticity = variable_material.get_model_by_name("Elasticity")
+    assert elasticity is not None
+    with pytest.raises(
+        RuntimeError,
+        match="_query_with_gil' requires Ansys 2027 R1 (v271) or later. Please update your Ansys installation.",  # noqa: E501
+    ):
+        elasticity.query([0.25, 0.28, 0.4, 0.5])
+
+
+def test_gil_no_interpolation_options(dpf_server):
+    variable_material = Material(
+        name="Elastic Material",
+        models=[
+            ElasticityIsotropic(
+                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
+                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                independent_parameters=[
+                    IndependentParameter(
+                        name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
+                    )
+                ],
+            )
+        ],
+    )
+    elasticity = variable_material.get_model_by_name("Elasticity")
+    assert elasticity is not None
+    with pytest.raises(
+        ValueError, match="Querying a material model with no interpolation options algorithm."
+    ):
+        elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
+
+
+def test_gil_no_interpolation_options_algorithm(dpf_server):
+    variable_material = Material(
+        name="Elastic Material",
+        models=[
+            ElasticityIsotropic(
+                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
+                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                independent_parameters=[
+                    IndependentParameter(
+                        name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
+                    )
+                ],
+                interpolation_options=InterpolationOptions(),
+            )
+        ],
+    )
+    elasticity = variable_material.get_model_by_name("Elasticity")
+    assert elasticity is not None
+    with pytest.raises(
+        ValueError, match="Querying a material model with no interpolation options algorithm."
+    ):
+        elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
+
+
+def test_gil_no_independent_parameters(dpf_server):
+    variable_material = Material(
+        name="Elastic Material",
+        models=[
+            ElasticityIsotropic(
+                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
+                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+            )
+        ],
+    )
+    elasticity = variable_material.get_model_by_name("Elasticity")
+    assert elasticity is not None
+    with pytest.raises(
+        ValueError, match="Querying a material model with no independent parameters."
+    ):
+        elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
+
+
+def test_gil_query_with_independent_parameters_none_value(dpf_server):
+    variable_material = Material(
+        name="Elastic Material",
+        models=[
+            ElasticityIsotropic(
+                youngs_modulus=Quantity([1000000000.0, 2000000000.0, 4000000000.0], "Pa"),
+                poissons_ratio=Quantity([0.3, 0.28, 0.25], ""),
+                independent_parameters=[
+                    IndependentParameter(
+                        name="Volume Fraction", values=Quantity(value=[None, None, None], units="")
+                    )
+                ],
+                interpolation_options=InterpolationOptions(
+                    algorithm_type="Linear Multivariate",
+                    normalized=False,
+                    Cached=True,
+                ),
+            )
+        ],
+    )
+    elasticity = variable_material.get_model_by_name("Elasticity")
+    assert elasticity is not None
+    with pytest.raises(
+        ValueError,
+        match="Querying a material model with independent parameters that have no values.",
+    ):
+        elasticity.query([None, 0.28, 0.4, 0.5], dpf_server=dpf_server)

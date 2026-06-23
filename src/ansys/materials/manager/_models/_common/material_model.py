@@ -45,11 +45,7 @@ try:
     _ansys_paths = get_available_ansys_installations()
     HAS_MINIMUM_271 = any(version >= 271 for version in _ansys_paths)
     if HAS_MINIMUM_271:
-        try:
-            HAS_GIL = False
-            load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
-        except:
-            print("Failed to load Ans.Dpf.Gil library.")  # codespell:ignore Ans
+        load_library("Ans.Dpf.Gil")  # codespell:ignore Ans
 
 except ImportError:
     HAS_DPF = False
