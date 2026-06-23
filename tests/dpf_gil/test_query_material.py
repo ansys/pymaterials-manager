@@ -682,4 +682,3 @@ def test_gil_no_interpolation_options(dpf_server):
         ValueError, match="Querying a material model with no interpolation options."
     ):
         elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
-
