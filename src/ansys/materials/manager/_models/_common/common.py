@@ -19,7 +19,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 from enum import Enum
 
 import numpy as np
@@ -28,12 +27,39 @@ from .independent_parameter import IndependentParameter
 from .model_qualifier import ModelQualifier
 
 
+class Interpolator(str, Enum):
+    """Enum for interpolator types in material models."""
+
+    GIL_INTERPOLATOR = "gil"
+
+
 class QualifierType(str, Enum):
     """Enum for qualifier types in material models."""
 
     STRICT = "strict"
     RANGE = "range"
     FREE = "free"
+
+
+class GILInterpolationAlgorithms(str, Enum):
+    """Enum for interpolation algorithms available in GIL."""
+
+    NEAREST_NEIGHBOR = "nearest_neighbor"
+    LINEAR = "linear"
+    RADIAL_BASIS = "radial_basis"
+    LINEAR_2D = "linear_2d"
+    LINEAR_TRIANGULATION = "linear_triangulation"
+    LINEAR_QHULL = "linear_qhull"
+    WEIGHTED_NEAREST_NEIGHBOR = "weighted_nearest_neighbor"
+    LINEAR_ND = "linear_nd"
+
+
+MATML_TO_GIL_ALGORITHM_MAPPING = {
+    "Linear Multivariate": GILInterpolationAlgorithms.LINEAR_TRIANGULATION,
+    "Linear Multivariate (Qhull)": GILInterpolationAlgorithms.LINEAR_QHULL,
+    "Radial Basis": GILInterpolationAlgorithms.RADIAL_BASIS,
+    "Nearest Neighbor": GILInterpolationAlgorithms.NEAREST_NEIGHBOR,
+}
 
 
 def validate_and_initialize_model_qualifiers(

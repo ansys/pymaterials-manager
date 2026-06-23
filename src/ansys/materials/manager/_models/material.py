@@ -108,7 +108,7 @@ class Material:
         material_names = Counter([model.name for model in self.models])
         repeated_models = [item for item, count in material_names.items() if count > 1]
         if len(repeated_models) > 0:
-            raise (f"The following material models are repeated: {repeated_models}")
+            raise ValueError(f"The following material models are repeated: {repeated_models}")
         return
 
     def append_models(self, value: list[MaterialModel] | MaterialModel) -> None:
@@ -121,7 +121,13 @@ class Material:
     def get_model_by_name(self, model_name: str) -> MaterialModel | None:
         """Get the material model with a given model name."""
         model = None
-        for mat_model in self.models:
+        for mat_model in self._models:
             if model_name.lower() == mat_model.name.lower():
                 model = mat_model
         return model
+
+    def remove_model_by_name(self, model_name: str) -> None:
+        """Remove a material model from the current material models by name."""
+        model = self.get_model_by_name(model_name)
+        if model is not None:
+            self._models.remove(model)
