@@ -26,6 +26,10 @@ import pytest
 from ansys.materials.manager._models._common import IndependentParameter
 from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
 from ansys.materials.manager._models._material_models.density import Density
+from ansys.materials.manager._models._material_models.elasticity_isotropic import (
+    ElasticityIsotropic,
+)
+from ansys.materials.manager._models.material import Material
 
 
 def test_validate_model_1():
@@ -161,3 +165,62 @@ def test_validate_model_tabular_quantity():
 
     density.validate_model()
     assert density
+
+
+def test_delete_material_model():
+    material = Material(
+        name="Test Material",
+        models=[
+            Density(
+                density=Quantity(value=[1.0], units="kg m^-3"),
+                independent_parameters=[
+                    IndependentParameter(
+                        name="Temperature", values=Quantity(value=[1.0], units="C")
+                    )
+                ],
+            )
+        ],
+    )
+    material.remove_model_by_name("Density")
+    density = material.get_model_by_name("Density")
+    assert density is None
+
+
+def test_append_single_model():
+    material = Material(
+        name="Test Material",
+        models=[
+            Density(
+                density=Quantity(value=[1.0], units="kg m^-3"),
+                independent_parameters=[
+                    IndependentParameter(
+                        name="Temperature", values=Quantity(value=[1.0], units="C")
+                    )
+                ],
+            )
+        ],
+    )
+    elasticity = ElasticityIsotropic(
+        youngs_modulus=Quantity(value=[2.0], units="Pa"),
+        poissons_ratio=Quantity(value=[0.3], units=""),
+        independent_parameters=[
+            IndependentParameter(name="Temperature", values=Quantity(value=[2.0], units="C"))
+        ],
+    )
+    material.append_models(elasticity)
+    elasticity_model = material.get_model_by_name("Elasticity")
+    assert elasticity_model is not None
+
+
+def test_get_independent_parameter_by_name():
+    density = Density(
+        density=Quantity(value=[1.0], units="kg m^-3"),
+        independent_parameters=[
+            IndependentParameter(name="Temperature", values=Quantity(value=[1.0], units="C"))
+        ],
+    )
+    temp_param = density.get_independent_parameter_by_name("Temperature")
+    assert temp_param is not None
+    assert temp_param.name == "Temperature"
+    assert temp_param.values.value == [1.0]
+    assert temp_param.values.unit == "C"

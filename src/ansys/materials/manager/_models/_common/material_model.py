@@ -469,3 +469,12 @@ class MaterialModel(BaseModel, abc.ABC):
         query.inputs.evaluation_points.connect(evaluation_points)
         query.run()
         return query.outputs.evaluation.get_data().data
+
+    def get_independent_parameter_by_name(self, name: str) -> IndependentParameter | None:
+        """Get the independent parameter with a given name."""
+        if self.independent_parameters is None:
+            return None
+        for ip in self.independent_parameters:
+            if ip.name.lower() == name.lower():
+                return ip
+        return None

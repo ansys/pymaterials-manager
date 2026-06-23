@@ -108,7 +108,7 @@ class Material:
         material_names = Counter([model.name for model in self.models])
         repeated_models = [item for item, count in material_names.items() if count > 1]
         if len(repeated_models) > 0:
-            raise (f"The following material models are repeated: {repeated_models}")
+            raise ValueError(f"The following material models are repeated: {repeated_models}")
         return
 
     def append_models(self, value: list[MaterialModel] | MaterialModel) -> None:
