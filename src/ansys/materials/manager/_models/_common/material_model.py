@@ -344,7 +344,6 @@ class MaterialModel(BaseModel, abc.ABC):
              The result of the query. This will be a list of floats for a single
              independent parameter or a list of lists for multiple independent parameters.
         """
-
         if self.independent_parameters is None:
             raise ValueError("Querying a material model with no independent parameters.")
         indep_param_dim = len(self.independent_parameters)
