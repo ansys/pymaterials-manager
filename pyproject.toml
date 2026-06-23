@@ -32,6 +32,9 @@ grantami = [
     "httpx>=0.27",
     "msal>=1.28",
 ]
+interpolation = [
+    "ansys-dpf-core",
+]
 
 [project.urls]
 Repository = "https://github.com/ansys/pymaterials-manager"
@@ -63,10 +66,6 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ansys"]
-
-[tool.poetry.extras]
-interpolation = ["ansys-dpf-core"]
-
 
 [tool.black]
 line-length = 100
