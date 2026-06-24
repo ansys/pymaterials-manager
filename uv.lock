@@ -38,15 +38,15 @@ wheels = [
 
 [[package]]
 name = "ansys-api-fluent"
-version = "0.3.42"
+version = "0.3.41"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "grpcio" },
     { name = "protobuf" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3f/23/802aeaf406adde590b51333c35865b6bdd4b6e1dc104819b4b957a1a8678/ansys_api_fluent-0.3.42.tar.gz", hash = "sha256:1addc356d18add103fd9f509e1005b0fd15f6477edaa96ff8e02b8ffb5f70e9b", size = 61607, upload-time = "2026-06-15T10:45:59.833Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/25/c3/62cd248da45e9c4ef8bb84c2429b00c6b39afde5b47d52fa2adb6ec64d49/ansys_api_fluent-0.3.41.tar.gz", hash = "sha256:9df4be86a0a025b2deb43b8ac9331c2c883c4966d4035a3b48fc9b29379c570c", size = 61234, upload-time = "2026-06-02T15:58:42.071Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c9/ce/040c403463f7272574b0359133f0a37b70e7d786f3459a06c81c84367e00/ansys_api_fluent-0.3.42-py3-none-any.whl", hash = "sha256:8ae0b9068a2ae0838502daa8ed6b922fa12b580a5c611fada65699f1d9a783d0", size = 280681, upload-time = "2026-06-15T10:45:58.542Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/8c/dca3681c07df2832397db383c8594add380881096c53b4210d1daa12e815/ansys_api_fluent-0.3.41-py3-none-any.whl", hash = "sha256:fecd6387e9b27be7de632d1879df07ad0ca80768d8d4fb362b3bdb53e1933eb0", size = 280313, upload-time = "2026-06-02T15:58:40.791Z" },
 ]
 
 [[package]]
@@ -133,7 +133,7 @@ wheels = [
 
 [[package]]
 name = "ansys-fluent-core"
-version = "0.39.0"
+version = "0.39.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-api-fluent" },
@@ -153,9 +153,9 @@ dependencies = [
     { name = "pandas" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2e/20/8c9f0fdf7373065ce33910c15200008ad7ef331b9eca73cfb38c227772a3/ansys_fluent_core-0.39.0.tar.gz", hash = "sha256:ad1a161b11512b4d9477a60255bf2076d67ba1d39d7747d250b4e2dcace9834f", size = 22424827, upload-time = "2026-05-27T19:35:10.317Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f6/c0/d0b3f75e687bcb531ac1e5c9e348c39ffba7653afbc46686ec03c6d56d54/ansys_fluent_core-0.39.1.tar.gz", hash = "sha256:1e944dcfc92e8bf8e6546abedf21630b77bc3a4421ed66079b6c3a5a93d46b26", size = 22445996, upload-time = "2026-06-17T03:45:38.198Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/97/65/eb4a342133e4ede73c75480239949b796a0e8efd338fbdfcc542bc44db7b/ansys_fluent_core-0.39.0-py3-none-any.whl", hash = "sha256:6b329e9c604b532487c005df09a2ca8e7b683adf151c601ecc5bd29552a7444a", size = 7033258, upload-time = "2026-05-27T19:35:07.165Z" },
+    { url = "https://files.pythonhosted.org/packages/2b/8d/9ac00be86cb914247ffdeef2d9c580ced08a122536ed8b7757ead7aa04d3/ansys_fluent_core-0.39.1-py3-none-any.whl", hash = "sha256:b3da4d915a3bf3b19ce1654a12de5e77a477634564ac9316719ffc76f6f4944b", size = 7053152, upload-time = "2026-06-17T03:45:35.74Z" },
 ]
 
 [[package]]
@@ -234,6 +234,9 @@ grantami = [
     { name = "httpx" },
     { name = "msal" },
 ]
+interpolation = [
+    { name = "ansys-dpf-core" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -261,13 +264,14 @@ doc = [
 
 [package.metadata]
 requires-dist = [
+    { name = "ansys-dpf-core", marker = "extra == 'interpolation'" },
     { name = "ansys-units", specifier = ">=0.8.dev0" },
     { name = "httpx", marker = "extra == 'grantami'", specifier = ">=0.27" },
     { name = "msal", marker = "extra == 'grantami'", specifier = ">=1.28" },
     { name = "numpy", specifier = ">=1.24,<3" },
     { name = "pydantic", specifier = ">=2.7.0" },
 ]
-provides-extras = ["grantami"]
+provides-extras = ["grantami", "interpolation"]
 
 [package.metadata.requires-dev]
 dev = [
