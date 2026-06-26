@@ -1,0 +1,104 @@
+
+
+
+
+
+
+The ``rest_session_client.py`` module
+=====================================
+
+.. py:module:: ansys.materials.manager.parsers.rest.rest_session_client
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: rest_session_client
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.parsers.rest.rest_session_client.RestSessionClient`
+            - Client for the Granta MI material-picker REST API session lifecycle.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> RestSessionClient</api/ansys/materials/manager/parsers/rest/rest_session_client/RestSessionClient>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Granta MI REST API session client.
+
+Manages the full session lifecycle used by the Granta Material Picker:
+
+1. Create a session (POST).
+2. Return the browser URL so the caller can open the material picker.
+3. Fetch selected material data (GET – blocks until a material is selected or the session times
+   out, depending on server-side configuration).
+4. Delete the session (DELETE).
+
+Authentication is handled via an MSAL-style token response dict, identical to the pattern used
+in ``SimpleExample.py``.
+
+Example
+-------
+::
+
+    import webbrowser
+    from ansys.materials.manager.parsers.rest import RestSessionClient, RestMaterialReader
+
+    with RestSessionClient(base_url="https://cloudserver.com") as client:
+        webbrowser.open(client.granta_material_picker_url)
+        raw_data = client.fetch_data()
+
+    materials = RestMaterialReader(raw_data).convert_materials()
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

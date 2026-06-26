@@ -1,0 +1,202 @@
+
+
+
+
+
+
+:class:`RestMaterialReader`
+===========================
+
+
+.. py:class:: ansys.materials.manager.parsers.rest.rest_material_reader.RestMaterialReader(raw_data: dict)
+
+   
+   Convert a Granta MI Material Models API JSON response into a collection of Material objects.
+
+   The dict returned by
+   :meth:`~ansys.materials.manager.parsers.rest.rest_session_client.RestSessionClient.fetch_data`
+   wraps the model JSON payload in an outer JSON of the form
+   ``{"value": "<json-string>", "id": <int>}``m, where the ``"value"`` field is JSON-encoded.
+   This envelope is unwrapped automatically by :meth:`_iter_materials`.
+
+   :Parameters:
+
+       **raw_data** : :class:`python:dict`
+           Parsed JSON response from the ``…/sessions/{id}/data`` endpoint.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: RestMaterialReader
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~convert_materials`
+            - Convert the raw JSON data into :class:`~.Material` objects.
+          * - :py:attr:`~visit_material`
+            - Create an individual :class:`~ansys.materials.manager._models.material.Material`.
+
+
+
+
+   .. tab-item:: Static methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit_material_model`
+            - Instantiate and populate a single :class:`~.MaterialModel`.
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
+
+
+
+Method detail
+-------------
+
+.. py:method:: convert_materials() -> dict[str, ansys.materials.manager._models.material.Material]
+
+   
+   Convert the raw JSON data into :class:`~.Material` objects.
+
+   Iterates over each material record in the response and delegates to
+   :meth:`visit_material`.
+
+
+
+
+   :Returns:
+
+       :class:`python:dict`\[:class:`python:str`, :obj:`Material`]
+           Mapping of material name to the populated
+           :class:`~ansys.materials.manager._models.material.Material` object.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_material(material_data: dict, material_index: int) -> ansys.materials.manager._models.material.Material
+
+   
+   Create an individual :class:`~ansys.materials.manager._models.material.Material`.
+
+
+   :Parameters:
+
+       **material_data** : :class:`python:dict`
+           A single Granta MI material model object.
+
+       **material_index** : :class:`python:int`
+           1-based position of this material in the response, used only for log messages.
+
+
+
+   :Returns:
+
+       :obj:`Material`
+           A populated ``Material`` object.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_material_model(model_class: type, model_data: dict, model_info: ansys.materials.manager.parsers._common.ModelInfo | None = None) -> ansys.materials.manager._models._common.material_model.MaterialModel | None
+   :staticmethod:
+
+
+   
+   Instantiate and populate a single :class:`~.MaterialModel`.
+
+   Looks up *model_class* in :data:`~.MATERIAL_MODEL_MAP` unless a *model_info* override
+   is supplied directly (used when the caller has already resolved the per-ID mapping).
+   If no mapping is found, a warning is emitted and ``None`` is returned.
+
+   :Parameters:
+
+       **model_class** : :obj:`type`
+           The :class:`~.MaterialModel` subclass to instantiate.
+
+       **model_data** : :class:`python:dict`
+           The model section dict from the Granta MI REST response.
+
+       **model_info** : :obj:`ModelInfo` | :data:`python:None`
+           Optional pre-resolved :class:`~.ModelInfo`.  When ``None``, the mapping is
+           looked up from :data:`~.MATERIAL_MODEL_MAP`.
+
+
+
+   :Returns:
+
+       :obj:`MaterialModel` | :data:`python:None`
+           A populated model instance, or ``None`` if *model_class* has no registered mapping.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
