@@ -38,15 +38,15 @@ wheels = [
 
 [[package]]
 name = "ansys-api-fluent"
-version = "0.3.41"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "grpcio" },
     { name = "protobuf" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/25/c3/62cd248da45e9c4ef8bb84c2429b00c6b39afde5b47d52fa2adb6ec64d49/ansys_api_fluent-0.3.41.tar.gz", hash = "sha256:9df4be86a0a025b2deb43b8ac9331c2c883c4966d4035a3b48fc9b29379c570c", size = 61234, upload-time = "2026-06-02T15:58:42.071Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/04/6c/7dc3a39867bac1ae103dc449a6b0f926615c7c401d948ede18a33e1b7dcb/ansys_api_fluent-0.4.1.tar.gz", hash = "sha256:cd06eac6c575133d239b46a7a682d860a281770fea5b25dd447e1150bd3d9c16", size = 61474, upload-time = "2026-06-24T10:01:44.938Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ec/8c/dca3681c07df2832397db383c8594add380881096c53b4210d1daa12e815/ansys_api_fluent-0.3.41-py3-none-any.whl", hash = "sha256:fecd6387e9b27be7de632d1879df07ad0ca80768d8d4fb362b3bdb53e1933eb0", size = 280313, upload-time = "2026-06-02T15:58:40.791Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/89/08794ed1f3ea6b5a31370aa8b66c34b97c75256747f682d2ebc3a4ec8d1f/ansys_api_fluent-0.4.1-py3-none-any.whl", hash = "sha256:fa9c33f1efaff42936f76197dd11ffa84ab14cae9fc7c6b760228726d886310b", size = 280281, upload-time = "2026-06-24T10:01:43.557Z" },
 ]
 
 [[package]]
@@ -133,7 +133,7 @@ wheels = [
 
 [[package]]
 name = "ansys-fluent-core"
-version = "0.39.1"
+version = "0.40.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-api-fluent" },
@@ -151,11 +151,13 @@ dependencies = [
     { name = "nltk" },
     { name = "numpy" },
     { name = "pandas" },
+    { name = "pandas-stubs" },
     { name = "pyyaml" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f6/c0/d0b3f75e687bcb531ac1e5c9e348c39ffba7653afbc46686ec03c6d56d54/ansys_fluent_core-0.39.1.tar.gz", hash = "sha256:1e944dcfc92e8bf8e6546abedf21630b77bc3a4421ed66079b6c3a5a93d46b26", size = 22445996, upload-time = "2026-06-17T03:45:38.198Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/b4/6cf3bba9e891f162fd7c973496209eb52ea80679019cf6e916848fb974b7/ansys_fluent_core-0.40.0.tar.gz", hash = "sha256:b8941984051f53bbbf89282fcb095ade66e474705dacf44445a44d4d916529ac", size = 22465009, upload-time = "2026-06-29T11:42:35.848Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2b/8d/9ac00be86cb914247ffdeef2d9c580ced08a122536ed8b7757ead7aa04d3/ansys_fluent_core-0.39.1-py3-none-any.whl", hash = "sha256:b3da4d915a3bf3b19ce1654a12de5e77a477634564ac9316719ffc76f6f4944b", size = 7053152, upload-time = "2026-06-17T03:45:35.74Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/55/63a72040306e852de10cd39837b8c8b014455551fbc7eacbff2d7ec1fb5d/ansys_fluent_core-0.40.0-py3-none-any.whl", hash = "sha256:d5a885ccf5adb0eb2847c7b133a935ea12c28dec8caf5cfef15c01b98b0e91ae", size = 7062507, upload-time = "2026-06-29T11:42:32.491Z" },
 ]
 
 [[package]]
@@ -1941,6 +1943,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pandas-stubs"
+version = "2.3.3.260113"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "types-pytz" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/92/5d/be23854a73fda69f1dbdda7bc10fbd6f930bd1fa87aaec389f00c901c1e8/pandas_stubs-2.3.3.260113.tar.gz", hash = "sha256:076e3724bcaa73de78932b012ec64b3010463d377fa63116f4e6850643d93800", size = 116131, upload-time = "2026-01-13T22:30:16.704Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d1/c6/df1fe324248424f77b89371116dab5243db7f052c32cc9fe7442ad9c5f75/pandas_stubs-2.3.3.260113-py3-none-any.whl", hash = "sha256:ec070b5c576e1badf12544ae50385872f0631fc35d99d00dc598c2954ec564d3", size = 168246, upload-time = "2026-01-13T22:30:15.244Z" },
+]
+
+[[package]]
 name = "pdf2image"
 version = "1.17.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3129,6 +3144,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e0/a8/949edebe3a82774c1ec34f637f5dd82d1cf22c25e963b7d63771083bbee5/twine-6.2.0.tar.gz", hash = "sha256:e5ed0d2fd70c9959770dce51c8f39c8945c574e18173a7b81802dab51b4b75cf", size = 172262, upload-time = "2025-09-04T15:43:17.255Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3a/7a/882d99539b19b1490cac5d77c67338d126e4122c8276bf640e411650c830/twine-6.2.0-py3-none-any.whl", hash = "sha256:418ebf08ccda9a8caaebe414433b0ba5e25eb5e4a927667122fbe8f829f985d8", size = 42727, upload-time = "2025-09-04T15:43:15.994Z" },
+]
+
+[[package]]
+name = "types-pytz"
+version = "2026.2.0.20260518"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9f/d9/9fa4019d2235bd374293e1fd4153879b28b6ae1d2bae98addd352c9713f2/types_pytz-2026.2.0.20260518.tar.gz", hash = "sha256:e5d254329e9c4e91f0781b22c43a4bb2d10bb044d97b24c4b05d45567b0eae16", size = 10871, upload-time = "2026-05-18T06:02:45.789Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/89/41e80670779a223d8bc8bc83019a619988cfa5c432cedac5cec23884fbc4/types_pytz-2026.2.0.20260518-py3-none-any.whl", hash = "sha256:3a12eaa38f476bd650902a9c9bb442f03f3c7dee2be5c5848bce61bd708d205a", size = 10125, upload-time = "2026-05-18T06:02:44.968Z" },
 ]
 
 [[package]]
