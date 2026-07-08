@@ -30,8 +30,8 @@ import xml.etree.ElementTree as ET
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.models._common.material_model import MaterialModel
+from ansys.materials.manager.models.material import Material
 from ansys.materials.manager.parsers.matml import _matml_strings as matml_strings
 from ansys.materials.manager.parsers.matml._matml_model_map import MATERIAL_MODEL_MAP
 from ansys.materials.manager.parsers.matml._matml_parser import (
@@ -45,7 +45,7 @@ from ansys.materials.manager.parsers.matml._matml_parser import (
 )
 
 _PATH_TYPE = Union[str, os.PathLike]
-MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
+MODEL_NAMESPACE = "ansys.materials.manager.models._material_models."
 
 
 class MatmlReader:
@@ -96,17 +96,17 @@ class MatmlReader:
         tree = ET.ElementTree(ET.fromstring(matml_content))
         root = tree.getroot()
         materials_node = root.find(matml_strings.MATERIALS_ELEMENT_KEY)
-        if not materials_node:
+        if materials_node is None:
             raise RuntimeError(
                 "Materials node not found. Please check if this is a valid MATML file."
             )
 
         matml_doc_node = materials_node.find(matml_strings.MATML_DOC_KEY)
-        if not matml_doc_node:
+        if matml_doc_node is None:
             raise RuntimeError("MATML node not found. Please check if this is a valid MATML file.")
 
         metadata_node = matml_doc_node.find(matml_strings.METADATA_KEY)
-        if not metadata_node:
+        if metadata_node is None:
             raise RuntimeError(
                 "Metadata node not found. Please check if this is a valid MATML file."
             )
@@ -329,8 +329,8 @@ class MatmlReader:
                 if not supported:
                     print(f"Could not find a material model for: {cls_target.split('.')[-1]}")
             matml_material = Material(name=mat_id, material_id=global_material_index, models=models)
-            if mat_id in self.transfer_ids.keys():
-                matml_material.guid = self.transfer_ids[mat_id]
+            if mat_id in self._transfer_ids:
+                matml_material.guid = self._transfer_ids[mat_id]
             materials[mat_id] = matml_material
             global_material_index += 1
 

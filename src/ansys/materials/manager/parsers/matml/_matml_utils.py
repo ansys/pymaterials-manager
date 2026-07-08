@@ -22,12 +22,12 @@
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._common.user_parameter import UserParameter
-from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+from ansys.materials.manager.models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager.models._common.user_parameter import UserParameter
+from ansys.materials.manager.models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
 )
-from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager.models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager.parsers._common import get_creep_flag
 from ansys.materials.manager.parsers.matml._matml_parser import get_data_and_unit
 

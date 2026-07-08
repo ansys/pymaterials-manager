@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+from ansys.materials.manager.models._material_models.density import Density
+from ansys.materials.manager.models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
 )
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
+from ansys.materials.manager.models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
-from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
+from ansys.materials.manager.models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
 from ansys.materials.manager.parsers._common import ModelInfo

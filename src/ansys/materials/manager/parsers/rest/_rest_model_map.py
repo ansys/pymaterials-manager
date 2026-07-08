@@ -19,28 +19,28 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from ansys.materials.manager._models._common import TabularQuantity
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+from ansys.materials.manager.models._common import TabularQuantity
+from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
     CoefficientofThermalExpansionIsotropic,
 )
-from ansys.materials.manager._models._material_models.compressive_strength import (
+from ansys.materials.manager.models._material_models.compressive_strength import (
     CompressiveStrengthUltimate,
 )
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
+from ansys.materials.manager.models._material_models.density import Density
+from ansys.materials.manager.models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
-from ansys.materials.manager._models._material_models.electrical_resistivity_isotropic import (
+from ansys.materials.manager.models._material_models.electrical_resistivity_isotropic import (
     ElectricalResistivityIsotropic,
 )
-from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
-from ansys.materials.manager._models._material_models.specific_heat import SpecificHeat
-from ansys.materials.manager._models._material_models.tensile_elongation import TensileElongation
-from ansys.materials.manager._models._material_models.tensile_strength import (
+from ansys.materials.manager.models._material_models.isotropic_hardening import IsotropicHardening
+from ansys.materials.manager.models._material_models.specific_heat import SpecificHeat
+from ansys.materials.manager.models._material_models.tensile_elongation import TensileElongation
+from ansys.materials.manager.models._material_models.tensile_strength import (
     TensileStrengthUltimate,
     TensileStrengthYield,
 )
-from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
+from ansys.materials.manager.models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
 from ansys.materials.manager.parsers._common import ModelInfo

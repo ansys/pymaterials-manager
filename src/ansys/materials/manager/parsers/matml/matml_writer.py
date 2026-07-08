@@ -25,12 +25,12 @@ import xml.etree.ElementTree as ET
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._common.user_parameter import UserParameter
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager.models._common.interpolation_options import InterpolationOptions
+from ansys.materials.manager.models._common.material_model import MaterialModel
+from ansys.materials.manager.models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager.models._common.user_parameter import UserParameter
+from ansys.materials.manager.models.material import Material
 from ansys.materials.manager.parsers._common import _PATH_TYPE
 from ansys.materials.manager.parsers.base_visitor import BaseVisitor
 from ansys.materials.manager.parsers.matml._matml_parser import (
@@ -344,7 +344,7 @@ class MatmlWriter(BaseVisitor):
             name_element = ET.SubElement(bulkdata_element, _matml_strings.NAME_KEY.capitalize())
             name_element.text = material_name
             for material_model_element in material:
-                if material_model_element:
+                if material_model_element is not None:
                     bulkdata_element.append(material_model_element)
         metadata_element = ET.SubElement(matml_doc_element, _matml_strings.METADATA_KEY)
         self._add_metadata(metadata_element)

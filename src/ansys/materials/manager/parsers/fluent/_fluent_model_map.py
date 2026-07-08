@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.molecular_weight import MolecularWeight
+from ansys.materials.manager.models._material_models.density import Density
+from ansys.materials.manager.models._material_models.molecular_weight import MolecularWeight
 from ansys.materials.manager.parsers._common import ModelInfo
 
 MATERIAL_MODEL_MAP = {

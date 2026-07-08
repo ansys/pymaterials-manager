@@ -46,11 +46,7 @@ if _MISSING:
         f"Install them with: pip install ansys-materials-manager[grantami]"
     )
 
-from ansys.materials.manager.parsers.rest.rest_material_reader import (  # noqa: E402, F401
-    RestMaterialReader,
-)
-from ansys.materials.manager.parsers.rest.rest_session_client import (  # noqa: E402, F401
-    RestSessionClient,
-)
+from .rest_material_reader import RestMaterialReader
+from .rest_session_client import RestSessionClient
 
 __all__ = ["RestSessionClient", "RestMaterialReader"]

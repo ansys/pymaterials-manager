@@ -28,12 +28,12 @@ import xml.etree.ElementTree as ET
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager.models._common.independent_parameter import IndependentParameter
+from ansys.materials.manager.models._common.interpolation_options import InterpolationOptions
+from ansys.materials.manager.models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.parsers.matml import _matml_strings as matml_strings
 
-MODEL_NAMESPACE = "ansys.materials.manager._models._material_models."
+MODEL_NAMESPACE = "ansys.materials.manager.models._material_models."
 
 
 @dataclass
@@ -245,7 +245,7 @@ def read_transfer_ids(root: ET.Element, materials: dict[str, dict]) -> dict[str,
     """
     transfer_ids = {}
     wb_transfer_element = root.find(matml_strings.WBTRANSFER_KEY)
-    if wb_transfer_element:
+    if wb_transfer_element is not None:
         materials_element = wb_transfer_element.find(matml_strings.MATERIALS_ELEMENT_KEY)
         for mat in materials_element.findall(matml_strings.MATERIAL_KEY.capitalize()):
             mat_name = mat.find(matml_strings.NAME_KEY.capitalize()).text
@@ -253,9 +253,10 @@ def read_transfer_ids(root: ET.Element, materials: dict[str, dict]) -> dict[str,
 
             if not mat_name in materials.keys():
                 raise RuntimeError(f"Transfer ID could not be set for material {mat_name}")
-            if not transfer_id_element:
+            if transfer_id_element is None:
                 transfer_ids[mat_name] = str(uuid.uuid4())
-            transfer_ids[mat_name] = transfer_id_element.text
+            else:
+                transfer_ids[mat_name] = transfer_id_element.text
     else:
         for material in materials.keys():
             transfer_ids[material] = str(uuid.uuid4())

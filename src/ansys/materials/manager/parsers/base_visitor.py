@@ -23,8 +23,8 @@
 from abc import abstractmethod
 import sys
 
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.models._common.material_model import MaterialModel
+from ansys.materials.manager.models.material import Material
 
 MATERIAL_MODEL_MAP = {}
 

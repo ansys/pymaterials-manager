@@ -24,8 +24,8 @@ import json
 import logging
 import warnings
 
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.models._common.material_model import MaterialModel
+from ansys.materials.manager.models.material import Material
 from ansys.materials.manager.parsers._common import ModelInfo
 from ansys.materials.manager.parsers.rest._exceptions import GrantaMIError
 from ansys.materials.manager.parsers.rest._rest_model_map import (
@@ -140,7 +140,7 @@ class RestMaterialReader:
         -------
         dict[str, Material]
             Mapping of material name to the populated
-            :class:`~ansys.materials.manager._models.material.Material` object.
+            :class:`~ansys.materials.manager.models.material.Material` object.
         """
         materials: dict[str, Material] = {}
         material_index = 1
@@ -156,7 +156,7 @@ class RestMaterialReader:
 
     def visit_material(self, material_data: dict, material_index: int) -> Material:
         """
-        Create an individual :class:`~ansys.materials.manager._models.material.Material`.
+        Create an individual :class:`~ansys.materials.manager.models.material.Material`.
 
         Parameters
         ----------

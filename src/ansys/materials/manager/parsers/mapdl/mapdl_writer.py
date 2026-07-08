@@ -22,33 +22,33 @@
 
 import numpy as np
 
-from ansys.materials.manager._models._common import _MapdlCore
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+from ansys.materials.manager.models._common import _MapdlCore
+from ansys.materials.manager.models._common.material_model import MaterialModel
+from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
     CoefficientofThermalExpansionIsotropic,
 )
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
+from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
     CoefficientofThermalExpansionOrthotropic,
 )
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+from ansys.materials.manager.models._material_models.density import Density
+from ansys.materials.manager.models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
 )
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
+from ansys.materials.manager.models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
 )
-from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
+from ansys.materials.manager.models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
 )
-from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
-from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
+from ansys.materials.manager.models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager.models._material_models.isotropic_hardening import IsotropicHardening
+from ansys.materials.manager.models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
-from ansys.materials.manager._models._material_models.thermal_conductivity_orthotropic import (
+from ansys.materials.manager.models._material_models.thermal_conductivity_orthotropic import (
     ThermalConductivityOrthotropic,
 )
-from ansys.materials.manager._models.material import Material
+from ansys.materials.manager.models.material import Material
 from ansys.materials.manager.parsers.base_visitor import BaseVisitor
 from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
     TABLE_LABELS,

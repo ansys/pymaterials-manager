@@ -22,16 +22,16 @@
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._material_models import ElasticityAnisotropic
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+from ansys.materials.manager.models._common.material_model import MaterialModel
+from ansys.materials.manager.models._common.model_qualifier import ModelQualifier
+from ansys.materials.manager.models._material_models import ElasticityAnisotropic
+from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
     CoefficientofThermalExpansionIsotropic,
 )
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
+from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
     CoefficientofThermalExpansionOrthotropic,
 )
-from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
+from ansys.materials.manager.models._material_models.hill_yield_criterion import HillYieldCriterion
 from ansys.materials.manager.parsers._common import get_creep_flag
 
 
