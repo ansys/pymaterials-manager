@@ -19,6 +19,25 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+"""Public material model definitions for PyMaterials Manager."""
+
+from . import _material_models
 from ._common import *
 from ._material_models import *
 from .material import Material
+
+__all__ = [
+    "Material",
+    "IndependentParameter",
+    "InterpolationOptions",
+    "MaterialModel",
+    "ModelQualifier",
+    "QualifierType",
+    "SupportedPackage",
+    "TabularQuantity",
+    "UserParameter",
+    "validate_and_initialize_model_qualifiers",
+    "validate_parameters",
+    *_material_models.__all__,
+]

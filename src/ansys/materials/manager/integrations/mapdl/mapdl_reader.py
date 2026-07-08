@@ -27,8 +27,9 @@ import inspect
 
 from pydantic import BaseModel
 
-from ...models import InterpolationOptions, Material, _MapdlCore
+from ...models import InterpolationOptions, Material
 from ...models import _material_models as PydanticModels
+from ...models._common import _MapdlCore
 
 # Discover all Pydantic models in the module dynamically
 # could be fixed and integrated with the one below

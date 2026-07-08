@@ -35,8 +35,8 @@ from ...models import (
     MaterialModel,
     ThermalConductivityIsotropic,
     ThermalConductivityOrthotropic,
-    _MapdlCore,
 )
+from ...models._common import _MapdlCore
 from ..base_visitor import BaseVisitor
 from ._mapdl_commands_parser import (
     TABLE_LABELS,

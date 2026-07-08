@@ -20,13 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""External system integrations for reading and writing materials."""
+
 from .base_visitor import BaseVisitor
 from .fluent import FluentWriter
 from .lsdyna import LsDynaWriter
 from .mapdl import MapdlWriter, read_mapdl
 from .matml import MatmlReader, MatmlWriter
 
+__all__ = [
+    "BaseVisitor",
+    "FluentWriter",
+    "LsDynaWriter",
+    "MapdlWriter",
+    "MatmlReader",
+    "MatmlWriter",
+    "read_mapdl",
+]
+
 try:
     from .rest import RestMaterialReader, RestSessionClient
 except ImportError:
-    pass  # RestMaterialReader and RestSessionClient will not be available if the rest module is not installed, do not raise an error when importing the integrations package
+    pass  # optional grantami extra
+else:
+    __all__ += ["RestMaterialReader", "RestSessionClient"]
