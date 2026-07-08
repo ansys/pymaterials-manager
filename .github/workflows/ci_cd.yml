@@ -58,6 +58,7 @@ jobs:
           library-name: ${{ env.PACKAGE_NAME }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
+          target: integrations
           whitelist-license-check: astroid
 
   tests:
@@ -191,7 +192,7 @@ jobs:
         uses: ansys/actions/doc-build@a5b0351dc277d68c2dc1beca2d2674c7dfa4fc55  # v10.3.3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          optional-dependencies-name: ""
+          optional-dependencies-name: integrations
           group-dependencies-name: "doc"
           sphinxopts: -j auto --keep-going
 

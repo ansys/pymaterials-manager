@@ -35,6 +35,11 @@ grantami = [
 interpolation = [
     "ansys-dpf-core",
 ]
+integrations = [
+    "ansys-dyna-core>=0.9.0",
+    "ansys-mapdl-core>=0.68",
+    "ansys-fluent-core>=0.28",
+]
 
 [project.urls]
 Repository = "https://github.com/ansys/pymaterials-manager"

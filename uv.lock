@@ -236,6 +236,11 @@ grantami = [
     { name = "httpx" },
     { name = "msal" },
 ]
+integrations = [
+    { name = "ansys-dyna-core" },
+    { name = "ansys-fluent-core" },
+    { name = "ansys-mapdl-core" },
+]
 interpolation = [
     { name = "ansys-dpf-core" },
 ]
@@ -267,13 +272,16 @@ doc = [
 [package.metadata]
 requires-dist = [
     { name = "ansys-dpf-core", marker = "extra == 'interpolation'" },
+    { name = "ansys-dyna-core", marker = "extra == 'integrations'", specifier = ">=0.9.0" },
+    { name = "ansys-fluent-core", marker = "extra == 'integrations'", specifier = ">=0.28" },
+    { name = "ansys-mapdl-core", marker = "extra == 'integrations'", specifier = ">=0.68" },
     { name = "ansys-units", specifier = ">=0.8.dev0" },
     { name = "httpx", marker = "extra == 'grantami'", specifier = ">=0.27" },
     { name = "msal", marker = "extra == 'grantami'", specifier = ">=1.28" },
     { name = "numpy", specifier = ">=1.24,<3" },
     { name = "pydantic", specifier = ">=2.7.0" },
 ]
-provides-extras = ["grantami", "interpolation"]
+provides-extras = ["grantami", "interpolation", "integrations"]
 
 [package.metadata.requires-dev]
 dev = [
