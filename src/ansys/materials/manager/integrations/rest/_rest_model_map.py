@@ -19,32 +19,22 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from ansys.materials.manager.integrations._common import ModelInfo
-from ansys.materials.manager.integrations.rest._rest_reader import get_tabular_property
-from ansys.materials.manager.models._common import TabularQuantity
-from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+from ...models import (
     CoefficientofThermalExpansionIsotropic,
-)
-from ansys.materials.manager.models._material_models.compressive_strength import (
     CompressiveStrengthUltimate,
-)
-from ansys.materials.manager.models._material_models.density import Density
-from ansys.materials.manager.models._material_models.elasticity_isotropic import (
+    Density,
     ElasticityIsotropic,
-)
-from ansys.materials.manager.models._material_models.electrical_resistivity_isotropic import (
     ElectricalResistivityIsotropic,
-)
-from ansys.materials.manager.models._material_models.isotropic_hardening import IsotropicHardening
-from ansys.materials.manager.models._material_models.specific_heat import SpecificHeat
-from ansys.materials.manager.models._material_models.tensile_elongation import TensileElongation
-from ansys.materials.manager.models._material_models.tensile_strength import (
+    IsotropicHardening,
+    SpecificHeat,
+    TabularQuantity,
+    TensileElongation,
     TensileStrengthUltimate,
     TensileStrengthYield,
-)
-from ansys.materials.manager.models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
+from .._common import ModelInfo
+from ._rest_reader import get_tabular_property
 
 MODEL_ID_MAP: dict[str, type] = {}
 """Maps Granta MI ``modelId`` strings to ``MaterialModel`` subclasses in this package."""

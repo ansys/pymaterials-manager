@@ -28,12 +28,11 @@ import xml.etree.ElementTree as ET
 
 from ansys.units import Quantity
 
-from ansys.materials.manager.integrations.matml import _matml_strings as matml_strings
-from ansys.materials.manager.models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager.models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager.models._common.model_qualifier import ModelQualifier
+from . import _matml_strings as matml_strings
+from ... import models as _models_package
+from ...models import IndependentParameter, InterpolationOptions, ModelQualifier
 
-MODEL_NAMESPACE = "ansys.materials.manager.models._material_models."
+MODEL_NAMESPACE = f"{_models_package.__name__}."
 
 
 @dataclass

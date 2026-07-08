@@ -43,9 +43,8 @@ from typing import Any, Final
 
 from ansys.units import Quantity
 
-from ansys.materials.manager.integrations._common import ModelInfo
-from ansys.materials.manager.models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager.models._common.tabular_quantity import TabularQuantity
+from ...models import IndependentParameter, TabularQuantity
+from .._common import ModelInfo
 
 _logger = logging.getLogger(__name__)
 
@@ -189,7 +188,7 @@ def get_tabular_property(model_data: dict, property_name: str) -> TabularQuantit
     """
     Extract a tabular property from a model data dict.
 
-    Returns a :class:`~ansys.materials.manager.models._common.tabular_quantity.TabularQuantity`
+    Returns a :class:`~ansys.materials.manager.models.TabularQuantity`
     containing dependent values and independent parameters, or ``None`` if the property is not
     found or has no column data.
 

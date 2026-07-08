@@ -24,7 +24,7 @@ from dataclasses import dataclass
 import os
 from typing import Any, Callable, Optional, Union
 
-from ansys.materials.manager.models._common.model_qualifier import ModelQualifier
+from ..models import ModelQualifier
 
 _PATH_TYPE = Union[str, os.PathLike]
 

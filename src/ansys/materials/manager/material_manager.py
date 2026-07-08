@@ -30,15 +30,16 @@ from typing import Any, Sequence
 from ansys.dyna.core import Deck
 from ansys.dyna.core.lib.keyword_base import KeywordBase
 
-from ansys.materials.manager.integrations.fluent.fluent_writer import FluentWriter
-from ansys.materials.manager.integrations.lsdyna.lsdyna_writer import LsDynaWriter
-from ansys.materials.manager.integrations.mapdl.mapdl_reader import read_mapdl
-from ansys.materials.manager.integrations.mapdl.mapdl_writer import MapdlWriter
-from ansys.materials.manager.integrations.matml.matml_reader import MatmlReader
-from ansys.materials.manager.integrations.matml.matml_writer import MatmlWriter
-from ansys.materials.manager.models._common import _FluentCore, _MapdlCore
-from ansys.materials.manager.models._common.material_model import MaterialModel
-from ansys.materials.manager.models.material import Material
+from .integrations import (
+    FluentWriter,
+    LsDynaWriter,
+    MapdlWriter,
+    MatmlReader,
+    MatmlWriter,
+    read_mapdl,
+)
+from .models import Material, MaterialModel
+from .models._common import _FluentCore, _MapdlCore
 
 
 class MaterialManager:
@@ -264,10 +265,8 @@ class MaterialManager:
         """
         import webbrowser
 
-        from ansys.materials.manager.integrations.rest.rest_material_reader import (
-            RestMaterialReader,
-        )
-        from ansys.materials.manager.integrations.rest.rest_session_client import RestSessionClient
+        from .integrations.rest.rest_material_reader import RestMaterialReader
+        from .integrations.rest.rest_session_client import RestSessionClient
 
         with RestSessionClient(
             base_url=granta_mi_url,

@@ -27,10 +27,8 @@ import inspect
 
 from pydantic import BaseModel
 
-from ansys.materials.manager.models._common import _MapdlCore
-from ansys.materials.manager.models._common.interpolation_options import InterpolationOptions
-import ansys.materials.manager.models._material_models as PydanticModels
-from ansys.materials.manager.models.material import Material
+from ...models import InterpolationOptions, Material, _MapdlCore
+from ...models import _material_models as PydanticModels
 
 # Discover all Pydantic models in the module dynamically
 # could be fixed and integrated with the one below

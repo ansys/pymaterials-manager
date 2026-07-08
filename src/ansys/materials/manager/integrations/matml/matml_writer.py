@@ -25,22 +25,23 @@ import xml.etree.ElementTree as ET
 
 from ansys.units import Quantity
 
-from ansys.materials.manager.integrations._common import _PATH_TYPE
-from ansys.materials.manager.integrations.base_visitor import BaseVisitor
-from ansys.materials.manager.integrations.matml._matml_parser import (
+from . import _matml_strings as _matml_strings
+from .. import BaseVisitor
+from ...models import (
+    IndependentParameter,
+    InterpolationOptions,
+    Material,
+    MaterialModel,
+    ModelQualifier,
+    UserParameter,
+)
+from .._common import _PATH_TYPE
+from ._matml_model_map import MATERIAL_MODEL_MAP  # noqa: F401
+from ._matml_parser import (
     convert_to_float_string,
     create_xml_string_value,
     unit_to_xml,
 )
-from ansys.materials.manager.models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager.models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager.models._common.material_model import MaterialModel
-from ansys.materials.manager.models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager.models._common.user_parameter import UserParameter
-from ansys.materials.manager.models.material import Material
-
-from . import _matml_strings as _matml_strings
-from ._matml_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
 
 class MatmlWriter(BaseVisitor):

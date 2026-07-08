@@ -24,7 +24,7 @@ from collections import Counter
 from typing import List
 import uuid
 
-from ansys.materials.manager.models._common import MaterialModel
+from ._common import MaterialModel
 
 
 class Material:

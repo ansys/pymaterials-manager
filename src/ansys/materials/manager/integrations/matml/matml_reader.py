@@ -30,9 +30,11 @@ import xml.etree.ElementTree as ET
 
 from ansys.units import Quantity
 
-from ansys.materials.manager.integrations.matml import _matml_strings as matml_strings
-from ansys.materials.manager.integrations.matml._matml_model_map import MATERIAL_MODEL_MAP
-from ansys.materials.manager.integrations.matml._matml_parser import (
+from . import _matml_strings as matml_strings
+from ... import models as _models_package
+from ...models import Material, MaterialModel
+from ._matml_model_map import MATERIAL_MODEL_MAP
+from ._matml_parser import (
     fill_independent_parameter,
     fill_interpolation_options,
     get_data_and_unit,
@@ -41,11 +43,9 @@ from ansys.materials.manager.integrations.matml._matml_parser import (
     read_metadata,
     read_transfer_ids,
 )
-from ansys.materials.manager.models._common.material_model import MaterialModel
-from ansys.materials.manager.models.material import Material
 
 _PATH_TYPE = Union[str, os.PathLike]
-MODEL_NAMESPACE = "ansys.materials.manager.models._material_models."
+MODEL_NAMESPACE = f"{_models_package.__name__}."
 
 
 class MatmlReader:

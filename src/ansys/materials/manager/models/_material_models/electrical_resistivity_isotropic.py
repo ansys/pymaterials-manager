@@ -25,12 +25,12 @@ from typing import Literal
 from ansys.units import Quantity
 from pydantic import Field, model_validator
 
-from ansys.materials.manager.models._common import (
+from .._common import (
     MaterialModel,
     QualifierType,
+    TabularQuantity,
     validate_and_initialize_model_qualifiers,
 )
-from ansys.materials.manager.models._common.tabular_quantity import TabularQuantity
 
 
 class ElectricalResistivityIsotropic(MaterialModel):

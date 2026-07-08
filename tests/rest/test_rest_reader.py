@@ -34,11 +34,7 @@ from ansys.materials.manager.integrations.rest._rest_model_map import (
 )
 from ansys.materials.manager.integrations.rest._rest_reader import get_property_with_unit
 from ansys.materials.manager.integrations.rest.rest_material_reader import RestMaterialReader
-from ansys.materials.manager.models._material_models.density import Density
-from ansys.materials.manager.models._material_models.specific_heat import SpecificHeat
-from ansys.materials.manager.models._material_models.thermal_conductivity_isotropic import (
-    ThermalConductivityIsotropic,
-)
+from ansys.materials.manager.models import Density, SpecificHeat, ThermalConductivityIsotropic
 
 from .common import density_model_section, minimal_json
 from .static_test_data import SYNTHETIC_VALUE_SECTION

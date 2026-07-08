@@ -25,13 +25,13 @@ import math
 
 import numpy as np
 
-from ansys.materials.manager.models._common import IndependentParameter, InterpolationOptions
-from ansys.materials.manager.models._material_models.elasticity_anisotropic import (
+from ...models import (
     ElasticityAnisotropic,
+    HillYieldCriterion,
+    IndependentParameter,
+    InterpolationOptions,
+    IsotropicHardening,
 )
-from ansys.materials.manager.models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager.models._material_models.isotropic_hardening import IsotropicHardening
-
 from ._mapdl_snippets_strings import (
     CONSTANT_MP_PROPERTY,
     EXTRAPOLATION_TYPE_MAP,

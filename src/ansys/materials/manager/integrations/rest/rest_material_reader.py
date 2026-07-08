@@ -24,19 +24,18 @@ import json
 import logging
 import warnings
 
-from ansys.materials.manager.integrations._common import ModelInfo
-from ansys.materials.manager.integrations.rest._exceptions import GrantaMIError
-from ansys.materials.manager.integrations.rest._rest_model_map import (
+from ...models import Material, MaterialModel
+from .._common import ModelInfo
+from ._exceptions import GrantaMIError
+from ._rest_model_map import (
     MATERIAL_MODEL_MAP,
     MODEL_ID_INFO_MAP,
     MODEL_ID_MAP,
 )
-from ansys.materials.manager.integrations.rest._rest_reader import (
+from ._rest_reader import (
     get_dimensionality,
     map_json_to_model_attributes,
 )
-from ansys.materials.manager.models._common.material_model import MaterialModel
-from ansys.materials.manager.models.material import Material
 
 _logger = logging.getLogger(__name__)
 

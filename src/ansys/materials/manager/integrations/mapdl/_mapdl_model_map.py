@@ -20,36 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager.integrations._common import ModelInfo
-from ansys.materials.manager.integrations.mapdl._mapdl_utils import (
+from ...models import (
+    CoefficientofThermalExpansionIsotropic,
+    CoefficientofThermalExpansionOrthotropic,
+    Density,
+    ElasticityAnisotropic,
+    ElasticityIsotropic,
+    ElasticityOrthotropic,
+    HillYieldCriterion,
+    IsotropicHardening,
+    ThermalConductivityIsotropic,
+    ThermalConductivityOrthotropic,
+)
+from .._common import ModelInfo
+from ._mapdl_utils import (
     map_coefficient_of_thermal_expansion_isotropic,
     map_coefficient_of_thermal_expansion_orthotropic,
     map_from_anisotropic_elasticity,
     map_from_hill_yield_criterion,
-)
-from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
-    CoefficientofThermalExpansionIsotropic,
-)
-from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
-    CoefficientofThermalExpansionOrthotropic,
-)
-from ansys.materials.manager.models._material_models.density import Density
-from ansys.materials.manager.models._material_models.elasticity_anisotropic import (
-    ElasticityAnisotropic,
-)
-from ansys.materials.manager.models._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
-from ansys.materials.manager.models._material_models.elasticity_orthotropic import (
-    ElasticityOrthotropic,
-)
-from ansys.materials.manager.models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager.models._material_models.isotropic_hardening import IsotropicHardening
-from ansys.materials.manager.models._material_models.thermal_conductivity_isotropic import (
-    ThermalConductivityIsotropic,
-)
-from ansys.materials.manager.models._material_models.thermal_conductivity_orthotropic import (
-    ThermalConductivityOrthotropic,
 )
 
 MATERIAL_MODEL_MAP = {

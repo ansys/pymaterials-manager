@@ -25,7 +25,7 @@ from typing import Literal
 from ansys.units import Quantity
 from pydantic import Field
 
-from ansys.materials.manager.models._common import (
+from .._common import (
     MaterialModel,
     SupportedPackage,
 )
