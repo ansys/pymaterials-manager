@@ -20,6 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ansys.materials.manager.integrations._common import ModelInfo
+from ansys.materials.manager.integrations.matml._matml_utils import (
+    map_from_anisotropic_elasticity,
+    map_from_hill_yield_criterion,
+    map_to_anisotropic_elasticity,
+    map_to_hill_yield_criterion,
+    map_to_model_coefficients,
+)
 from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
     CoefficientofThermalExpansionIsotropic,
 )
@@ -77,14 +85,6 @@ from ansys.materials.manager.models._material_models.zero_thermal_strain_referen
 )
 from ansys.materials.manager.models._material_models.zero_thermal_strain_reference_temperature_orthotropic import (  # noqa: E501
     ZeroThermalStrainReferenceTemperatureOrthotropic,
-)
-from ansys.materials.manager.parsers._common import ModelInfo
-from ansys.materials.manager.parsers.matml._matml_utils import (
-    map_from_anisotropic_elasticity,
-    map_from_hill_yield_criterion,
-    map_to_anisotropic_elasticity,
-    map_to_hill_yield_criterion,
-    map_to_model_coefficients,
 )
 
 MATERIAL_MODEL_MAP = {

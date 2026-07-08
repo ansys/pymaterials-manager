@@ -25,15 +25,13 @@ from pathlib import Path
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml
 
-from ansys.materials.manager._models._common import IndependentParameter
-from ansys.materials.manager._models._material_models.strain_limits_isotropic import (
+from ansys.materials.manager.integrations import MatmlWriter
+from ansys.materials.manager.models import (
+    IndependentParameter,
+    Material,
     StrainLimitsIsotropic,
-)
-from ansys.materials.manager._models._material_models.strain_limits_orthotropic import (
     StrainLimitsOrthotropic,
 )
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 STRAIN_LIMITS_ORTHOTROPIC = DIR_PATH.joinpath("..", "data", "matml_strain_limits_orthotropic.txt")

@@ -22,6 +22,21 @@
 
 import numpy as np
 
+from ansys.materials.manager.integrations.base_visitor import BaseVisitor
+from ansys.materials.manager.integrations.mapdl._mapdl_commands_parser import (
+    TABLE_LABELS,
+    TABLE_TBOPT,
+    get_table_label,
+    get_tbopt,
+    write_constant_properties,
+    write_interpolation_options,
+    write_table_dep_values,
+    write_table_value_per_temperature,
+    write_table_values,
+    write_tb_points_for_temperature,
+    write_temperature_reference_value,
+    write_temperature_table_values,
+)
 from ansys.materials.manager.models._common import _MapdlCore
 from ansys.materials.manager.models._common.material_model import MaterialModel
 from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
@@ -49,21 +64,6 @@ from ansys.materials.manager.models._material_models.thermal_conductivity_orthot
     ThermalConductivityOrthotropic,
 )
 from ansys.materials.manager.models.material import Material
-from ansys.materials.manager.parsers.base_visitor import BaseVisitor
-from ansys.materials.manager.parsers.mapdl._mapdl_commands_parser import (
-    TABLE_LABELS,
-    TABLE_TBOPT,
-    get_table_label,
-    get_tbopt,
-    write_constant_properties,
-    write_interpolation_options,
-    write_table_dep_values,
-    write_table_value_per_temperature,
-    write_table_values,
-    write_tb_points_for_temperature,
-    write_temperature_reference_value,
-    write_temperature_table_values,
-)
 
 from ._mapdl_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 

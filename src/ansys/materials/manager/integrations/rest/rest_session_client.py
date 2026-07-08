@@ -38,7 +38,7 @@ Example
 ::
 
     import webbrowser
-    from ansys.materials.manager.parsers.rest import RestSessionClient, RestMaterialReader
+    from ansys.materials.manager.integrations.rest import RestSessionClient, RestMaterialReader
 
     with RestSessionClient(base_url="https://cloudserver.com") as client:
         webbrowser.open(client.granta_material_picker_url)
@@ -95,7 +95,8 @@ class RestSessionClient:
     oidc_config : MSALOIDCConfiguration | None
         OIDC configuration used to authenticate with the identity provider.
         When ``None`` (default), the configuration is resolved automatically from ``base_url``
-        using :func:`~ansys.materials.manager.parsers.rest._grantami_auth.get_oidc_config_for_url`.
+        using
+        :func:`~ansys.materials.manager.integrations.rest._grantami_auth.get_oidc_config_for_url`.
         A :class:`ValueError` is raised at construction time if ``base_url`` is not a recognized
         Granta MI deployment and no explicit config is supplied.
     """
@@ -204,7 +205,7 @@ class RestSessionClient:
         ----------
         timeout : float
             Total time in seconds to wait for a material selection before raising
-            :class:`~ansys.materials.manager.parsers.rest._exceptions.GrantaMIError`.
+            :class:`~ansys.materials.manager.integrations.rest._exceptions.GrantaMIError`.
             Defaults to 300 seconds (5 minutes).
 
         Returns

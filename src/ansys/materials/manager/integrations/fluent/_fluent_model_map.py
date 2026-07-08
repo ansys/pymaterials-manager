@@ -19,3 +19,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+from ansys.materials.manager.integrations._common import ModelInfo
+from ansys.materials.manager.models._material_models.density import Density
+from ansys.materials.manager.models._material_models.molecular_weight import MolecularWeight
+
+MATERIAL_MODEL_MAP = {
+    Density: ModelInfo(labels=["density"], attributes=["density"]),
+    MolecularWeight: ModelInfo(labels=["molecular_weight"], attributes=["molecular_weight"]),
+}

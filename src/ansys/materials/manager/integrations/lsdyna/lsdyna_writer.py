@@ -28,6 +28,8 @@ from ansys.dyna.core import keywords as kwd
 from ansys.dyna.core.lib.keyword_base import KeywordBase
 import numpy as np
 
+from ansys.materials.manager.integrations._common import get_model_attributes, normalize_key
+from ansys.materials.manager.integrations.base_visitor import BaseVisitor
 from ansys.materials.manager.models._material_models.density import Density
 from ansys.materials.manager.models._material_models.elasticity_anisotropic import (
     ElasticityAnisotropic,
@@ -39,8 +41,6 @@ from ansys.materials.manager.models._material_models.elasticity_orthotropic impo
     ElasticityOrthotropic,
 )
 from ansys.materials.manager.models.material import Material
-from ansys.materials.manager.parsers._common import get_model_attributes, normalize_key
-from ansys.materials.manager.parsers.base_visitor import BaseVisitor
 
 from ._ls_dyna_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 

@@ -26,19 +26,19 @@ import warnings
 
 import pytest
 
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.specific_heat import SpecificHeat
-from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
-    ThermalConductivityIsotropic,
-)
-from ansys.materials.manager.parsers._common import ModelInfo
-from ansys.materials.manager.parsers.rest._exceptions import GrantaMIError
-from ansys.materials.manager.parsers.rest._rest_model_map import (
+from ansys.materials.manager.integrations._common import ModelInfo
+from ansys.materials.manager.integrations.rest._exceptions import GrantaMIError
+from ansys.materials.manager.integrations.rest._rest_model_map import (
     MATERIAL_MODEL_MAP,
     MODEL_ID_MAP,
 )
-from ansys.materials.manager.parsers.rest._rest_reader import get_property_with_unit
-from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
+from ansys.materials.manager.integrations.rest._rest_reader import get_property_with_unit
+from ansys.materials.manager.integrations.rest.rest_material_reader import RestMaterialReader
+from ansys.materials.manager.models._material_models.density import Density
+from ansys.materials.manager.models._material_models.specific_heat import SpecificHeat
+from ansys.materials.manager.models._material_models.thermal_conductivity_isotropic import (
+    ThermalConductivityIsotropic,
+)
 
 from .common import density_model_section, minimal_json
 from .static_test_data import SYNTHETIC_VALUE_SECTION
@@ -139,7 +139,7 @@ class TestConvertMaterials:
             models=[{"modelId": "b.h.curve", "modelName": "B-H curve", "properties": []}]
         )
         with caplog.at_level(
-            logging.WARNING, logger="ansys.materials.manager.parsers.rest.rest_material_reader"
+            logging.WARNING, logger="ansys.materials.manager.integrations.rest.rest_material_reader"
         ):
             RestMaterialReader(raw).convert_materials()
 
@@ -194,7 +194,7 @@ class TestSyntheticPayload:
     def test_real_payload_skips_unregistered_models_with_warning(self, caplog):
         with caplog.at_level(
             logging.WARNING,
-            logger="ansys.materials.manager.parsers.rest.rest_material_reader",
+            logger="ansys.materials.manager.integrations.rest.rest_material_reader",
         ):
             result = RestMaterialReader(SYNTHETIC_VALUE_SECTION).convert_materials()
 

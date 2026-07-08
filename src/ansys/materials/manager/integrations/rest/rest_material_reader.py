@@ -24,19 +24,19 @@ import json
 import logging
 import warnings
 
-from ansys.materials.manager.models._common.material_model import MaterialModel
-from ansys.materials.manager.models.material import Material
-from ansys.materials.manager.parsers._common import ModelInfo
-from ansys.materials.manager.parsers.rest._exceptions import GrantaMIError
-from ansys.materials.manager.parsers.rest._rest_model_map import (
+from ansys.materials.manager.integrations._common import ModelInfo
+from ansys.materials.manager.integrations.rest._exceptions import GrantaMIError
+from ansys.materials.manager.integrations.rest._rest_model_map import (
     MATERIAL_MODEL_MAP,
     MODEL_ID_INFO_MAP,
     MODEL_ID_MAP,
 )
-from ansys.materials.manager.parsers.rest._rest_reader import (
+from ansys.materials.manager.integrations.rest._rest_reader import (
     get_dimensionality,
     map_json_to_model_attributes,
 )
+from ansys.materials.manager.models._common.material_model import MaterialModel
+from ansys.materials.manager.models.material import Material
 
 _logger = logging.getLogger(__name__)
 
@@ -114,7 +114,7 @@ class RestMaterialReader:
     Convert a Granta MI Material Models API JSON response into a collection of Material objects.
 
     The dict returned by
-    :meth:`~ansys.materials.manager.parsers.rest.rest_session_client.RestSessionClient.fetch_data`
+    :meth:`~ansys.materials.manager.integrations.rest.rest_session_client.RestSessionClient.fetch_data`
     wraps the model JSON payload in an outer JSON of the form
     ``{"value": "<json-string>", "id": <int>}``m, where the ``"value"`` field is JSON-encoded.
     This envelope is unwrapped automatically by :meth:`_iter_materials`.
@@ -235,7 +235,7 @@ class RestMaterialReader:
                 f"No REST mapping registered for material model "
                 f"'{model_class.__name__}'. Skipping. "
                 f"Add an entry to MATERIAL_MODEL_MAP in "
-                f"ansys.materials.manager.parsers.rest._rest_model_map.",
+                f"ansys.materials.manager.integrations.rest._rest_model_map.",
                 stacklevel=2,
             )
             return None
@@ -293,8 +293,8 @@ class RestMaterialReader:
         Yield ``(model_class, model_id, model_data, model_info)`` tuples for a material record.
 
         Dispatches on the ``"modelId"`` field of each entry in the ``"models"`` array using
-        :data:`~ansys.materials.manager.parsers.rest._rest_model_map.MODEL_ID_MAP`.
-        The :class:`~ansys.materials.manager.parsers._common.ModelInfo` is resolved by
+        :data:`~ansys.materials.manager.integrations.rest._rest_model_map.MODEL_ID_MAP`.
+        The :class:`~ansys.materials.manager.integrations._common.ModelInfo` is resolved by
         checking :data:`~.MODEL_ID_INFO_MAP` first (per-ID override, e.g. for tabular variants)
         and falling back to :data:`~.MATERIAL_MODEL_MAP` (class-level default).
 

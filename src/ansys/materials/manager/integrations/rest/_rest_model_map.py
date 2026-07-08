@@ -19,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from ansys.materials.manager.integrations._common import ModelInfo
+from ansys.materials.manager.integrations.rest._rest_reader import get_tabular_property
 from ansys.materials.manager.models._common import TabularQuantity
 from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
     CoefficientofThermalExpansionIsotropic,
@@ -43,8 +45,6 @@ from ansys.materials.manager.models._material_models.tensile_strength import (
 from ansys.materials.manager.models._material_models.thermal_conductivity_isotropic import (
     ThermalConductivityIsotropic,
 )
-from ansys.materials.manager.parsers._common import ModelInfo
-from ansys.materials.manager.parsers.rest._rest_reader import get_tabular_property
 
 MODEL_ID_MAP: dict[str, type] = {}
 """Maps Granta MI ``modelId`` strings to ``MaterialModel`` subclasses in this package."""

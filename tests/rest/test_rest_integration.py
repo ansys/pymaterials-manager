@@ -22,30 +22,24 @@
 
 import pytest
 
-from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
-    CoefficientofThermalExpansionIsotropic,
-)
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
-    ElasticityIsotropic,
-)
-from ansys.materials.manager._models._material_models.specific_heat import SpecificHeat
-from ansys.materials.manager._models._material_models.tensile_strength import (
-    TensileStrengthUltimate,
-    TensileStrengthYield,
-)
-from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
-    ThermalConductivityIsotropic,
-)
-from ansys.materials.manager.parsers._common import ModelInfo
-from ansys.materials.manager.parsers.rest._rest_model_map import (
+from ansys.materials.manager.integrations import RestMaterialReader
+from ansys.materials.manager.integrations._common import ModelInfo
+from ansys.materials.manager.integrations.rest._rest_model_map import (
     MATERIAL_MODEL_MAP,
     MODEL_ID_INFO_MAP,
     MODEL_ID_MAP,
     _tabular_reader,
 )
-from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
+from ansys.materials.manager.models import (
+    CoefficientofThermalExpansionIsotropic,
+    Density,
+    ElasticityIsotropic,
+    SpecificHeat,
+    TabularQuantity,
+    TensileStrengthUltimate,
+    TensileStrengthYield,
+    ThermalConductivityIsotropic,
+)
 
 from .static_test_data import BROAD_COVERAGE_PAYLOAD, MIXED_TEMPERATURE_GRIDS_PAYLOAD
 
@@ -158,7 +152,7 @@ class TestIntegration:
 
         with caplog.at_level(
             logging.WARNING,
-            logger="ansys.materials.manager.parsers.rest.rest_material_reader",
+            logger="ansys.materials.manager.integrations.rest.rest_material_reader",
         ):
             result = RestMaterialReader(BROAD_COVERAGE_PAYLOAD).convert_materials()
 

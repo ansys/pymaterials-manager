@@ -43,9 +43,9 @@ from typing import Any, Final
 
 from ansys.units import Quantity
 
+from ansys.materials.manager.integrations._common import ModelInfo
 from ansys.materials.manager.models._common.independent_parameter import IndependentParameter
 from ansys.materials.manager.models._common.tabular_quantity import TabularQuantity
-from ansys.materials.manager.parsers._common import ModelInfo
 
 _logger = logging.getLogger(__name__)
 

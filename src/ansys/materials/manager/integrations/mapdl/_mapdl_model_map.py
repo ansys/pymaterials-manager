@@ -20,6 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from ansys.materials.manager.integrations._common import ModelInfo
+from ansys.materials.manager.integrations.mapdl._mapdl_utils import (
+    map_coefficient_of_thermal_expansion_isotropic,
+    map_coefficient_of_thermal_expansion_orthotropic,
+    map_from_anisotropic_elasticity,
+    map_from_hill_yield_criterion,
+)
 from ansys.materials.manager.models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
     CoefficientofThermalExpansionIsotropic,
 )
@@ -43,13 +50,6 @@ from ansys.materials.manager.models._material_models.thermal_conductivity_isotro
 )
 from ansys.materials.manager.models._material_models.thermal_conductivity_orthotropic import (
     ThermalConductivityOrthotropic,
-)
-from ansys.materials.manager.parsers._common import ModelInfo
-from ansys.materials.manager.parsers.mapdl._mapdl_utils import (
-    map_coefficient_of_thermal_expansion_isotropic,
-    map_coefficient_of_thermal_expansion_orthotropic,
-    map_from_anisotropic_elasticity,
-    map_from_hill_yield_criterion,
 )
 
 MATERIAL_MODEL_MAP = {

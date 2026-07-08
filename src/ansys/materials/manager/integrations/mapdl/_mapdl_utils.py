@@ -22,6 +22,7 @@
 
 from ansys.units import Quantity
 
+from ansys.materials.manager.integrations._common import get_creep_flag
 from ansys.materials.manager.models._common.material_model import MaterialModel
 from ansys.materials.manager.models._common.model_qualifier import ModelQualifier
 from ansys.materials.manager.models._material_models import ElasticityAnisotropic
@@ -32,7 +33,6 @@ from ansys.materials.manager.models._material_models.cofficient_of_thermal_expan
     CoefficientofThermalExpansionOrthotropic,
 )
 from ansys.materials.manager.models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager.parsers._common import get_creep_flag
 
 
 def get_value(model: MaterialModel, attr_name: str) -> float:

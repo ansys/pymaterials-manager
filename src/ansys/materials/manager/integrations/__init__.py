@@ -20,11 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.materials.manager.models._material_models.density import Density
-from ansys.materials.manager.models._material_models.molecular_weight import MolecularWeight
-from ansys.materials.manager.parsers._common import ModelInfo
+from .base_visitor import BaseVisitor
+from .fluent import FluentWriter
+from .lsdyna import LsDynaWriter
+from .mapdl import MapdlWriter, read_mapdl
+from .matml import MatmlReader, MatmlWriter
 
-MATERIAL_MODEL_MAP = {
-    Density: ModelInfo(labels=["density"], attributes=["density"]),
-    MolecularWeight: ModelInfo(labels=["molecular_weight"], attributes=["molecular_weight"]),
-}
+try:
+    from .rest import RestMaterialReader, RestSessionClient
+except ImportError:
+    pass  # RestMaterialReader and RestSessionClient will not be available if the rest module is not installed, do not raise an error when importing the integrations package
