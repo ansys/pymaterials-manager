@@ -33,6 +33,13 @@ try:
 except ImportError:
     _FluentCore = type(None)
 
+try:
+    from ansys.dyna.core import Deck as _DynaDeck
+    from ansys.dyna.core.lib.keyword_base import KeywordBase as _DynaKeywordBase
+except ImportError:
+    _DynaDeck = type(None)
+    _DynaKeywordBase = type(None)
+
 from ._packages import SupportedPackage
 from .common import (
     QualifierType,

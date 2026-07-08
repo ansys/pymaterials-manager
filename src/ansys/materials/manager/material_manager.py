@@ -27,9 +27,6 @@ import logging
 from pathlib import Path
 from typing import Any, Sequence
 
-from ansys.dyna.core import Deck
-from ansys.dyna.core.lib.keyword_base import KeywordBase
-
 from .integrations import (
     FluentWriter,
     LsDynaWriter,
@@ -39,7 +36,7 @@ from .integrations import (
     read_mapdl,
 )
 from .models import Material, MaterialModel
-from .models._common import _FluentCore, _MapdlCore
+from .models._common import _DynaDeck, _DynaKeywordBase, _FluentCore, _MapdlCore
 
 
 class MaterialManager:
@@ -163,8 +160,8 @@ class MaterialManager:
         self._add_library(materials)
 
     def write_to_ls_dyna(
-        self, deck: Deck | None = None, material_names: list[str] | None = None
-    ) -> list[KeywordBase] | None:
+        self, deck: _DynaDeck | None = None, material_names: list[str] | None = None
+    ) -> list[_DynaKeywordBase] | None:
         """Write the materials in the library to a LS-DYNA keyword file."""
         materials = self._get_materials_to_write(material_names)
         writer = LsDynaWriter(materials)

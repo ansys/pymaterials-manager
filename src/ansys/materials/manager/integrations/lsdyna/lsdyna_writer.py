@@ -23,9 +23,6 @@
 # Build writing registry
 from typing import Sequence
 
-from ansys.dyna.core import Deck
-from ansys.dyna.core import keywords as kwd
-from ansys.dyna.core.lib.keyword_base import KeywordBase
 import numpy as np
 
 from .. import BaseVisitor
@@ -36,18 +33,28 @@ from ...models import (
     ElasticityOrthotropic,
     Material,
 )
+from ...models._common import _DynaDeck, _DynaKeywordBase
 from .._common import get_model_attributes, normalize_key
 from ._ls_dyna_model_map import MATERIAL_MODEL_MAP  # noqa: F401
 
-# most complete needs to go before
-MATERIAL_CARD_MAP = {
-    normalize_key((Density, ElasticityIsotropic)): kwd.Mat001,
-    normalize_key((ElasticityIsotropic,)): kwd.Mat001,
-    normalize_key((Density, ElasticityOrthotropic)): kwd.Mat002,
-    normalize_key((ElasticityOrthotropic,)): kwd.Mat002,
-    normalize_key((Density, ElasticityAnisotropic)): kwd.Mat002Anis,
-    normalize_key((ElasticityAnisotropic,)): kwd.Mat002Anis,
-}
+_MATERIAL_CARD_MAP = None
+
+
+def _get_material_card_map():
+    """Return the LS-DYNA material card registry, loading dyna-core on first use."""
+    global _MATERIAL_CARD_MAP
+    if _MATERIAL_CARD_MAP is None:
+        from ansys.dyna.core import keywords as kwd
+
+        _MATERIAL_CARD_MAP = {
+            normalize_key((Density, ElasticityIsotropic)): kwd.Mat001,
+            normalize_key((ElasticityIsotropic,)): kwd.Mat001,
+            normalize_key((Density, ElasticityOrthotropic)): kwd.Mat002,
+            normalize_key((ElasticityOrthotropic,)): kwd.Mat002,
+            normalize_key((Density, ElasticityAnisotropic)): kwd.Mat002Anis,
+            normalize_key((ElasticityAnisotropic,)): kwd.Mat002Anis,
+        }
+    return _MATERIAL_CARD_MAP
 
 
 class LsDynaWriter(BaseVisitor):
@@ -71,12 +78,13 @@ class LsDynaWriter(BaseVisitor):
             self._material_repr[material_name].append(model)
             self._material_models_per_material[material_name].append(material_model.__class__)
 
-    def _to_material_models(self) -> list[KeywordBase]:
+    def _to_material_models(self) -> list[_DynaKeywordBase]:
         """Bring to material models."""
+        material_card_map = _get_material_card_map()
         instantiated_materials = []
         for material_name, models in self._material_models_per_material.items():
             nrm_key = normalize_key(tuple(models))
-            target_cls = MATERIAL_CARD_MAP.get(nrm_key, None)
+            target_cls = material_card_map.get(nrm_key, None)
             if target_cls is None:
                 continue
             cls_attributes = get_model_attributes(target_cls)
@@ -92,7 +100,7 @@ class LsDynaWriter(BaseVisitor):
             instantiated_materials.append(material_cls)
         return instantiated_materials
 
-    def write(self, deck: Deck | None = None) -> list[KeywordBase] | None:
+    def write(self, deck: _DynaDeck | None = None) -> list[_DynaKeywordBase] | None:
         """
         Write models to deck.
 
