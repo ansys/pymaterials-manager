@@ -20,16 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from functools import singledispatchmethod
 from typing import Optional
 import xml.etree.ElementTree as ET
-
-from functools import singledispatchmethod
 
 from ansys.units import Quantity
 
 from . import _matml_strings as _matml_strings
-from ..base_visitor import BaseVisitor
-from ..material_model_writer_visitor import UnsupportedMaterialModelError
 from ...models import (
     IndependentParameter,
     InterpolationOptions,
@@ -39,6 +36,8 @@ from ...models import (
     UserParameter,
 )
 from .._common import _PATH_TYPE
+from ..base_visitor import BaseVisitor
+from ..material_model_writer_visitor import UnsupportedMaterialModelError
 from ._matml_model_map import MATERIAL_MODEL_MAP
 from ._matml_parser import (
     convert_to_float_string,

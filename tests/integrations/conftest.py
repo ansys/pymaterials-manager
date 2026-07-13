@@ -24,8 +24,8 @@
 
 from functools import singledispatchmethod
 
-import pytest
 from ansys.units import Quantity
+import pytest
 
 from ansys.materials.manager.integrations._common import ModelInfo
 from ansys.materials.manager.integrations.base_visitor import BaseVisitor

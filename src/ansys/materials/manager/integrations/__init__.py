@@ -42,8 +42,8 @@ from .base_visitor import BaseVisitor
 from .fluent import FluentWriter
 from .lsdyna import LsDynaWriter
 from .mapdl import MapdlWriter, read_mapdl
-from .matml import MatmlReader, MatmlWriter
 from .material_model_writer_visitor import MaterialModelWriterVisitor, UnsupportedMaterialModelError
+from .matml import MatmlReader, MatmlWriter
 
 __all__ = [
     "BaseVisitor",

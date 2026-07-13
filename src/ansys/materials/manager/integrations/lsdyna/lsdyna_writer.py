@@ -20,13 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from functools import singledispatchmethod
+
 # Build writing registry
 from typing import Sequence
 
 import numpy as np
-from functools import singledispatchmethod
 
-from ..base_visitor import BaseVisitor
 from ...models import (
     Density,
     ElasticityAnisotropic,
@@ -37,6 +37,7 @@ from ...models import (
 )
 from ...models._common import _DynaDeck, _DynaKeywordBase
 from .._common import get_model_attributes, normalize_key
+from ..base_visitor import BaseVisitor
 from ..material_model_writer_visitor import UnsupportedMaterialModelError
 from ._ls_dyna_model_map import MATERIAL_MODEL_MAP
 
