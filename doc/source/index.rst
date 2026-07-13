@@ -10,4 +10,5 @@
    :maxdepth: 3
 
    api/index
+   developer_guide
    contributing
