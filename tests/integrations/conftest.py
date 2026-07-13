@@ -29,6 +29,9 @@ import pytest
 
 from ansys.materials.manager.integrations._common import ModelInfo
 from ansys.materials.manager.integrations.base_visitor import BaseVisitor
+from ansys.materials.manager.integrations.material_model_writer_visitor import (
+    UnsupportedMaterialModelError,
+)
 from ansys.materials.manager.models import Density, ElasticityIsotropic, Material, MaterialModel
 
 
@@ -43,6 +46,12 @@ class RecordingVisitor(BaseVisitor):
 
     @singledispatchmethod
     def visit(self, model: MaterialModel, *, material_name: str) -> None:
+        raise UnsupportedMaterialModelError(
+            f"{type(self).__name__} has no visit handler for {model.__class__.__name__}"
+        )
+
+    @visit.register(MaterialModel)
+    def _visit_model(self, model: MaterialModel, *, material_name: str) -> None:
         self.recorded.append((type(model), material_name))
 
     @visit.register(ElasticityIsotropic)

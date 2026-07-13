@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from functools import singledispatchmethod
 import logging
 import warnings
 
@@ -103,6 +104,29 @@ def test_is_supported_requires_model_map_and_visit_handler():
         model_map={Density: ModelInfo()},
     )
     assert visitor.is_supported(density) is True
+
+
+def test_is_supported_false_when_singledispatch_has_no_concrete_handlers():
+    """is_supported ignores the default object entry in singledispatch registries."""
+
+    class StubWriter(BaseVisitor):
+        @singledispatchmethod
+        def visit(self, model: MaterialModel, *, material_name: str) -> None:
+            raise UnsupportedMaterialModelError("no handler")
+
+    density = Density(density=Quantity(value=[1.0], units="kg m^-3"))
+    writer = StubWriter([Material(name="m", models=[density])], model_map={Density: ModelInfo()})
+    assert writer.is_supported(density) is False
+
+
+def test_populate_dependent_parameters_skips_partial_model_info():
+    """Partial ModelInfo rows without both labels and attributes return no output."""
+    density = Density(density=Quantity(value=[1.0], units="kg m^-3"))
+    writer = BaseVisitor(
+        [Material(name="m", models=[density])],
+        model_map={Density: ModelInfo(attributes=["density"])},
+    )
+    assert writer._populate_dependent_parameters(density) == {}
 
 
 def test_visit_material_model_deprecated_shim(capsys):

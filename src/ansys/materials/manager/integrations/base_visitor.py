@@ -140,7 +140,8 @@ class BaseVisitor(MaterialModelWriterVisitor):
         """Return whether ``visit`` can dispatch for ``model_cls``."""
         registry = _visit_registry(type(self))
         if registry is not None:
-            return any(cls in registry for cls in model_cls.__mro__)
+            registered = {cls for cls in registry if cls is not object}
+            return any(cls in registered for cls in model_cls.__mro__)
         if "visit" in type(self).__dict__:
             visit_attr = type(self).__dict__["visit"]
             if not isinstance(visit_attr, functools.singledispatchmethod):
@@ -154,7 +155,7 @@ class BaseVisitor(MaterialModelWriterVisitor):
             if mapping.method_write:
                 labels, quantities = mapping.method_write(material_model)
             else:
-                if not mapping.labels and not mapping.attributes:
+                if not mapping.labels or not mapping.attributes:
                     return {}
                 labels = mapping.labels
                 quantities = [getattr(material_model, label) for label in mapping.attributes]

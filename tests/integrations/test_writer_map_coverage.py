@@ -52,14 +52,18 @@ from ansys.materials.manager.models import Material
 )
 def test_mapped_models_accept_without_error(writer_cls, model_map, minimal_model_factory):
     """Each mapped model type should traverse via accept without raising."""
+    tested = 0
     for model_cls in model_map:
         model = minimal_model_factory(model_cls)
         if model is None:
-            pytest.skip(f"No minimal fixture for {model_cls.__name__} yet")
+            continue
 
+        tested += 1
         material = Material(name="test", material_id=1, models=[model])
         writer = writer_cls([material])
         assert material.name in writer._material_repr
+
+    assert tested > 0, f"No minimal fixtures available for {writer_cls.__name__}"
 
 
 @pytest.mark.parametrize(
