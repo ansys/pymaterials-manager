@@ -24,18 +24,21 @@
 from typing import Sequence
 
 import numpy as np
+from functools import singledispatchmethod
 
-from .. import BaseVisitor
+from ..base_visitor import BaseVisitor
 from ...models import (
     Density,
     ElasticityAnisotropic,
     ElasticityIsotropic,
     ElasticityOrthotropic,
     Material,
+    MaterialModel,
 )
 from ...models._common import _DynaDeck, _DynaKeywordBase
 from .._common import get_model_attributes, normalize_key
-from ._ls_dyna_model_map import MATERIAL_MODEL_MAP  # noqa: F401
+from ..material_model_writer_visitor import UnsupportedMaterialModelError
+from ._ls_dyna_model_map import MATERIAL_MODEL_MAP
 
 _MATERIAL_CARD_MAP = None
 
@@ -58,25 +61,29 @@ def _get_material_card_map():
 
 
 class LsDynaWriter(BaseVisitor):
-    """Ls Dyna writer."""
+    """Write materials to LS-DYNA keyword cards via the visitor pattern."""
 
     _material_models_per_material: dict
 
     def __init__(self, materials: list[Material]):
         """Initialize the ls dyna writer."""
-        super().__init__(materials=materials)
+        super().__init__(materials=materials, model_map=MATERIAL_MODEL_MAP)
         self._material_models_per_material: dict = {material.name: [] for material in materials}
         self.visit_materials()
 
-    def visit_material_model(self, material_name, material_model):
-        """Visit material model."""
-        if isinstance(
-            material_model,
-            (Density, ElasticityIsotropic, ElasticityOrthotropic, ElasticityAnisotropic),
-        ):
-            model = self._populate_dependent_parameters(material_model)
-            self._material_repr[material_name].append(model)
-            self._material_models_per_material[material_name].append(material_model.__class__)
+    @singledispatchmethod
+    def visit(self, material_model: MaterialModel, *, material_name: str) -> None:
+        """Dispatch LS-DYNA parameter collection by model type."""
+        raise UnsupportedMaterialModelError(
+            f"{type(self).__name__} has no visit handler for {material_model.__class__.__name__}"
+        )
+
+    @visit.register(MaterialModel)
+    def _visit_material_model(self, material_model: MaterialModel, *, material_name: str) -> None:
+        """Collect per-model parameters for LS-DYNA card composition."""
+        model = self._populate_dependent_parameters(material_model)
+        self._material_repr[material_name].append(model)
+        self._material_models_per_material[material_name].append(material_model.__class__)
 
     def _to_material_models(self) -> list[_DynaKeywordBase]:
         """Bring to material models."""

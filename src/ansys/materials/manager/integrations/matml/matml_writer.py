@@ -23,10 +23,13 @@
 from typing import Optional
 import xml.etree.ElementTree as ET
 
+from functools import singledispatchmethod
+
 from ansys.units import Quantity
 
 from . import _matml_strings as _matml_strings
-from .. import BaseVisitor
+from ..base_visitor import BaseVisitor
+from ..material_model_writer_visitor import UnsupportedMaterialModelError
 from ...models import (
     IndependentParameter,
     InterpolationOptions,
@@ -36,7 +39,7 @@ from ...models import (
     UserParameter,
 )
 from .._common import _PATH_TYPE
-from ._matml_model_map import MATERIAL_MODEL_MAP  # noqa: F401
+from ._matml_model_map import MATERIAL_MODEL_MAP
 from ._matml_parser import (
     convert_to_float_string,
     create_xml_string_value,
@@ -45,7 +48,12 @@ from ._matml_parser import (
 
 
 class MatmlWriter(BaseVisitor):
-    """MatmlWriter."""
+    """Write materials to MatML XML using the visitor pattern.
+
+    On construction, each supported :class:`~.MaterialModel` on the given
+    materials is visited via :meth:`~.MaterialModel.accept`. Output XML
+    fragments are stored in ``_material_repr`` until :meth:`write` is called.
+    """
 
     _metadata_property_sets: dict
     _metadata_parameters: dict
@@ -54,12 +62,27 @@ class MatmlWriter(BaseVisitor):
 
     def __init__(self, materials: list[Material]):
         """Initialize the class."""
-        super().__init__(materials=materials)
+        super().__init__(materials=materials, model_map=MATERIAL_MODEL_MAP)
         self._metadata_parameters = {}
         self._metadata_property_sets = {}
         self._metadata_parameters_units = {}
         self._metadata_property_sets_units = {}
         self.visit_materials()
+
+    @singledispatchmethod
+    def visit(self, material_model: MaterialModel, *, material_name: str):
+        """Dispatch MatML serialization by model type."""
+        raise UnsupportedMaterialModelError(
+            f"{type(self).__name__} has no visit handler for {material_model.__class__.__name__}"
+        )
+
+    @visit.register(MaterialModel)
+    def _visit_material_model(self, material_model: MaterialModel, *, material_name: str):
+        """Serialize a material model to a MatML property data element."""
+        property_id = self._get_property_id(material_model.name)
+        material_element = self._visit_model(property_id, material_model)
+        self._material_repr[material_name].append(material_element)
+        return material_element
 
     def _get_property_id(self, property_name: str) -> str:
         """Get property id."""
@@ -358,14 +381,6 @@ class MatmlWriter(BaseVisitor):
             ET.indent(tree)
         else:
             print(f"ElementTree does not have `indent`. Python 3.9+ required!")
-
-    def visit_material_model(self, material_name: str, material_model: MaterialModel) -> ET.Element:
-        """Visit the material model."""
-        material_element = None
-        property_id = self._get_property_id(material_model.name)
-        material_element = self._visit_model(property_id, material_model)
-        self._material_repr[material_name].append(material_element)
-        return material_element
 
     def write(
         self,

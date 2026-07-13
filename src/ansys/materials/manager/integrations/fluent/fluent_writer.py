@@ -20,17 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ...models import Density, Material, MaterialModel, MolecularWeight
+from functools import singledispatchmethod
+
+from ...models import Material, MaterialModel
 from ..base_visitor import BaseVisitor
-from ._fluent_model_map import MATERIAL_MODEL_MAP  # noqa: F401
+from ..material_model_writer_visitor import UnsupportedMaterialModelError
+from ._fluent_model_map import MATERIAL_MODEL_MAP
 
 
 class FluentWriter(BaseVisitor):
-    """Fluent writer."""
+    """Write materials to Fluent solver representation via the visitor pattern."""
 
     def __init__(self, materials: list[Material]):
         """Initialize the fluent writer."""
-        super().__init__(materials=materials)
+        super().__init__(materials=materials, model_map=MATERIAL_MODEL_MAP)
         self.visit_materials()
 
     def _standard_write(self, material_model: MaterialModel) -> dict:
@@ -43,20 +46,18 @@ class FluentWriter(BaseVisitor):
             model.update(new_model)
         return model
 
-    def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
-        """
-        Visit the material model.
+    @singledispatchmethod
+    def visit(self, material_model: MaterialModel, *, material_name: str) -> None:
+        """Dispatch Fluent serialization by model type."""
+        raise UnsupportedMaterialModelError(
+            f"{type(self).__name__} has no visit handler for {material_model.__class__.__name__}"
+        )
 
-        Parameters
-        ----------
-        material_name : str
-            Name of the material.
-        material_model : MaterialModel
-            Material model to visit.
-        """
-        if isinstance(material_model, (Density, MolecularWeight)):
-            model = self._standard_write(material_model)
-            self._material_repr[material_name].append(model)
+    @visit.register(MaterialModel)
+    def _visit_material_model(self, material_model: MaterialModel, *, material_name: str) -> None:
+        """Visit supported Fluent material models."""
+        model = self._standard_write(material_model)
+        self._material_repr[material_name].append(model)
 
     def write(self, material_names: list[str] | None = None) -> list[dict]:
         """
