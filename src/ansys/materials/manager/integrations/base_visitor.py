@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import warnings
+import functools
 from typing import Any
+import warnings
 
 from ..models import Material, MaterialModel
 from ._common import ModelInfo
@@ -29,6 +30,16 @@ from .material_model_writer_visitor import (
     MaterialModelWriterVisitor,
     UnsupportedMaterialModelError,
 )
+
+
+def _visit_registry(visitor_cls: type) -> dict | None:
+    """Return the singledispatch registry for a writer's ``visit`` method, if any."""
+    visit = visitor_cls.__dict__.get("visit")
+    if visit is None:
+        return None
+    if isinstance(visit, functools.singledispatchmethod):
+        return visit.dispatcher.registry
+    return None
 
 
 class BaseVisitor(MaterialModelWriterVisitor):
@@ -72,7 +83,7 @@ class BaseVisitor(MaterialModelWriterVisitor):
     MaterialModelWriterVisitor : Visitor protocol and traversal contract.
     MaterialModel.accept : Model-side dispatch entry point.
     ref_developer_guide : Contributor guide for adding models and solver maps.
-  """
+    """
 
     def __init__(
         self,
@@ -106,6 +117,10 @@ class BaseVisitor(MaterialModelWriterVisitor):
         """
         Check if the material model is supported.
 
+        A model is supported when it appears in ``_model_map`` **and** the
+        writer defines a ``visit`` handler for its concrete type (via
+        ``@singledispatchmethod`` or a plain override).
+
         Parameters
         ----------
         material_model : MaterialModel
@@ -116,7 +131,21 @@ class BaseVisitor(MaterialModelWriterVisitor):
         bool
             True if the material model is supported, False otherwise.
         """
-        return material_model.__class__ in self._model_map
+        model_cls = material_model.__class__
+        if model_cls not in self._model_map:
+            return False
+        return self._has_visit_handler(model_cls)
+
+    def _has_visit_handler(self, model_cls: type) -> bool:
+        """Return whether ``visit`` can dispatch for ``model_cls``."""
+        registry = _visit_registry(type(self))
+        if registry is not None:
+            return any(cls in registry for cls in model_cls.__mro__)
+        if "visit" in type(self).__dict__:
+            visit_attr = type(self).__dict__["visit"]
+            if not isinstance(visit_attr, functools.singledispatchmethod):
+                return visit_attr is not BaseVisitor.__dict__["visit"]
+        return False
 
     def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict:
         """Populate dependent parameters with quantity-like values."""

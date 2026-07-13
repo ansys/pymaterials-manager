@@ -64,7 +64,10 @@ Key types
      - Role
    * - :class:`~ansys.materials.manager.integrations.MaterialModelWriterVisitor`
      - ``integrations``
-     - Abstract visitor protocol (``visit``, ``visit_material``, ``is_supported``)
+     - Abstract visitor (``visit``, ``visit_material``, ``is_supported``)
+   * - :class:`~ansys.materials.manager.models._common.visitor_protocol.MaterialModelWriterVisitorProtocol`
+     - ``models._common.visitor_protocol``
+     - Structural typing protocol used by ``accept()`` (no integrations import)
    * - :class:`~ansys.materials.manager.integrations.BaseVisitor`
      - ``integrations``
      - Shared writer base: ``_model_map``, ``_populate_dependent_parameters``, traversal
@@ -79,9 +82,9 @@ Import boundary
 ---------------
 
 - ``integrations`` imports ``models``.
-- ``models`` **never** imports ``integrations``. ``MaterialModel.accept`` only
-  references a typing :class:`~ansys.materials.manager.models._common.visitor_protocol.MaterialModelWriterVisitor`
-  protocol.
+- ``models`` **never** imports ``integrations``. ``Material.accept`` and
+  ``MaterialModel.accept`` only reference
+  :class:`~ansys.materials.manager.models._common.visitor_protocol.MaterialModelWriterVisitorProtocol`.
 
 Each writer class defines its **own** ``@singledispatchmethod visit`` so handler
 registries are not shared across MatML, MAPDL, Fluent, and LS-DYNA.
@@ -215,6 +218,25 @@ update an entry in ``_get_material_card_map()`` keyed by the tuple of model
 classes present on a :class:`~ansys.materials.manager.models.Material`.
 
 
+``is_supported`` and unsupported models
+=======================================
+
+During normal traversal (:meth:`~ansys.materials.manager.integrations.MaterialModelWriterVisitor.visit_material`),
+each model on a :class:`~ansys.materials.manager.models.Material` is checked with
+:meth:`~ansys.materials.manager.integrations.BaseVisitor.is_supported`. A model is
+supported only when **both** of the following hold:
+
+1. Its class is listed in the writer's ``_model_map``.
+2. The writer defines a ``visit`` handler that can dispatch to that class (via
+   ``@singledispatchmethod`` or a plain override).
+
+Unsupported models are **skipped** (not raised) and a **warning** is logged so
+batch export can continue. Direct calls to :meth:`~ansys.materials.manager.models.MaterialModel.accept`
+still dispatch through ``visit`` and may raise
+:class:`~ansys.materials.manager.integrations.UnsupportedMaterialModelError` when
+no handler exists.
+
+
 Testing
 =======
 
@@ -235,6 +257,7 @@ Further reading
 ===============
 
 - API reference: :class:`~ansys.materials.manager.integrations.MaterialModelWriterVisitor`,
+  :class:`~ansys.materials.manager.models._common.visitor_protocol.MaterialModelWriterVisitorProtocol`,
   :class:`~ansys.materials.manager.integrations.BaseVisitor`, and concrete writers
   (generated from docstrings).
 - Module overview: :mod:`ansys.materials.manager.integrations`.

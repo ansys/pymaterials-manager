@@ -29,8 +29,8 @@ format-specific output.
 Traversal uses double dispatch::
 
     material.accept(writer)            # ``Material`` iterates its models
-    model.accept(writer, name=...)     # delegates to ``writer.visit(model)``
-    writer.visit(model, name=...)      # dispatches by concrete model type
+    model.accept(writer, material_name=...)     # delegates to ``writer.visit(model)``
+    writer.visit(model, material_name=...)      # dispatches by concrete model type
 
 Most model types need only a ``ModelInfo`` entry in the writer's
 ``_model_map``. Override ``visit`` with ``@visit.register(MyModel)`` when
@@ -47,9 +47,12 @@ ModelInfo : Declarative field-to-label mapping.
 """
 
 from abc import ABC, abstractmethod
+import logging
 from typing import Any
 
 from ..models import Material, MaterialModel
+
+_logger = logging.getLogger(__name__)
 
 
 class UnsupportedMaterialModelError(TypeError):
@@ -92,9 +95,10 @@ class MaterialModelWriterVisitor(ABC):
         """
         for material_model in material.models:
             if not self.is_supported(material_model):
-                print(
-                    f"Material model: {material_model.__class__.__name__} not supported by "
-                    f"{self.__class__.__name__}"
+                _logger.warning(
+                    "Material model %s not supported by %s",
+                    material_model.__class__.__name__,
+                    self.__class__.__name__,
                 )
                 continue
             material_model.accept(self, material_name=material.name)

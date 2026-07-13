@@ -35,7 +35,7 @@ from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
 from .tabular_quantity import TabularQuantity
-from .visitor_protocol import MaterialModelWriterVisitor
+from .visitor_protocol import MaterialModelWriterVisitorProtocol
 
 try:
     import ansys.dpf.core as dpf
@@ -138,7 +138,7 @@ class MaterialModel(BaseModel, abc.ABC):
         """
         return cls(**value)
 
-    def accept(self, visitor: MaterialModelWriterVisitor, *, material_name: str) -> Any:
+    def accept(self, visitor: MaterialModelWriterVisitorProtocol, *, material_name: str) -> Any:
         """Dispatch this model to a writer visitor.
 
         Calls ``visitor.visit(self, material_name=material_name)``. The
@@ -147,7 +147,7 @@ class MaterialModel(BaseModel, abc.ABC):
 
         Parameters
         ----------
-        visitor : MaterialModelWriterVisitor
+        visitor : MaterialModelWriterVisitorProtocol
             A writer instance (e.g. ``MatmlWriter``, ``MapdlWriter``).
         material_name : str
             Name of the parent :class:`~ansys.materials.manager.models.Material`,

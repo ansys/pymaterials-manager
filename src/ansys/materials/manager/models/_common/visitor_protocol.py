@@ -25,12 +25,26 @@
 from typing import TYPE_CHECKING, Any, Protocol
 
 if TYPE_CHECKING:
+    from ..material import Material
     from .material_model import MaterialModel
 
 
-class MaterialModelWriterVisitor(Protocol):
-    """Structural type for writer visitors that accept material models."""
+class MaterialModelWriterVisitorProtocol(Protocol):
+    """Structural type for writer visitors accepted by :meth:`MaterialModel.accept`.
+
+    The integrations ABC :class:`~ansys.materials.manager.integrations.MaterialModelWriterVisitor`
+    implements this protocol. ``models`` imports only this protocol so the domain
+    layer never depends on ``integrations``.
+    """
 
     def visit(self, model: "MaterialModel", *, material_name: str) -> Any:
         """Serialize a material model for the parent material name."""
+        ...
+
+    def visit_material(self, material: "Material") -> None:
+        """Visit every supported model on a material."""
+        ...
+
+    def is_supported(self, material_model: "MaterialModel") -> bool:
+        """Return whether this writer supports the given model type."""
         ...

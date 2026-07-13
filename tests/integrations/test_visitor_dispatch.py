@@ -20,10 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
 import warnings
 
-import pytest
 from ansys.units import Quantity
+import pytest
 
 from ansys.materials.manager.integrations._common import ModelInfo
 from ansys.materials.manager.integrations.base_visitor import BaseVisitor
@@ -78,17 +79,30 @@ def test_singledispatch_picks_specific_handler():
     assert visitor.recorded == [(ElasticityIsotropic, "m")]
 
 
-def test_unsupported_model_skipped_during_visit_material(capsys):
-    """Unsupported models should be skipped with a message, not raise."""
+def test_unsupported_model_skipped_during_visit_material(caplog):
+    """Unsupported models should be skipped with a warning, not raise."""
     density = Density(density=Quantity(value=[1.0], units="kg m^-3"))
     material = Material(name="m", models=[density])
     visitor = RecordingVisitor([material], model_map={})
 
-    material.accept(visitor)
+    with caplog.at_level(logging.WARNING):
+        material.accept(visitor)
 
-    captured = capsys.readouterr()
-    assert "Density" in captured.out
+    assert "Density" in caplog.text
     assert visitor.recorded == []
+
+
+def test_is_supported_requires_model_map_and_visit_handler():
+    """is_supported is False when the map or visit handler is missing."""
+    density = Density(density=Quantity(value=[1.0], units="kg m^-3"))
+    writer = BaseVisitor([Material(name="m", models=[density])], model_map={Density: ModelInfo()})
+    assert writer.is_supported(density) is False
+
+    visitor = RecordingVisitor(
+        [Material(name="m", models=[density])],
+        model_map={Density: ModelInfo()},
+    )
+    assert visitor.is_supported(density) is True
 
 
 def test_visit_material_model_deprecated_shim(capsys):
