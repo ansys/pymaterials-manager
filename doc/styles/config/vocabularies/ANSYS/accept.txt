@@ -9,3 +9,6 @@ uv
 Synopsys
 synopsys
 SYNOPSYS
+Pydantic
+subclassing
+docstrings

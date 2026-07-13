@@ -8,9 +8,9 @@ This page describes how material **writers** serialize domain models using the
 `visitor pattern <https://en.wikipedia.org/wiki/Visitor_pattern>`_, and how to
 extend the library with new models or solver integrations.
 
-End users typically interact with :class:`~ansys.materials.manager.MaterialManager`
-and do not need to know about visitors. Contributors and anyone subclassing
-writers should read this guide.
+End users typically interact with ``MaterialManager`` and do not need to know
+about visitors. Contributors and anyone subclassing writers should read this
+guide.
 
 
 Writer visitor pattern
@@ -19,24 +19,21 @@ Writer visitor pattern
 Problem
 -------
 
-Material models (for example :class:`~ansys.materials.manager.models.Density`,
-:class:`~ansys.materials.manager.models.ElasticityIsotropic`) are
-solver-agnostic Pydantic objects in :mod:`ansys.materials.manager.models`.
-Writers in :mod:`ansys.materials.manager.integrations` must turn those objects
-into MatML XML, MAPDL command strings, Fluent dictionaries, or LS-DYNA keyword
-cards **without** importing solver logic into the model layer.
+Material models (for example ``Density`` and ``ElasticityIsotropic``) are
+solver-agnostic Pydantic objects in the ``models`` package. Writers in
+``integrations`` must turn those objects into MatML XML, MAPDL command strings,
+Fluent dictionaries, or LS-DYNA keyword cards **without** importing solver
+logic into the model layer.
 
-Solution: double dispatch
--------------------------
+Double dispatch
+---------------
 
 Traversal uses **double dispatch**. The model does not know which solver is
 targeted; the writer does not use long ``isinstance`` chains to pick behavior.
 
-1. A writer is constructed with a list of :class:`~ansys.materials.manager.models.Material`
-   instances.
-2. The writer calls :meth:`~ansys.materials.manager.models.Material.accept`.
-3. Each :class:`~ansys.materials.manager.models.MaterialModel` on that material
-   calls :meth:`~ansys.materials.manager.models.MaterialModel.accept`, which
+1. A writer is constructed with a list of ``Material`` instances.
+2. The writer calls ``Material.accept``.
+3. Each ``MaterialModel`` on that material calls ``MaterialModel.accept``, which
    delegates to ``visitor.visit(self, material_name=...)``.
 4. The writer's ``visit`` implementation (usually
    ``@functools.singledispatchmethod``) selects the handler for the concrete
@@ -62,16 +59,16 @@ Key types
    * - Type
      - Location
      - Role
-   * - :class:`~ansys.materials.manager.integrations.MaterialModelWriterVisitor`
+   * - ``MaterialModelWriterVisitor``
      - ``integrations``
      - Abstract visitor (``visit``, ``visit_material``, ``is_supported``)
-   * - :class:`~ansys.materials.manager.models._common.visitor_protocol.MaterialModelWriterVisitorProtocol`
+   * - ``MaterialModelWriterVisitorProtocol``
      - ``models._common.visitor_protocol``
      - Structural typing protocol used by ``accept()`` (no integrations import)
-   * - :class:`~ansys.materials.manager.integrations.BaseVisitor`
+   * - ``BaseVisitor``
      - ``integrations``
      - Shared writer base: ``_model_map``, ``_populate_dependent_parameters``, traversal
-   * - :class:`~ansys.materials.manager.integrations._common.ModelInfo`
+   * - ``ModelInfo``
      - ``integrations._common``
      - Declarative map from model fields to external labels (or ``method_write``)
    * - Concrete writers
@@ -83,8 +80,7 @@ Import boundary
 
 - ``integrations`` imports ``models``.
 - ``models`` **never** imports ``integrations``. ``Material.accept`` and
-  ``MaterialModel.accept`` only reference
-  :class:`~ansys.materials.manager.models._common.visitor_protocol.MaterialModelWriterVisitorProtocol`.
+  ``MaterialModel.accept`` only reference ``MaterialModelWriterVisitorProtocol``.
 
 Each writer class defines its **own** ``@singledispatchmethod visit`` so handler
 registries are not shared across MatML, MAPDL, Fluent, and LS-DYNA.
@@ -102,8 +98,7 @@ Most models only need a row in the writer's ``_*_model_map.py`` file:
        attributes=["python_field_name"],
    ),
 
-The default ``visit`` handler calls
-:meth:`~ansys.materials.manager.integrations.BaseVisitor._populate_dependent_parameters`,
+The default ``visit`` handler calls ``BaseVisitor._populate_dependent_parameters``,
 which reads ``_model_map``.
 
 When labels and fields do not map 1:1, use ``method_write``:
@@ -137,38 +132,37 @@ Only a small number of MAPDL models need this; the rest use the shared
 Readers are not visitors
 ========================
 
-MatML and REST **readers** build :class:`~ansys.materials.manager.models.MaterialModel`
-instances from external data. They use the same :class:`~ansys.materials.manager.integrations._common.ModelInfo`
-maps (with ``method_read`` where needed) but **do not** call ``accept()``.
-Dispatch is keyed by XML property names or Granta MI model IDs, not by existing
-model instances.
+MatML and REST **readers** build ``MaterialModel`` instances from external data.
+They use the same ``ModelInfo`` maps (with ``method_read`` where needed) but
+**do not** call ``accept()``. Dispatch is keyed by XML property names or Granta
+MI model IDs, not by existing model instances.
 
 
 Adding a new material model
 ===========================
 
-Use this checklist when introducing a new domain concept (a new
-:class:`~ansys.materials.manager.models.MaterialModel` subclass).
+Use this checklist when introducing a new domain concept (a new ``MaterialModel``
+subclass).
 
 1. **Define the model** in ``src/ansys/materials/manager/models/_material_models/``.
 
-   - Subclass :class:`~ansys.materials.manager.models.MaterialModel`.
+   - Subclass ``MaterialModel``.
    - Set a frozen ``name: Literal["..."]``, fields, and ``supported_packages``.
    - Do **not** override ``accept()``; it is inherited from the base class.
 
 2. **Export** the class from ``models/_material_models/__init__.py`` (and thus
    ``models.__all__``).
 
-3. **MatML (canonical interchange)** — add an entry to
+3. **MatML (canonical interchange)**: add an entry to
    ``integrations/matml/_matml_model_map.py``. One entry covers MatML read and write.
 
-4. **REST / Granta MI** (if applicable) — add ``MODEL_ID_MAP`` and
+4. **REST / Granta MI** (if applicable): add ``MODEL_ID_MAP`` and
    ``MATERIAL_MODEL_MAP`` entries in ``integrations/rest/_rest_model_map.py``.
 
-5. **Per-solver writer maps** — see :ref:`ref_add_solver_support` for each target
+5. **Per-solver writer maps**: see :ref:`ref_add_solver_support` for each target
    (MAPDL, Fluent, LS-DYNA).
 
-6. **Tests** — golden-file tests under ``tests/matml/``, ``tests/mapdl/``, etc.
+6. **Tests**: golden-file tests under ``tests/matml/``, ``tests/mapdl/``, etc.
    Add a ``minimal_model_factory`` entry in ``tests/integrations/conftest.py`` so
    map-coverage smoke tests pick up the new type (optional but recommended).
 
@@ -192,8 +186,7 @@ serialization or LS-DYNA card composition.
      - Usually already present if the model exists
    * - MAPDL
      - ``integrations/mapdl/_mapdl_model_map.py``
-     - ``@visit.register`` only for non-standard output (see
-       :class:`~ansys.materials.manager.integrations.mapdl.MapdlWriter`)
+     - ``@visit.register`` only for non-standard output (see ``MapdlWriter``)
    * - Fluent
      - ``integrations/fluent/_fluent_model_map.py``
      - Map entry only
@@ -212,28 +205,26 @@ serialization or LS-DYNA card composition.
 After adding the map entry, the writer's default ``visit`` handler serializes the
 model. No changes to ``MapdlWriter`` are required.
 
-**LS-DYNA card composition** — LS-DYNA merges multiple models into one keyword
+**LS-DYNA card composition**: LS-DYNA merges multiple models into one keyword
 card. Ensure each constituent model is in ``_ls_dyna_model_map.py``, then add or
 update an entry in ``_get_material_card_map()`` keyed by the tuple of model
-classes present on a :class:`~ansys.materials.manager.models.Material`.
+classes present on a ``Material``.
 
 
 ``is_supported`` and unsupported models
 =======================================
 
-During normal traversal (:meth:`~ansys.materials.manager.integrations.MaterialModelWriterVisitor.visit_material`),
-each model on a :class:`~ansys.materials.manager.models.Material` is checked with
-:meth:`~ansys.materials.manager.integrations.BaseVisitor.is_supported`. A model is
-supported only when **both** of the following hold:
+During normal traversal (``visit_material``), each model on a ``Material`` is
+checked with ``BaseVisitor.is_supported``. A model is supported only when
+**both** of the following hold:
 
 1. Its class is listed in the writer's ``_model_map``.
 2. The writer defines a ``visit`` handler that can dispatch to that class (via
    ``@singledispatchmethod`` or a plain override).
 
 Unsupported models are **skipped** (not raised) and a **warning** is logged so
-batch export can continue. Direct calls to :meth:`~ansys.materials.manager.models.MaterialModel.accept`
-still dispatch through ``visit`` and may raise
-:class:`~ansys.materials.manager.integrations.UnsupportedMaterialModelError` when
+batch export can continue. Direct calls to ``MaterialModel.accept`` still
+dispatch through ``visit`` and may raise ``UnsupportedMaterialModelError`` when
 no handler exists.
 
 
@@ -242,22 +233,21 @@ Testing
 
 Use a **layered** approach:
 
-1. **Visitor mechanics** — ``tests/integrations/test_visitor_dispatch.py`` (fast
+1. **Visitor mechanics**: ``tests/integrations/test_visitor_dispatch.py`` (fast
    dispatch and ``accept`` wiring).
-2. **Map coverage** — ``tests/integrations/test_writer_map_coverage.py``
+2. **Map coverage**: ``tests/integrations/test_writer_map_coverage.py``
    (parametrized smoke test per writer map).
-3. **Format golden files** — existing tests under ``tests/matml/``, ``tests/mapdl/``,
+3. **Format golden files**: existing tests under ``tests/matml/``, ``tests/mapdl/``,
    etc. (prove correct XML / APDL / Fluent / LS-DYNA output).
 
-For a new simple map entry, layers 1–2 plus an optional golden file are usually
+For a new simple map entry, layers 1-2 plus an optional golden file are usually
 enough. Complex MAPDL or tabular output should always have a golden-file test.
 
 
 Further reading
 ===============
 
-- API reference: :class:`~ansys.materials.manager.integrations.MaterialModelWriterVisitor`,
-  :class:`~ansys.materials.manager.models._common.visitor_protocol.MaterialModelWriterVisitorProtocol`,
-  :class:`~ansys.materials.manager.integrations.BaseVisitor`, and concrete writers
+- API reference for ``MaterialModelWriterVisitor``,
+  ``MaterialModelWriterVisitorProtocol``, ``BaseVisitor``, and concrete writers
   (generated from docstrings).
-- Module overview: :mod:`ansys.materials.manager.integrations`.
+- Module overview: ``ansys.materials.manager.integrations``.
