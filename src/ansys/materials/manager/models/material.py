@@ -25,6 +25,7 @@ from typing import List
 import uuid
 
 from ._common import MaterialModel
+from ._common.visitor_protocol import MaterialModelWriterVisitor
 
 
 class Material:
@@ -131,3 +132,18 @@ class Material:
         model = self.get_model_by_name(model_name)
         if model is not None:
             self._models.remove(model)
+
+    def accept(self, visitor: MaterialModelWriterVisitor) -> None:
+        """Visit every model on this material with a writer visitor.
+
+        Iterates :attr:`models` and calls :meth:`MaterialModel.accept` for each,
+        passing ``material_name=self.name``. This is the typical entry point
+        when a writer traverses a :class:`Material`.
+
+        Parameters
+        ----------
+        visitor : MaterialModelWriterVisitor
+            Writer instance (must implement :meth:`~MaterialModelWriterVisitor.visit_material`
+            or be a :class:`~ansys.materials.manager.integrations.BaseVisitor` subclass).
+        """
+        visitor.visit_material(self)
