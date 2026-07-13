@@ -22,7 +22,7 @@
 
 import pytest
 
-from ansys.materials.manager.parsers.rest._grantami_auth import (
+from ansys.materials.manager.integrations.rest._grantami_auth import (
     AnsysIDDevelopment,
     AnsysIDProduction,
     MSALOIDCConfiguration,

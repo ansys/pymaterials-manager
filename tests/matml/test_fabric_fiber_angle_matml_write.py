@@ -25,15 +25,15 @@ from pathlib import Path
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml
 
-from ansys.materials.manager._models._common import (
+from ansys.materials.manager.integrations import MatmlWriter
+from ansys.materials.manager.models import (
+    FabricFiberAngle,
     IndependentParameter,
     InterpolationOptions,
+    Material,
     ModelQualifier,
+    PlyType,
 )
-from ansys.materials.manager._models._material_models.fabric_fiber_angle import FabricFiberAngle
-from ansys.materials.manager._models._material_models.ply_type import PlyType
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 FABRIC_FIBER_ANGLE = DIR_PATH.joinpath("..", "data", "matml_fabric_fiber_angle.txt")

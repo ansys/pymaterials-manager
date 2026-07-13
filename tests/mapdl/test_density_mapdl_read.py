@@ -25,8 +25,8 @@ from pathlib import Path
 from ansys.mapdl.core import Mapdl
 import pytest
 
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager.parsers.mapdl.mapdl_reader import read_mapdl
+from ansys.materials.manager.integrations import read_mapdl
+from ansys.materials.manager.models import Density
 
 DIR_PATH = Path(__file__).resolve().parent
 CONSTANT_DENSITY = DIR_PATH.joinpath("..", "data", "mapdl_density_constant.cdb")

@@ -25,18 +25,15 @@ from pathlib import Path
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml
 
-from ansys.materials.manager._models._common import IndependentParameter, InterpolationOptions
-from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+from ansys.materials.manager.integrations import MatmlWriter
+from ansys.materials.manager.models import (
     ElasticityAnisotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
+    IndependentParameter,
+    InterpolationOptions,
+    Material,
 )
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 ISOTROPIC_ELASTICITY = DIR_PATH.joinpath("..", "data", "matml_isotropic_elasticity.txt")

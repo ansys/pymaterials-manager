@@ -24,12 +24,14 @@ from pathlib import Path
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._material_models import HillYieldCriterion
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
+from ansys.materials.manager.integrations import MapdlWriter
+from ansys.materials.manager.models import (
+    HillYieldCriterion,
+    IndependentParameter,
+    InterpolationOptions,
+    Material,
+    ModelQualifier,
+)
 
 DIR_PATH = Path(__file__).resolve().parent
 HILL_CONSTANT = DIR_PATH.joinpath("..", "data", "mapdl_hill_constant.cdb")

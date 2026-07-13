@@ -25,21 +25,16 @@ from pathlib import Path
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml
 
-from ansys.materials.manager._models._common import IndependentParameter, ModelQualifier
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+from ansys.materials.manager.integrations import MatmlWriter
+from ansys.materials.manager.models import (
     CoefficientofThermalExpansionIsotropic,
-)
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
     CoefficientofThermalExpansionOrthotropic,
-)
-from ansys.materials.manager._models._material_models.zero_thermal_strain_reference_temperature_isotropic import (  # noqa: E501
+    IndependentParameter,
+    Material,
+    ModelQualifier,
     ZeroThermalStrainReferenceTemperatureIsotropic,
-)
-from ansys.materials.manager._models._material_models.zero_thermal_strain_reference_temperature_orthotropic import (  # noqa: E501
     ZeroThermalStrainReferenceTemperatureOrthotropic,
 )
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 CTE_ISOTROPIC = DIR_PATH.joinpath("..", "data", "matml_cte_isotropic.txt")

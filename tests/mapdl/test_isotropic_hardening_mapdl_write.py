@@ -24,10 +24,8 @@ from pathlib import Path
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._material_models import IsotropicHardening
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
+from ansys.materials.manager.integrations import MapdlWriter
+from ansys.materials.manager.models import IndependentParameter, IsotropicHardening, Material
 
 DIR_PATH = Path(__file__).resolve().parent
 ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT = DIR_PATH.joinpath(

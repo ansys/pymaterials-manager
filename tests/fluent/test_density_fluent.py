@@ -22,9 +22,8 @@
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.fluent.fluent_writer import FluentWriter
+from ansys.materials.manager.integrations import FluentWriter
+from ansys.materials.manager.models import Density, Material
 
 
 def test_density_write():

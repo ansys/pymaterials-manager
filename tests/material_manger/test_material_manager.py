@@ -25,7 +25,7 @@ from pathlib import Path
 from ansys.mapdl.core import Mapdl
 import pytest
 
-from ansys.materials.manager.material_manager import MaterialManager
+from ansys.materials.manager import MaterialManager
 
 DIR_PATH = Path(__file__).resolve().parent
 ELASTICITY_MATML = DIR_PATH.joinpath("..", "data", "matml_unittest_elasticity.xml")
