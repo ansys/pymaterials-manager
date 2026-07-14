@@ -100,3 +100,6 @@ addopts = [
     "--cov-report=xml:.cov/xml",
     "--cov-report=html:.cov/html",
 ]
+
+[tool.bandit]
+skips = ["B101"]
