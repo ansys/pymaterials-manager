@@ -23,6 +23,7 @@
 import abc
 import functools
 import re
+from typing import Any
 
 from ansys.units import Quantity
 import numpy as np
@@ -34,6 +35,7 @@ from .independent_parameter import IndependentParameter
 from .interpolation_options import InterpolationOptions
 from .model_qualifier import ModelQualifier
 from .tabular_quantity import TabularQuantity
+from .visitor_protocol import MaterialModelWriterVisitorProtocol
 
 try:
     import ansys.dpf.core as dpf
@@ -135,6 +137,28 @@ class MaterialModel(BaseModel, abc.ABC):
             Dictionary containing the material model data. If `None`, returns `None`.
         """
         return cls(**value)
+
+    def accept(self, visitor: MaterialModelWriterVisitorProtocol, *, material_name: str) -> Any:
+        """Dispatch this model to a writer visitor.
+
+        Calls ``visitor.visit(self, material_name=material_name)``. The
+        visitor selects the correct serialization logic based on the
+        concrete type of ``self`` (e.g. ``Density``, ``ElasticityIsotropic``).
+
+        Parameters
+        ----------
+        visitor : MaterialModelWriterVisitorProtocol
+            A writer instance (e.g. ``MatmlWriter``, ``MapdlWriter``).
+        material_name : str
+            Name of the parent :class:`~ansys.materials.manager.models.Material`,
+            used to group output.
+
+        Returns
+        -------
+        Any
+            Format-specific serialization result from the visitor.
+        """
+        return visitor.visit(self, material_name=material_name)
 
     def validate_model(self) -> None:
         """

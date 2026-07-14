@@ -20,21 +20,80 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from abc import abstractmethod
-import sys
+import functools
+from typing import Any
+import warnings
 
 from ..models import Material, MaterialModel
+from ._common import ModelInfo
+from .material_model_writer_visitor import (
+    MaterialModelWriterVisitor,
+    UnsupportedMaterialModelError,
+)
 
-MATERIAL_MODEL_MAP = {}
+
+def _visit_registry(visitor_cls: type) -> dict | None:
+    """Return the singledispatch registry for a writer's ``visit`` method, if any."""
+    visit = visitor_cls.__dict__.get("visit")
+    if visit is None:
+        return None
+    if isinstance(visit, functools.singledispatchmethod):
+        return visit.dispatcher.registry
+    return None
 
 
-class BaseVisitor:
-    """Base visitor. All visitors should inherit from this class."""
+class BaseVisitor(MaterialModelWriterVisitor):
+    """Base class for format-specific material writers.
 
-    def __init__(self, materials: list[Material]):
+    Writers subclass this class and implement serialization by defining a
+    ``@functools.singledispatchmethod`` named ``visit`` on the writer subclass,
+    then registering handlers with ``@visit.register(MyModel)``. A default
+    handler for :class:`~ansys.materials.manager.models.MaterialModel` that reads
+    ``_model_map`` is enough for most models.
+
+    Construction stores materials and initializes ``_material_repr``, a
+    ``dict[str, list]`` that accumulates per-material output fragments.
+    Call :meth:`visit_materials` (or rely on the subclass ``__init__``) to
+    traverse via :meth:`~ansys.materials.manager.models.Material.accept`.
+
+    Parameters
+    ----------
+    materials : list[Material]
+        Materials to serialize.
+    model_map : dict[type, ModelInfo] | None
+        Maps concrete model classes to :class:`~.ModelInfo` descriptors.
+        Declares which models the writer supports and how fields map to
+        external labels.
+
+    Examples
+    --------
+    Register a custom handler on a writer subclass::
+
+        class MyMapdlWriter(BaseVisitor):
+            @singledispatchmethod
+            def visit(self, model: MaterialModel, *, material_name: str) -> None:
+                raise UnsupportedMaterialModelError(...)
+
+            @visit.register(Density)
+            def _visit_density(self, model: Density, *, material_name: str) -> None:
+                ...
+
+    See Also
+    --------
+    MaterialModelWriterVisitor : Visitor protocol and traversal contract.
+    MaterialModel.accept : Model-side dispatch entry point.
+    ref_developer_guide : Contributor guide for adding models and solver maps.
+    """
+
+    def __init__(
+        self,
+        materials: list[Material],
+        model_map: dict[type, ModelInfo] | None = None,
+    ):
         """Initialize the base visitor."""
         self._materials: list[Material] = materials
         self._material_repr: dict = {material.name: [] for material in materials}
+        self._model_map: dict[type, ModelInfo] = model_map if model_map is not None else {}
 
     def get_material_id(self, material_name) -> int:
         """
@@ -58,6 +117,10 @@ class BaseVisitor:
         """
         Check if the material model is supported.
 
+        A model is supported when it appears in ``_model_map`` **and** the
+        writer defines a ``visit`` handler for its concrete type (via
+        ``@singledispatchmethod`` or a plain override).
+
         Parameters
         ----------
         material_model : MaterialModel
@@ -68,40 +131,73 @@ class BaseVisitor:
         bool
             True if the material model is supported, False otherwise.
         """
-        module = sys.modules[self.__module__]
-        mapping = getattr(module, "MATERIAL_MODEL_MAP")
-        if material_model.__class__ in mapping.keys():
-            return True
-        else:
+        model_cls = material_model.__class__
+        if model_cls not in self._model_map:
             return False
+        return self._has_visit_handler(model_cls)
+
+    def _has_visit_handler(self, model_cls: type) -> bool:
+        """Return whether ``visit`` can dispatch for ``model_cls``."""
+        registry = _visit_registry(type(self))
+        if registry is not None:
+            registered = {cls for cls in registry if cls is not object}
+            return any(cls in registered for cls in model_cls.__mro__)
+        if "visit" in type(self).__dict__:
+            visit_attr = type(self).__dict__["visit"]
+            if not isinstance(visit_attr, functools.singledispatchmethod):
+                return visit_attr is not BaseVisitor.__dict__["visit"]
+        return False
 
     def _populate_dependent_parameters(self, material_model: MaterialModel) -> dict:
         """Populate dependent parameters with quantity-like values."""
-        module = sys.modules[self.__module__]
-        model_map = getattr(module, "MATERIAL_MODEL_MAP")
-        if material_model.__class__ in model_map.keys():
-            mapping = model_map[material_model.__class__]
+        if material_model.__class__ in self._model_map:
+            mapping = self._model_map[material_model.__class__]
             if mapping.method_write:
                 labels, quantities = mapping.method_write(material_model)
             else:
-                if not mapping.labels and not mapping.attributes:
+                if not mapping.labels or not mapping.attributes:
                     return {}
                 labels = mapping.labels
                 quantities = [getattr(material_model, label) for label in mapping.attributes]
             return {label: qty for label, qty in zip(labels, quantities) if qty is not None}
+        return {}
 
-    @abstractmethod
-    def visit_material_model(self, material_name: str, material_model: MaterialModel):
-        """Abstract implementation of the visit material model."""
-        raise NotImplementedError()
+    def visit(self, model: MaterialModel, *, material_name: str) -> Any:
+        """Dispatch serialization for a material model.
 
-    def visit_materials(self):
-        """Visit materials."""
+        Concrete writers override this method (typically with
+        ``@functools.singledispatchmethod``) to provide format-specific handlers.
+        """
+        raise UnsupportedMaterialModelError(
+            f"{type(self).__name__} has no visit handler for {model.__class__.__name__}"
+        )
+
+    def visit_materials(self) -> None:
+        """Visit all materials using double dispatch via :meth:`~.Material.accept`."""
         for material in self._materials:
-            for material_model in material.models:
-                if not self.is_supported(material_model):
-                    print(
-                        f"Material model: {material_model.__class__.__name__} not supported by {self.__class__.__name__}"  # noqa: E501
-                    )
-                    continue
-                self.visit_material_model(material.name, material_model)
+            material.accept(self)
+
+    def visit_material_model(self, material_name: str, material_model: MaterialModel) -> Any:
+        """Visit a single material model.
+
+        .. deprecated::
+            Use :meth:`visit` via :meth:`~.MaterialModel.accept` instead.
+
+        Parameters
+        ----------
+        material_name : str
+            Name of the parent material.
+        material_model : MaterialModel
+            Model to visit.
+
+        Returns
+        -------
+        Any
+            Result from :meth:`visit`.
+        """
+        warnings.warn(
+            "visit_material_model is deprecated; traversal uses MaterialModel.accept and visit.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return material_model.accept(self, material_name=material_name)

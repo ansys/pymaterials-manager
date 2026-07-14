@@ -20,24 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from functools import singledispatchmethod
+
 import numpy as np
 
 from ...models import (
-    CoefficientofThermalExpansionIsotropic,
-    CoefficientofThermalExpansionOrthotropic,
     Density,
     ElasticityAnisotropic,
-    ElasticityIsotropic,
-    ElasticityOrthotropic,
     HillYieldCriterion,
     IsotropicHardening,
     Material,
     MaterialModel,
-    ThermalConductivityIsotropic,
-    ThermalConductivityOrthotropic,
 )
 from ...models._common import _MapdlCore
 from ..base_visitor import BaseVisitor
+from ..material_model_writer_visitor import UnsupportedMaterialModelError
 from ._mapdl_commands_parser import (
     TABLE_LABELS,
     TABLE_TBOPT,
@@ -52,15 +49,15 @@ from ._mapdl_commands_parser import (
     write_temperature_reference_value,
     write_temperature_table_values,
 )
-from ._mapdl_model_map import MATERIAL_MODEL_MAP  # noqa: F401
+from ._mapdl_model_map import MATERIAL_MODEL_MAP
 
 
 class MapdlWriter(BaseVisitor):
-    """Mapdl writer."""
+    """Write materials to MAPDL APDL command strings via the visitor pattern."""
 
     def __init__(self, materials: list[Material]):
         """Initialize the Mapdl visitor."""
-        super().__init__(materials=materials)
+        super().__init__(materials=materials, model_map=MATERIAL_MODEL_MAP)
         self.visit_materials()
 
     def _write_standard(self, material_model: MaterialModel) -> str:
@@ -243,27 +240,41 @@ class MapdlWriter(BaseVisitor):
 
         return material_string
 
-    def visit_material_model(self, material_name: str, material_model: MaterialModel) -> None:
-        """Visit material model."""
-        standard_models = (
-            Density,
-            ElasticityIsotropic,
-            ElasticityOrthotropic,
-            CoefficientofThermalExpansionIsotropic,
-            CoefficientofThermalExpansionOrthotropic,
-            ThermalConductivityIsotropic,
-            ThermalConductivityOrthotropic,
+    @singledispatchmethod
+    def visit(self, material_model: MaterialModel, *, material_name: str) -> None:
+        """Dispatch MAPDL serialization by model type."""
+        raise UnsupportedMaterialModelError(
+            f"{type(self).__name__} has no visit handler for {material_model.__class__.__name__}"
         )
-        if isinstance(material_model, standard_models):
-            model = self.visit_standard(material_model)
-        elif isinstance(material_model, ElasticityAnisotropic):
-            model = self.visit_anisotropic(material_model)
-        elif isinstance(material_model, HillYieldCriterion):
-            model = self.visit_hill_yield_criterion(material_model)
-        elif isinstance(material_model, IsotropicHardening):
-            model = self.visit_isotropic_harderning(material_model)
-        else:
-            return
+
+    @visit.register(MaterialModel)
+    def _visit_standard_model(self, material_model: MaterialModel, *, material_name: str) -> None:
+        """Visit standard MAPDL material models."""
+        model = self.visit_standard(material_model)
+        self._material_repr[material_name].append(model)
+
+    @visit.register(ElasticityAnisotropic)
+    def _visit_anisotropic_model(
+        self, material_model: ElasticityAnisotropic, *, material_name: str
+    ) -> None:
+        """Visit anisotropic elasticity."""
+        model = self.visit_anisotropic(material_model)
+        self._material_repr[material_name].append(model)
+
+    @visit.register(HillYieldCriterion)
+    def _visit_hill_yield_model(
+        self, material_model: HillYieldCriterion, *, material_name: str
+    ) -> None:
+        """Visit Hill yield criterion."""
+        model = self.visit_hill_yield_criterion(material_model)
+        self._material_repr[material_name].append(model)
+
+    @visit.register(IsotropicHardening)
+    def _visit_isotropic_hardening_model(
+        self, material_model: IsotropicHardening, *, material_name: str
+    ) -> None:
+        """Visit isotropic hardening."""
+        model = self.visit_isotropic_harderning(material_model)
         self._material_repr[material_name].append(model)
 
     def write(
