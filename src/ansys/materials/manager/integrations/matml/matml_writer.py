@@ -22,7 +22,7 @@
 
 from functools import singledispatchmethod
 from typing import Optional
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 
 from ansys.units import Quantity
 
