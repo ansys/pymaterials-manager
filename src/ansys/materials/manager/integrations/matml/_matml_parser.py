@@ -24,7 +24,7 @@ from dataclasses import dataclass
 import re
 from typing import Any, Sequence, Union
 import uuid
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 
 from ansys.units import Quantity
 

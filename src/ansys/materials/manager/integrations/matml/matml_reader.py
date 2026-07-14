@@ -26,9 +26,9 @@ import os
 from pydoc import locate
 from typing import Optional, Union
 import warnings
-import xml.etree.ElementTree as ET
 
 from ansys.units import Quantity
+from defusedxml.ElementTree import fromstring
 
 from . import _matml_strings as matml_strings
 from ... import models as _models_package
@@ -93,8 +93,7 @@ class MatmlReader:
         -------
         dict[str, Union[str, dict]]
         """
-        tree = ET.ElementTree(ET.fromstring(matml_content))
-        root = tree.getroot()
+        root = fromstring(matml_content)
         materials_node = root.find(matml_strings.MATERIALS_ELEMENT_KEY)
         if materials_node is None:
             raise RuntimeError(
