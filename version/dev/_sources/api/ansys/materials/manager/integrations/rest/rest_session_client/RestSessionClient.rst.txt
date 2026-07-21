@@ -1,0 +1,315 @@
+
+
+
+
+
+
+:class:`RestSessionClient`
+==========================
+
+
+.. py:class:: ansys.materials.manager.integrations.rest.rest_session_client.RestSessionClient(base_url: str, package_name: str | None = None, verify_ssl: bool = True, oidc_config=None)
+
+   
+   Client for the Granta MI material-picker REST API session lifecycle.
+
+
+   :Parameters:
+
+       **base_url** : :class:`python:str`
+           Base URL for the REST API, e.g. ``"https://cloudserver.com/is"``.
+
+       **package_name** : :class:`python:str`, :obj:`optional`
+           The package name used to define which material models are exported from
+           Granta MI.
+
+       **verify_ssl** : :ref:`bool <python:bltin-boolean-values>`
+           Whether to verify SSL certificates.  Defaults to ``True``.
+
+       **oidc_config** : :obj:`MSALOIDCConfiguration` | :data:`python:None`
+           OIDC configuration used to authenticate with the identity provider.
+           When ``None`` (default), the configuration is resolved automatically from ``base_url``
+           using
+           :func:`~ansys.materials.manager.integrations.rest._grantami_auth.get_oidc_config_for_url`.
+           A :class:`ValueError` is raised at construction time if ``base_url`` is not a recognized
+           Granta MI deployment and no explicit config is supplied.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: RestSessionClient
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~create_session`
+            - Create a new Granta MI material-picker session.
+          * - :py:attr:`~fetch_data`
+            - Retrieve material data for the session, polling until a selection is made.
+          * - :py:attr:`~delete_session`
+            - Delete a session on the server.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~granta_material_picker_url`
+            - Return the URL that should be opened in the user's browser.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__enter__`
+            - Enter the context manager.
+          * - :py:attr:`~__exit__`
+            - Exit the context manager, cleaning up any active session and closing the HTTP client.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.integrations.rest.rest_session_client import RestSessionClient
+
+Property detail
+---------------
+
+.. py:property:: granta_material_picker_url
+   :type: str
+
+
+   
+   Return the URL that should be opened in the user's browser.
+
+
+
+
+
+   :Returns:
+
+       :class:`python:str`
+           Full URL for the Granta Material Picker web interface.
+
+
+
+
+   :Raises:
+
+       :obj:`ValueError`
+           If the session has not been initialized.
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: create_session(name: str = 'PyMaterials Manager') -> None
+
+   
+   Create a new Granta MI material-picker session.
+
+
+   :Parameters:
+
+       **name** : :class:`python:str`, :obj:`optional`
+           Human-readable session name displayed in the material picker. Defaults to
+           "PyMaterials Manager".
+
+
+
+
+
+
+
+   :Raises:
+
+       :obj:`ValueError`
+           If a session has already been created on this client instance.
+
+       :obj:`httpx.HTTPStatusError`
+           If the server returns a non-2xx status code.
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: fetch_data(timeout: float = 300.0) -> dict
+
+   
+   Retrieve material data for the session, polling until a selection is made.
+
+   The server returns a 204 response while the user is browsing the material picker
+   (up to ``_POLL_SECONDS`` seconds per request). This method re-issues the GET on each
+   204 response until either a 200 response is received or the client-side ``timeout``
+   is reached.
+
+   :Parameters:
+
+       **timeout** : :class:`python:float`
+           Total time in seconds to wait for a material selection before raising
+           :class:`~ansys.materials.manager.integrations.rest._exceptions.GrantaMIError`.
+           Defaults to 300 seconds (5 minutes).
+
+
+
+   :Returns:
+
+       :class:`python:dict`
+           The parsed JSON response from the server.
+
+
+
+
+   :Raises:
+
+       :obj:`GrantaMIError`
+           If the polling loop times out without receiving a material selection, or if
+           the response cannot be parsed.
+
+       :obj:`httpx.HTTPStatusError`
+           If the server returns a non-2xx, non-204 status code.
+
+       :obj:`ValueError`
+           If the session has not been initialized.
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: delete_session() -> None
+
+   
+   Delete a session on the server.
+
+
+
+
+
+
+
+
+
+   :Raises:
+
+       :obj:`httpx.HTTPStatusError`
+           If the server returns a non-2xx status code.
+
+       :obj:`ValueError`
+           If the session has not been initialized.
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __enter__() -> RestSessionClient
+
+   
+   Enter the context manager.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __exit__(exc_type, exc_val, exc_tb) -> None
+
+   
+   Exit the context manager, cleaning up any active session and closing the HTTP client.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
