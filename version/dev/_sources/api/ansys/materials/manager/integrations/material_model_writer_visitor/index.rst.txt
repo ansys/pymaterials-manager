@@ -1,0 +1,121 @@
+
+
+
+
+
+
+The ``material_model_writer_visitor.py`` module
+===============================================
+
+.. py:module:: ansys.materials.manager.integrations.material_model_writer_visitor
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: material_model_writer_visitor
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.material_model_writer_visitor.MaterialModelWriterVisitor`
+            - Protocol for writers that serialize :class:`~.MaterialModel` instances.
+
+
+
+
+    .. tab-item:: Exceptions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.material_model_writer_visitor.UnsupportedMaterialModelError`
+            - Raised when a writer has no handler for a material model type.
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> MaterialModelWriterVisitor</api/ansys/materials/manager/integrations/material_model_writer_visitor/MaterialModelWriterVisitor>
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-md-lightning_bolt"></span> UnsupportedMaterialModelError</api/ansys/materials/manager/integrations/material_model_writer_visitor/UnsupportedMaterialModelError>
+
+
+
+
+
+
+
+Description
+-----------
+
+Writer visitor protocol for serializing material models.
+
+Material models are solver-agnostic domain objects. Writers (MatML, MAPDL,
+Fluent, LS-DYNA) are *visitors*: they traverse a ``Material`` and produce
+format-specific output.
+
+Traversal uses double dispatch::
+
+    material.accept(writer)            # ``Material`` iterates its models
+    model.accept(writer, material_name=...)     # delegates to ``writer.visit(model)``
+    writer.visit(model, material_name=...)      # dispatches by concrete model type
+
+Most model types need only a ``ModelInfo`` entry in the writer's
+``_model_map``. Override ``visit`` with ``@visit.register(MyModel)`` when
+serialization logic cannot be expressed as a label/attribute map.
+
+Each concrete writer defines its own ``@singledispatchmethod visit`` so
+handler registries are not shared across writer classes.
+
+See Also
+--------
+MaterialModel.accept : Entry point on the model side.
+BaseVisitor : Shared writer infrastructure.
+ModelInfo : Declarative field-to-label mapping.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

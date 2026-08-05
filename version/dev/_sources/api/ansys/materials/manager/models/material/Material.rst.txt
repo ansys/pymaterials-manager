@@ -1,0 +1,288 @@
+
+
+
+
+
+
+:class:`Material`
+=================
+
+
+.. py:class:: ansys.materials.manager.models.material.Material(name: str, material_id: str | None = None, models: list[ansys.materials.manager.models._common.MaterialModel] = [], guid: str | None = None)
+
+   
+   Provides a wrapper class for managing a material.
+
+   This class associates a material ID with one or more material models.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: Material
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~append_models`
+            - Append one or more material models to the current material models.
+          * - :py:attr:`~get_model_by_name`
+            - Get the material model with a given model name.
+          * - :py:attr:`~remove_model_by_name`
+            - Remove a material model from the current material models by name.
+          * - :py:attr:`~accept`
+            - Visit every model on this material with a writer visitor.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~models`
+            - Currently assigned material models.
+          * - :py:attr:`~guid`
+            - UUID (transfer ID), which is unique.
+          * - :py:attr:`~mat_id`
+            - The material id.
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~name`
+            - 
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.models.material import Material
+
+Property detail
+---------------
+
+.. py:property:: models
+   :type: list[ansys.materials.manager.models._common.MaterialModel]
+
+
+   
+   Currently assigned material models.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: guid
+   :type: str
+
+
+   
+   UUID (transfer ID), which is unique.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: mat_id
+   :type: int
+
+
+   
+   The material id.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: name
+   :type:  str
+
+
+
+Method detail
+-------------
+
+.. py:method:: append_models(value: list[ansys.materials.manager.models._common.MaterialModel] | ansys.materials.manager.models._common.MaterialModel) -> None
+
+   
+   Append one or more material models to the current material models.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: get_model_by_name(model_name: str) -> ansys.materials.manager.models._common.MaterialModel | None
+
+   
+   Get the material model with a given model name.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: remove_model_by_name(model_name: str) -> None
+
+   
+   Remove a material model from the current material models by name.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: accept(visitor: ansys.materials.manager.models._common.visitor_protocol.MaterialModelWriterVisitorProtocol) -> None
+
+   
+   Visit every model on this material with a writer visitor.
+
+   Iterates :attr:`models` and calls :meth:`MaterialModel.accept` for each,
+   passing ``material_name=self.name``. This is the typical entry point
+   when a writer traverses a :class:`Material`.
+
+   :Parameters:
+
+       **visitor** : :obj:`MaterialModelWriterVisitorProtocol`
+           Writer instance (e.g. ``MatmlWriter``, ``MapdlWriter``).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

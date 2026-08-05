@@ -1,0 +1,388 @@
+
+
+
+
+
+
+:class:`MaterialManager`
+========================
+
+
+.. py:class:: ansys.materials.manager.material_manager.MaterialManager
+
+   
+   Manage material creation, assignment, and other management tasks.
+
+   This class is the main entry point for the Pythonic material management interface.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MaterialManager
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~add_material`
+            - Add a material into the library.
+          * - :py:attr:`~extend_material`
+            - Extend the models defined within a specific material.
+          * - :py:attr:`~delete_material`
+            - Delete a material from the library.
+          * - :py:attr:`~get_material`
+            - Return a material from the library.
+          * - :py:attr:`~write_to_matml`
+            - Write the materials in the library to a MatML file.
+          * - :py:attr:`~read_from_matml`
+            - Read materials from a MatML file and add them to the library.
+          * - :py:attr:`~write_to_mapdl`
+            - Write a material to the connected MAPDL session.
+          * - :py:attr:`~read_from_mapdl_session`
+            - Read material from the pyansys client session.
+          * - :py:attr:`~write_to_ls_dyna`
+            - Write the materials in the library to a LS-DYNA keyword file.
+          * - :py:attr:`~write_to_fluent`
+            - Write a material to the connected Fluent session.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~materials`
+            - The material models.
+          * - :py:attr:`~client`
+            - The provided client.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.material_manager import MaterialManager
+
+Property detail
+---------------
+
+.. py:property:: materials
+   :type: dict[str, ansys.materials.manager._models.material.Material]
+
+
+   
+   The material models.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: client
+   :type: Any
+
+
+   
+   The provided client.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: add_material(material: ansys.materials.manager._models.material.Material) -> None
+
+   
+   Add a material into the library.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: extend_material(material_name: str, material_models: list[ansys.materials.manager._models._common.material_model.MaterialModel]) -> None
+
+   
+   Extend the models defined within a specific material.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: delete_material(material_name: str)
+
+   
+   Delete a material from the library.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: get_material(material_name) -> ansys.materials.manager._models.material.Material | None
+
+   
+   Return a material from the library.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write_to_matml(path: str | pathlib.Path, material_names: list[str] | None = None) -> None
+
+   
+   Write the materials in the library to a MatML file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: read_from_matml(path: str | pathlib.Path) -> None
+
+   
+   Read materials from a MatML file and add them to the library.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write_to_mapdl(mapdl_client: ansys.materials.manager._models._common._MapdlCore | None = None, material_names: list[str] | None = None, material_ids: list[int] | None = None, reference_temperatures: list[float] | None = None) -> list[str] | None
+
+   
+   Write a material to the connected MAPDL session.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: read_from_mapdl_session(mapdl_client: ansys.materials.manager._models._common._MapdlCore) -> None
+
+   
+   Read material from the pyansys client session.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write_to_ls_dyna(deck: ansys.dyna.core.Deck | None = None, material_names: list[str] | None = None) -> list[ansys.dyna.core.lib.keyword_base.KeywordBase] | None
+
+   
+   Write the materials in the library to a LS-DYNA keyword file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write_to_fluent(fluent_client: ansys.materials.manager._models._common._FluentCore, material_names: list[str] | None = None) -> list[dict]
+
+   
+   Write a material to the connected Fluent session.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
