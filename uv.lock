@@ -38,15 +38,15 @@ wheels = [
 
 [[package]]
 name = "ansys-api-fluent"
-version = "0.4.1"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "grpcio" },
     { name = "protobuf" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/04/6c/7dc3a39867bac1ae103dc449a6b0f926615c7c401d948ede18a33e1b7dcb/ansys_api_fluent-0.4.1.tar.gz", hash = "sha256:cd06eac6c575133d239b46a7a682d860a281770fea5b25dd447e1150bd3d9c16", size = 61474, upload-time = "2026-06-24T10:01:44.938Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5c/56/a632100b2ae2f6f11d046907f0bbafa04d3a3f60be964438d72a10262e82/ansys_api_fluent-0.6.0.tar.gz", hash = "sha256:77bd9aa43ea91d4e891318ec20d68f2d818ebd2bd1f445e54a761943ba75567f", size = 62795, upload-time = "2026-08-02T07:02:01.155Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/89/08794ed1f3ea6b5a31370aa8b66c34b97c75256747f682d2ebc3a4ec8d1f/ansys_api_fluent-0.4.1-py3-none-any.whl", hash = "sha256:fa9c33f1efaff42936f76197dd11ffa84ab14cae9fc7c6b760228726d886310b", size = 280281, upload-time = "2026-06-24T10:01:43.557Z" },
+    { url = "https://files.pythonhosted.org/packages/cf/2d/2147fce37c7bd56eef3aa6ac306297f97ccd0209071d300ac6b1e1e30f72/ansys_api_fluent-0.6.0-py3-none-any.whl", hash = "sha256:4967f2a5702ea0059724af57be7d7ce02b901d30786e7ec13b28e95e35d4f969", size = 284412, upload-time = "2026-08-02T07:01:59.668Z" },
 ]
 
 [[package]]
@@ -133,7 +133,7 @@ wheels = [
 
 [[package]]
 name = "ansys-fluent-core"
-version = "0.40.2"
+version = "0.41.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-api-fluent" },
@@ -154,9 +154,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dd/c8/aa8f78e5dfd00d7131781ffeae4b75d40ddda52a3b3f910d62bfec5c10b6/ansys_fluent_core-0.40.2.tar.gz", hash = "sha256:1a555bb1dee68604e078f776c9a42a821827a184c6111cf8706d6930275f5612", size = 22443056, upload-time = "2026-07-14T16:21:39.143Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/c9/d4751d785005e814ca30a50d039487deaa8b3c872aec459abed7260bf1ee/ansys_fluent_core-0.41.0.tar.gz", hash = "sha256:e684a68fc1f2b113dcd94484fecdc8c700b30305bdc54694c5bcf3db4308fc32", size = 22320943, upload-time = "2026-08-06T13:10:18.155Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/91/f6/8301cd434a058503f1ee984789f1c3b8456fd48fc682c225ace3b0786869/ansys_fluent_core-0.40.2-py3-none-any.whl", hash = "sha256:80434128a886a70b36ddc5d90f8ae8ff0738b45f3ec3bf28cf91f304c92944e2", size = 7041164, upload-time = "2026-07-14T16:21:36.332Z" },
+    { url = "https://files.pythonhosted.org/packages/45/1e/47e92165d61b12457467bd5b7b09702d7d4843f689cf9cbcbb6c0650eb2a/ansys_fluent_core-0.41.0-py3-none-any.whl", hash = "sha256:ae83fd10ced9d35c82205520d83e2e7add9fa18e7e49941cf3d741a908d1678d", size = 6814623, upload-time = "2026-08-06T13:10:15.744Z" },
 ]
 
 [[package]]
