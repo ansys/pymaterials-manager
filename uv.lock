@@ -161,7 +161,7 @@ wheels = [
 
 [[package]]
 name = "ansys-mapdl-core"
-version = "0.73.2"
+version = "0.74.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-api-mapdl" },
@@ -178,14 +178,15 @@ dependencies = [
     { name = "psutil" },
     { name = "pyiges", extra = ["full"] },
     { name = "pyvista" },
+    { name = "rich-rst" },
     { name = "scipy" },
     { name = "tabulate" },
     { name = "tqdm" },
     { name = "vtk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6c/c3/4aa656a09e3aa7c450f1ab0ae40794fabec8a7112a3517ccef421525b525/ansys_mapdl_core-0.73.2.tar.gz", hash = "sha256:c02f5cf27c268d57c4c82352c6f36d98c9c91250cfb8459436b31b9aa8a67039", size = 1908114, upload-time = "2026-07-02T10:28:33.759Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/81/36a03ca394a56fbb95a6e0a935eab9e8f4628cb8c5bad43f1d8fbb006193/ansys_mapdl_core-0.74.0.tar.gz", hash = "sha256:568c99ae4fd130dfecb96229e830619a2cf9ae2af5dc4777b1de35cfd29df221", size = 1920464, upload-time = "2026-08-10T07:25:26.268Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ab/12/1175ef3595da396eb419bd275023051249b98d1b170730e43d2c67e60f21/ansys_mapdl_core-0.73.2-py3-none-any.whl", hash = "sha256:44c1ce646d27706754b46ff2c529865658c6eb424626fd33735a8ca7f109775e", size = 2937687, upload-time = "2026-07-02T10:28:31.464Z" },
+    { url = "https://files.pythonhosted.org/packages/8c/5c/ad5dec6bec8e9c4196dfc8cfb4d9c34ece2db1ea7ddd80b0d60e01e1ee71/ansys_mapdl_core-0.74.0-py3-none-any.whl", hash = "sha256:612c1612b80e2a5c6d3ff2fefe8d2d7839fbfe511901f7e51db9b3b40bcac7b3", size = 2955075, upload-time = "2026-08-10T07:25:24.197Z" },
 ]
 
 [[package]]
