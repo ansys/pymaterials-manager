@@ -425,11 +425,16 @@ class MaterialModel(BaseModel, abc.ABC):
             ind_parameter_ranges.append(min_max[i], i)
 
         if not self.interpolation_options:
-            raise ValueError("Querying a material model with no interpolation options.")
-
-        algorithm = MATML_TO_GIL_ALGORITHM_MAPPING.get(
-            self.interpolation_options.algorithm_type, None
-        )
+            # default to linear multivariate if no interpolation options are provided
+            algorithm = MATML_TO_GIL_ALGORITHM_MAPPING.get("Linear Multivariate", None)
+            is_cached = True
+            is_normalized = True
+        else:
+            algorithm = MATML_TO_GIL_ALGORITHM_MAPPING.get(
+                self.interpolation_options.algorithm_type, None
+            )
+            is_cached = self.interpolation_options.cached
+            is_normalized = self.interpolation_options.normalized
 
         if algorithm is None:
             raise ValueError("Querying a material model with no interpolation options algorithm.")
