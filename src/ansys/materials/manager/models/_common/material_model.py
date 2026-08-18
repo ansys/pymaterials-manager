@@ -463,8 +463,6 @@ class MaterialModel(BaseModel, abc.ABC):
         if algorithm is None:
             raise ValueError("Querying a material model with no interpolation options algorithm.")
 
-        is_cached = self.interpolation_options.cached
-        is_normalized = self.interpolation_options.normalized
         # TODO need to adapt algorithm options
         algorithm_options = None
         gil_interpolator = dpf.Operator("gil::interpolation_operator")
