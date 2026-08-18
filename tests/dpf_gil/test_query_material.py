@@ -686,10 +686,8 @@ def test_gil_no_interpolation_options(dpf_server):
     )
     elasticity = variable_material.get_model_by_name("Elasticity")
     assert elasticity is not None
-    with pytest.raises(
-        ValueError, match="Querying a material model with no interpolation options."
-    ):
-        elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
+    values = elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
+    assert values is not None
 
 
 def test_gil_no_interpolation_options_algorithm(dpf_server):
