@@ -25,8 +25,8 @@ from pathlib import Path
 from ansys.mapdl.core import Mapdl
 import pytest
 
-from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager.parsers.mapdl.mapdl_reader import read_mapdl
+from ansys.materials.manager.integrations import read_mapdl
+from ansys.materials.manager.models import HillYieldCriterion
 
 DIR_PATH = Path(__file__).resolve().parent
 HILL_VARIABLE_A11_A22 = DIR_PATH.joinpath("..", "data", "mapdl_hill_variable_a11_a22.cdb")

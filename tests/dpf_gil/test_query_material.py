@@ -28,15 +28,13 @@ from ansys.units import Quantity
 import numpy as np
 import pytest
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.interpolation_options import InterpolationOptions
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
+from ansys.materials.manager.models import (
     ElasticityIsotropic,
-)
-from ansys.materials.manager._models._material_models.stress_limits_orthotropic import (
+    IndependentParameter,
+    InterpolationOptions,
+    Material,
     StressLimitsOrthotropic,
 )
-from ansys.materials.manager._models.material import Material
 
 pytestmark = pytest.mark.dpf_gil_integration
 

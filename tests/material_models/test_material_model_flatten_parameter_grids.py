@@ -23,10 +23,11 @@
 from ansys.units import Quantity
 import pytest
 
-from ansys.materials.manager._models._common import IndependentParameter, TabularQuantity
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
+from ansys.materials.manager.models import (
+    Density,
     ElasticityIsotropic,
+    IndependentParameter,
+    TabularQuantity,
 )
 
 

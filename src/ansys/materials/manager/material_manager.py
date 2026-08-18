@@ -27,18 +27,16 @@ import logging
 from pathlib import Path
 from typing import Any, Sequence
 
-from ansys.dyna.core import Deck
-from ansys.dyna.core.lib.keyword_base import KeywordBase
-
-from ansys.materials.manager._models._common import _FluentCore, _MapdlCore
-from ansys.materials.manager._models._common.material_model import MaterialModel
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.fluent.fluent_writer import FluentWriter
-from ansys.materials.manager.parsers.lsdyna.lsdyna_writer import LsDynaWriter
-from ansys.materials.manager.parsers.mapdl.mapdl_reader import read_mapdl
-from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
-from ansys.materials.manager.parsers.matml.matml_reader import MatmlReader
-from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
+from .integrations import (
+    FluentWriter,
+    LsDynaWriter,
+    MapdlWriter,
+    MatmlReader,
+    MatmlWriter,
+    read_mapdl,
+)
+from .models import Material, MaterialModel
+from .models._common import _DynaDeck, _DynaKeywordBase, _FluentCore, _MapdlCore
 
 
 class MaterialManager:
@@ -162,8 +160,8 @@ class MaterialManager:
         self._add_library(materials)
 
     def write_to_ls_dyna(
-        self, deck: Deck | None = None, material_names: list[str] | None = None
-    ) -> list[KeywordBase] | None:
+        self, deck: _DynaDeck | None = None, material_names: list[str] | None = None
+    ) -> list[_DynaKeywordBase] | None:
         """Write the materials in the library to a LS-DYNA keyword file."""
         materials = self._get_materials_to_write(material_names)
         writer = LsDynaWriter(materials)
@@ -264,8 +262,8 @@ class MaterialManager:
         """
         import webbrowser
 
-        from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
-        from ansys.materials.manager.parsers.rest.rest_session_client import RestSessionClient
+        from .integrations.rest.rest_material_reader import RestMaterialReader
+        from .integrations.rest.rest_session_client import RestSessionClient
 
         with RestSessionClient(
             base_url=granta_mi_url,

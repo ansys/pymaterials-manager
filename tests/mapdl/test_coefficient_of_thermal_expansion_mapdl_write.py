@@ -24,16 +24,14 @@ from pathlib import Path
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common.independent_parameter import IndependentParameter
-from ansys.materials.manager._models._common.model_qualifier import ModelQualifier
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+from ansys.materials.manager.integrations import MapdlWriter
+from ansys.materials.manager.models import (
     CoefficientofThermalExpansionIsotropic,
-)
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_orthotropic import (  # noqa: E501
     CoefficientofThermalExpansionOrthotropic,
+    IndependentParameter,
+    Material,
+    ModelQualifier,
 )
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 COEFFICIENT_OF_THERMAL_EXPANSION_SECANT_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(

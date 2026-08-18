@@ -24,20 +24,16 @@ from pathlib import Path
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import (
+from ansys.materials.manager.integrations import MapdlWriter
+from ansys.materials.manager.models import (
+    ElasticityAnisotropic,
+    ElasticityIsotropic,
+    ElasticityOrthotropic,
     IndependentParameter,
     InterpolationOptions,
+    Material,
+    TabularQuantity,
 )
-from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
-from ansys.materials.manager._models._material_models import ElasticityIsotropic
-from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
-    ElasticityAnisotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
-    ElasticityOrthotropic,
-)
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.mapdl.mapdl_writer import MapdlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 ELASTICITY_ISOTROPIC_CONSTANT = DIR_PATH.joinpath(

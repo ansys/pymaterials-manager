@@ -11,6 +11,9 @@ with this guide before attempting to contribute to PyMaterials Manager.
  
 The following contribution information is specific to PyMaterials Manager.
 
+For architecture and extension workflows (visitor pattern, new models, new solver
+maps), see :ref:`ref_developer_guide`.
+
 
 Clone the repository and install the package
 ============================================

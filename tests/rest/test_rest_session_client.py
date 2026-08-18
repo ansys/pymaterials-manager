@@ -26,7 +26,7 @@ from unittest.mock import patch
 import httpx
 import pytest
 
-from ansys.materials.manager.parsers.rest.rest_session_client import (
+from ansys.materials.manager.integrations.rest.rest_session_client import (
     AuthenticationError,
     GrantaMIError,
     RestSessionClient,
@@ -160,7 +160,7 @@ def test_fetch_data_polls_then_times_out(httpx_mock, mock_auth):
     # sees the deadline has expired.
     _times = iter([0.0, 0.0, 999.0])  # deadline=1.0; first remaining>0; second remaining<=0
     with patch(
-        "ansys.materials.manager.parsers.rest.rest_session_client.time.monotonic",
+        "ansys.materials.manager.integrations.rest.rest_session_client.time.monotonic",
         side_effect=_times,
     ):
         with pytest.raises(GrantaMIError, match="Timed out"):

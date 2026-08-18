@@ -25,17 +25,16 @@ from pathlib import Path
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml
 
-from ansys.materials.manager._models._common import IndependentParameter, ModelQualifier
-from ansys.materials.manager._models._material_models.fiber_angle import FiberAngle
-from ansys.materials.manager._models._material_models.puck_constants import PuckConstants
-from ansys.materials.manager._models._material_models.puck_constants_additional import (
+from ansys.materials.manager.integrations.matml.matml_writer import MatmlWriter
+from ansys.materials.manager.models import (
     AdditionalPuckConstants,
-)
-from ansys.materials.manager._models._material_models.stress_limits_orthotropic import (
+    FiberAngle,
+    IndependentParameter,
+    Material,
+    ModelQualifier,
+    PuckConstants,
     StressLimitsOrthotropic,
 )
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 FIBER_ANGLE = DIR_PATH.joinpath("..", "data", "matml_fiber_angle.txt")

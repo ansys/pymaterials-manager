@@ -22,7 +22,7 @@
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._common import IndependentParameter
+from ansys.materials.manager.models import IndependentParameter
 
 
 def test_independent_parameter_creation():

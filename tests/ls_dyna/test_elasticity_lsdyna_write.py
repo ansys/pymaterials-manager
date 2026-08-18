@@ -22,18 +22,14 @@
 
 from ansys.units import Quantity
 
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_anisotropic import (
+from ansys.materials.manager.integrations import LsDynaWriter
+from ansys.materials.manager.models import (
+    Density,
     ElasticityAnisotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
     ElasticityIsotropic,
-)
-from ansys.materials.manager._models._material_models.elasticity_orthotropic import (
     ElasticityOrthotropic,
+    Material,
 )
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.lsdyna.lsdyna_writer import LsDynaWriter
 
 
 def test_constant_elasticity_isotropic_write():

@@ -25,8 +25,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.material_manager import MaterialManager
+from ansys.materials.manager import MaterialManager
+from ansys.materials.manager.models import Material
 
 GRANTA_MI_URL = "https://grantamaterials.ansys.com"
 _SESSIONS_URL = f"{GRANTA_MI_URL}/is/api/v1/sessions/"
@@ -37,7 +37,7 @@ _DELETE_URL = f"{GRANTA_MI_URL}/is/api/v1/sessions/{_SESSION_ID}"
 _RAW_DATA = {"materials": [{"materialName": "Steel", "materialId": "mat-1", "models": []}]}
 _MATERIAL_DICT = {"Steel": Material(name="Steel", material_id="mat-1")}
 
-_READER_PATH = "ansys.materials.manager.parsers.rest.rest_material_reader.RestMaterialReader"
+_READER_PATH = "ansys.materials.manager.integrations.rest.rest_material_reader.RestMaterialReader"
 
 
 @pytest.fixture

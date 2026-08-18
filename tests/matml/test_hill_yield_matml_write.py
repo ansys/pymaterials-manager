@@ -25,16 +25,16 @@ from pathlib import Path
 from ansys.units import Quantity
 from utilities import get_material_and_metadata_from_xml
 
-from ansys.materials.manager._models._common import (
+from ansys.materials.manager.integrations import MatmlWriter
+from ansys.materials.manager.models import (
+    HillYieldCriterion,
     IndependentParameter,
     InterpolationOptions,
+    KinematicHardening,
+    Material,
     ModelQualifier,
+    StrainHardening,
 )
-from ansys.materials.manager._models._material_models.hill_yield_criterion import HillYieldCriterion
-from ansys.materials.manager._models._material_models.kinematic_hardening import KinematicHardening
-from ansys.materials.manager._models._material_models.strain_hardening import StrainHardening
-from ansys.materials.manager._models.material import Material
-from ansys.materials.manager.parsers.matml.matml_writer import MatmlWriter
 
 DIR_PATH = Path(__file__).resolve().parent
 HILL_YIELD = DIR_PATH.joinpath("..", "data", "matml_hill_yield.txt")

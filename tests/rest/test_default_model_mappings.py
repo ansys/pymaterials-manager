@@ -24,22 +24,19 @@ import json
 
 import pytest
 
-from ansys.materials.manager._models._material_models.cofficient_of_thermal_expansion_isotropic import (  # noqa: E501
+from ansys.materials.manager.integrations import RestMaterialReader
+from ansys.materials.manager.integrations.rest._rest_model_map import (
+    MATERIAL_MODEL_MAP,
+    MODEL_ID_MAP,
+)
+from ansys.materials.manager.models import (
     CoefficientofThermalExpansionIsotropic,
-)
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.elasticity_isotropic import (
+    Density,
     ElasticityIsotropic,
-)
-from ansys.materials.manager._models._material_models.electrical_resistivity_isotropic import (
     ElectricalResistivityIsotropic,
-)
-from ansys.materials.manager._models._material_models.specific_heat import SpecificHeat
-from ansys.materials.manager._models._material_models.thermal_conductivity_isotropic import (
+    SpecificHeat,
     ThermalConductivityIsotropic,
 )
-from ansys.materials.manager.parsers.rest._rest_model_map import MATERIAL_MODEL_MAP, MODEL_ID_MAP
-from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
 
 _Z_99_INNER = {
     "materials": [

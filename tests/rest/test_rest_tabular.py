@@ -23,25 +23,25 @@
 from ansys.units import Quantity
 import pytest
 
-from ansys.materials.manager._models._common.tabular_quantity import TabularQuantity
-from ansys.materials.manager._models._material_models.density import Density
-from ansys.materials.manager._models._material_models.isotropic_hardening import IsotropicHardening
-from ansys.materials.manager._models._material_models.tensile_strength import (
-    TensileStrengthUltimate,
-    TensileStrengthYield,
-)
-from ansys.materials.manager.parsers._common import ModelInfo
-from ansys.materials.manager.parsers.rest._rest_model_map import (
+from ansys.materials.manager.integrations import RestMaterialReader
+from ansys.materials.manager.integrations._common import ModelInfo
+from ansys.materials.manager.integrations.rest._rest_model_map import (
     MATERIAL_MODEL_MAP,
     MODEL_ID_INFO_MAP,
     MODEL_ID_MAP,
     _tabular_reader,
 )
-from ansys.materials.manager.parsers.rest._rest_reader import (
+from ansys.materials.manager.integrations.rest._rest_reader import (
     get_dimensionality,
     get_tabular_property,
 )
-from ansys.materials.manager.parsers.rest.rest_material_reader import RestMaterialReader
+from ansys.materials.manager.models import (
+    Density,
+    IsotropicHardening,
+    TabularQuantity,
+    TensileStrengthUltimate,
+    TensileStrengthYield,
+)
 
 from .common import (
     minimal_json,
@@ -371,7 +371,7 @@ class TestDimensionalityPreference:
         )
 
         with caplog.at_level(
-            logging.DEBUG, logger="ansys.materials.manager.parsers.rest.rest_material_reader"
+            logging.DEBUG, logger="ansys.materials.manager.integrations.rest.rest_material_reader"
         ):
             result = RestMaterialReader(raw).convert_materials()
 
@@ -407,7 +407,7 @@ class TestDimensionalityPreference:
         )
 
         with caplog.at_level(
-            logging.WARNING, logger="ansys.materials.manager.parsers.rest.rest_material_reader"
+            logging.WARNING, logger="ansys.materials.manager.integrations.rest.rest_material_reader"
         ):
             result = RestMaterialReader(raw).convert_materials()
 

@@ -30,7 +30,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from ansys.materials.manager.parsers.rest._rest_model_map import (
+from ansys.materials.manager.integrations.rest._rest_model_map import (
     MATERIAL_MODEL_MAP,
     MODEL_ID_INFO_MAP,
     MODEL_ID_MAP,
@@ -77,7 +77,7 @@ for _mod in [
 
 
 _AUTH_PATH = (
-    "ansys.materials.manager.parsers.rest.rest_session_client."
+    "ansys.materials.manager.integrations.rest.rest_session_client."
     "RestSessionClient._authenticate_hosted_granta_mi"
 )
 
