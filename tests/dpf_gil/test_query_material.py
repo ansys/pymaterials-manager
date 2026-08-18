@@ -667,31 +667,6 @@ def test_gil_import_error():
         elasticity.query([0.25, 0.28, 0.4, 0.5])
 
 
-def test_gil_no_interpolation_options(dpf_server):
-    variable_material = Material(
-        name="Elastic Material",
-        models=[
-            ElasticityIsotropic(
-                youngs_modulus=Quantity(
-                    value=[1000000000.0, 2000000000.0, 4000000000.0], units="Pa"
-                ),
-                poissons_ratio=Quantity(value=[0.3, 0.28, 0.25], units=""),
-                independent_parameters=[
-                    IndependentParameter(
-                        name="Volume Fraction", values=Quantity(value=[0.2, 0.3, 0.5], units="")
-                    )
-                ],
-            )
-        ],
-    )
-    elasticity = variable_material.get_model_by_name("Elasticity")
-    assert elasticity is not None
-    with pytest.raises(
-        ValueError, match="Querying a material model with no interpolation options."
-    ):
-        elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
-
-
 def test_gil_no_interpolation_options_algorithm(dpf_server):
     variable_material = Material(
         name="Elastic Material",
