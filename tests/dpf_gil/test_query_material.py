@@ -666,6 +666,7 @@ def test_gil_import_error():
     ):
         elasticity.query([0.25, 0.28, 0.4, 0.5])
 
+
 def test_gil_no_interpolation_options(dpf_server):
     variable_material = Material(
         name="Elastic Material",
@@ -687,6 +688,7 @@ def test_gil_no_interpolation_options(dpf_server):
     assert elasticity is not None
     values = elasticity.query([0.25, 0.28, 0.4, 0.5], dpf_server=dpf_server)
     assert values is not None
+
 
 def test_gil_no_interpolation_options_algorithm(dpf_server):
     variable_material = Material(
