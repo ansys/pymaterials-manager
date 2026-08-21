@@ -1,0 +1,139 @@
+
+
+
+
+
+
+:class:`MatmlWriter`
+====================
+
+
+.. py:class:: ansys.materials.manager.integrations.matml.matml_writer.MatmlWriter(materials: list[ansys.materials.manager.models.Material])
+
+   Bases: :py:obj:`ansys.materials.manager.integrations.base_visitor.BaseVisitor`
+
+
+   
+   Write materials to MatML XML using the visitor pattern.
+
+   On construction, each supported :class:`~.MaterialModel` on the given
+   materials is visited via :meth:`~.MaterialModel.accept`. Output XML
+   fragments are stored in ``_material_repr`` until :meth:`write` is called.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MatmlWriter
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit`
+            - Dispatch MatML serialization by model type.
+          * - :py:attr:`~write`
+            - Write a MatML (engineering data XML format) representation of materials to file.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.integrations.matml.matml_writer import MatmlWriter
+
+
+
+Method detail
+-------------
+
+.. py:method:: visit(material_model: ansys.materials.manager.models.MaterialModel, *, material_name: str)
+
+   
+   Dispatch MatML serialization by model type.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write(path: ansys.materials.manager.integrations._common._PATH_TYPE, indent: Optional[bool] = False, xml_declaration: Optional[bool] = False) -> None
+
+   
+   Write a MatML (engineering data XML format) representation of materials to file.
+
+
+   :Parameters:
+
+       **path:**
+           File path.
+
+       **indent** : :obj:`Optional`\[:ref:`bool <python:bltin-boolean-values>`]
+           Whether to add an indent to format the XML output.
+           Defaults to ``false``.
+
+       **xml_declaration: Optional[bool]**
+           Whether to add the XML declaration to the output.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

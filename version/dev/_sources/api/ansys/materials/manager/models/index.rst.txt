@@ -1,0 +1,449 @@
+
+
+
+
+
+
+The ``models`` package
+==========================
+
+.. py:module:: ansys.materials.manager.models
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: models
+.. tab-set::
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.models.material`
+            - 
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.models.IndependentParameter`
+            - Class representing an independent parameter in a material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.InterpolationOptions`
+            - Class to hold interpolation options for material models.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.MaterialModel`
+            - A base class for representing a material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ModelQualifier`
+            - Class representing a model qualifier in a material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.TabularQuantity`
+            - A quantity defined over one or more independent parameter grids.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.UserParameter`
+            - Class representing an user parameter in a material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.AdditionalPuckConstants`
+            - Represents additional Puck constants for material modeling.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.CoefficientofThermalExpansionIsotropic`
+            - Represents an isotropic coefficient of thermal expansion material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.CoefficientofThermalExpansionOrthotropic`
+            - Represents an orthotropic coefficient of thermal expansion material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.CompressiveStrengthUltimate`
+            - Represents an ultimate compressive strength material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.Density`
+            - Represents an isotropic density material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ElasticityAnisotropic`
+            - Represents an isotropic elasticity material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ElasticityIsotropic`
+            - Represents an isotropic elasticity material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ElasticityOrthotropic`
+            - Represents an isotropic elasticity material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ElectricalResistivityIsotropic`
+            - Represents an isotropic electrical resistivity material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.FabricFiberAngle`
+            - Represents a fabric fiber angle material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.FiberAngle`
+            - Represents a fiber angle material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.HillYieldCriterion`
+            - Represents a Hill yield criterion material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.IsotropicHardening`
+            - Represents an isotropic hardening material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.IsotropicHardeningVoceLaw`
+            - Represents an isotropic hardening material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.KinematicHardening`
+            - Represents a kinematic hardening material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.LaRc0304Constants`
+            - Represents a LaRc03/04 constants material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ModelCoefficients`
+            - Represents a usermat constants material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.MolecularWeight`
+            - Represents a molecular weight material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.PlyType`
+            - Represents a ply type material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.PuckConstants`
+            - Represents a Puck constants material model for composite materials.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.SpecificHeat`
+            - Represents a specific heat material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.SpeedofSound`
+            - Represents a speed of sound material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.StrainHardening`
+            - Represents a strain hardening material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.StrainLimitsIsotropic`
+            - Represents a strain limits isotropic material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.StrainLimitsOrthotropic`
+            - Represents a strain limits orthotropic material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.StressLimitsOrthotropic`
+            - Represents a stress limits orthotropic material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.TensileElongation`
+            - Represents a tensile elongation (ductility) material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.TensileStrengthUltimate`
+            - Represents an ultimate tensile strength material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.TensileStrengthYield`
+            - Represents a yield (proof) tensile strength material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ThermalConductivityIsotropic`
+            - Represents an isotropic thermal conductivity material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ThermalConductivityOrthotropic`
+            - Represents an orthotropic thermal conductivity material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.TsaiWuConstants`
+            - Represents a Tsai-wu constants material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.Viscosity`
+            - Represents a Viscosity material model.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ZeroThermalStrainReferenceTemperatureIsotropic`
+            - Represents a zero thermal strain reference temperature material model for isotropic materials.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.ZeroThermalStrainReferenceTemperatureOrthotropic`
+            - Represents a zero thermal strain reference temperature material model for orthotropic materials.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.Material`
+            - Provides a wrapper class for managing a material.
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.models.SupportedPackage`
+            - Provides the enum representing the packages supported by the Material Manager.
+
+
+          * - :py:obj:`~ansys.materials.manager.models.QualifierType`
+            - Enum for qualifier types in material models.
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~validate_and_initialize_model_qualifiers`
+            - Validate and initialize model qualifiers based on expected values.
+
+
+          * - :py:obj:`~validate_parameters`
+            - Validate the parameters.
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-fa-file"></span> material</api/ansys/materials/manager/models/material/index>
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> IndependentParameter</api/ansys/materials/manager/models/IndependentParameter>
+    <span class="nf nf-cod-symbol_class"></span> InterpolationOptions</api/ansys/materials/manager/models/InterpolationOptions>
+    <span class="nf nf-cod-symbol_class"></span> MaterialModel</api/ansys/materials/manager/models/MaterialModel>
+    <span class="nf nf-cod-symbol_class"></span> ModelQualifier</api/ansys/materials/manager/models/ModelQualifier>
+    <span class="nf nf-cod-symbol_class"></span> TabularQuantity</api/ansys/materials/manager/models/TabularQuantity>
+    <span class="nf nf-cod-symbol_class"></span> UserParameter</api/ansys/materials/manager/models/UserParameter>
+    <span class="nf nf-cod-symbol_class"></span> AdditionalPuckConstants</api/ansys/materials/manager/models/AdditionalPuckConstants>
+    <span class="nf nf-cod-symbol_class"></span> CoefficientofThermalExpansionIsotropic</api/ansys/materials/manager/models/CoefficientofThermalExpansionIsotropic>
+    <span class="nf nf-cod-symbol_class"></span> CoefficientofThermalExpansionOrthotropic</api/ansys/materials/manager/models/CoefficientofThermalExpansionOrthotropic>
+    <span class="nf nf-cod-symbol_class"></span> CompressiveStrengthUltimate</api/ansys/materials/manager/models/CompressiveStrengthUltimate>
+    <span class="nf nf-cod-symbol_class"></span> Density</api/ansys/materials/manager/models/Density>
+    <span class="nf nf-cod-symbol_class"></span> ElasticityAnisotropic</api/ansys/materials/manager/models/ElasticityAnisotropic>
+    <span class="nf nf-cod-symbol_class"></span> ElasticityIsotropic</api/ansys/materials/manager/models/ElasticityIsotropic>
+    <span class="nf nf-cod-symbol_class"></span> ElasticityOrthotropic</api/ansys/materials/manager/models/ElasticityOrthotropic>
+    <span class="nf nf-cod-symbol_class"></span> ElectricalResistivityIsotropic</api/ansys/materials/manager/models/ElectricalResistivityIsotropic>
+    <span class="nf nf-cod-symbol_class"></span> FabricFiberAngle</api/ansys/materials/manager/models/FabricFiberAngle>
+    <span class="nf nf-cod-symbol_class"></span> FiberAngle</api/ansys/materials/manager/models/FiberAngle>
+    <span class="nf nf-cod-symbol_class"></span> HillYieldCriterion</api/ansys/materials/manager/models/HillYieldCriterion>
+    <span class="nf nf-cod-symbol_class"></span> IsotropicHardening</api/ansys/materials/manager/models/IsotropicHardening>
+    <span class="nf nf-cod-symbol_class"></span> IsotropicHardeningVoceLaw</api/ansys/materials/manager/models/IsotropicHardeningVoceLaw>
+    <span class="nf nf-cod-symbol_class"></span> KinematicHardening</api/ansys/materials/manager/models/KinematicHardening>
+    <span class="nf nf-cod-symbol_class"></span> LaRc0304Constants</api/ansys/materials/manager/models/LaRc0304Constants>
+    <span class="nf nf-cod-symbol_class"></span> ModelCoefficients</api/ansys/materials/manager/models/ModelCoefficients>
+    <span class="nf nf-cod-symbol_class"></span> MolecularWeight</api/ansys/materials/manager/models/MolecularWeight>
+    <span class="nf nf-cod-symbol_class"></span> PlyType</api/ansys/materials/manager/models/PlyType>
+    <span class="nf nf-cod-symbol_class"></span> PuckConstants</api/ansys/materials/manager/models/PuckConstants>
+    <span class="nf nf-cod-symbol_class"></span> SpecificHeat</api/ansys/materials/manager/models/SpecificHeat>
+    <span class="nf nf-cod-symbol_class"></span> SpeedofSound</api/ansys/materials/manager/models/SpeedofSound>
+    <span class="nf nf-cod-symbol_class"></span> StrainHardening</api/ansys/materials/manager/models/StrainHardening>
+    <span class="nf nf-cod-symbol_class"></span> StrainLimitsIsotropic</api/ansys/materials/manager/models/StrainLimitsIsotropic>
+    <span class="nf nf-cod-symbol_class"></span> StrainLimitsOrthotropic</api/ansys/materials/manager/models/StrainLimitsOrthotropic>
+    <span class="nf nf-cod-symbol_class"></span> StressLimitsOrthotropic</api/ansys/materials/manager/models/StressLimitsOrthotropic>
+    <span class="nf nf-cod-symbol_class"></span> TensileElongation</api/ansys/materials/manager/models/TensileElongation>
+    <span class="nf nf-cod-symbol_class"></span> TensileStrengthUltimate</api/ansys/materials/manager/models/TensileStrengthUltimate>
+    <span class="nf nf-cod-symbol_class"></span> TensileStrengthYield</api/ansys/materials/manager/models/TensileStrengthYield>
+    <span class="nf nf-cod-symbol_class"></span> ThermalConductivityIsotropic</api/ansys/materials/manager/models/ThermalConductivityIsotropic>
+    <span class="nf nf-cod-symbol_class"></span> ThermalConductivityOrthotropic</api/ansys/materials/manager/models/ThermalConductivityOrthotropic>
+    <span class="nf nf-cod-symbol_class"></span> TsaiWuConstants</api/ansys/materials/manager/models/TsaiWuConstants>
+    <span class="nf nf-cod-symbol_class"></span> Viscosity</api/ansys/materials/manager/models/Viscosity>
+    <span class="nf nf-cod-symbol_class"></span> ZeroThermalStrainReferenceTemperatureIsotropic</api/ansys/materials/manager/models/ZeroThermalStrainReferenceTemperatureIsotropic>
+    <span class="nf nf-cod-symbol_class"></span> ZeroThermalStrainReferenceTemperatureOrthotropic</api/ansys/materials/manager/models/ZeroThermalStrainReferenceTemperatureOrthotropic>
+    <span class="nf nf-cod-symbol_class"></span> Material</api/ansys/materials/manager/models/Material>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_enum"></span> SupportedPackage</api/ansys/materials/manager/models/SupportedPackage>
+    <span class="nf nf-cod-symbol_enum"></span> QualifierType</api/ansys/materials/manager/models/QualifierType>
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+Public material model definitions for PyMaterials Manager.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+
+
