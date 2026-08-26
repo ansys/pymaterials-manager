@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ansys.units import Quantity
+import math
+
+from ansys.units import Quantity, UnitSystem
 import pytest
 
 from ansys.materials.manager.models import (
@@ -224,3 +226,60 @@ def test_get_independent_parameter_by_name():
     assert temp_param.name == "Temperature"
     assert temp_param.values.value == [1.0]
     assert temp_param.values.unit == "C"
+
+
+SI = UnitSystem(system="SI")
+
+
+def test_convert_density_to_si():
+    density = Density(density=Quantity(value=[1.0], units="g cm^-3"))
+    density.convert_to_unit_system(SI)
+    assert math.isclose(density.density.value[0], 1000.0, rel_tol=1e-6)
+
+
+def test_convert_density_multiple_values_to_si():
+    density = Density(density=Quantity(value=[1.0, 2.0, 3.0], units="g cm^-3"))
+    density.convert_to_unit_system(SI)
+    assert math.isclose(density.density.value[0], 1000.0, rel_tol=1e-6)
+    assert math.isclose(density.density.value[1], 2000.0, rel_tol=1e-6)
+    assert math.isclose(density.density.value[2], 3000.0, rel_tol=1e-6)
+
+
+def test_convert_density_independent_parameter_to_si():
+    density = Density(
+        density=Quantity(value=[1.0, 2.0], units="g cm^-3"),
+        independent_parameters=[
+            IndependentParameter(name="Temperature", values=Quantity(value=[0.0, 100.0], units="C"))
+        ],
+    )
+    density.convert_to_unit_system(SI)
+    assert math.isclose(density.density.value[0], 1000.0, rel_tol=1e-6)
+    assert math.isclose(density.density.value[1], 2000.0, rel_tol=1e-6)
+    assert math.isclose(density.independent_parameters[0].values.value[0], 273.15, rel_tol=1e-6)
+    assert math.isclose(density.independent_parameters[0].values.value[1], 373.15, rel_tol=1e-6)
+
+
+def test_convert_elasticity_youngs_modulus_to_si():
+    elasticity = ElasticityIsotropic(
+        youngs_modulus=Quantity(value=[1.0], units="MPa"),
+        poissons_ratio=Quantity(value=[0.3], units=""),
+    )
+    elasticity.convert_to_unit_system(SI)
+    assert math.isclose(elasticity.youngs_modulus.value[0], 1e6, rel_tol=1e-6)
+
+
+def test_convert_material_delegates_to_models():
+    material = Material(
+        name="Test",
+        models=[Density(density=Quantity(value=[1.0], units="g cm^-3"))],
+    )
+    material.convert_to_unit_system(SI)
+    density_model = material.get_model_by_name("Density")
+    assert math.isclose(density_model.density.value[0], 1000.0, rel_tol=1e-6)
+
+
+def test_convert_preserves_unit_system_in_unit_string():
+    density = Density(density=Quantity(value=[1.0], units="g cm^-3"))
+    original_unit = density.density.unit
+    density.convert_to_unit_system(SI)
+    assert density.density.unit != original_unit

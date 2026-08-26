@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.24,<3",
-    "ansys-units>=0.8.dev0",
+    "ansys-units @ git+https://github.com/ansys/pyansys-units@feat/custom_unit_system",
     "pydantic>=2.7.0",
     "defusedxml>=0.7",
 ]
@@ -104,3 +104,6 @@ addopts = [
 
 [tool.bandit]
 skips = ["B101"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
