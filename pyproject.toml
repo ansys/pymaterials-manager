@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.24,<3",
-    "ansys-units @ git+https://github.com/ansys/pyansys-units@feat/custom_unit_system",
+    "ansys-units>=0.13.0",
     "pydantic>=2.7.0",
     "defusedxml>=0.7",
 ]
