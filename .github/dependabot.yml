@@ -9,6 +9,16 @@ updates:
     labels:
       - "maintenance"
       - "dependencies"
+    groups:
+      doc-deps:
+        patterns:
+        - "*sphinx*"
+        - "numpydoc"
+      dev-deps:
+        patterns:
+        - "pytest*"
+        - "pre-commit"
+        - "twine"
 
   - package-ecosystem: "github-actions"
     cooldown:
@@ -16,3 +26,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+       actions:
+          patterns:
+            - "*"
