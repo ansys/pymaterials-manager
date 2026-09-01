@@ -24,7 +24,7 @@ from functools import singledispatchmethod
 from typing import Optional
 import xml.etree.ElementTree as ET  # nosec B405
 
-from ansys.units import Quantity
+from ansys.units import Quantity, UnitSystem
 
 from . import _matml_strings as _matml_strings
 from ...models import (
@@ -59,9 +59,10 @@ class MatmlWriter(BaseVisitor):
     _metadata_parameters_units: dict
     _metadata_property_sets_units: dict
 
-    def __init__(self, materials: list[Material]):
+    def __init__(self, materials: list[Material], unit_system: UnitSystem | None = None):
         """Initialize the class."""
         super().__init__(materials=materials, model_map=MATERIAL_MODEL_MAP)
+        self._unit_system = unit_system
         self._metadata_parameters = {}
         self._metadata_property_sets = {}
         self._metadata_parameters_units = {}
@@ -176,8 +177,16 @@ class MatmlWriter(BaseVisitor):
         """Add independent parameters."""
         if independent_parameters:
             for independent_parameter in independent_parameters:
+                param_values = independent_parameter.values
+                if isinstance(param_values, Quantity) and self._unit_system is not None:
+                    param_values = param_values.convert(self._unit_system)
                 parameter_id = self._get_parameter_id(
-                    independent_parameter.name, independent_parameter.values.unit
+                    independent_parameter.name,
+                    (
+                        param_values.unit
+                        if isinstance(param_values, Quantity)
+                        else independent_parameter.values.unit
+                    ),
                 )
                 parameter_element = ET.SubElement(
                     property_data_element,
@@ -188,7 +197,7 @@ class MatmlWriter(BaseVisitor):
                     },
                 )
                 data_element = ET.SubElement(parameter_element, _matml_strings.DATA_KEY)
-                values = independent_parameter.values
+                values = param_values
                 if isinstance(values, Quantity):
                     values = values.value
                 values = ", ".join(f"{v}" for v in values)
@@ -221,10 +230,13 @@ class MatmlWriter(BaseVisitor):
         """Add dependent parameters."""
         for key in dependent_parameters.keys():
             if dependent_parameters[key]:
+                param_value = dependent_parameters[key]
+                if isinstance(param_value, Quantity) and self._unit_system is not None:
+                    param_value = param_value.convert(self._unit_system)
                 unit = _matml_strings.UNITLESS_KEY
-                if not isinstance(dependent_parameters[key], (str | float | int)):
-                    if hasattr(dependent_parameters[key], "unit"):
-                        unit = dependent_parameters[key].unit
+                if not isinstance(param_value, (str | float | int)):
+                    if hasattr(param_value, "unit"):
+                        unit = param_value.unit
                     else:
                         unit = _matml_strings.UNITLESS_KEY
                 parameter_id = self._get_parameter_id(key, unit)
@@ -237,14 +249,14 @@ class MatmlWriter(BaseVisitor):
                     },
                 )
                 data_element = ET.SubElement(parameter_element, _matml_strings.DATA_KEY)
-                if isinstance(dependent_parameters[key], Quantity):
-                    if hasattr(dependent_parameters[key], "value"):
-                        values = create_xml_string_value(dependent_parameters[key].value)
+                if isinstance(param_value, Quantity):
+                    if hasattr(param_value, "value"):
+                        values = create_xml_string_value(param_value.value)
                 else:
-                    if isinstance(dependent_parameters[key], str):
-                        values = dependent_parameters[key]
+                    if isinstance(param_value, str):
+                        values = param_value
                     else:
-                        values = create_xml_string_value(dependent_parameters[key])
+                        values = create_xml_string_value(param_value)
                 data_element.text = values
                 qualifier_value = ",".join([_matml_strings.DEPENDENT_KEY] * len(values.split(",")))
                 self._add_qualifier(
@@ -257,9 +269,10 @@ class MatmlWriter(BaseVisitor):
         """Add usermat parameters."""
         if user_parameters:
             for user_parameter in user_parameters:
-                parameter_id = self._get_parameter_id(
-                    user_parameter.name, user_parameter.values.unit
-                )
+                param_values = user_parameter.values
+                if isinstance(param_values, Quantity) and self._unit_system is not None:
+                    param_values = param_values.convert(self._unit_system)
+                parameter_id = self._get_parameter_id(user_parameter.name, param_values.unit)
                 parameter_element = ET.SubElement(
                     property_data_element,
                     _matml_strings.PARAMETER_VALUE_KEY,
@@ -269,7 +282,7 @@ class MatmlWriter(BaseVisitor):
                     },
                 )
                 data_element = ET.SubElement(parameter_element, _matml_strings.DATA_KEY)
-                values = create_xml_string_value(user_parameter.values.value)
+                values = create_xml_string_value(param_values.value)
                 data_element.text = values
                 qualifier_value = ",".join([_matml_strings.DEPENDENT_KEY] * len(values.split(",")))
                 self._add_qualifier(

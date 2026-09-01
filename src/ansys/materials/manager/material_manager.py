@@ -27,6 +27,8 @@ import logging
 from pathlib import Path
 from typing import Any, Sequence
 
+from ansys.units import UnitSystem
+
 from .integrations import (
     FluentWriter,
     LsDynaWriter,
@@ -49,9 +51,10 @@ class MaterialManager:
     _materials: dict[str, Material]
     _logger = logging.getLogger(__name__)
 
-    def __init__(self):
+    def __init__(self, unit_system: UnitSystem | None = None):
         """Initialize the material manager instance."""
         self._materials = {}
+        self._unit_system = unit_system
 
     @property
     def materials(self) -> dict[str, Material]:
@@ -67,10 +70,23 @@ class MaterialManager:
     def client(self, value: Any) -> None:
         self._client = value
 
+    @property
+    def unit_system(self) -> UnitSystem | None:
+        """The unit system used by the material manager."""
+        return self._unit_system
+
+    def set_unit_system(self, unit_system: UnitSystem) -> None:
+        """Set the unit system used by the material manager."""
+        self._unit_system = unit_system
+        for material in self._materials.values():
+            material.convert_to_unit_system(unit_system)
+
     def add_material(self, material: Material) -> None:
         """Add a material into the library."""
         material_found = self.materials.get(material.name, None)
         if material_found is None:
+            if self.unit_system is not None:
+                material.convert_to_unit_system(self.unit_system)
             self.materials[material.name] = material
             print(f"The material with name {material.name} was added to the library.")
             # TODO: we might need to consider taking care of the ids and uids probably
@@ -83,6 +99,9 @@ class MaterialManager:
         """Extend the models defined within a specific material."""
         material = self.materials.get(material_name, None)
         if material is not None:
+            if self.unit_system is not None:
+                for model in material_models:
+                    model.convert_to_unit_system(self.unit_system)
             material.append_models(material_models)
         else:
             print(f"The material with name {material_name} was not found.")
@@ -93,12 +112,12 @@ class MaterialManager:
         if material is None:
             print(f"The material with name {material_name} was not found.")
 
-    def _get_materials_to_write(self, material_names: Sequence[str] | None) -> dict[str, Material]:
+    def _get_materials_to_write(self, material_names: Sequence[str] | None) -> Sequence[Material]:
         """Return the materials to be written."""
         if self.materials is None or len(self.materials) == 0:
             raise Exception("No materials found in the library.")
         if not material_names:
-            materials = self.materials
+            materials = list(self.materials.values())
         else:
             materials = [
                 self.get_material(name)
@@ -126,15 +145,24 @@ class MaterialManager:
                 )
         self._materials |= material_dic
 
-    def write_to_matml(self, path: str | Path, material_names: list[str] | None = None) -> None:
+    def write_to_matml(
+        self,
+        path: str | Path,
+        material_names: list[str] | None = None,
+        unit_system: UnitSystem | None = None,
+    ) -> None:
         """Write the materials in the library to a MatML file."""
+        if unit_system is None:
+            unit_system = self._unit_system
         materials = self._get_materials_to_write(material_names)
-        writer = MatmlWriter(materials)
+        writer = MatmlWriter(materials, unit_system=unit_system)
         writer.write(path, indent=True)
 
-    def read_from_matml(self, path: str | Path) -> None:
+    def read_from_matml(self, path: str | Path, unit_system: UnitSystem | None = None) -> None:
         """Read materials from a MatML file and add them to the library."""
-        matml_reader = MatmlReader(path)
+        if unit_system is None:
+            unit_system = self._unit_system
+        matml_reader = MatmlReader(path, unit_system=unit_system)
         material_dic = matml_reader.convert_matml_materials()
         if not self.materials:
             self._materials = material_dic

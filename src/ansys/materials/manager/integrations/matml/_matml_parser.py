@@ -26,7 +26,7 @@ from typing import Any, Sequence, Union
 import uuid
 import xml.etree.ElementTree as ET  # nosec B405
 
-from ansys.units import Quantity
+from ansys.units import Quantity, Unit, UnitSystem
 
 from . import _matml_strings as matml_strings
 from ... import models as _models_package
@@ -413,7 +413,9 @@ def get_material_model_name_and_qualifiers(
     return cls_name, qualifiers
 
 
-def fill_independent_parameter(param_value: Parameter) -> IndependentParameter:
+def fill_independent_parameter(
+    param_value: Parameter, unit_system: UnitSystem | None
+) -> IndependentParameter:
     """
     Fill an IndependentParameter from a Parameter.
 
@@ -427,9 +429,12 @@ def fill_independent_parameter(param_value: Parameter) -> IndependentParameter:
         The converted IndependentParameter.
     """
     data, units = get_data_and_unit(param_value)
+    q = Quantity(value=data, units=units)
+    if unit_system is not None:
+        q = q.convert(unit_system)
     independent_param = IndependentParameter(
         name=param_value.name,
-        values=Quantity(value=data, units=units),
+        values=q,
         default_value=convert_to_float_or_keep(
             param_value.qualifiers.get(matml_strings.DEFAULT_DATA_KEY, None)
         ),
@@ -487,7 +492,7 @@ def parse_unit_string(unit_str: str) -> list[tuple[str, int]]:
     return result
 
 
-def unit_to_xml(unit: str) -> ET.Element:
+def unit_to_xml(unit: str | Unit) -> ET.Element:
     """
     Convert a unit string to an XML element.
 
@@ -501,6 +506,8 @@ def unit_to_xml(unit: str) -> ET.Element:
     ET.Element
         An XML element representing the units.
     """
+    if isinstance(unit, Unit):
+        unit = str(unit)
     unit_list = parse_unit_string(unit)
 
     if unit_list and unit_list[0][0].lower() == matml_strings.UNITLESS_KEY.lower():

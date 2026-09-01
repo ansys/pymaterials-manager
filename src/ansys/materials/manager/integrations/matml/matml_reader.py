@@ -27,7 +27,7 @@ from pydoc import locate
 from typing import Optional, Union
 import warnings
 
-from ansys.units import Quantity
+from ansys.units import Quantity, UnitSystem
 from defusedxml.ElementTree import fromstring
 
 from . import _matml_strings as matml_strings
@@ -63,7 +63,7 @@ class MatmlReader:
     _transfer_ids = dict
     _matml_file_path: _PATH_TYPE
 
-    def __init__(self, file_path: _PATH_TYPE):
+    def __init__(self, file_path: _PATH_TYPE, unit_system: UnitSystem | None = None):
         """
         Create a new MatML reader object.
 
@@ -75,6 +75,7 @@ class MatmlReader:
         self._matml_file_path = file_path
         self._materials = {}
         self._transfer_ids = {}
+        self._unit_system: UnitSystem | None = unit_system
         if not os.path.exists(file_path):
             raise RuntimeError(f"Cannot initialize MatmlReader {file_path}. File does not exist!")
         self.parse_from_file()
@@ -255,7 +256,10 @@ class MatmlReader:
                         param = property_set.parameters[label]
                         data, units = get_data_and_unit(param)
                         attributes.append(attribute)
-                        quantities.append(Quantity(value=data, units=units))
+                        q = Quantity(value=data, units=units)
+                        if self._unit_system is not None:
+                            q = q.convert(self._unit_system)
+                        quantities.append(q)
         return dict(zip(attributes, quantities))
 
     def is_supported(self, material_model: MaterialModel) -> bool:
@@ -313,7 +317,9 @@ class MatmlReader:
                                 ind_param
                                 and ind_param.split(",")[0] == matml_strings.INDEPENDENT_KEY
                             ):
-                                independent_param = fill_independent_parameter(param_value)
+                                independent_param = fill_independent_parameter(
+                                    param_value, self._unit_system
+                                )
                                 independent_parameters.append(independent_param)
                         if len(independent_parameters) > 0:
                             setattr(cls, "independent_parameters", independent_parameters)
