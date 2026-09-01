@@ -152,12 +152,16 @@ class MaterialManager:
         unit_system: UnitSystem | None = None,
     ) -> None:
         """Write the materials in the library to a MatML file."""
+        if unit_system is None:
+            unit_system = self._unit_system
         materials = self._get_materials_to_write(material_names)
         writer = MatmlWriter(materials, unit_system=unit_system)
         writer.write(path, indent=True)
 
     def read_from_matml(self, path: str | Path, unit_system: UnitSystem | None = None) -> None:
         """Read materials from a MatML file and add them to the library."""
+        if unit_system is None:
+            unit_system = self._unit_system
         matml_reader = MatmlReader(path, unit_system=unit_system)
         material_dic = matml_reader.convert_matml_materials()
         if not self.materials:
