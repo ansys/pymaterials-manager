@@ -133,7 +133,7 @@ wheels = [
 
 [[package]]
 name = "ansys-fluent-core"
-version = "0.42.0"
+version = "0.37.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-api-fluent" },
@@ -152,9 +152,9 @@ dependencies = [
     { name = "pyansys-tools-report" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fe/08/2ca9ceb888a5c9190b1ab03ba41b2a7ddcbce8ed26733ac6e17f179781d8/ansys_fluent_core-0.42.0.tar.gz", hash = "sha256:feff76547b942140315bfa53d06d415fb6c92ccf975ddad05823cd2f36fffef7", size = 22333096, upload-time = "2026-08-22T02:55:04.234Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/df/55c08423727c78b2fd44334cbff3379ff98902066ca0e0e0ca43938a8389/ansys_fluent_core-0.37.1.tar.gz", hash = "sha256:faeba940ee332df1af8ae82281ed07907b51745335f6d3a51c7b1486fc110b5b", size = 22562357, upload-time = "2025-12-10T02:36:07.84Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/29/2f9bab160c8de0e69620f2c4ca7f3719900953b4fadc4482142434a24373/ansys_fluent_core-0.42.0-py3-none-any.whl", hash = "sha256:2c1d0faa9f69fd6c6530e2c4cc1b229d9d74d57535a36d94e6a5dde0b643a330", size = 6825433, upload-time = "2026-08-22T02:55:01.866Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/f9/b9eb0ea466de16584f245f931f6640147730d903abf04774e74d9963765e/ansys_fluent_core-0.37.1-py3-none-any.whl", hash = "sha256:ee8c9f22c43b176837c878123ed7e8dd5d72bf7c2c5bf849589a8418e5968845", size = 7162418, upload-time = "2025-12-10T02:36:05.792Z" },
 ]
 
 [[package]]
@@ -274,7 +274,7 @@ requires-dist = [
     { name = "ansys-dyna-core", marker = "extra == 'integrations'", specifier = ">=0.9.0" },
     { name = "ansys-fluent-core", marker = "extra == 'integrations'", specifier = ">=0.28" },
     { name = "ansys-mapdl-core", marker = "extra == 'integrations'", specifier = ">=0.68" },
-    { name = "ansys-units", git = "https://github.com/ansys/pyansys-units?rev=feat%2Fcustom_unit_system" },
+    { name = "ansys-units", specifier = ">=0.13.0" },
     { name = "defusedxml", specifier = ">=0.7" },
     { name = "httpx", marker = "extra == 'grantami'", specifier = ">=0.27" },
     { name = "msal", marker = "extra == 'grantami'", specifier = ">=1.28" },
@@ -384,11 +384,15 @@ wheels = [
 
 [[package]]
 name = "ansys-units"
-version = "0.13.dev0"
-source = { git = "https://github.com/ansys/pyansys-units?rev=feat%2Fcustom_unit_system#cdf580ec46964b0189ba5f7497f54cf8148c96d2" }
+version = "0.13.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
     { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/eb/5f/15955b564e7345320b77e912bf0fb38a19ae25285438874c98229b188c11/ansys_units-0.13.0.tar.gz", hash = "sha256:2cd7f173ab786d8b070dadc6cdfb9b3d17454ff51cf6d6d7d8f62d3c75be5629", size = 50374, upload-time = "2026-08-27T03:58:51.8Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/48/f7/6ff3b93b29bae97700dfd70fb7dc33d9f045c69234a208d688a01dd8f3a7/ansys_units-0.13.0-py3-none-any.whl", hash = "sha256:a6e2bfb8efafd667e98dcffa9285bc706785c7bd94d34157cfd750a2793f46e9", size = 66142, upload-time = "2026-08-27T03:58:49.557Z" },
 ]
 
 [[package]]
