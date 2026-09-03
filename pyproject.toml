@@ -103,7 +103,7 @@ addopts = [
 ]
 
 [tool.bandit]
-skips = ["B101"]
+exclude_dirs = ["tests", "examples", "doc"]
 
 [tool.hatch.metadata]
 allow-direct-references = true
