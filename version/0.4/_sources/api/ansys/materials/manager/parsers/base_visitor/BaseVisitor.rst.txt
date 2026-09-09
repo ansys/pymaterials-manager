@@ -1,0 +1,198 @@
+
+
+
+
+
+
+:class:`BaseVisitor`
+====================
+
+
+.. py:class:: ansys.materials.manager.parsers.base_visitor.BaseVisitor(materials: list[ansys.materials.manager._models.material.Material])
+
+   
+   Base visitor. All visitors should inherit from this class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: BaseVisitor
+
+Overview
+--------
+
+.. tab-set::
+
+   .. tab-item:: Abstract methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit_material_model`
+            - Abstract implementation of the visit material model.
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~get_material_id`
+            - Get the material id given the material name.
+          * - :py:attr:`~is_supported`
+            - Check if the material model is supported.
+          * - :py:attr:`~visit_materials`
+            - Visit materials.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.parsers.base_visitor import BaseVisitor
+
+
+
+Method detail
+-------------
+
+.. py:method:: get_material_id(material_name) -> int
+
+   
+   Get the material id given the material name.
+
+
+   :Parameters:
+
+       **material_name** : :class:`python:str`
+           Name of the material.
+
+
+
+   :Returns:
+
+       :class:`python:int`
+           Material id.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: is_supported(material_model: ansys.materials.manager._models._common.material_model.MaterialModel) -> bool
+
+   
+   Check if the material model is supported.
+
+
+   :Parameters:
+
+       **material_model** : :obj:`MaterialModel`
+           Material model to check.
+
+
+
+   :Returns:
+
+       :ref:`bool <python:bltin-boolean-values>`
+           True if the material model is supported, False otherwise.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_material_model(material_name: str, material_model: ansys.materials.manager._models._common.material_model.MaterialModel)
+   :abstractmethod:
+
+
+   
+   Abstract implementation of the visit material model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_materials()
+
+   
+   Visit materials.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

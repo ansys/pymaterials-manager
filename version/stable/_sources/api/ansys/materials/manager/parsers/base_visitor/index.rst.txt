@@ -1,0 +1,90 @@
+
+
+
+
+
+
+The ``base_visitor.py`` module
+==============================
+
+.. py:module:: ansys.materials.manager.parsers.base_visitor
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: base_visitor
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.parsers.base_visitor.BaseVisitor`
+            - Base visitor. All visitors should inherit from this class.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~MATERIAL_MODEL_MAP`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> BaseVisitor</api/ansys/materials/manager/parsers/base_visitor/BaseVisitor>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: MATERIAL_MODEL_MAP
+
+
+
