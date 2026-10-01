@@ -1,0 +1,140 @@
+
+
+
+
+
+
+:class:`FluentWriter`
+=====================
+
+
+.. py:class:: ansys.materials.manager.parsers.fluent.fluent_writer.FluentWriter(materials: list[ansys.materials.manager._models.material.Material])
+
+   Bases: :py:obj:`ansys.materials.manager.parsers.base_visitor.BaseVisitor`
+
+
+   
+   Fluent writer.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: FluentWriter
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit_material_model`
+            - Visit the material model.
+          * - :py:attr:`~write`
+            - Write fluent representation.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.parsers.fluent.fluent_writer import FluentWriter
+
+
+
+Method detail
+-------------
+
+.. py:method:: visit_material_model(material_name: str, material_model: ansys.materials.manager._models._common.material_model.MaterialModel) -> None
+
+   
+   Visit the material model.
+
+
+   :Parameters:
+
+       **material_name** : :class:`python:str`
+           Name of the material.
+
+       **material_model** : :obj:`MaterialModel`
+           Material model to visit.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: write(material_names: list[str] | None = None) -> list[dict]
+
+   
+   Write fluent representation.
+
+
+   :Parameters:
+
+       **material_names** : :class:`python:list`\[:class:`python:str`] | :data:`python:None`
+           List of material names to write. If None, write all materials.
+
+
+
+   :Returns:
+
+       :class:`python:list`\[:class:`python:dict`]
+           List of material representations.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

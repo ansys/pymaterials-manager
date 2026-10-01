@@ -1,0 +1,69 @@
+
+
+
+
+
+
+The ``fluent`` package
+==========================
+
+.. py:module:: ansys.materials.manager.parsers.fluent
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: fluent
+.. tab-set::
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.parsers.fluent.fluent_writer`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-fa-file"></span> fluent_writer</api/ansys/materials/manager/parsers/fluent/fluent_writer/index>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

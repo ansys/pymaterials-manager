@@ -1,0 +1,49 @@
+
+
+
+
+
+
+:class:`UnsupportedMaterialModelError`
+======================================
+
+
+.. py:exception:: ansys.materials.manager.integrations.material_model_writer_visitor.UnsupportedMaterialModelError
+
+   Bases: :py:obj:`TypeError`
+
+
+   
+   Raised when a writer has no handler for a material model type.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.integrations.material_model_writer_visitor import UnsupportedMaterialModelError
+
+
+
+
+

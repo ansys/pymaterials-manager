@@ -1,0 +1,129 @@
+
+
+
+
+
+
+The ``rest`` package
+========================
+
+.. py:module:: ansys.materials.manager.integrations.rest
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: rest
+.. tab-set::
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.rest.rest_material_reader`
+            - 
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.rest.rest_session_client`
+            - Granta MI REST API session client.
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.rest.RestMaterialReader`
+            - Convert a Granta MI Material Models API JSON response into a collection of Material objects.
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.rest.RestSessionClient`
+            - Client for the Granta MI material-picker REST API session lifecycle.
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-fa-file"></span> rest_material_reader</api/ansys/materials/manager/integrations/rest/rest_material_reader/index>
+    <span class="nf nf-fa-file"></span> rest_session_client</api/ansys/materials/manager/integrations/rest/rest_session_client/index>
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> RestMaterialReader</api/ansys/materials/manager/integrations/rest/RestMaterialReader>
+    <span class="nf nf-cod-symbol_class"></span> RestSessionClient</api/ansys/materials/manager/integrations/rest/RestSessionClient>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+REST-based visitor framework for populating material models from a Granta MI REST API.
+
+Requires the ``grantami`` extra::
+
+    pip install ansys-materials-manager[grantami]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+

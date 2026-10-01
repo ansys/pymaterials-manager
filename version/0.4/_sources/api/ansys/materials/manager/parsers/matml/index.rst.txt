@@ -1,0 +1,74 @@
+
+
+
+
+
+
+The ``matml`` package
+=========================
+
+.. py:module:: ansys.materials.manager.parsers.matml
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: matml
+.. tab-set::
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.parsers.matml.matml_reader`
+            - Provides the ``matml_parser`` module.
+
+
+          * - :py:obj:`~ansys.materials.manager.parsers.matml.matml_writer`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-fa-file"></span> matml_reader</api/ansys/materials/manager/parsers/matml/matml_reader/index>
+    <span class="nf nf-fa-file"></span> matml_writer</api/ansys/materials/manager/parsers/matml/matml_writer/index>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
