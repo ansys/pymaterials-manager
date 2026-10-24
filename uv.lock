@@ -90,7 +90,7 @@ wheels = [
 
 [[package]]
 name = "ansys-dpf-core"
-version = "0.16.1"
+version = "0.16.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansys-tools-common" },
@@ -100,14 +100,13 @@ dependencies = [
     { name = "packaging" },
     { name = "protobuf" },
     { name = "psutil" },
-    { name = "setuptools" },
     { name = "tqdm" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6b/af/fe45596b334a9bc402b83cd6b10bcf96a36db89ac844834131f5735b7cf0/ansys_dpf_core-0.16.1-py3-none-any.whl", hash = "sha256:610bab3712a94f2ce4b7bd31b5cf92e7691346baef101da73d74323b6c94c324", size = 2954610, upload-time = "2026-06-08T09:25:44.566Z" },
-    { url = "https://files.pythonhosted.org/packages/d9/bf/a394679bc294d51b9392dbc42b91e385950dce581bb07112293c9e26ccf6/ansys_dpf_core-0.16.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:0b3274f609786d986e269b37a56f7a9e1d7ec2b2f5667cdd4837c3313c5dd565", size = 12566968, upload-time = "2026-06-08T09:25:46.87Z" },
-    { url = "https://files.pythonhosted.org/packages/63/7f/a974cbd3cd87cfb30f8e829211626647bdf4de5b1a9dea9b2346aa706664/ansys_dpf_core-0.16.1-py3-none-manylinux_2_17_x86_64.whl", hash = "sha256:984488b048d4c7f8a39086d391401474bba978d8aa2158da34f8a7697b2d81c3", size = 12566969, upload-time = "2026-06-08T09:25:49.452Z" },
-    { url = "https://files.pythonhosted.org/packages/8c/71/8f747bb8f09d1a084039da3726e7906940df7ceb44d2af19a0249fc5e1f3/ansys_dpf_core-0.16.1-py3-none-win_amd64.whl", hash = "sha256:18b1d16228f5da89832f507ac719db245577b4e361b065bbf2d38740791da40d", size = 8608117, upload-time = "2026-06-08T09:25:51.703Z" },
+    { url = "https://files.pythonhosted.org/packages/40/65/c6eb045474ba35d222de324c5b045c751c1739e22ea7dd693006cc41ea2b/ansys_dpf_core-0.16.3-py3-none-any.whl", hash = "sha256:20fabc1067ca984edc8dcb10b101697e3f9201b712b1076223b1b4b9ce0529b1", size = 3066451, upload-time = "2026-10-16T18:22:31.65Z" },
+    { url = "https://files.pythonhosted.org/packages/64/e8/95a75afda4f658edba5fafedaa12de1cd8598107f789f3aebe54824ebcd0/ansys_dpf_core-0.16.3-py3-none-manylinux1_x86_64.whl", hash = "sha256:c0ee948c43f11458fe217a8d9777cc2f23f0acb7ebf9a5b8d9b2e1b677ab41e5", size = 12822068, upload-time = "2026-10-16T18:22:33.689Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/4a/9308e1d52f4db4418bddae1f034f81dae6a71e9e210a601532b72bdf27ac/ansys_dpf_core-0.16.3-py3-none-manylinux_2_17_x86_64.whl", hash = "sha256:a4cf40c54c7d723eef1fddc0119370db1eeee8311ac6d2d829dce19c4fb81f0a", size = 12822071, upload-time = "2026-10-16T18:22:36.198Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/2e/d3ec8012d6f40318a1f34d8c47056de87f791c37694ecf99885c0c58f4c6/ansys_dpf_core-0.16.3-py3-none-win_amd64.whl", hash = "sha256:0a4da18d0a49a12a8094c4466fb230ae1c45e378c8fedeb29736f9729197a1ea", size = 8769083, upload-time = "2026-10-16T18:22:38.59Z" },
 ]
 
 [[package]]
@@ -2682,15 +2681,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/1c/03/e834bcd866f2f8a49a85eaff47340affa3bfa391ee9912a952a1faa68c7b/secretstorage-3.5.0.tar.gz", hash = "sha256:f04b8e4689cbce351744d5537bf6b1329c6fc68f91fa666f60a380edddcd11be", size = 19884, upload-time = "2025-11-23T19:02:53.191Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/46/f5af3402b579fd5e11573ce652019a67074317e18c1935cc0b4ba9b35552/secretstorage-3.5.0-py3-none-any.whl", hash = "sha256:0ce65888c0725fcb2c5bc0fdb8e5438eece02c523557ea40ce0703c266248137", size = 15554, upload-time = "2025-11-23T19:02:51.545Z" },
-]
-
-[[package]]
-name = "setuptools"
-version = "83.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/34/26/f5d29e25ffdb535afef2d35cdb55b325298f96debd670da4c325e08d70f4/setuptools-83.0.0.tar.gz", hash = "sha256:025bccbbf0fa05b6192bc64ae1e7b16e001fd6d6d4d5de03c97b1c1ade523bef", size = 1154254, upload-time = "2026-07-04T15:31:22.699Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5d/40/e1e72872c6354b306daef1703549e8e83b4d43cfea356311bf722a043752/setuptools-83.0.0-py3-none-any.whl", hash = "sha256:29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3", size = 1008090, upload-time = "2026-07-04T15:31:20.885Z" },
 ]
 
 [[package]]
