@@ -1,0 +1,182 @@
+
+
+
+
+
+
+:class:`MaterialModelWriterVisitor`
+===================================
+
+
+.. py:class:: ansys.materials.manager.integrations.material_model_writer_visitor.MaterialModelWriterVisitor
+
+   Bases: :py:obj:`abc.ABC`
+
+
+   
+   Protocol for writers that serialize :class:`~.MaterialModel` instances.
+
+   Subclasses implement format-specific output by defining a
+   ``@functools.singledispatchmethod`` named ``visit`` and registering
+   handlers (``@visit.register(MyModel)``), or by overriding ``visit``
+   directly for a single code path.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. py:currentmodule:: MaterialModelWriterVisitor
+
+Overview
+--------
+
+.. tab-set::
+
+   .. tab-item:: Abstract methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit`
+            - Dispatch serialization for a single material model.
+          * - :py:attr:`~is_supported`
+            - Return whether this writer supports the given model type.
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit_material`
+            - Visit every supported model on a material.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.integrations.material_model_writer_visitor import MaterialModelWriterVisitor
+
+
+
+Method detail
+-------------
+
+.. py:method:: visit(model: ansys.materials.manager.models.MaterialModel, *, material_name: str) -> Any
+   :abstractmethod:
+
+
+   
+   Dispatch serialization for a single material model.
+
+
+   :Parameters:
+
+       **model** : :obj:`MaterialModel`
+           The model instance to serialize.
+
+       **material_name** : :class:`python:str`
+           Name of the parent :class:`~.Material`, used to group output.
+
+
+
+
+
+
+
+   :Raises:
+
+       :obj:`UnsupportedMaterialModelError`
+           If no handler is registered for the model's concrete type.
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_material(material: ansys.materials.manager.models.Material) -> None
+
+   
+   Visit every supported model on a material.
+
+
+   :Parameters:
+
+       **material** : :obj:`Material`
+           Material whose models should be serialized.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: is_supported(material_model: ansys.materials.manager.models.MaterialModel) -> bool
+   :abstractmethod:
+
+
+   
+   Return whether this writer supports the given model type.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

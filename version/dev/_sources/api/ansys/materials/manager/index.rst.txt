@@ -1,0 +1,154 @@
+
+
+
+
+
+
+The ``ansys.materials.manager`` library
+=======================================
+
+.. py:module:: ansys.materials.manager
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: manager
+.. tab-set::
+
+    .. tab-item:: Subpackages
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations`
+            - External system integrations for reading and writing materials.
+
+
+          * - :py:obj:`~ansys.materials.manager.models`
+            - Public material model definitions for PyMaterials Manager.
+
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.material_manager`
+            - Provides the ``MaterialManager`` class.
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.MaterialManager`
+            - Manage material creation, assignment, and other management tasks.
+
+
+
+
+
+
+    .. tab-item:: Attributes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~__version__`
+            - 
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-md-package"></span> integrations</api/ansys/materials/manager/integrations/index>
+    <span class="nf nf-md-package"></span> models</api/ansys/materials/manager/models/index>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-fa-file"></span> material_manager</api/ansys/materials/manager/material_manager/index>
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> MaterialManager</api/ansys/materials/manager/MaterialManager>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+
+Provides a helper to manage materials in the Ansys ecosystem.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: __version__
+
+
+
