@@ -123,9 +123,7 @@ def test_write_to_matml_converts_independent_parameter_to_si(
 
 def test_write_to_matml_elasticity_converts_to_si(manager_with_elasticity, tmp_path):
     out = tmp_path / "elasticity.xml"
-    manager_with_elasticity.write_to_matml(
-        out, unit_system=SI, preferred_units=preferred_units
-    )
+    manager_with_elasticity.write_to_matml(out, unit_system=SI, preferred_units=preferred_units)
 
     reader = MaterialManager()
     reader.read_from_matml(out)

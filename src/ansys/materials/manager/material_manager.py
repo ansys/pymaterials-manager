@@ -178,9 +178,7 @@ class MaterialManager:
         if preferred_units is None:
             preferred_units = self._preferred_units
         materials = self._get_materials_to_write(material_names)
-        writer = MatmlWriter(
-            materials, unit_system=unit_system, preferred_units=preferred_units
-        )
+        writer = MatmlWriter(materials, unit_system=unit_system, preferred_units=preferred_units)
         writer.write(path, indent=True)
 
     def read_from_matml(
@@ -194,9 +192,7 @@ class MaterialManager:
             unit_system = self._unit_system
         if preferred_units is None:
             preferred_units = self._preferred_units
-        matml_reader = MatmlReader(
-            path, unit_system=unit_system, preferred_units=preferred_units
-        )
+        matml_reader = MatmlReader(path, unit_system=unit_system, preferred_units=preferred_units)
         material_dic = matml_reader.convert_matml_materials()
         if not self.materials:
             self._materials = material_dic

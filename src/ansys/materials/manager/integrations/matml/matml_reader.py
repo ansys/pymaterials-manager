@@ -266,9 +266,7 @@ class MatmlReader:
                         attributes.append(attribute)
                         q = Quantity(value=data, units=units)
                         if self._unit_system is not None:
-                            q = q.convert(
-                                self._unit_system, preferred_units=self._preferred_units
-                            )
+                            q = q.convert(self._unit_system, preferred_units=self._preferred_units)
                         quantities.append(q)
         return dict(zip(attributes, quantities))
 
