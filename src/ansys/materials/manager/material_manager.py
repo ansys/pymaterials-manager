@@ -94,9 +94,10 @@ class MaterialManager:
     def set_preferred_units(self, preferred_units: PreferredUnits | None) -> None:
         """Set the preferred units used by the material manager."""
         self._preferred_units = preferred_units
-        if self._unit_system is not None:
-            for material in self._materials.values():
-                material.convert_to_unit_system(self._unit_system, preferred_units)
+        if self._unit_system is None:
+            raise Exception("Unit system is not set.")
+        for material in self._materials.values():
+            material.convert_to_unit_system(self._unit_system, preferred_units)
 
     def add_material(self, material: Material) -> None:
         """Add a material into the library."""
