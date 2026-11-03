@@ -24,7 +24,7 @@ from functools import singledispatchmethod
 from typing import Optional
 import xml.etree.ElementTree as ET  # nosec B405
 
-from ansys.units import Quantity, UnitSystem
+from ansys.units import PreferredUnits, Quantity, UnitSystem
 
 from . import _matml_strings as _matml_strings
 from ...models import (
@@ -59,10 +59,18 @@ class MatmlWriter(BaseVisitor):
     _metadata_parameters_units: dict
     _metadata_property_sets_units: dict
 
-    def __init__(self, materials: list[Material], unit_system: UnitSystem | None = None):
+    def __init__(
+        self,
+        materials: list[Material],
+        unit_system: UnitSystem | None = None,
+        preferred_units: PreferredUnits | None = None,
+    ):
         """Initialize the class."""
         super().__init__(materials=materials, model_map=MATERIAL_MODEL_MAP)
+        if preferred_units is not None and unit_system is None:
+            raise ValueError("unit_system is required when preferred_units are specified.")
         self._unit_system = unit_system
+        self._preferred_units = preferred_units
         self._metadata_parameters = {}
         self._metadata_property_sets = {}
         self._metadata_parameters_units = {}
@@ -179,7 +187,9 @@ class MatmlWriter(BaseVisitor):
             for independent_parameter in independent_parameters:
                 param_values = independent_parameter.values
                 if isinstance(param_values, Quantity) and self._unit_system is not None:
-                    param_values = param_values.convert(self._unit_system)
+                    param_values = param_values.convert(
+                        self._unit_system, preferred_units=self._preferred_units
+                    )
                 parameter_id = self._get_parameter_id(
                     independent_parameter.name,
                     (
@@ -232,7 +242,9 @@ class MatmlWriter(BaseVisitor):
             if dependent_parameters[key]:
                 param_value = dependent_parameters[key]
                 if isinstance(param_value, Quantity) and self._unit_system is not None:
-                    param_value = param_value.convert(self._unit_system)
+                    param_value = param_value.convert(
+                        self._unit_system, preferred_units=self._preferred_units
+                    )
                 unit = _matml_strings.UNITLESS_KEY
                 if not isinstance(param_value, (str | float | int)):
                     if hasattr(param_value, "unit"):
@@ -271,7 +283,9 @@ class MatmlWriter(BaseVisitor):
             for user_parameter in user_parameters:
                 param_values = user_parameter.values
                 if isinstance(param_values, Quantity) and self._unit_system is not None:
-                    param_values = param_values.convert(self._unit_system)
+                    param_values = param_values.convert(
+                        self._unit_system, preferred_units=self._preferred_units
+                    )
                 parameter_id = self._get_parameter_id(user_parameter.name, param_values.unit)
                 parameter_element = ET.SubElement(
                     property_data_element,

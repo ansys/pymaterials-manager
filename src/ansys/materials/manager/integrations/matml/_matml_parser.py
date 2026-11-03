@@ -26,7 +26,7 @@ from typing import Any, Sequence, Union
 import uuid
 import xml.etree.ElementTree as ET  # nosec B405
 
-from ansys.units import Quantity, Unit, UnitSystem
+from ansys.units import PreferredUnits, Quantity, Unit, UnitSystem
 
 from . import _matml_strings as matml_strings
 from ... import models as _models_package
@@ -414,7 +414,9 @@ def get_material_model_name_and_qualifiers(
 
 
 def fill_independent_parameter(
-    param_value: Parameter, unit_system: UnitSystem | None
+    param_value: Parameter,
+    unit_system: UnitSystem | None,
+    preferred_units: PreferredUnits | None = None,
 ) -> IndependentParameter:
     """
     Fill an IndependentParameter from a Parameter.
@@ -431,7 +433,7 @@ def fill_independent_parameter(
     data, units = get_data_and_unit(param_value)
     q = Quantity(value=data, units=units)
     if unit_system is not None:
-        q = q.convert(unit_system)
+        q = q.convert(unit_system, preferred_units=preferred_units)
     independent_param = IndependentParameter(
         name=param_value.name,
         values=q,

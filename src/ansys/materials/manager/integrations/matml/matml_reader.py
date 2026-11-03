@@ -27,7 +27,7 @@ from pydoc import locate
 from typing import Optional, Union
 import warnings
 
-from ansys.units import Quantity, UnitSystem
+from ansys.units import PreferredUnits, Quantity, UnitSystem
 from defusedxml.ElementTree import fromstring
 
 from . import _matml_strings as matml_strings
@@ -63,7 +63,12 @@ class MatmlReader:
     _transfer_ids = dict
     _matml_file_path: _PATH_TYPE
 
-    def __init__(self, file_path: _PATH_TYPE, unit_system: UnitSystem | None = None):
+    def __init__(
+        self,
+        file_path: _PATH_TYPE,
+        unit_system: UnitSystem | None = None,
+        preferred_units: PreferredUnits | None = None,
+    ):
         """
         Create a new MatML reader object.
 
@@ -72,10 +77,13 @@ class MatmlReader:
         file_path :
             MatML (engineering data xml) file path
         """
+        if preferred_units is not None and unit_system is None:
+            raise ValueError("unit_system is required when preferred_units are specified.")
         self._matml_file_path = file_path
         self._materials = {}
         self._transfer_ids = {}
         self._unit_system: UnitSystem | None = unit_system
+        self._preferred_units = preferred_units
         if not os.path.exists(file_path):
             raise RuntimeError(f"Cannot initialize MatmlReader {file_path}. File does not exist!")
         self.parse_from_file()
@@ -258,7 +266,9 @@ class MatmlReader:
                         attributes.append(attribute)
                         q = Quantity(value=data, units=units)
                         if self._unit_system is not None:
-                            q = q.convert(self._unit_system)
+                            q = q.convert(
+                                self._unit_system, preferred_units=self._preferred_units
+                            )
                         quantities.append(q)
         return dict(zip(attributes, quantities))
 
@@ -318,7 +328,7 @@ class MatmlReader:
                                 and ind_param.split(",")[0] == matml_strings.INDEPENDENT_KEY
                             ):
                                 independent_param = fill_independent_parameter(
-                                    param_value, self._unit_system
+                                    param_value, self._unit_system, self._preferred_units
                                 )
                                 independent_parameters.append(independent_param)
                         if len(independent_parameters) > 0:

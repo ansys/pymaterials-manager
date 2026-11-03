@@ -22,7 +22,7 @@
 
 import math
 
-from ansys.units import Quantity, UnitSystem
+from ansys.units import PreferredUnits, Quantity, UnitSystem
 import pytest
 
 from ansys.materials.manager import MaterialManager
@@ -33,7 +33,8 @@ from ansys.materials.manager.models import (
     Material,
 )
 
-SI = UnitSystem(system="SI", preferred_units=["Pa", "N"])
+SI = UnitSystem(system="SI")
+preferred_units = PreferredUnits(["Pa", "N"])
 
 
 @pytest.fixture
@@ -122,7 +123,9 @@ def test_write_to_matml_converts_independent_parameter_to_si(
 
 def test_write_to_matml_elasticity_converts_to_si(manager_with_elasticity, tmp_path):
     out = tmp_path / "elasticity.xml"
-    manager_with_elasticity.write_to_matml(out, unit_system=SI)
+    manager_with_elasticity.write_to_matml(
+        out, unit_system=SI, preferred_units=preferred_units
+    )
 
     reader = MaterialManager()
     reader.read_from_matml(out)
@@ -241,7 +244,7 @@ def test_add_material_raises_if_already_present():
 
 
 def test_extend_material_auto_converts_when_unit_system_set():
-    manager = MaterialManager(unit_system=SI)
+    manager = MaterialManager(unit_system=SI, preferred_units=preferred_units)
     manager.add_material(Material(name="Aluminum"))
     manager.extend_material(
         "Aluminum",

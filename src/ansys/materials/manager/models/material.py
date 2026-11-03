@@ -24,7 +24,7 @@ from collections import Counter
 from typing import List
 import uuid
 
-from ansys.units import UnitSystem
+from ansys.units import PreferredUnits, UnitSystem
 
 from ._common import MaterialModel
 from ._common.visitor_protocol import MaterialModelWriterVisitorProtocol
@@ -135,10 +135,12 @@ class Material:
         if model is not None:
             self._models.remove(model)
 
-    def convert_to_unit_system(self, unit_system: UnitSystem) -> None:
+    def convert_to_unit_system(
+        self, unit_system: UnitSystem, preferred_units: PreferredUnits | None = None
+    ) -> None:
         """Convert the material and its models to the specified unit system."""
         for model in self._models:
-            model.convert_to_unit_system(unit_system)
+            model.convert_to_unit_system(unit_system, preferred_units)
 
     def accept(self, visitor: MaterialModelWriterVisitorProtocol) -> None:
         """Visit every model on this material with a writer visitor.
