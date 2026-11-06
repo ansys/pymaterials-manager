@@ -15,7 +15,7 @@ env:
   MAIN_PYTHON_VERSION: '3.14'
   MAPDL_DOCKER_PACKAGE: 'ghcr.io/ansys/mapdl'
   MAPDL_DOCKER_VERSION: 'v24.2.3-ubuntu-cicd'
-  DPF_GIL_DOCKER_PACKAGE: 'ghcr.io/snps-ansys-internal/gil-dpf-server'
+  DPF_GIL_DOCKER_PACKAGE: 'ghcr.io/ansys/gil-dpf-server'
   DPF_GIL_DOCKER_VERSION: 'v2027.1.pre0'
   DOCUMENTATION_CNAME: "manager.materials.docs.pyansys.com"
   PACKAGE_NAME: "ansys-materials-manager"
