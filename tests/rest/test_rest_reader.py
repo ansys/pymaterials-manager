@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -185,7 +185,7 @@ class TestSyntheticPayload:
         result = RestMaterialReader(SYNTHETIC_VALUE_SECTION).convert_materials()
 
         assert "Test Alloy X-7" in result
-        assert result["Test Alloy X-7"].mat_id == "c0ffee00-0000-4242-beef-123456789abc"
+        assert result["Test Alloy X-7"].mat_id == "c0ffee00-0000 - 4242-beef-123456789abc"
 
     def test_real_payload_skips_unregistered_models_with_warning(self, caplog):
         with caplog.at_level(
