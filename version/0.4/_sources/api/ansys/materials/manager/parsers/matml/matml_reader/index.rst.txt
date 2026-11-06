@@ -1,0 +1,99 @@
+
+
+
+
+
+
+The ``matml_reader.py`` module
+==============================
+
+.. py:module:: ansys.materials.manager.parsers.matml.matml_reader
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: matml_reader
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.parsers.matml.matml_reader.MatmlReader`
+            - Parse a MatML (engineering data xml) file.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~MODEL_NAMESPACE`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> MatmlReader</api/ansys/materials/manager/parsers/matml/matml_reader/MatmlReader>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides the ``matml_parser`` module.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: MODEL_NAMESPACE
+   :value: 'ansys.materials.manager._models._material_models.'
+
+
+
+

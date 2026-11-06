@@ -1,0 +1,359 @@
+
+
+
+
+
+
+:class:`MatmlReader`
+====================
+
+
+.. py:class:: ansys.materials.manager.parsers.matml.matml_reader.MatmlReader(file_path: _PATH_TYPE)
+
+   
+   Parse a MatML (engineering data xml) file.
+
+   Fills a nested dict with all the materials and their properties.
+   The key of the first layer are the material names.
+   The conversion into a specific format/object representation is implemented separately.
+
+   The data can be accessed via matml_reader.materials
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MatmlReader
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~parse_from_file`
+            - Read MatML (engineering data XML) data from a file.
+          * - :py:attr:`~get_material`
+            - Return a certain material.
+          * - :py:attr:`~map_to_material_attributes`
+            - Map MatML property set to material model attributes.
+          * - :py:attr:`~is_supported`
+            - Check if the material model is supported.
+          * - :py:attr:`~convert_matml_materials`
+            - Convert MatML materials to the internal material representation.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~materials`
+            - Return the parsed material data from the MatML file.
+          * - :py:attr:`~transfer_ids`
+            - Return the parsed Workbench Transfer IDs from the MatML file.
+          * - :py:attr:`~matml_file_path`
+            - Return the path to the target MatML file.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.parsers.matml.matml_reader import MatmlReader
+
+Property detail
+---------------
+
+.. py:property:: materials
+   :type: Optional[dict]
+
+
+   
+   Return the parsed material data from the MatML file.
+
+   Property will be None unless the parser has successfully parsed a MatML file.
+
+
+
+
+   :Returns:
+
+       Dict: :obj:`Material` :obj:`data` :obj:`from` :obj:`the` :obj:`MatML` :obj:`file`
+           ..
+
+       .. deprecated:: 0.2.3
+           `materials` will be removed in version 0.3.0, instead use the static methods
+           `parse_from_file` and `parse_from_text` to parse the MatML file and
+           obtain the parsed material dictionary.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: transfer_ids
+   :type: Optional[dict[str, str]]
+
+
+   
+   Return the parsed Workbench Transfer IDs from the MatML file.
+
+   Property will be None unless the parser has successfully parsed a MatML file.
+
+
+
+
+   :Returns:
+
+       Dict: :obj:`Workbench` :obj:`transfer` :obj:`IDs` :obj:`from` :obj:`the` :obj:`MatML` :obj:`file`
+           ..
+
+       .. deprecated:: 0.2.3
+           `transfer_ids` will be removed in version 0.3.0, instead use the static methods
+           `parse_from_file` and `parse_from_text` to parse the MatML file and
+           obtain the Workbench transfer IDs.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: matml_file_path
+   :type: str
+
+
+   
+   Return the path to the target MatML file.
+
+   .. deprecated:: 0.2.3
+      `matml_file_path` will be removed in version 0.3.0, instead use the static methods
+      `parse_from_file` and `parse_from_text` to parse the MatML file and
+      obtain the parsed material dictionary and the Workbench transfer IDs.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: parse_from_file() -> None
+
+   
+   Read MatML (engineering data XML) data from a file.
+
+   Returns the material information and the workbench transfer identities (if present).
+
+   :Parameters:
+
+       **file_path: Union[str, Path]**
+           Path to MatML file on disk
+
+
+
+   :Returns:
+
+       :class:`python:dict`\[:class:`python:str`, :obj:`Union`\[:class:`python:str`, :class:`python:dict`]]
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: get_material(name: str) -> dict
+
+   
+   Return a certain material.
+
+   .. deprecated:: 0.2.3
+     `get_material` will be removed in version 0.3.0, instead use the static methods
+     `parse_from_file` and `parse_from_text` to parse the MatML file and
+     obtain the parsed material dictionary and the Workbench transfer ID.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: map_to_material_attributes(material_model: ansys.materials.manager._models._common.material_model.MaterialModel, property_set: dict) -> dict
+
+   
+   Map MatML property set to material model attributes.
+
+
+   :Parameters:
+
+       **material_model** : :obj:`MaterialModel`
+           The material model to map the properties to.
+
+       **property_set** : :class:`python:dict`
+           The property set containing the MatML properties.
+
+       **Returns**
+           ..
+
+       **-------**
+           ..
+
+       **dict**
+           A dictionary mapping material model attributes to their corresponding quantities.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: is_supported(material_model: ansys.materials.manager._models._common.material_model.MaterialModel) -> bool
+
+   
+   Check if the material model is supported.
+
+
+   :Parameters:
+
+       **material_model** : :obj:`MaterialModel`
+           Material model to check.
+
+
+
+   :Returns:
+
+       :ref:`bool <python:bltin-boolean-values>`
+           True if the material model is supported, False otherwise.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: convert_matml_materials() -> dict[str, Sequence[ansys.materials.manager._models.material.Material]]
+
+   
+   Convert MatML materials to the internal material representation.
+
+
+
+
+
+   :Returns:
+
+       :class:`python:dict`\[:class:`python:str`, :obj:`Sequence`\[:obj:`Material`]]
+           A dictionary mapping material names to their Material objects.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
