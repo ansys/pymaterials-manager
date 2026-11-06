@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -158,7 +158,7 @@ class TestIntegration:
 
         assert "Synthetic Carbon Steel" in result
         mat = result["Synthetic Carbon Steel"]
-        assert mat.mat_id == "00000000-0000-0000-0000-000000000002"
+        assert mat.mat_id == "00000000 - 0000-0000 - 0000-000000000002"
 
         density_model = mat.get_model_by_name("Density")
         assert density_model is not None

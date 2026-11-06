@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -24,7 +24,7 @@ SYNTHETIC_VALUE_SECTION = {
     "materials": [
         {
             "materialName": "Test Alloy X-7",
-            "materialId": "c0ffee00-0000-4242-beef-123456789abc",
+            "materialId": "c0ffee00-0000 - 4242-beef-123456789abc",
             "databaseKey": "TEST_DB_001",
             "databaseName": "Test Database",
             "tableName": "Test Table",
@@ -144,7 +144,7 @@ MIXED_TEMPERATURE_GRIDS_PAYLOAD = {
         "materials": [
             {
                 "materialName": "Synthetic Alloy A",
-                "materialId": "00000000-0000-0000-0000-000000000001",
+                "materialId": "00000000 - 0000-0000 - 0000-000000000001",
                 "models": [
                     {
                         "modelId": "classification",
@@ -320,7 +320,7 @@ BROAD_COVERAGE_PAYLOAD = {
         "materials": [
             {
                 "materialName": "Synthetic Carbon Steel",
-                "materialId": "00000000-0000-0000-0000-000000000002",
+                "materialId": "00000000 - 0000-0000 - 0000-000000000002",
                 "models": [
                     {
                         "modelId": "classification",
