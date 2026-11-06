@@ -25,7 +25,7 @@ import functools
 import re
 from typing import Any
 
-from ansys.units import Quantity, UnitSystem
+from ansys.units import PreferredUnits, Quantity, UnitSystem
 import numpy as np
 from pydantic import BaseModel, Field
 
@@ -501,7 +501,9 @@ class MaterialModel(BaseModel, abc.ABC):
                 return ip
         return None
 
-    def convert_to_unit_system(self, unit_system: UnitSystem) -> None:
+    def convert_to_unit_system(
+        self, unit_system: UnitSystem, preferred_units: PreferredUnits | None = None
+    ) -> None:
         """Set the unit system for the material model."""
         excluded_fields = set(MaterialModel.model_fields.keys())
         dependant_parameters = [
@@ -510,10 +512,10 @@ class MaterialModel(BaseModel, abc.ABC):
         for param in dependant_parameters:
             value = getattr(self, param)
             if isinstance(value, Quantity):
-                new_value = value.convert(unit_system)
+                new_value = value.convert(unit_system, preferred_units=preferred_units)
                 setattr(self, param, new_value)
         if self.independent_parameters is not None:
             for ip in self.independent_parameters:
                 if isinstance(ip.values, Quantity):
-                    new_values = ip.values.convert(unit_system)
+                    new_values = ip.values.convert(unit_system, preferred_units=preferred_units)
                     ip.values = new_values

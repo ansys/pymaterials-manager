@@ -26,7 +26,7 @@ import logging
 from pathlib import Path
 from typing import Any, Sequence
 
-from ansys.units import UnitSystem
+from ansys.units import PreferredUnits, UnitSystem
 
 from .integrations import (
     FluentWriter,
@@ -50,10 +50,15 @@ class MaterialManager:
     _materials: dict[str, Material]
     _logger = logging.getLogger(__name__)
 
-    def __init__(self, unit_system: UnitSystem | None = None):
+    def __init__(
+        self,
+        unit_system: UnitSystem | None = None,
+        preferred_units: PreferredUnits | None = None,
+    ):
         """Initialize the material manager instance."""
         self._materials = {}
         self._unit_system = unit_system
+        self._preferred_units = preferred_units
 
     @property
     def materials(self) -> dict[str, Material]:
@@ -78,14 +83,27 @@ class MaterialManager:
         """Set the unit system used by the material manager."""
         self._unit_system = unit_system
         for material in self._materials.values():
-            material.convert_to_unit_system(unit_system)
+            material.convert_to_unit_system(unit_system, self._preferred_units)
+
+    @property
+    def preferred_units(self) -> PreferredUnits | None:
+        """The preferred units used when converting material quantities."""
+        return self._preferred_units
+
+    def set_preferred_units(self, preferred_units: PreferredUnits | None) -> None:
+        """Set the preferred units used by the material manager."""
+        self._preferred_units = preferred_units
+        if self._unit_system is None:
+            raise Exception("Unit system is not set.")
+        for material in self._materials.values():
+            material.convert_to_unit_system(self._unit_system, preferred_units)
 
     def add_material(self, material: Material) -> None:
         """Add a material into the library."""
         material_found = self.materials.get(material.name, None)
         if material_found is None:
             if self.unit_system is not None:
-                material.convert_to_unit_system(self.unit_system)
+                material.convert_to_unit_system(self.unit_system, self._preferred_units)
             self.materials[material.name] = material
             print(f"The material with name {material.name} was added to the library.")
             # TODO: we might need to consider taking care of the ids and uids probably
@@ -100,7 +118,7 @@ class MaterialManager:
         if material is not None:
             if self.unit_system is not None:
                 for model in material_models:
-                    model.convert_to_unit_system(self.unit_system)
+                    model.convert_to_unit_system(self.unit_system, self._preferred_units)
             material.append_models(material_models)
         else:
             print(f"The material with name {material_name} was not found.")
@@ -149,19 +167,32 @@ class MaterialManager:
         path: str | Path,
         material_names: list[str] | None = None,
         unit_system: UnitSystem | None = None,
+        preferred_units: PreferredUnits | None = None,
     ) -> None:
-        """Write the materials in the library to a MatML file."""
+        """Write the materials in the library to a MatML file.
+
+        Preferred units are applied when converting quantities to ``unit_system``.
+        """
         if unit_system is None:
             unit_system = self._unit_system
+        if preferred_units is None:
+            preferred_units = self._preferred_units
         materials = self._get_materials_to_write(material_names)
-        writer = MatmlWriter(materials, unit_system=unit_system)
+        writer = MatmlWriter(materials, unit_system=unit_system, preferred_units=preferred_units)
         writer.write(path, indent=True)
 
-    def read_from_matml(self, path: str | Path, unit_system: UnitSystem | None = None) -> None:
+    def read_from_matml(
+        self,
+        path: str | Path,
+        unit_system: UnitSystem | None = None,
+        preferred_units: PreferredUnits | None = None,
+    ) -> None:
         """Read materials from a MatML file and add them to the library."""
         if unit_system is None:
             unit_system = self._unit_system
-        matml_reader = MatmlReader(path, unit_system=unit_system)
+        if preferred_units is None:
+            preferred_units = self._preferred_units
+        matml_reader = MatmlReader(path, unit_system=unit_system, preferred_units=preferred_units)
         material_dic = matml_reader.convert_matml_materials()
         if not self.materials:
             self._materials = material_dic
