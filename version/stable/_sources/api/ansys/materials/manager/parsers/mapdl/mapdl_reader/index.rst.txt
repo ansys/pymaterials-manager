@@ -1,0 +1,132 @@
+
+
+
+
+
+
+The ``mapdl_reader.py`` module
+==============================
+
+.. py:module:: ansys.materials.manager.parsers.mapdl.mapdl_reader
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: mapdl_reader
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~read_mapdl`
+            - Read materials from a provided MAPDL session.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~MODEL_REGISTRY`
+            - 
+
+
+          * - :py:obj:`~MP_MATERIAL_MODELS`
+            - 
+
+
+          * - :py:obj:`~TB_MATERIAL_MODELS`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Provides the ``mapdl_reader`` module.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: read_mapdl(mapdl: ansys.materials.manager._models._common._MapdlCore) -> dict[str, ansys.materials.manager._models.material.Material]
+
+   
+   Read materials from a provided MAPDL session.
+
+   Returns them indexed by the material ID.
+
+   :Parameters:
+
+       **mapdl** : :obj:`_MapdlCore`
+           Active pyMAPDL session.
+
+
+
+   :Returns:
+
+       :class:`python:dict`\[:class:`python:str`, :obj:`Material`]
+           Materials currently active in the MAPDL session, indexed by their material ID.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: MODEL_REGISTRY
+
+.. py:data:: MP_MATERIAL_MODELS
+
+.. py:data:: TB_MATERIAL_MODELS
+
+
+

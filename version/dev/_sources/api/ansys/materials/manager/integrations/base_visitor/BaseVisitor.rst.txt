@@ -1,0 +1,275 @@
+
+
+
+
+
+
+:class:`BaseVisitor`
+====================
+
+
+.. py:class:: ansys.materials.manager.integrations.base_visitor.BaseVisitor(materials: list[ansys.materials.manager.models.Material], model_map: dict[type, ansys.materials.manager.integrations._common.ModelInfo] | None = None)
+
+   Bases: :py:obj:`ansys.materials.manager.integrations.material_model_writer_visitor.MaterialModelWriterVisitor`
+
+
+   
+   Base class for format-specific material writers.
+
+   Writers subclass this class and implement serialization by defining a
+   ``@functools.singledispatchmethod`` named ``visit`` on the writer subclass,
+   then registering handlers with ``@visit.register(MyModel)``. A default
+   handler for :class:`~ansys.materials.manager.models.MaterialModel` that reads
+   ``_model_map`` is enough for most models.
+
+   Construction stores materials and initializes ``_material_repr``, a
+   ``dict[str, list]`` that accumulates per-material output fragments.
+   Call :meth:`visit_materials` (or rely on the subclass ``__init__``) to
+   traverse via :meth:`~ansys.materials.manager.models.Material.accept`.
+
+   :Parameters:
+
+       **materials** : :class:`python:list`\[:obj:`Material`]
+           Materials to serialize.
+
+       **model_map** : :class:`python:dict`\[:obj:`type`, :obj:`ModelInfo`] | :data:`python:None`
+           Maps concrete model classes to :class:`~.ModelInfo` descriptors.
+           Declares which models the writer supports and how fields map to
+           external labels.
+
+
+
+
+
+
+
+
+
+
+   .. seealso::
+
+       
+       :obj:`MaterialModelWriterVisitor`
+           Visitor protocol and traversal contract.
+       :obj:`MaterialModel.accept`
+           Model-side dispatch entry point.
+       :obj:`ref_developer_guide`
+           Contributor guide for adding models and solver maps.
+       
+       
+
+
+   .. rubric:: Examples
+
+   Register a custom handler on a writer subclass::
+
+       class MyMapdlWriter(BaseVisitor):
+           @singledispatchmethod
+           def visit(self, model: MaterialModel, *, material_name: str) -> None:
+               raise UnsupportedMaterialModelError(...)
+
+           @visit.register(Density)
+           def _visit_density(self, model: Density, *, material_name: str) -> None:
+               ...
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: BaseVisitor
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~get_material_id`
+            - Get the material id given the material name.
+          * - :py:attr:`~is_supported`
+            - Check if the material model is supported.
+          * - :py:attr:`~visit`
+            - Dispatch serialization for a material model.
+          * - :py:attr:`~visit_materials`
+            - Visit all materials using double dispatch via :meth:`~.Material.accept`.
+          * - :py:attr:`~visit_material_model`
+            - Visit a single material model.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.materials.manager.integrations.base_visitor import BaseVisitor
+
+
+
+Method detail
+-------------
+
+.. py:method:: get_material_id(material_name) -> int
+
+   
+   Get the material id given the material name.
+
+
+   :Parameters:
+
+       **material_name** : :class:`python:str`
+           Name of the material.
+
+
+
+   :Returns:
+
+       :class:`python:int`
+           Material id.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: is_supported(material_model: ansys.materials.manager.models.MaterialModel) -> bool
+
+   
+   Check if the material model is supported.
+
+   A model is supported when it appears in ``_model_map`` **and** the
+   writer defines a ``visit`` handler for its concrete type (via
+   ``@singledispatchmethod`` or a plain override).
+
+   :Parameters:
+
+       **material_model** : :obj:`MaterialModel`
+           Material model to check.
+
+
+
+   :Returns:
+
+       :ref:`bool <python:bltin-boolean-values>`
+           True if the material model is supported, False otherwise.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit(model: ansys.materials.manager.models.MaterialModel, *, material_name: str) -> Any
+
+   
+   Dispatch serialization for a material model.
+
+   Concrete writers override this method (typically with
+   ``@functools.singledispatchmethod``) to provide format-specific handlers.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_materials() -> None
+
+   
+   Visit all materials using double dispatch via :meth:`~.Material.accept`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: visit_material_model(material_name: str, material_model: ansys.materials.manager.models.MaterialModel) -> Any
+
+   
+   Visit a single material model.
+
+   .. deprecated::
+       Use :meth:`visit` via :meth:`~.MaterialModel.accept` instead.
+
+   :Parameters:
+
+       **material_name** : :class:`python:str`
+           Name of the parent material.
+
+       **material_model** : :obj:`MaterialModel`
+           Model to visit.
+
+
+
+   :Returns:
+
+       :obj:`Any`
+           Result from :meth:`visit`.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

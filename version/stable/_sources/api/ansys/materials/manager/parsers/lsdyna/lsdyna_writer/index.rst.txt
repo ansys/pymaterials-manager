@@ -1,0 +1,90 @@
+
+
+
+
+
+
+The ``lsdyna_writer.py`` module
+===============================
+
+.. py:module:: ansys.materials.manager.parsers.lsdyna.lsdyna_writer
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: lsdyna_writer
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.parsers.lsdyna.lsdyna_writer.LsDynaWriter`
+            - Ls Dyna writer.
+
+
+
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~MATERIAL_CARD_MAP`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> LsDynaWriter</api/ansys/materials/manager/parsers/lsdyna/lsdyna_writer/LsDynaWriter>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:data:: MATERIAL_CARD_MAP
+
+
+

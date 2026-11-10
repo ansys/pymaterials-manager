@@ -1,0 +1,247 @@
+
+
+
+
+
+
+The ``integrations`` package
+================================
+
+.. py:module:: ansys.materials.manager.integrations
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: integrations
+.. tab-set::
+
+    .. tab-item:: Subpackages
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.fluent`
+            - 
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.lsdyna`
+            - 
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.mapdl`
+            - 
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.matml`
+            - 
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.rest`
+            - REST-based visitor framework for populating material models from a Granta MI REST API.
+
+
+
+    .. tab-item:: Submodules
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.base_visitor`
+            - 
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.material_model_writer_visitor`
+            - Writer visitor protocol for serializing material models.
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.BaseVisitor`
+            - Base class for format-specific material writers.
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.FluentWriter`
+            - Write materials to Fluent solver representation via the visitor pattern.
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.LsDynaWriter`
+            - Write materials to LS-DYNA keyword cards via the visitor pattern.
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.MapdlWriter`
+            - Write materials to MAPDL APDL command strings via the visitor pattern.
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.MaterialModelWriterVisitor`
+            - Protocol for writers that serialize :class:`~.MaterialModel` instances.
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.MatmlReader`
+            - Parse a MatML (engineering data xml) file.
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.MatmlWriter`
+            - Write materials to MatML XML using the visitor pattern.
+
+
+
+
+    .. tab-item:: Exceptions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.UnsupportedMaterialModelError`
+            - Raised when a writer has no handler for a material model type.
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~read_mapdl`
+            - Read materials from a provided MAPDL session.
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-md-package"></span> fluent</api/ansys/materials/manager/integrations/fluent/index>
+    <span class="nf nf-md-package"></span> lsdyna</api/ansys/materials/manager/integrations/lsdyna/index>
+    <span class="nf nf-md-package"></span> mapdl</api/ansys/materials/manager/integrations/mapdl/index>
+    <span class="nf nf-md-package"></span> matml</api/ansys/materials/manager/integrations/matml/index>
+    <span class="nf nf-md-package"></span> rest</api/ansys/materials/manager/integrations/rest/index>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-fa-file"></span> base_visitor</api/ansys/materials/manager/integrations/base_visitor/index>
+    <span class="nf nf-fa-file"></span> material_model_writer_visitor</api/ansys/materials/manager/integrations/material_model_writer_visitor/index>
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> BaseVisitor</api/ansys/materials/manager/integrations/BaseVisitor>
+    <span class="nf nf-cod-symbol_class"></span> FluentWriter</api/ansys/materials/manager/integrations/FluentWriter>
+    <span class="nf nf-cod-symbol_class"></span> LsDynaWriter</api/ansys/materials/manager/integrations/LsDynaWriter>
+    <span class="nf nf-cod-symbol_class"></span> MapdlWriter</api/ansys/materials/manager/integrations/MapdlWriter>
+    <span class="nf nf-cod-symbol_class"></span> MaterialModelWriterVisitor</api/ansys/materials/manager/integrations/MaterialModelWriterVisitor>
+    <span class="nf nf-cod-symbol_class"></span> MatmlReader</api/ansys/materials/manager/integrations/MatmlReader>
+    <span class="nf nf-cod-symbol_class"></span> MatmlWriter</api/ansys/materials/manager/integrations/MatmlWriter>
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-md-lightning_bolt"></span> UnsupportedMaterialModelError</api/ansys/materials/manager/integrations/UnsupportedMaterialModelError>
+
+
+
+
+
+
+
+Description
+-----------
+
+
+External system integrations for reading and writing materials.
+
+Domain models live in :mod:`ansys.materials.manager.models`. Writers in this
+package traverse those models using the `visitor pattern
+<https://en.wikipedia.org/wiki/Visitor_pattern>`_: each
+:class:`~.MaterialModel` calls :meth:`~ansys.materials.manager.models.MaterialModel.accept`
+on a writer, which dispatches to :meth:`~.MaterialModelWriterVisitor.visit`.
+
+For extension or custom writers, subclass :class:`~.BaseVisitor`, define a
+``@functools.singledispatchmethod visit`` on the subclass, and register handlers
+with ``@visit.register(MyModel)``. Most models only need a
+:class:`~._common.ModelInfo` entry in the writer's ``_model_map``. See
+``doc/source/developer_guide.rst`` for a full contributor guide.
+
+Readers (MatML, REST) deserialize external data into models via ``ModelInfo``
+maps and do not use ``accept()``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+
+
+

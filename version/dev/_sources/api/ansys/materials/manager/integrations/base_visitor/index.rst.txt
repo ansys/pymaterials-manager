@@ -1,0 +1,73 @@
+
+
+
+
+
+
+The ``base_visitor.py`` module
+==============================
+
+.. py:module:: ansys.materials.manager.integrations.base_visitor
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: base_visitor
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.materials.manager.integrations.base_visitor.BaseVisitor`
+            - Base class for format-specific material writers.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> BaseVisitor</api/ansys/materials/manager/integrations/base_visitor/BaseVisitor>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
