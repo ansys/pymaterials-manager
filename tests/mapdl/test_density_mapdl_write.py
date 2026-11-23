@@ -318,7 +318,7 @@ def test_interpolation_algorithm_write(algorithm_type, mapdl_algorithm):
     assert output.endswith(
         f"TBIN,ALGO,{mapdl_algorithm}\n"
         "TBIN,NORM,,ON\n"
-        "TBIN,CACH,,ON\n"
+        "TBIN,CACH,,ON\n"  # codespell:ignore CACH
         "TBIN,DEFA,uf01,0.3333333333333333\n"
         "TBIN,BNDS,uf01,0.0,1.0\n"
     )
