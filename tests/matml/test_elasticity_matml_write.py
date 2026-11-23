@@ -23,9 +23,10 @@
 from pathlib import Path
 
 from ansys.units import Quantity
+import pytest
 from utilities import get_material_and_metadata_from_xml
 
-from ansys.materials.manager.integrations import MatmlWriter
+from ansys.materials.manager.integrations import MatmlReader, MatmlWriter
 from ansys.materials.manager.models import (
     ElasticityAnisotropic,
     ElasticityIsotropic,
@@ -54,6 +55,42 @@ ORTHOTROPIC_ELASTICITY_VARIABLE = DIR_PATH.joinpath(
 ISOTROPIC_ELASTICITY_VARIABLE = DIR_PATH.joinpath(
     "..", "data", "matml_isotropic_elasticity_variable.txt"
 )
+
+
+@pytest.mark.parametrize(
+    ("algorithm_type", "expected_xml_value"),
+    [
+        ("Radial Basis MAPDL", "Radial Basis"),
+        ("Nearest Neighbor", "Nearest Neighbor"),
+    ],
+)
+def test_round_trip_interpolation_algorithm_type(
+    algorithm_type: str, expected_xml_value: str, tmp_path: Path
+) -> None:
+    material = Material(
+        name="Interpolation Test Material",
+        models=[
+            ElasticityIsotropic(
+                youngs_modulus=Quantity(value=[1.0], units="Pa"),
+                poissons_ratio=Quantity(value=[0.3], units=""),
+                interpolation_options=InterpolationOptions(algorithm_type=algorithm_type),
+            )
+        ],
+    )
+
+    tree = MatmlWriter([material])._to_etree()
+    algorithm_type_element = tree.find(".//Qualifier[@name='AlgorithmType']")
+
+    assert algorithm_type_element is not None
+    assert algorithm_type_element.text == expected_xml_value
+
+    matml_path = tmp_path / "material.xml"
+    MatmlWriter([material]).write(matml_path)
+    loaded_material = MatmlReader(matml_path).convert_matml_materials()[material.name]
+    loaded_options = loaded_material.models[0].interpolation_options
+
+    assert loaded_options is not None
+    assert loaded_options.algorithm_type == algorithm_type
 
 
 def test_write_constant_elastic_isotropic_material():

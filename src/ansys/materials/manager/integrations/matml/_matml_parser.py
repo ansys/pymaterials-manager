@@ -464,8 +464,12 @@ def fill_interpolation_options(variable_options: dict) -> InterpolationOptions:
     InterpolationOptions
         The converted InterpolationOptions.
     """
+    algorithm_type = variable_options.get(matml_strings.ALGORITHM_TYPE_KEY, "")
+    algorithm_type = matml_strings.MATML_TO_INTERPOLATION_ALGORITHM.get(
+        algorithm_type, algorithm_type
+    )
     interpolation_options = InterpolationOptions(
-        algorithm_type=variable_options.get(matml_strings.ALGORITHM_TYPE_KEY, ""),
+        algorithm_type=algorithm_type,
         normalized=variable_options.get(matml_strings.NORMALIZED_KEY, True),
         cached=variable_options.get(matml_strings.CACHED_KEY, True),
         extrapolation_type=variable_options.get(matml_strings.EXTRAPOLATION_TYPE_KEY, "None"),

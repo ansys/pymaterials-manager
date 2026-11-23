@@ -23,6 +23,7 @@
 from pathlib import Path
 
 from ansys.units import Quantity
+import pytest
 
 from ansys.materials.manager.integrations import MapdlWriter
 from ansys.materials.manager.models import (
@@ -290,3 +291,35 @@ def test_temp_a11_a22_interpolation():
     with open(VARIABLE_DENSITY_TEMP_A11_A22_INTERP, "r") as file:
         data = file.read()
         assert data == material_strings[0]
+
+
+@pytest.mark.parametrize(
+    ("algorithm_type", "mapdl_algorithm"),
+    [("Nearest Neighbor", "NNEI"), ("Radial Basis", "RBAS")],
+)
+def test_interpolation_algorithm_write(algorithm_type, mapdl_algorithm):
+    density = Density(
+        density=Quantity(value=[1.0, 2.0], units="kg m^-3"),
+        independent_parameters=[
+            IndependentParameter(
+                name="uf01",
+                values=Quantity(value=[0.0, 1.0], units=""),
+                default_value=1 / 3,
+                lower_limit=0.0,
+                upper_limit=1.0,
+            )
+        ],
+        interpolation_options=InterpolationOptions(algorithm_type=algorithm_type),
+    )
+    material = Material(name=algorithm_type, material_id=1, models=[density])
+
+    output = MapdlWriter(materials=[material]).write()[0]
+
+    assert output.endswith(
+        f"TBIN,ALGO,{mapdl_algorithm}\n"
+        "TBIN,NORM,,ON\n"
+        "TBIN,CACH,,ON\n"
+        "TBIN,DEFA,uf01,0.3333333333333333\n"
+        "TBIN,BNDS,uf01,0.0,1.0\n"
+    )
+    assert "TBIN,EXTR" not in output

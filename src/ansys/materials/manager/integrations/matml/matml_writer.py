@@ -152,10 +152,14 @@ class MatmlWriter(BaseVisitor):
             data_element = ET.SubElement(parameter_element, _matml_strings.DATA_KEY)
             data_element.text = _matml_strings.INTERPOLATION_OPTIONS_KEY
             if interpolation_options.algorithm_type:
+                algorithm_type = _matml_strings.INTERPOLATION_ALGORITHM_TO_MATML.get(
+                    interpolation_options.algorithm_type,
+                    interpolation_options.algorithm_type,
+                )
                 self._add_qualifier(
                     parameter_element,
                     _matml_strings.ALGORITHM_TYPE_KEY,
-                    interpolation_options.algorithm_type,
+                    algorithm_type,
                 )
             if interpolation_options.cached:
                 self._add_qualifier(

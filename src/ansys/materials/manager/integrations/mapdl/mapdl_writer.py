@@ -241,9 +241,7 @@ class MapdlWriter(BaseVisitor):
 
         return material_string
 
-    def visit_isotropic_hardening_voce_law(
-        self, material_model: IsotropicHardeningVoceLaw
-    ) -> str:
+    def visit_isotropic_hardening_voce_law(self, material_model: IsotropicHardeningVoceLaw) -> str:
         """Write isotropic hardening with the Voce law."""
         coefficients = [
             material_model.initial_yield_stress,
