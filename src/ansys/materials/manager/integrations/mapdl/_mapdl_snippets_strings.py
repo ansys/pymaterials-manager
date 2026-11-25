@@ -39,6 +39,9 @@ EXTRAPOLATION_TYPE_MAP = {
     "Projection to the Bounding Box": "BBOX",
 }
 
+USER_DEFINED_TB_FIELDS = """{name} = 'UF{idx:02d}' ! {unit}
+"""
+
 CONSTANT_MP_PROPERTY = """MP,{lab},{matid},{c0},{c1},{c2},{c3},{c4} ! {unit}
 """
 
@@ -55,9 +58,6 @@ TB = """TB,{lab},{matid},,,{tbopt}
 """
 
 TB_FIELD = """TBFIELD,{type},{value}, ! {unit}
-"""
-
-USER_DEFINED_TB_FIELDS = """{name} = 'UF{idx:02d}' ! {unit}
 """
 
 TB_DATA = """TBDATA,{stloc},{c1},{c2},{c3},{c4},{c5},{c6}

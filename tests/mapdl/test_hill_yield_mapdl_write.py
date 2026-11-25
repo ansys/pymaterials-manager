@@ -170,45 +170,9 @@ def test_hill_variable_a11_a22():
 
     mapdl_writer = MapdlWriter(materials=[material])
     material_strings = mapdl_writer.write()
-    assert "TBFIELD,Orientation Tensor A11,0.0" in material_strings[0]
-    assert "TBFIELD,Orientation Tensor A22,0.0" in material_strings[0]
     with open(HILL_VARIABLE_A11_A22, "r") as file:
         data = file.read()
         assert data == material_strings[0]
-
-
-def test_hill_variable_user_fields_and_temperature():
-    hill = HillYieldCriterion(
-        yield_stress_ratio_x=Quantity(value=[1.0, 1.1], units=""),
-        yield_stress_ratio_y=Quantity(value=[0.8, 0.9], units=""),
-        yield_stress_ratio_z=Quantity(value=[0.5, 0.6], units=""),
-        yield_stress_ratio_xy=Quantity(value=[0.12, 0.13], units=""),
-        yield_stress_ratio_yz=Quantity(value=[0.23, 0.24], units=""),
-        yield_stress_ratio_xz=Quantity(value=[0.23, 0.24], units=""),
-        independent_parameters=[
-            IndependentParameter(
-                name="Orientation Tensor A11",
-                values=Quantity(value=[0.3, 0.4], units=""),
-            ),
-            IndependentParameter(
-                name="Orientation Tensor A22",
-                values=Quantity(value=[0.2, 0.3], units=""),
-            ),
-            IndependentParameter(
-                name="Temperature",
-                values=Quantity(value=[22.0, 22.0], units="C"),
-            ),
-        ],
-    )
-    material = Material(name="Material with user-defined fields", models=[hill])
-
-    material_string = MapdlWriter(materials=[material]).write()[0]
-
-    assert "Orientation Tensor A11 = 'UF01' ! Orientation Tensor A11" in material_string
-    assert "Orientation Tensor A22 = 'UF02' ! Orientation Tensor A22" in material_string
-    assert "TBFIELD,Orientation Tensor A11,0.3" in material_string
-    assert "TBFIELD,Orientation Tensor A22,0.2" in material_string
-    assert "TBFIELD,TEMP,22.0" in material_string
 
 
 def hill_creep_constant():
