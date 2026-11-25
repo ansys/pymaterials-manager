@@ -312,14 +312,18 @@ def write_table_dep_values(
 def _get_field_variables(
     independent_parameters: list[IndependentParameter],
 ) -> tuple[list[list[float]], list[str], list[str], str]:
-    parameters_str = ""
     idx = 1
     independent_values = []
     independent_values_names = []
     independent_values_units = []
+    parameters_str = ""
     for independent_parameter in independent_parameters:
         if independent_parameter.name in PREDIFINED_TB_FIELDS.keys():
-            parameters_str += f"{independent_parameter.name} = '{PREDIFINED_TB_FIELDS[independent_parameter.name]}' ! {independent_parameter.name}"  # noqa_ E501
+            parameters_str += (
+                f"{independent_parameter.name} = "
+                f"'{PREDIFINED_TB_FIELDS[independent_parameter.name]}' "
+                f"! {independent_parameter.name}"
+            )
         else:
             parameters_str += USER_DEFINED_TB_FIELDS.format(
                 name=independent_parameter.name,
@@ -363,9 +367,12 @@ def write_table_values(
     TBDATA,1,10,10,10,4.54,4.54,4.54
     TBDATA,7,0.1,0.1,0.1
     """
-    independent_values, independent_values_names, independent_values_units, parameters_str = (
-        _get_field_variables(independent_parameters=independent_parameters)
-    )
+    (
+        independent_values,
+        independent_values_names,
+        independent_values_units,
+        parameters_str,
+    ) = _get_field_variables(independent_parameters=independent_parameters)
 
     table_str = TB.format(lab=label, matid=material_id, tbopt=tb_opt or "")
     if tb_opt == "PC":
