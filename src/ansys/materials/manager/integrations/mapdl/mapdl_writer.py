@@ -29,6 +29,7 @@ from ...models import (
     ElasticityAnisotropic,
     HillYieldCriterion,
     IsotropicHardening,
+    IsotropicHardeningVoceLaw,
     Material,
     MaterialModel,
 )
@@ -240,6 +241,47 @@ class MapdlWriter(BaseVisitor):
 
         return material_string
 
+    def visit_isotropic_hardening_voce_law(self, material_model: IsotropicHardeningVoceLaw) -> str:
+        """Write isotropic hardening with the Voce law."""
+        coefficients = [
+            material_model.initial_yield_stress,
+            material_model.linear_coefficient,
+            material_model.exponential_coefficient,
+            material_model.exponential_saturation_parameter,
+        ]
+        if any(coefficient is None for coefficient in coefficients):
+            raise ValueError("All four Voce hardening coefficients are required for MAPDL.")
+
+        dependent_parameters = [coefficient.value.tolist() for coefficient in coefficients]
+        if not material_model.independent_parameters:
+            return write_table_dep_values(
+                material_id=None,
+                label="NLISO",
+                dependent_values=[values[0] for values in dependent_parameters],
+                tb_opt="VOCE",
+            )
+
+        if (
+            len(material_model.independent_parameters) != 1
+            or material_model.independent_parameters[0].name != "Temperature"
+        ):
+            raise ValueError("Only temperature-dependent Voce hardening is supported by MAPDL.")
+
+        temperature_parameter = material_model.independent_parameters[0]
+        if any(
+            len(values) != len(temperature_parameter.values.value)
+            for values in dependent_parameters
+        ):
+            raise ValueError("Voce coefficient values must match the temperature values.")
+
+        return write_table_value_per_temperature(
+            label="NLISO",
+            material_id=None,
+            dependent_parameters=dependent_parameters,
+            temperature_parameter=temperature_parameter,
+            tb_opt="VOCE",
+        )
+
     @singledispatchmethod
     def visit(self, material_model: MaterialModel, *, material_name: str) -> None:
         """Dispatch MAPDL serialization by model type."""
@@ -275,6 +317,14 @@ class MapdlWriter(BaseVisitor):
     ) -> None:
         """Visit isotropic hardening."""
         model = self.visit_isotropic_harderning(material_model)
+        self._material_repr[material_name].append(model)
+
+    @visit.register(IsotropicHardeningVoceLaw)
+    def _visit_isotropic_hardening_voce_law_model(
+        self, material_model: IsotropicHardeningVoceLaw, *, material_name: str
+    ) -> None:
+        """Visit Voce-law isotropic hardening."""
+        model = self.visit_isotropic_hardening_voce_law(material_model)
         self._material_repr[material_name].append(model)
 
     def write(

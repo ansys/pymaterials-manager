@@ -25,7 +25,12 @@ from pathlib import Path
 from ansys.units import Quantity
 
 from ansys.materials.manager.integrations import MapdlWriter
-from ansys.materials.manager.models import IndependentParameter, IsotropicHardening, Material
+from ansys.materials.manager.models import (
+    IndependentParameter,
+    IsotropicHardening,
+    IsotropicHardeningVoceLaw,
+    Material,
+)
 
 DIR_PATH = Path(__file__).resolve().parent
 ISOTROPIC_HARDENING_MULTILINEAR_CONSTANT = DIR_PATH.joinpath(
@@ -535,3 +540,46 @@ def test_isotropic_hardening_multilinear_variable():
     with open(ISOTROPIC_HARDENING_MULTILINEAR_VARIABLE, "r") as file:
         data = file.read()
         assert data == material_strings[0]
+
+
+def test_isotropic_hardening_voce_constant():
+    voce_law = IsotropicHardeningVoceLaw(
+        initial_yield_stress=Quantity(value=[28264641.0], units="Pa"),
+        linear_coefficient=Quantity(value=[526886855.0], units="Pa"),
+        exponential_coefficient=Quantity(value=[18328164.0], units="Pa"),
+        exponential_saturation_parameter=Quantity(value=[406.479025], units=""),
+    )
+    material = Material(name="Voce", material_id=1, models=[voce_law])
+
+    writer = MapdlWriter(materials=[material])
+
+    assert writer.write() == [
+        "TB,NLISO,1,,,VOCE\nTBDATA,1,28264641.0,526886855.0,18328164.0,406.479025,,\n"
+    ]
+
+
+def test_isotropic_hardening_voce_temperature_dependent():
+    voce_law = IsotropicHardeningVoceLaw(
+        initial_yield_stress=Quantity(value=[28264641.0, 34264641.0], units="Pa"),
+        linear_coefficient=Quantity(value=[526886855.0, 670000000.0], units="Pa"),
+        exponential_coefficient=Quantity(value=[18328164.0, 15000000.0], units="Pa"),
+        exponential_saturation_parameter=Quantity(value=[406.479025, 387.0], units=""),
+        independent_parameters=[
+            IndependentParameter(
+                name="Temperature",
+                values=Quantity(value=[22.0, 112.4], units="C"),
+            )
+        ],
+    )
+    material = Material(name="Voce", material_id=1, models=[voce_law])
+
+    writer = MapdlWriter(materials=[material])
+
+    assert writer.write() == [
+        "Temperature = 'TEMP' ! Temperature\n"
+        "TB,NLISO,1,,,VOCE\n"
+        "TBTEMP,22.0\n"
+        "TBDATA,1,28264641.0,526886855.0,18328164.0,406.479025,,\n"
+        "TBTEMP,112.4\n"
+        "TBDATA,1,34264641.0,670000000.0,15000000.0,387.0,,\n"
+    ]

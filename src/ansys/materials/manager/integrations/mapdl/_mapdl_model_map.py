@@ -29,6 +29,7 @@ from ...models import (
     ElasticityOrthotropic,
     HillYieldCriterion,
     IsotropicHardening,
+    IsotropicHardeningVoceLaw,
     ThermalConductivityIsotropic,
     ThermalConductivityOrthotropic,
 )
@@ -82,6 +83,7 @@ MATERIAL_MODEL_MAP = {
     IsotropicHardening: ModelInfo(
         attributes=["stress"],
     ),
+    IsotropicHardeningVoceLaw: ModelInfo(),
     ThermalConductivityIsotropic: ModelInfo(
         labels=["KXX"],
         attributes=["thermal_conductivity"],

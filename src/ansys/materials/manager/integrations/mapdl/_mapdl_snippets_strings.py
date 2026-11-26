@@ -27,7 +27,12 @@ PREDIFINED_TB_FIELDS = {
     "Temperature": "TEMP",
 }
 
-INTERPOLATION_ALGORITHM_MAP = {"Linear Multivariate": "LMUL", "Linear Multivariate (Qhull)": "LMUL"}
+INTERPOLATION_ALGORITHM_MAP = {
+    "Linear Multivariate": "LMUL",
+    "Linear Multivariate (Qhull)": "LMUL",
+    "Nearest Neighbor": "NNEI",
+    "Radial Basis": "RBAS",
+}
 
 EXTRAPOLATION_TYPE_MAP = {
     "Projection to the Convex Hull": "PHULL",

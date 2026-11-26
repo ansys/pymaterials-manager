@@ -67,3 +67,11 @@ VARIABLE_TYPE_KEY = "Variable Type"
 VERSION = "18.0.0.60"
 VERSION_DATE = "29.08.2016 15:02:00"
 WBTRANSFER_KEY = "ANSYSWBTransferData"
+
+INTERPOLATION_ALGORITHM_TO_MATML = {
+    "Radial Basis MAPDL": "Radial Basis",
+    "Nearest Neighbor": "Nearest Neighbor",
+}
+MATML_TO_INTERPOLATION_ALGORITHM = {
+    matml_value: algorithm for algorithm, matml_value in INTERPOLATION_ALGORITHM_TO_MATML.items()
+}
